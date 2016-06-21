@@ -28,5 +28,6 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="/Users/ksusa/Documents/anki_note_workspace/anki_note/lib/sqlite-jdbc-3.8.11.2.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
