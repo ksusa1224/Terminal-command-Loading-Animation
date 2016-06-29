@@ -21,4 +21,11 @@ public class ApplicationController  {
 	public String index() {
         return "index";
 	}	    
+	    
+    @RequestMapping(value="/", method=RequestMethod.POST)
+	public String createUser(Model model) {
+		SQliteDAO sqlite_dao = new SQliteDAO();
+		sqlite_dao.createSQliteDB();
+        return "index";
+    }
 }
