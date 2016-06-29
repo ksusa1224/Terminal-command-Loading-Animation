@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 
 @SpringBootApplication
 @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
+@ComponentScan({ "com.application.services", "com.controller.controllers" })
 public class AnkiNoteApplication {
 
 	public static void main(String[] args) {
