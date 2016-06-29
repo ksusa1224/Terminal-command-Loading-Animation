@@ -17,10 +17,6 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 public class AnkiNoteApplication {
 
 	public static void main(String[] args) {
-
-		SQliteDAO sqlite_dao = new SQliteDAO();
-		sqlite_dao.createSQliteDB();
-
 		SpringApplication.run(AnkiNoteApplication.class, args);
 	}
 }

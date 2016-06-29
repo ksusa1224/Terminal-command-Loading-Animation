@@ -84,6 +84,9 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
 </script>
 </head>
 <body>
+<form th:action="@{/}" method="post">
+<input type="submit" value="新規ユーザー登録" />
+</form>
 <input type="button" onclick="control_qa_saisei('frame work', 'フレームワーク','英語','日本語');" />
 <p th:text="${#strings.toUpperCase('Hello World')}">aaa</p>abclll
 aaaaabbbbb
