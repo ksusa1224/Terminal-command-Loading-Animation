@@ -1,4 +1,4 @@
-package com.application;
+package com.application.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import com.dao.SQliteDAO;
-import com.model.TopModel;
+import com.model.TopPageModel;
 import com.application.*;
 
 @Controller
@@ -21,11 +21,4 @@ public class ApplicationController  {
 	public String index() {
         return "index";
 	}	    
-	    
-    @RequestMapping(value="/", method=RequestMethod.POST)
-	public String createUser(Model model) {
-		SQliteDAO sqlite_dao = new SQliteDAO();
-		sqlite_dao.createSQliteDB();
-        return "index";
-    }
 }
