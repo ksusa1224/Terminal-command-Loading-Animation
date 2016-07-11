@@ -71,9 +71,9 @@ public class SQliteDAO {
 	      sql.appendLine("	seitou_cnt integer default 1,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
-	      // レコード作成日時（MySQLのtimestampと同じフォーマットにする）
+	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
 	      sql.appendLine("	create_timestamp string,");
-	      // レコード更新日時（MySQLのtimestampと同じフォーマットにする）
+	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
 	      sql.appendLine("	update_timestamp string");
 	      sql.appendLine(");");
 	      // INDEX
@@ -97,9 +97,9 @@ public class SQliteDAO {
 	      sql.appendLine("	nanido integer default 3,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
-	      // レコード作成日時（MySQLのtimestampと同じフォーマットにする）
+	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
 	      sql.appendLine("	create_timestamp string,");
-	      // レコード更新日時（MySQLのtimestampと同じフォーマットにする）
+	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
 	      sql.appendLine("	update_timestamp string,");
 	      // 正答ID,問題ID,問題内での順番でuniqueにする
 	      sql.appendLine("	unique (s_id,q_id,junban)");
@@ -123,15 +123,15 @@ public class SQliteDAO {
 	      sql.appendLine("	s_id integer,");
 	      // アクション・・・チェックを入れた、外した、解いて正解した、解いて不正解、等
 	      sql.appendLine("	action string,");
-	      // アクション日時（MySQLのtimestampと同じフォーマットにする）
+	      // アクション日時（H2DBのtimestampと同じフォーマットにする）
 	      sql.appendLine("	action_timestamp,");
 	      // ユーザーが入力した回答
 	      sql.appendLine("	kaitou string,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
-	      // レコード作成日時（MySQLのtimestampと同じフォーマットにする）
+	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
 	      sql.appendLine("	create_timestamp string,");
-	      // レコード更新日時（MySQLのtimestampと同じフォーマットにする）
+	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
 	      sql.appendLine("	update_timestamp string");
 	      sql.appendLine(");");
 	      // INDEX
@@ -160,11 +160,13 @@ public class SQliteDAO {
 	      sql.appendLine("	nanido integer default 3,");
 	      // システムタグフラグ
 	      sql.appendLine("	system_tag_flg integer default 0,");
+	      // タグ種別
+	      sql.appendLine("	tag_type string,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
-	      // レコード作成日時（MySQLのtimestampと同じフォーマットにする）
+	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
 	      sql.appendLine("	create_timestamp string,");
-	      // レコード更新日時（MySQLのtimestampと同じフォーマットにする）
+	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
 	      sql.appendLine("	update_timestamp string");
 	      sql.appendLine(");");
 	      // INDEX
@@ -219,9 +221,9 @@ public class SQliteDAO {
 	      sql.appendLine("	anki_state integer,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
-	      // レコード作成日時（MySQLのtimestampと同じフォーマットにする）
+	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
 	      sql.appendLine("	create_timestamp string,");
-	      // レコード更新日時（MySQLのtimestampと同じフォーマットにする）
+	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
 	      sql.appendLine("	update_timestamp string");
 	      sql.appendLine(");");
 	      // INDEX
@@ -243,9 +245,9 @@ public class SQliteDAO {
 	      sql.appendLine("	value string,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
-	      // レコード作成日時（MySQLのtimestampと同じフォーマットにする）
+	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
 	      sql.appendLine("	create_timestamp string,");
-	      // レコード更新日時（MySQLのtimestampと同じフォーマットにする）
+	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
 	      sql.appendLine("	update_timestamp string");
 	      sql.appendLine(");");
 	      // INDEX
