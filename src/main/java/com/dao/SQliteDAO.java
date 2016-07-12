@@ -57,6 +57,8 @@ public class SQliteDAO {
 	      sql.appendLine("	q_id integer primary key autoincrement unique not null,");
 	      // 問題文
 	      sql.appendLine("	mondaibun text not null,");
+	      // 問題タイプ
+	      sql.appendLine("	mondai_type string,");
 	      // 読むだけ問題フラグ
 	      sql.appendLine("	yomudake_flg integer default 0,");
 	      // 重要度（５段階）
