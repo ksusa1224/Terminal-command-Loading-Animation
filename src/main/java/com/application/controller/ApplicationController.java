@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import com.dao.SQliteDAO;
-import com.model.TopPageModel;
+import com.appication.model.TopPageModel;
 import com.application.*;
 
 @Controller
