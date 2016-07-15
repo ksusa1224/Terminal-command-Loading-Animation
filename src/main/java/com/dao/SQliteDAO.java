@@ -7,6 +7,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import com.common.*;
 
+/**
+ * 
+ * @author ksusa
+ *
+ */
 public class SQliteDAO {
 	
 	/**
