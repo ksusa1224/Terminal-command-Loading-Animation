@@ -28,14 +28,28 @@ public class ApplicationController  {
 	 * トップページ
 	 * @return
 	 */
-	@RequestMapping("/")
-	public String index() {
-        return "index";
+	@RequestMapping(value={"",
+						   "/",
+						   "/index",
+						   "/index.html",
+						   "/index.htm"}, 
+						   method=RequestMethod.GET)
+	public String index(HttpServletRequest request) {
+		String request_url = request.getRequestURI();
+		String response_url = "/index.html";
+		if (request_url.equals(response_url))
+		{
+			return "index";
+		}
+		else
+		{
+			return "redirect:" + response_url;
+		}
 	}
 
-	//http://blog.codebook-10000.com/entry/20140301/1393628782
 	/**
 	 * メインページ（暗記ノート本体）
+	 * http://blog.codebook-10000.com/entry/20140301/1393628782
 	 * @param user_id
 	 * @return
 	 */
@@ -43,7 +57,8 @@ public class ApplicationController  {
 						   "/{user_id}/", 
 						   "/{user_id}/main.html", 
 						   "/{user_id}/main.htm", 
-						   "/{user_id}/main"})
+						   "/{user_id}/main"},
+							method=RequestMethod.GET)
 	public String main(@PathVariable("user_id") String user_id,HttpServletRequest request) {
 		
 		String request_url = request.getRequestURI();
