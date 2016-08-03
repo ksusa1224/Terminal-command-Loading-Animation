@@ -1,5 +1,7 @@
 package com.application.controller;
 
+import java.io.File;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
@@ -7,8 +9,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.common.Constant;
+import com.common.Util;
+
 @Controller
 public class ApplicationController {
+	
+	/**
+	 * コンストラクタ
+	 */
+	ApplicationController()
+	{
+		Util.lock_folder_or_file(Constant.DB_FOLDER_PATH);
+		Util.unlock_folder_or_file(Constant.DB_FOLDER_PATH);
+	}
 	
 	/**
 	 * トップページ

@@ -11,5 +11,5 @@ public class AnkiNoteApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(AnkiNoteApplication.class, args);
-	}	
+	}
 }
