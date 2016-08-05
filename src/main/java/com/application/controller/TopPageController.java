@@ -26,7 +26,8 @@ public class TopPageController {
 			// セッションに暗号化されたユーザ専用DB名を格納
 			session.setAttribute("db", encrypted_db_name);
 			byte[] a = (byte[])session.getAttribute("db");
-			String b = aes.decrypt(a);
+			AES aes2 = new AES();
+			String b = aes2.decrypt(a);
 			System.out.println("a:"+a);
 			System.out.println("b:"+b);
 			String c = session.getId();
