@@ -21,6 +21,7 @@ public class ApplicationController {
 	 */
 	ApplicationController()
 	{
+		// TODO どのタイミングでどのフォルダのパーミッションを変更するか
 		Util.lock_folder_or_file(Constant.DB_FOLDER_PATH);
 		Util.unlock_folder_or_file(Constant.DB_FOLDER_PATH);
 	}

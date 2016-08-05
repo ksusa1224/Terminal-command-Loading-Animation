@@ -16,8 +16,9 @@ public class SQliteDAO {
 	
 	/**
 	 * 1ユーザーにつき1個、会員登録のタイミングでSQliteのDBを作成する
+	 * @return データベース
 	 */
-	public void createSQliteDB() {
+	public String createSQliteDB(String user_id) {
 		// load the sqlite-JDBC driver using the current class loader
 		try {
 			Class.forName("org.sqlite.JDBC");
@@ -27,16 +28,14 @@ public class SQliteDAO {
 		}
 
 	    Connection connection = null;
-	    try
-	    {
-		  String now = Util.getNow("yyyy_MM_dd_HH_mm_ss");
-		  String user_id = "vsky";
-		  String db_name = now + "_" + user_id + ".db";
-//		  String db_save_path = "sqlite_databases/ver1/";
-		  String db_save_path = Constant.SQLITE_USER_DB_FOLDEDR_PATH;
-		  String connection_str = "jdbc:sqlite:" 
+		String now = Util.getNow("yyyy_MM_dd_HH_mm_ss");
+		String db_name = now + "_" + user_id + ".db";
+		String db_save_path = Constant.SQLITE_USER_DB_FOLDEDR_PATH;
+		String connection_str = "jdbc:sqlite:" 
 				  				+ db_save_path
 				  				+ db_name;
+	    try
+	    {
 	      // DBが存在していたら接続、存在していなければ作成
 	      connection = DriverManager.getConnection(connection_str);
 	      Statement stmt = connection.createStatement();
@@ -286,6 +285,7 @@ public class SQliteDAO {
 	        System.err.println(e);
 	      }
 	    }
+	    return db_name;
 	}
 	
 	/**
