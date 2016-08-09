@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.common.AES;
@@ -16,9 +17,11 @@ import com.dao.SQliteDAO;
 public class TopPageController {
 	  // TODO 入力された文字列でDBを作成する
 	  @RequestMapping(value="/", method=RequestMethod.POST)
-	  public String createUser(HttpSession session) {
+	  public String createUser(
+			  HttpSession session,
+			  @RequestParam("owner_id") String owner_id) {
 			SQliteDAO sqlite_dao = new SQliteDAO();
-			String db_name = sqlite_dao.createSQliteDB("vsky");
+			String db_name = sqlite_dao.createSQliteDB(owner_id);
 			
 			AES aes = new AES();
 			byte[] encrypted_db_name = aes.encrypt(db_name);
