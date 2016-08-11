@@ -16,7 +16,7 @@ public class SQliteDAO {
 	
 	/**
 	 * 1ユーザーにつき1個、会員登録のタイミングでSQliteのDBを作成する
-	 * @return データベース
+	 * @return データベース名
 	 */
 	public String createSQliteDB(String user_id) {
 		// load the sqlite-JDBC driver using the current class loader
@@ -294,7 +294,7 @@ public class SQliteDAO {
 	 * @param sql
 	 * @throws SQLException
 	 */
-	public static void transaction(Statement stmt, StringBuilderPlus sql) 
+	public void transaction(Statement stmt, StringBuilderPlus sql) 
 			throws SQLException {
 		try
 	      {
