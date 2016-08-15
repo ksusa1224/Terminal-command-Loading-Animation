@@ -2,9 +2,13 @@ package com.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.common.*;
 
 /**
@@ -12,13 +16,18 @@ import com.common.*;
  * @author ksusa
  *
  */
-public class H2dbDao {
-
+public class H2dbDao 
+{
 	/**
-	 * 共通DBを作成（基本的には呼び出さないが、壊れた際などに再作成するのに使う）
+	 * 定数、変数
 	 */
-	public void create_common_db()
-	{
+	private static final String COMMON_DB_URL = Constant.COMMON_DB_ROOT_URL + Constant.H2DB_FOLDER_PATH + Constant.COMMON_DB_NAME;
+	
+	/**
+	 * ドライバに接続し、コネクションを張る
+	 * @return Common DBに接続済のConnectionオブジェクトを返却
+	 */
+	private Connection connect() {
 		try 
 		{
 			Class.forName("org.h2.Driver");
@@ -28,15 +37,45 @@ public class H2dbDao {
 			e.printStackTrace();
 		}
 		
-		Connection conn;
+		Connection conn = null;
 		try 
 		{
-			conn = DriverManager.
-			    getConnection(
-			    "jdbc:h2:tcp://localhost/" + Constant.H2DB_FOLDER_PATH +"common",
-			    "common_admin",
-			    "DSFRsD0eSD2Sh5#8");
-			
+			conn = DriverManager.getConnection(
+			    COMMON_DB_URL,
+			    Constant.COMMON_DB_ADMIN_USER,
+			    Constant.COMMON_DB_PASSWORD);
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		return conn;
+	}	
+
+	/**
+	 * コネクションをクローズする
+	 * @param conn
+	 */
+	private void disconnect(Connection conn) {
+		if (conn != null)
+		{
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}	
+	
+	/**
+	 * 共通DBを作成（基本的には呼び出さないが、壊れた際などに再作成するのに使う）
+	 */
+	public void create_common_db()
+	{
+		Connection conn = connect();
+		try
+		{
 			Statement stmt = conn.createStatement();
 			
 			StringBuilderPlus sql = new StringBuilderPlus();
@@ -45,7 +84,7 @@ public class H2dbDao {
 			sql.appendLine("CREATE USER IF NOT EXISTS common_admin PASSWORD 'DSFRsD0eSD2Sh5#8';");
 			sql.appendLine("ALTER USER common_admin ADMIN TRUE;");
 			
-			// デフォルトユーザ（ID・パスともに空文字）の削除
+			// デフォルトユーザ（ID・パスともに空文字（""））の削除
 			sql.appendLine("DROP USER IF EXISTS \"\";");
 			
 			// オーナー情報テーブル作成
@@ -72,16 +111,66 @@ public class H2dbDao {
 			sql.appendLine("  update_date timestamp");
 			sql.appendLine(");");
 			
-			transaction(stmt, sql);
-			
-			conn.close();
+			transaction(stmt, sql);			
 		} 
 		catch (Exception e) 
 		{
 			e.printStackTrace();
 		}
-
+		finally
+		{
+			disconnect(conn);
+		}
 	}
+	
+	/**
+	 * 引数で指定した作成、更新、削除のSQLを実行する（トランザクショナル)
+	 * @param sql
+	 */
+	public void update(StringBuilderPlus sql)
+	{
+		Connection conn = connect();
+		try
+		{
+			Statement stmt = conn.createStatement();
+			transaction(stmt, sql);			
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		finally
+		{
+			disconnect(conn);
+		}
+	}
+	
+	/**
+	 * バイナリデータの更新を含むSQLを発行する
+	 * @param sql
+	 * @param params　バイナリのSQLパラメーター
+	 */
+	public void update(StringBuilderPlus sql, List<byte[]> params)
+	{
+		Connection conn = connect();
+		try
+		{
+			PreparedStatement prep = conn.prepareStatement(sql.toString());
+			for (int i = 0; i < params.size(); i++)
+			{
+				prep.setBytes(1, params.get(i));						
+			}
+			prep.addBatch();
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		finally
+		{
+			disconnect(conn);
+		}
+	}	
 	
 	/**
 	 * 作成、更新、削除等、トランザクション管理が必要なSQLを発行する
@@ -89,8 +178,8 @@ public class H2dbDao {
 	 * @param sql
 	 * @throws SQLException
 	 */
-	public void transaction(Statement stmt, StringBuilderPlus sql) 
-			throws SQLException {
+	private void transaction(Statement stmt, StringBuilderPlus sql) throws SQLException 
+	{
 		try
 	      {
 	    	  stmt.executeUpdate(sql.toString());

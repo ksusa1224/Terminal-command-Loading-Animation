@@ -30,7 +30,7 @@ public class SQliteDAO {
 	    Connection connection = null;
 		String now = Util.getNow("yyyy_MM_dd_HH_mm_ss");
 		String db_name = now + "_" + user_id + ".db";
-		String db_save_path = Constant.SQLITE_USER_DB_FOLDEDR_PATH;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
 		String connection_str = "jdbc:sqlite:" 
 				  				+ db_save_path
 				  				+ db_name;
