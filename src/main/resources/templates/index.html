@@ -90,8 +90,15 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
 パスワード<input type="text" name="login_password" /><br />
 オーナー名<input type="text" name="owner_name" /><br />
 E-mail<input type="text" name="email" /><br />
-<input type="submit" value="新規ユーザー登録" />
+<button name="register" type="submit">新規ユーザー登録</button>
 </form>
+<hr />
+<form th:action="@{/}" method="post">
+オーナーID / E-mailアドレス<input type="text" name="owner_id_or_email" /><br />
+パスワード<input type="text" name="login_password" /><br />
+<button name="login" type="submit">ログイン</button>
+</form>
+<hr />
 <input type="button" onclick="control_qa_saisei('frame work', 'フレームワーク','英語','日本語');" />
 <p th:text="${#strings.toUpperCase('Hello World')}">aaa</p>abclll
 aaaaabbbbb

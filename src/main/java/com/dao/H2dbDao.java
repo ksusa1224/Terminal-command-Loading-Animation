@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.application.model.LoginInfoModel;
 import com.common.*;
 
 /**
@@ -121,6 +122,18 @@ public class H2dbDao
 		{
 			disconnect(conn);
 		}
+	}
+	
+	/**
+	 * ログイン情報を取得する TODO 作成途中
+	 * @param sql
+	 * @return ログイン情報クラス
+	 */
+	public LoginInfoModel select_login_info(StringBuilderPlus sql)
+	{
+		System.out.println("---------aaaaaa-----");
+		LoginInfoModel login_info = new LoginInfoModel();
+		return login_info;
 	}
 	
 	/**
