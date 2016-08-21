@@ -59,7 +59,7 @@ public class SQliteDAO {
 	       */
 	      sql.appendLine("create table qa (");
 	      // 行番号
-	      sql.appendLine("  no integer auto increment unique not null,");
+	      sql.appendLine("  row_no integer auto increment unique not null,");
 	      // QA ID
 	      sql.appendLine("	qa_id text primary key unique not null,");
 	      // QAタイプ
@@ -76,6 +76,8 @@ public class SQliteDAO {
 	      sql.appendLine("	q_split_cnt integer default 1,");
 	      // 問題に紐づく正答の個数
 	      sql.appendLine("	seitou_cnt integer default 1,");
+	      // 公開範囲
+	      sql.appendLine("  koukai_level integer,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
 	      // 作成者
@@ -96,7 +98,7 @@ public class SQliteDAO {
 	       */
 	      sql.appendLine("create table mondai (");
 	      // 行番号
-	      sql.appendLine("  no integer auto increment unique not null,");
+	      sql.appendLine("  row_no integer auto increment unique not null,");
 	      // 問題ID
 	      sql.appendLine("  q_id text primary key unique not null,");
 	      // QA ID
@@ -104,13 +106,13 @@ public class SQliteDAO {
 	      // QA内での問題パーツの順番
 	      sql.appendLine("	junban integer default 1,");
 	      // 問題パーツが文字であるかのフラグ
-	      sql.appendLine("  is_text_flg default 1,");
+	      sql.appendLine("  is_text_flg integer default 1,");
 	      // 問題パーツがバイナリであるかのフラグ
-	      sql.appendLine("  is_binary_flg default 0,");
-	      // 分割された問題文
+	      sql.appendLine("  is_binary_flg integer default 0,");
+	      // 分割された問題文a
 	      sql.appendLine("  q_parts_text text,");
 	      // QAの中に出てくる音声や画像などのバイナリファイル
-	      sql.appendLine("  q_parts_binary binary default null,");
+	      sql.appendLine("  q_parts_binary blob default null,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
 	      // 作成者
@@ -136,7 +138,7 @@ public class SQliteDAO {
 	       */
 	      sql.appendLine("create table seitou (");
 	      // 行番号
-	      sql.appendLine("  no integer auto increment unique not null,");
+	      sql.appendLine("  row_no integer auto increment unique not null,");
 	      // 正答ID
 	      sql.appendLine("	s_id text primary key unique not null,");
 	      // QA ID
@@ -174,7 +176,7 @@ public class SQliteDAO {
 	       */
 	      sql.appendLine("create table kaitou (");
 	      // 行番号
-	      sql.appendLine("  no integer auto increment unique not null,");
+	      sql.appendLine("  row_no integer auto increment unique not null,");
 	      // 回答ID
 	      sql.appendLine("	k_id text primary key unique not null,");
 	      // QA ID
@@ -211,7 +213,7 @@ public class SQliteDAO {
 	       */
 	      sql.appendLine("create table tag (");
 	      // 行番号
-	      sql.appendLine("  no integer auto increment unique not null,");
+	      sql.appendLine("  row_no integer auto increment unique not null,");
 	      // タグID
 	      sql.appendLine("	tag_id text primary key unique not null,");
 	      // タグ名
@@ -228,6 +230,8 @@ public class SQliteDAO {
 	      sql.appendLine("	system_tag_flg integer default 0,");
 	      // タグ種別
 	      sql.appendLine("	tag_type text,");
+	      // 公開範囲
+	      sql.appendLine("  koukai_level integer,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
 	      // 作成者
@@ -250,11 +254,13 @@ public class SQliteDAO {
 	       */
 	      sql.appendLine("create table qa_tag_relation (");
 	      // 行番号
-	      sql.appendLine("  no integer auto increment unique not null,");
+	      sql.appendLine("  row_no integer auto increment unique not null,");
 	      // QA ID
 	      sql.appendLine("	qa_id text,");
 	      // タグID
 	      sql.appendLine("	tag_id text,");
+	      // 公開範囲
+	      sql.appendLine("  koukai_level integer,");
 	      // 作成者
 	      sql.appendLine("  create_owner text,");
 	      // 更新者
@@ -276,11 +282,13 @@ public class SQliteDAO {
 	       */
 	      sql.appendLine("create table tags_relation (");
 	      // 行番号
-	      sql.appendLine("  no integer auto increment unique not null,");
+	      sql.appendLine("  row_no integer auto increment unique not null,");
 	      // 親タグID
 	      sql.appendLine("	parent_tag_id text,");
 	      // 子タグID
 	      sql.appendLine("	child_tag_id text,");
+	      // 公開範囲
+	      sql.appendLine("  koukai_level integer,");
 	      // 作成者
 	      sql.appendLine("  create_owner text,");
 	      // 更新者
@@ -302,7 +310,7 @@ public class SQliteDAO {
 	       */
 	      sql.appendLine("create table anki_state (");
 	      // 行番号
-	      sql.appendLine("  no integer auto increment unique not null,");
+	      sql.appendLine("  row_no integer auto increment unique not null,");
 	      // 状態ID
 	      sql.appendLine("	state_id text primary key unique not null,");
 	      // QA ID
@@ -330,7 +338,7 @@ public class SQliteDAO {
 	       */
 	      sql.appendLine("create table system (");
 	      // 行番号
-	      sql.appendLine("  no integer auto increment unique not null,");
+	      sql.appendLine("  row_no integer auto increment unique not null,");
 	      // 設定ID
 	      sql.appendLine("	sys_id text primary key unique not null,");
 	      // 項目グループID
