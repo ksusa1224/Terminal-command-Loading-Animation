@@ -59,7 +59,7 @@ public class SQliteDAO {
 	       */
 	      sql.appendLine("create table qa (");
 	      // 行番号
-	      sql.appendLine("  row_no integer auto increment unique not null,");
+	      sql.appendLine("  row_no integer auto increment unique not null /*行番号*/,");
 	      // QA ID
 	      sql.appendLine("	qa_id text primary key unique not null,");
 	      // QAタイプ
