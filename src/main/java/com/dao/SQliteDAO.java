@@ -327,6 +327,8 @@ public class SQliteDAO {
 	      sql.appendLine("	s_id text,");
 	      // 暗記状態
 	      sql.appendLine("	anki_state integer,");
+	      // 次回の復習のタイミング
+	      sql.appendLine("	next_hukushu_date text,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
 	      // 作成者
