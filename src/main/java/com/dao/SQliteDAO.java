@@ -109,10 +109,12 @@ public class SQliteDAO {
 	      sql.appendLine("  is_text_flg integer default 1,");
 	      // 問題パーツがバイナリであるかのフラグ
 	      sql.appendLine("  is_binary_flg integer default 0,");
-	      // 分割された問題文a
+	      // 分割された問題文
 	      sql.appendLine("  q_parts_text text,");
 	      // QAの中に出てくる音声や画像などのバイナリファイル
 	      sql.appendLine("  q_parts_binary blob default null,");
+	      // 言語
+	      sql.appendLine("  language text,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
 	      // 作成者
@@ -151,6 +153,8 @@ public class SQliteDAO {
 	      sql.appendLine("	juyoudo integer default 3,");
 	      // 難易度（５段階）
 	      sql.appendLine("	nanido integer default 3,");
+	      // 言語
+	      sql.appendLine("  language text,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
 	      // 作成者
@@ -189,6 +193,8 @@ public class SQliteDAO {
 	      sql.appendLine("	action_timestamp,");
 	      // ユーザーが入力した回答
 	      sql.appendLine("	kaitou text,");
+	      // 言語
+	      sql.appendLine("  language text,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
 	      // 作成者
@@ -232,6 +238,8 @@ public class SQliteDAO {
 	      sql.appendLine("	tag_type text,");
 	      // 公開範囲
 	      sql.appendLine("  koukai_level integer,");
+	      // 言語
+	      sql.appendLine("  language text,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
 	      // 作成者
