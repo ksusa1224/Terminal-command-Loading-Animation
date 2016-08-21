@@ -18,7 +18,7 @@ public class SQliteDAO {
 	 * 1ユーザーにつき1個、会員登録のタイミングでSQliteのDBを作成する
 	 * @return データベース名
 	 */
-	public String createSQliteDB(String user_id) {
+	public String createOwnerDB(String user_id) {
 		// load the sqlite-JDBC driver using the current class loader
 		try {
 			Class.forName("org.sqlite.JDBC");
@@ -50,20 +50,20 @@ public class SQliteDAO {
 	       *  パフォーマンスチューニング　
 	       *  参考URL:http://arbitrage.jpn.org/it/2015-07-07-2/
 	       */
-	      // TODO 記載位置が合っているか要確認
+	      // TODO 記載位置が合っているか要確認　TODO DB BROWSER FOR SQLITEで開いたら、以下は反映されていなかった模様。
 		  sql.appendLine("PRAGMA syncmode = OFF;");
 		  sql.appendLine("PRAGMA journal_mode = PESIST;");
 	      
 	      /**
-	       *  問題テーブル
+	       *  QAテーブル
 	       */
-	      sql.appendLine("create table mondai (");
-	      // 問題ID
-	      sql.appendLine("	q_id integer primary key autoincrement unique not null,");
-	      // 問題文
-	      sql.appendLine("	mondaibun text not null,");
-	      // 問題タイプ
-	      sql.appendLine("	mondai_type string,");
+	      sql.appendLine("create table qa (");
+	      // 行番号
+	      sql.appendLine("  no integer auto increment unique not null,");
+	      // QA ID
+	      sql.appendLine("	qa_id text primary key unique not null,");
+	      // QAタイプ
+	      sql.appendLine("	qa_type integer,");
 	      // 読むだけ問題フラグ
 	      sql.appendLine("	yomudake_flg integer default 0,");
 	      // 重要度（５段階）
@@ -78,43 +78,94 @@ public class SQliteDAO {
 	      sql.appendLine("	seitou_cnt integer default 1,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
+	      // 作成者
+	      sql.appendLine("  create_owner text,");
+	      // 更新者
+	      sql.appendLine("  update_owner text,");
 	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
-	      sql.appendLine("	create_timestamp string,");
+	      sql.appendLine("	create_timestamp text,");
 	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
-	      sql.appendLine("	update_timestamp string");
+	      sql.appendLine("	update_timestamp text");
 	      sql.appendLine(");");
 	      // INDEX
-	      sql.appendLine("create unique index mondai_idx on mondai (q_id asc);");
+	      sql.appendLine("create unique index qa_idx on qa (qa_id asc);");
+	      
+	      /**
+	       * 問題テーブル
+	       * QAに紐づく分割された問題のテキストまたはバイナリ（画像など）
+	       */
+	      sql.appendLine("create table mondai (");
+	      // 行番号
+	      sql.appendLine("  no integer auto increment unique not null,");
+	      // 問題ID
+	      sql.appendLine("  q_id text primary key unique not null,");
+	      // QA ID
+	      sql.appendLine("	qa_id text not null,");
+	      // QA内での問題パーツの順番
+	      sql.appendLine("	junban integer default 1,");
+	      // 問題パーツが文字であるかのフラグ
+	      sql.appendLine("  is_text_flg default 1,");
+	      // 問題パーツがバイナリであるかのフラグ
+	      sql.appendLine("  is_binary_flg default 0,");
+	      // 分割された問題文
+	      sql.appendLine("  q_parts_text text,");
+	      // QAの中に出てくる音声や画像などのバイナリファイル
+	      sql.appendLine("  q_parts_binary binary default null,");
+	      // 削除フラグ
+	      sql.appendLine("	del_flg integer default 0,");
+	      // 作成者
+	      sql.appendLine("  create_owner text,");
+	      // 更新者
+	      sql.appendLine("  update_owner text,");
+	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	create_timestamp text,");
+	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	update_timestamp text,");
+	      // 問題ID, QA ID, QA内での順番でuniqueにする
+	      sql.appendLine("	unique (q_id, qa_id, junban)");
+	      sql.appendLine(");");
+	      // INDEX
+	      sql.appendLine("create unique index mondai_idx on mondai (");
+	      sql.appendLine(" q_id asc,");
+	      sql.appendLine(" qa_id asc,");
+	      sql.appendLine(" junban asc");
+	      sql.appendLine(");");
 	      
 	      /**
 	       *  正答テーブル
 	       */
 	      sql.appendLine("create table seitou (");
+	      // 行番号
+	      sql.appendLine("  no integer auto increment unique not null,");
 	      // 正答ID
-	      sql.appendLine("	s_id integer primary key autoincrement unique not null,");
-	      // 問題ID
-	      sql.appendLine("	q_id integer not null,");
-	      // 問題内での正答の順番
+	      sql.appendLine("	s_id text primary key unique not null,");
+	      // QA ID
+	      sql.appendLine("	qa_id text not null,");
+	      // QA内での正答の順番
 	      sql.appendLine("	junban integer default 1,");
 	      // 正答
-	      sql.appendLine("	seitou string,");
+	      sql.appendLine("	seitou text,");
 	      // 重要度（５段階）
 	      sql.appendLine("	juyoudo integer default 3,");
 	      // 難易度（５段階）
 	      sql.appendLine("	nanido integer default 3,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
+	      // 作成者
+	      sql.appendLine("  create_owner text,");
+	      // 更新者
+	      sql.appendLine("  update_owner text,");
 	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
-	      sql.appendLine("	create_timestamp string,");
+	      sql.appendLine("	create_timestamp text,");
 	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
-	      sql.appendLine("	update_timestamp string,");
-	      // 正答ID,問題ID,問題内での順番でuniqueにする
-	      sql.appendLine("	unique (s_id,q_id,junban)");
+	      sql.appendLine("	update_timestamp text,");
+	      // 正答ID, QA ID, QA内での順番でuniqueにする
+	      sql.appendLine("	unique (s_id, qa_id, junban)");
 	      sql.appendLine(");");
 	      // INDEX
 	      sql.appendLine("create unique index seitou_idx on seitou (");
 	      sql.appendLine(" s_id asc,");
-	      sql.appendLine(" q_id asc,");
+	      sql.appendLine(" qa_id asc,");
 	      sql.appendLine(" junban asc");
 	      sql.appendLine(");");
 	      
@@ -122,29 +173,35 @@ public class SQliteDAO {
 	       *  回答テーブル
 	       */
 	      sql.appendLine("create table kaitou (");
+	      // 行番号
+	      sql.appendLine("  no integer auto increment unique not null,");
 	      // 回答ID
-	      sql.appendLine("	k_id integer primary key autoincrement unique not null,");
-	      // 問題ID
-	      sql.appendLine("	q_id integer not null,");
+	      sql.appendLine("	k_id text primary key unique not null,");
+	      // QA ID
+	      sql.appendLine("	qa_id text not null,");
 	      // 正答ID
-	      sql.appendLine("	s_id integer,");
+	      sql.appendLine("	s_id text,");
 	      // アクション・・・チェックを入れた、外した、解いて正解した、解いて不正解、等
-	      sql.appendLine("	action string,");
+	      sql.appendLine("	action text,");
 	      // アクション日時（H2DBのtimestampと同じフォーマットにする）
 	      sql.appendLine("	action_timestamp,");
 	      // ユーザーが入力した回答
-	      sql.appendLine("	kaitou string,");
+	      sql.appendLine("	kaitou text,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
+	      // 作成者
+	      sql.appendLine("  create_owner text,");
+	      // 更新者
+	      sql.appendLine("  update_owner text,");
 	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
-	      sql.appendLine("	create_timestamp string,");
+	      sql.appendLine("	create_timestamp text,");
 	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
-	      sql.appendLine("	update_timestamp string");
+	      sql.appendLine("	update_timestamp text");
 	      sql.appendLine(");");
 	      // INDEX
 	      sql.appendLine("create unique index kaitou_idx on kaitou (");
 	      sql.appendLine("	k_id asc,");
-	      sql.appendLine("	q_id asc,");
+	      sql.appendLine("	qa_id asc,");
 	      sql.appendLine("	s_id asc");
 	      sql.appendLine("");
 	      sql.appendLine(");");
@@ -153,8 +210,10 @@ public class SQliteDAO {
 	       *  タグテーブル
 	       */
 	      sql.appendLine("create table tag (");
+	      // 行番号
+	      sql.appendLine("  no integer auto increment unique not null,");
 	      // タグID
-	      sql.appendLine("	tag_id integer primary key autoincrement unique not null,");
+	      sql.appendLine("	tag_id text primary key unique not null,");
 	      // タグ名
 	      sql.appendLine("	tag_name text,");
 	      // 表示順
@@ -168,13 +227,17 @@ public class SQliteDAO {
 	      // システムタグフラグ
 	      sql.appendLine("	system_tag_flg integer default 0,");
 	      // タグ種別
-	      sql.appendLine("	tag_type string,");
+	      sql.appendLine("	tag_type text,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
+	      // 作成者
+	      sql.appendLine("  create_owner text,");
+	      // 更新者
+	      sql.appendLine("  update_owner text,");
 	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
-	      sql.appendLine("	create_timestamp string,");
+	      sql.appendLine("	create_timestamp text,");
 	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
-	      sql.appendLine("	update_timestamp string");
+	      sql.appendLine("	update_timestamp text");
 	      sql.appendLine(");");
 	      // INDEX
 	      sql.appendLine("create unique index tag_idx on tag (");
@@ -183,18 +246,28 @@ public class SQliteDAO {
 	      sql.appendLine(");");
 	      
 	      /**
-	       *  問題とタグの紐付けテーブル
+	       *  QAとタグの紐付けテーブル
 	       */
-	      sql.appendLine("create table q_tag_relation (");
-	      // 問題ID
-	      sql.appendLine("	q_id integer,");
+	      sql.appendLine("create table qa_tag_relation (");
+	      // 行番号
+	      sql.appendLine("  no integer auto increment unique not null,");
+	      // QA ID
+	      sql.appendLine("	qa_id text,");
 	      // タグID
-	      sql.appendLine("	tag_id integer,");
-	      sql.appendLine("	unique (q_id, tag_id)");
+	      sql.appendLine("	tag_id text,");
+	      // 作成者
+	      sql.appendLine("  create_owner text,");
+	      // 更新者
+	      sql.appendLine("  update_owner text,");
+	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	create_timestamp text,");
+	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	update_timestamp text,");
+	      sql.appendLine("	unique (qa_id, tag_id, create_owner, update_owner)");
 	      sql.appendLine(");");
 	      // INDEX
-	      sql.appendLine("create unique index q_tag_relation_idx on q_tag_relation (");
-	      sql.appendLine(" q_id asc,");
+	      sql.appendLine("create unique index qa_tag_relation_idx on qa_tag_relation (");
+	      sql.appendLine(" qa_id asc,");
 	      sql.appendLine(" tag_id asc");
 	      sql.appendLine(");");
 	      
@@ -202,11 +275,21 @@ public class SQliteDAO {
 	       *  タグ同士の関連テーブル
 	       */
 	      sql.appendLine("create table tags_relation (");
+	      // 行番号
+	      sql.appendLine("  no integer auto increment unique not null,");
 	      // 親タグID
-	      sql.appendLine("	parent_tag_id integer,");
+	      sql.appendLine("	parent_tag_id text,");
 	      // 子タグID
-	      sql.appendLine("	child_tag_id integer,");
-	      sql.appendLine("	unique (parent_tag_id, child_tag_id)");
+	      sql.appendLine("	child_tag_id text,");
+	      // 作成者
+	      sql.appendLine("  create_owner text,");
+	      // 更新者
+	      sql.appendLine("  update_owner text,");
+	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	create_timestamp text,");
+	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	update_timestamp text,");
+	      sql.appendLine("	unique (parent_tag_id, child_tag_id, create_owner, update_owner)");
 	      sql.appendLine(");");
 	      // INDEX
 	      sql.appendLine("create unique index tags_relation_idx on tags_relation (");
@@ -218,20 +301,26 @@ public class SQliteDAO {
 	       *  暗記状態テーブル
 	       */
 	      sql.appendLine("create table anki_state (");
+	      // 行番号
+	      sql.appendLine("  no integer auto increment unique not null,");
 	      // 状態ID
-	      sql.appendLine("	state_id integer primary key autoincrement unique not null,");
-	      // 問題ID
-	      sql.appendLine("	q_id integer,");
+	      sql.appendLine("	state_id text primary key unique not null,");
+	      // QA ID
+	      sql.appendLine("	qa_id text,");
 	      // 正答ID
-	      sql.appendLine("	s_id integer,");
+	      sql.appendLine("	s_id text,");
 	      // 暗記状態
 	      sql.appendLine("	anki_state integer,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
+	      // 作成者
+	      sql.appendLine("  create_owner text,");
+	      // 更新者
+	      sql.appendLine("  update_owner text,");
 	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
-	      sql.appendLine("	create_timestamp string,");
+	      sql.appendLine("	create_timestamp text,");
 	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
-	      sql.appendLine("	update_timestamp string");
+	      sql.appendLine("	update_timestamp text");
 	      sql.appendLine(");");
 	      // INDEX
 	      sql.appendLine("create unique index anki_state_idx on anki_state (state_id asc);");
@@ -240,22 +329,28 @@ public class SQliteDAO {
 	       *  システム設定テーブル
 	       */
 	      sql.appendLine("create table system (");
+	      // 行番号
+	      sql.appendLine("  no integer auto increment unique not null,");
 	      // 設定ID
-	      sql.appendLine("	sys_id integer primary key autoincrement unique not null,");
+	      sql.appendLine("	sys_id text primary key unique not null,");
 	      // 項目グループID
-	      sql.appendLine("	sys_group_id integer,");
+	      sql.appendLine("	sys_group_id text,");
 	      // 項目グループ名
-	      sql.appendLine("	sys_group_name string,");
+	      sql.appendLine("	sys_group_name text,");
 	      // キー
-	      sql.appendLine("	key string,");
+	      sql.appendLine("	key text,");
 	      // 値
-	      sql.appendLine("	value string,");
+	      sql.appendLine("	value text,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
+	      // 作成者
+	      sql.appendLine("  create_owner text,");
+	      // 更新者
+	      sql.appendLine("  update_owner text,");
 	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
-	      sql.appendLine("	create_timestamp string,");
+	      sql.appendLine("	create_timestamp text,");
 	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
-	      sql.appendLine("	update_timestamp string");
+	      sql.appendLine("	update_timestamp text");
 	      sql.appendLine(");");
 	      // INDEX
 	      sql.appendLine("create unique index system_idx on system (sys_id asc);");

@@ -40,7 +40,7 @@ public class TopPageController {
 			  @RequestParam("email") String email) 
 	  {
 			SQliteDAO sqlite_dao = new SQliteDAO();
-			String db_name = sqlite_dao.createSQliteDB(owner_id);
+			String db_name = sqlite_dao.createOwnerDB(owner_id);
 			
 			// 暗号化ユーティリティ
 			AES aes = new AES();
