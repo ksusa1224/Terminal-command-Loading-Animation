@@ -52,7 +52,7 @@ public class TopPageController {
 			params.add(encrypted_password);
 
 			H2dbDao h2db_dao2 = new H2dbDao();
-			h2db_dao2.create_common_db();
+			//h2db_dao2.create_common_db();
 			
 			// オーナー情報TBLに会員登録したユーザ情報を登録
 			StringBuilderPlus sql = new StringBuilderPlus();
@@ -135,26 +135,29 @@ public class TopPageController {
 			// ログイン情報を取得
 			StringBuilderPlus sql = new StringBuilderPlus();
 			sql.appendLine("select");
-			sql.appendLine("  owner.owner_id,");
-			sql.appendLine("  owner.owner_name,");
-			sql.appendLine("  owner.email,");
-			sql.appendLine("  owner.kakin_type, ");
-			sql.appendLine("  db.db_name");
-			sql.appendLine("  db.db_version ");
-			sql.appendLine("from owner "); 
+			sql.appendLine("  owner.owner_id as owner_id,");
+			sql.appendLine("  owner.owner_name as owner_name,");
+			sql.appendLine("  owner.email as email,");
+			sql.appendLine("  owner.password as password");
+			sql.appendLine("  owner.kakin_type as kakin_type, ");
+			sql.appendLine("  db.db_name as db.db_name");
+			sql.appendLine("  db.db_version as db_version");
+			sql.appendLine("from owner_info as owner "); 
 			sql.appendLine("inner join ");
 			sql.appendLine("  owner_db as db ");
 			sql.appendLine("  on owner.owner_id = db.owner_id ");
-			sql.appendLine("  and is_current_db = '1'");
+			sql.appendLine("  and is_current_db = 1");
 			sql.appendLine("where "); 
 			sql.appendLine("  (owner.owner_id = '" + owner_id_or_email + "',");
 			sql.appendLine("   or");
 			sql.appendLine("  owner.email = '" + owner_id_or_email + "')");
 			sql.appendLine("  and");
 			sql.appendLine("  owner.password = " + encrypted_input_password);
+			sql.appendLine("  owner.del_flg = 0");
+			sql.appendLine("  and db.del_flg = 0;");
 			
-
-			
+			H2dbDao dao = new H2dbDao();
+			dao.select_login_info(sql);
 			
 			// セッションに暗号化されたユーザ専用DB名を格納
 			session.setAttribute("db", encrypted_db_name);

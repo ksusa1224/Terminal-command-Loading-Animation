@@ -139,6 +139,31 @@ public class H2dbDao
 	{
 		System.out.println("---------aaaaaa-----");
 		LoginInfoModel login_info = new LoginInfoModel();
+		
+		Connection conn = connect();
+		try
+		{
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(sql.toString());
+			while (rs.next()) {
+				login_info.setOwner_id(rs.getString("owner_id"));
+				login_info.setEmail(rs.getString("email"));
+				login_info.setEncrypted_password(rs.getBytes("password"));
+				login_info.setOwner_name(rs.getString("owner_name"));
+				login_info.setEncrypted_db_name(rs.getBytes("db_name"));
+				login_info.setDb_version(rs.getString("db_version"));
+				login_info.setKakin_type(rs.getInt("kakin_type"));
+			}
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		finally
+		{
+			disconnect(conn);
+		}
+		
 		return login_info;
 	}
 	
