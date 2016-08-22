@@ -50,10 +50,13 @@ public class TopPageController {
 			// SQLに渡すパラメーター（バイナリのみ対象）
 			List<byte[]> params = new ArrayList<byte[]>();
 			params.add(encrypted_password);
+
+//			H2dbDao h2db_dao2 = new H2dbDao();
+//			h2db_dao2.create_common_db();
 			
 			// オーナー情報TBLに会員登録したユーザ情報を登録
 			StringBuilderPlus sql = new StringBuilderPlus();
-			sql.appendLine("insert into owner (");
+			sql.appendLine("insert into owner_info (");
 			sql.appendLine("  owner_id,");
 			sql.appendLine("  owner_name,");
 			sql.appendLine("  email,");
@@ -66,9 +69,9 @@ public class TopPageController {
 			sql.appendLine("  '" + owner_id + "',");
 			sql.appendLine("  '" + owner_name + "',");
 			sql.appendLine("  '" + email + "',");
-			sql.appendLine("  (?),");
+			sql.appendLine("  ?,"); // Password
 			sql.appendLine("  '" + Constant.KAKIN_TYPE_FREE_PREIMIUM + "',");
-			sql.appendLine("  '0',");
+			sql.appendLine("  0,");
 			sql.appendLine("  current_timestamp(),");
 			sql.appendLine("  current_timestamp()");
 			sql.appendLine(");");
@@ -81,19 +84,21 @@ public class TopPageController {
 			params.add(encrypted_db_name);
 			
 			StringBuilderPlus sql2 = new StringBuilderPlus();
-			sql2.appendLine("insert into user_db (");
+			sql2.appendLine("insert into owner_db (");
 			sql2.appendLine("  owner_id,");
 			sql2.appendLine("  db_name,");
 			sql2.appendLine("  db_version,");
 			sql2.appendLine("  is_current_db,");
+			sql2.appendLine("  del_flg,");
 			sql2.appendLine("  insert_date,");
 			sql2.appendLine("  update_date");
-			sql2.appendLine(")");
-			sql2.appendLine("values(");
+			sql2.appendLine(") ");
+			sql2.appendLine("values (");
 			sql2.appendLine("  '" + owner_id + "',");
-			sql2.appendLine("  (?),");
-			sql2.appendLine("  '" + Constant.OWNER_DB_CURRENT_VERSION.replace("version", "00") + "',");
-			sql2.appendLine("  '1',");
+			sql2.appendLine("  ?,"); // db_name
+			sql2.appendLine("  '" + Constant.OWNER_DB_CURRENT_VERSION + "',");
+			sql2.appendLine("  1,");
+			sql2.appendLine("  0,");
 			sql2.appendLine("  current_timestamp(),");
 			sql2.appendLine("  current_timestamp()");
 			sql2.appendLine(");");
@@ -138,7 +143,7 @@ public class TopPageController {
 			sql.appendLine("  db.db_version ");
 			sql.appendLine("from owner "); 
 			sql.appendLine("inner join ");
-			sql.appendLine("  user_db as db ");
+			sql.appendLine("  owner_db as db ");
 			sql.appendLine("  on owner.owner_id = db.owner_id ");
 			sql.appendLine("  and is_current_db = '1'");
 			sql.appendLine("where "); 

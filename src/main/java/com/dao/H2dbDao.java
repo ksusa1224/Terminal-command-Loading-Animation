@@ -88,26 +88,32 @@ public class H2dbDao
 			// デフォルトユーザ（ID・パスともに空文字（""））の削除
 			sql.appendLine("DROP USER IF EXISTS \"\";");
 			
+			// いったん削除
+			sql.appendLine("drop table if exists owner_info;");;
+			// いったん削除
+			sql.appendLine("drop table if exists owner_db;");;
+			
 			// オーナー情報テーブル作成
-			sql.appendLine("create table if not exists owner(");
+			sql.appendLine("create table if not exists owner_info(");
 			sql.appendLine("  id integer primary key auto_increment,");
-			sql.appendLine("  owner_id varchar(100) unique not null,");
-			sql.appendLine("  owner_name varchar(100),");
-			sql.appendLine("  email varchar(100),");
+			sql.appendLine("  owner_id text,");
+			sql.appendLine("  owner_name text,");
+			sql.appendLine("  email text,");
 			sql.appendLine("  password binary,");
-			sql.appendLine("  kakin_type char(2),");
-			sql.appendLine("  del_flg char(1),");
+			sql.appendLine("  kakin_type integer,");
+			sql.appendLine("  del_flg integer,");
 			sql.appendLine("  insert_date timestamp default current_timestamp(),");
 			sql.appendLine("  update_date timestamp");
 			sql.appendLine(");");
 			
 			// オーナーDB情報テーブル作成
-			sql.appendLine("create table user_db(");
+			sql.appendLine("create table if not exists owner_db(");
 			sql.appendLine("  id integer primary key auto_increment,");
-			sql.appendLine("  owner_id varchar(100) not null,");
+			sql.appendLine("  owner_id text,");
 			sql.appendLine("  db_name binary,");
-			sql.appendLine("  db_version char(5),");
-			sql.appendLine("  is_current_db char(1),");
+			sql.appendLine("  db_version text,");
+			sql.appendLine("  is_current_db integer,");
+			sql.appendLine("  del_flg integer, ");
 			sql.appendLine("  insert_date timestamp default current_timestamp(),");
 			sql.appendLine("  update_date timestamp");
 			sql.appendLine(");");
@@ -162,6 +168,7 @@ public class H2dbDao
 	 * バイナリデータの更新を含むSQLを発行する
 	 * @param sql
 	 * @param params　バイナリのSQLパラメーター
+	 * @throws SQLException 
 	 */
 	public void update(StringBuilderPlus sql, List<byte[]> params)
 	{
@@ -173,10 +180,19 @@ public class H2dbDao
 			{
 				prep.setBytes(1, params.get(i));						
 			}
-			prep.addBatch();
+			prep.executeUpdate();
 		}
 		catch(Exception ex)
 		{
+			try {
+				if (conn != null)
+				{
+					conn.rollback();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			ex.printStackTrace();
 		}
 		finally

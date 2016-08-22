@@ -51,7 +51,7 @@ public class SQliteDAO {
 	       *  参考URL:http://arbitrage.jpn.org/it/2015-07-07-2/
 	       */
 	      // TODO 記載位置が合っているか要確認　TODO DB BROWSER FOR SQLITEで開いたら、以下は反映されていなかった模様。
-		  sql.appendLine("PRAGMA syncmode = OFF;");
+		  sql.appendLine("PRAGMA default_synchronous = OFF;");
 		  sql.appendLine("PRAGMA journal_mode = PESIST;");
 	      
 	      /**
@@ -78,6 +78,10 @@ public class SQliteDAO {
 	      sql.appendLine("	seitou_cnt integer default 1,");
 	      // 公開範囲
 	      sql.appendLine("  koukai_level integer,");
+	      // 無料販売フラグ
+	      sql.appendLine("  free_flg integer,");
+	      // 有料販売フラグ
+	      sql.appendLine("  charge_flg integer,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
 	      // 作成者
