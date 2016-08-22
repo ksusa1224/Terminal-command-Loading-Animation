@@ -51,8 +51,8 @@ public class TopPageController {
 			List<byte[]> params = new ArrayList<byte[]>();
 			params.add(encrypted_password);
 
-//			H2dbDao h2db_dao2 = new H2dbDao();
-//			h2db_dao2.create_common_db();
+			H2dbDao h2db_dao2 = new H2dbDao();
+			h2db_dao2.create_common_db();
 			
 			// オーナー情報TBLに会員登録したユーザ情報を登録
 			StringBuilderPlus sql = new StringBuilderPlus();

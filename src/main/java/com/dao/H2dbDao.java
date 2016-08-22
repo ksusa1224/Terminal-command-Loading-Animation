@@ -89,9 +89,9 @@ public class H2dbDao
 			sql.appendLine("DROP USER IF EXISTS \"\";");
 			
 			// いったん削除
-			sql.appendLine("drop table if exists owner_info;");;
+			//sql.appendLine("drop table if exists owner_info;");;
 			// いったん削除
-			sql.appendLine("drop table if exists owner_db;");;
+			//sql.appendLine("drop table if exists owner_db;");;
 			
 			// オーナー情報テーブル作成
 			sql.appendLine("create table if not exists owner_info(");
