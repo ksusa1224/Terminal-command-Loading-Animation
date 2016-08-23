@@ -32,6 +32,7 @@ public class TopPageController {
 	   * @param email
 	   * @return
 	   */
+	  // registerボタン押下の場合
 	  @RequestMapping(value="/", method=RequestMethod.POST, params={"register"})
 	  public String createOwner(
 			  HttpSession session,
@@ -105,32 +106,21 @@ public class TopPageController {
 			sql2.appendLine(");");
 			h2db_dao.update(sql2, params);
 			
-			// セッションに暗号化されたユーザ専用DB名を格納
-			session.setAttribute("db", encrypted_db_name);
-			byte[] a = (byte[])session.getAttribute("db");
-			AES aes2 = new AES();
-			String b = aes2.decrypt(a);
-			System.out.println("a:"+a);
-			System.out.println("b:"+b);
-			String c = session.getId();
-			System.out.println("c:"+c);
-			
-			String original = aes.decrypt(encrypted_db_name);
-//			System.out.print(original);
-
 	      return "index";
 	  }
 	  
+	  // loginボタン押下の場合
 	  @RequestMapping(value="/", method=RequestMethod.POST, params={"login"})
 	  public String login(
 			  HttpSession session,
+			  // 同じフォームにowner_id入れてもemail入れてもログインできるようにするため
 			  @RequestParam("owner_id_or_email") String owner_id_or_email,
-			  @RequestParam("login_password") String login_password) 
+			  @RequestParam("login_password") String input_password) 
 	  {
 			H2dbDao h2db_dao = new H2dbDao();
 			
 			AES aes = new AES();
-			byte[] encrypted_input_password = aes.encrypt(login_password);
+			byte[] encrypted_input_password = aes.encrypt(input_password);
 			byte[] encrypted_db_name = null;
 			
 			// ログイン情報を取得
@@ -152,8 +142,6 @@ public class TopPageController {
 			sql.appendLine("  (owner.owner_id = '" + owner_id_or_email + "'");
 			sql.appendLine("   or");
 			sql.appendLine("  owner.email = '" + owner_id_or_email + "')");
-//			sql.appendLine("  and");
-//			sql.appendLine("  owner.password = " + encrypted_input_password+"");
 			sql.appendLine("  and owner.del_flg = 0");
 			sql.appendLine("  and db.del_flg = 0;");
 			
@@ -170,30 +158,29 @@ public class TopPageController {
 			System.out.println(aes.decrypt(encrypted_input_password));
 			System.out.println(login_info.getOwner_id());
 			
-			if (aes.decrypt(login_info.getEncrypted_password()).equals(aes.decrypt(encrypted_input_password)))
+			input_password = aes.decrypt(encrypted_input_password);
+			String password_in_db = aes.decrypt(login_info.getEncrypted_password());
+			encrypted_db_name = login_info.getEncrypted_db_name();
+			
+			String response_url = "/"+ login_info.getOwner_id() + "/main.html";
+			
+			if (input_password.equals(password_in_db))
 			{
-				// セッションに暗号化されたユーザ専用DB名を格納
-				session.setAttribute("db", encrypted_db_name);
-				System.out.println("login_success");
-				return "main";
+//				// ログインしているかどうか TODO セッションの値を書き換えられてしまわないように対策要
+				session.setAttribute("is_authenticated", true);
+				session.setAttribute("owner_id", login_info.getOwner_id());
+				session.setAttribute("password", login_info.getEncrypted_password());
+				
+				// セッションに暗号化されたオーナー専用DB名を格納
+				session.setAttribute("db", login_info.getEncrypted_db_name());
+
+				return "redirect:" + response_url;
 			}
 			else
 			{
 				System.out.println("login_failed");
-			}
-			
-//			byte[] a = (byte[])session.getAttribute("db");
-//			AES aes2 = new AES();
-//			//String b = aes2.decrypt(a);
-//			System.out.println("a:"+a);
-//			//System.out.println("b:"+b);
-//			String c = session.getId();
-//			System.out.println("c:"+c);
-			
-			//String original = aes.decrypt(encrypted_db_name);
-//			System.out.print(original);
-
-	      return "index";
+			    return "index";
+			}	
 	  }
 	  
 }

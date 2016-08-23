@@ -3,6 +3,7 @@ package com.application.controller;
 import java.io.File;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,21 +59,23 @@ public class ApplicationController {
 	 * @param user_id
 	 * @return
 	 */
-	@RequestMapping(value={"/{user_id}", 
-						   "/{user_id}/", 
-						   "/{user_id}/main.html", 
-						   "/{user_id}/main.htm", 
-						   "/{user_id}/main"})
-	public String main(@PathVariable("user_id") String user_id,
-						HttpServletRequest request) {
+	@RequestMapping(value={"/{owner_id}", 
+						   "/{owner_id}/", 
+						   "/{owner_id}/main.html", 
+						   "/{owner_id}/main.htm", 
+						   "/{owner_id}/main"})
+	public String main(@PathVariable("owner_id") String owner_id,
+						HttpServletRequest request, 
+						HttpSession session) {
 		
 		String request_url = request.getRequestURI();
-		String response_url = "/"+ user_id + "/main.html";
+		String response_url = "/"+ owner_id + "/main.html";
 		   
-		// TODO セッションから取得
-		// TODO ログインチェック
-		// TODO DBに存在するかチェック
-		if(user_id.equals("vsky") || user_id.equals("miho"))		
+		// TODO 認証されてるかどうかはsessionに入れると書き換えられてしまうから毎回DBに接続した方がいいかな
+		Boolean is_authenticated = (Boolean)session.getAttribute("is_authenticated");
+		String session_owner_id = (String)session.getAttribute("owner_id");
+		
+		if(owner_id.equals(session_owner_id) && is_authenticated == true)		
 		{
 			if (request_url.equals(response_url))
 			{
