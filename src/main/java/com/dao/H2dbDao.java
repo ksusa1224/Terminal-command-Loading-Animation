@@ -153,6 +153,7 @@ public class H2dbDao
 				login_info.setEncrypted_db_name(rs.getBytes("db_name"));
 				login_info.setDb_version(rs.getString("db_version"));
 				login_info.setKakin_type(rs.getInt("kakin_type"));
+				login_info.setDecryptedDbName(login_info.getEncrypted_db_name());
 			}
 		}
 		catch(Exception ex)

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.application.model.LoginInfoModel;
 import com.common.AES;
 import com.common.Constant;
 import com.common.StringBuilderPlus;
@@ -138,38 +139,58 @@ public class TopPageController {
 			sql.appendLine("  owner.owner_id as owner_id,");
 			sql.appendLine("  owner.owner_name as owner_name,");
 			sql.appendLine("  owner.email as email,");
-			sql.appendLine("  owner.password as password");
+			sql.appendLine("  owner.password as password,");
 			sql.appendLine("  owner.kakin_type as kakin_type, ");
-			sql.appendLine("  db.db_name as db.db_name");
-			sql.appendLine("  db.db_version as db_version");
+			sql.appendLine("  db.db_name as db_name,");
+			sql.appendLine("  db.db_version as db_version ");
 			sql.appendLine("from owner_info as owner "); 
 			sql.appendLine("inner join ");
 			sql.appendLine("  owner_db as db ");
 			sql.appendLine("  on owner.owner_id = db.owner_id ");
 			sql.appendLine("  and is_current_db = 1");
 			sql.appendLine("where "); 
-			sql.appendLine("  (owner.owner_id = '" + owner_id_or_email + "',");
+			sql.appendLine("  (owner.owner_id = '" + owner_id_or_email + "'");
 			sql.appendLine("   or");
 			sql.appendLine("  owner.email = '" + owner_id_or_email + "')");
-			sql.appendLine("  and");
-			sql.appendLine("  owner.password = " + encrypted_input_password);
-			sql.appendLine("  owner.del_flg = 0");
+//			sql.appendLine("  and");
+//			sql.appendLine("  owner.password = " + encrypted_input_password+"");
+			sql.appendLine("  and owner.del_flg = 0");
 			sql.appendLine("  and db.del_flg = 0;");
 			
+			LoginInfoModel login_info = new LoginInfoModel();
+			
 			H2dbDao dao = new H2dbDao();
-			dao.select_login_info(sql);
+			login_info = dao.select_login_info(sql);
 			
-			// セッションに暗号化されたユーザ専用DB名を格納
-			session.setAttribute("db", encrypted_db_name);
-			byte[] a = (byte[])session.getAttribute("db");
-			AES aes2 = new AES();
-			String b = aes2.decrypt(a);
-			System.out.println("a:"+a);
-			System.out.println("b:"+b);
-			String c = session.getId();
-			System.out.println("c:"+c);
+			System.out.println(login_info.getEncrypted_db_name());
+			System.out.println(aes.decrypt(login_info.getEncrypted_db_name()));
+			System.out.println(login_info.getEncrypted_password());
+			System.out.println(aes.decrypt(login_info.getEncrypted_password()));
+			System.out.println(encrypted_input_password);
+			System.out.println(aes.decrypt(encrypted_input_password));
+			System.out.println(login_info.getOwner_id());
 			
-			String original = aes.decrypt(encrypted_db_name);
+			if (aes.decrypt(login_info.getEncrypted_password()).equals(aes.decrypt(encrypted_input_password)))
+			{
+				// セッションに暗号化されたユーザ専用DB名を格納
+				session.setAttribute("db", encrypted_db_name);
+				System.out.println("login_success");
+				return "main";
+			}
+			else
+			{
+				System.out.println("login_failed");
+			}
+			
+//			byte[] a = (byte[])session.getAttribute("db");
+//			AES aes2 = new AES();
+//			//String b = aes2.decrypt(a);
+//			System.out.println("a:"+a);
+//			//System.out.println("b:"+b);
+//			String c = session.getId();
+//			System.out.println("c:"+c);
+			
+			//String original = aes.decrypt(encrypted_db_name);
 //			System.out.print(original);
 
 	      return "index";
