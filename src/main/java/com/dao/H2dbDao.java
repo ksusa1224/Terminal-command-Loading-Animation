@@ -131,13 +131,12 @@ public class H2dbDao
 	}
 	
 	/**
-	 * ログイン情報を取得する TODO 作成途中
+	 * ログイン情報を取得する
 	 * @param sql
 	 * @return ログイン情報クラス
 	 */
 	public LoginInfoModel select_login_info(StringBuilderPlus sql)
 	{
-		System.out.println("---------aaaaaa-----");
 		LoginInfoModel login_info = new LoginInfoModel();
 		
 		Connection conn = connect();
