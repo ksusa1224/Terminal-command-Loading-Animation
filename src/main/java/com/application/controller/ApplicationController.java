@@ -63,7 +63,8 @@ public class ApplicationController {
 						   "/{owner_id}/", 
 						   "/{owner_id}/main.html", 
 						   "/{owner_id}/main.htm", 
-						   "/{owner_id}/main"})
+						   "/{owner_id}/main"},
+							method=RequestMethod.GET)
 	public String main(@PathVariable("owner_id") String owner_id,
 						HttpServletRequest request, 
 						HttpSession session) {

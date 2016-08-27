@@ -6,11 +6,13 @@
 <link rel="stylesheet" type="text/css" th:href="@{../css/_main.css}" />
 </head>
 <body>
-暗記ノート本体
-<!--
+暗記ノート本体<br />
+<!--TODO actionのowner_id部分を可変にする-->
+<form th:action="@{/test2/main.html}" method="post">
 問題文<input type="text" name="mondaibun" /><br />
 解答<input type="text" name="seitou" /><br />
-<button name="login" type="submit">問題登録</button>
--->
+<button name="register" type="submit">問題登録</button>
+</form>
+<hr />
 </body>
 </html>

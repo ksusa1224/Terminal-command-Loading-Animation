@@ -309,6 +309,8 @@ public class SQliteDAO {
 	      sql.appendLine("	qa_id text,");
 	      // タグID
 	      sql.appendLine("	tag_id text,");
+	      // タグ内でのQAの順番
+	      sql.appendLine("  junban integer,");
 	      // 公開範囲
 	      sql.appendLine("  koukai_level integer,");
 	      // 作成者
