@@ -96,7 +96,7 @@ public class H2dbDao
 			// オーナー情報テーブル作成
 			sql.appendLine("create table if not exists owner_info(");
 			sql.appendLine("  id integer primary key auto_increment,");
-			sql.appendLine("  owner_id text,");
+			sql.appendLine("  owner_id varchar(20) unique,");
 			sql.appendLine("  owner_name text,");
 			sql.appendLine("  email text,");
 			sql.appendLine("  password binary,");
