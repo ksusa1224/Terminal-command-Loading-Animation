@@ -13,19 +13,65 @@ import com.common.*;
  *
  */
 public class SQliteDAO {
+
+	/**
+	 * update系のsqlを１件発行する
+	 * @param sql
+	 */
+	public void update(String db_name, StringBuilderPlus sql) 
+	{
+		loadDriver();
+		
+		System.out.println(db_name);
+
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+	    try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+
+	      //1行ずつコミットしない
+	      stmt.getConnection().setAutoCommit(false);
+	      
+	      /**
+	       *  SQL実行
+	       */
+	      transaction(stmt, sql);
+	    }
+	    catch(Exception ex)
+	    {
+	    	//TODO ログ出力
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      close(connection);
+	    }	    
+	}
+
+	public void loadDriver() {
+		// load the sqlite-JDBC driver using the current class loader
+		try 
+		{
+			Class.forName("org.sqlite.JDBC");
+		} catch (ClassNotFoundException ex) 
+		{
+			// TODO log output
+			ex.printStackTrace();
+		}
+	}
 	
 	/**
 	 * 1ユーザーにつき1個、会員登録のタイミングでSQliteのDBを作成する
 	 * @return データベース名
 	 */
 	public String createOwnerDB(String user_id) {
-		// load the sqlite-JDBC driver using the current class loader
-		try {
-			Class.forName("org.sqlite.JDBC");
-		} catch (ClassNotFoundException ex) {
-			// TODO log output
-			ex.printStackTrace();
-		}
+		loadDriver();
 
 	    Connection connection = null;
 		String now = Util.getNow("yyyy_MM_dd_HH_mm_ss");
@@ -43,7 +89,6 @@ public class SQliteDAO {
 	      //1行ずつコミットしない
 	      stmt.getConnection().setAutoCommit(false);
 	      
-	      //DB作成
 	      StringBuilderPlus sql = new StringBuilderPlus();
 	      
 	      /**
@@ -453,13 +498,21 @@ public class SQliteDAO {
 	    catch(SQLException e)
 	    {
 	    	//TODO ログ出力
-	      // if the error message is "out of memory", 
-	      // it probably means no database file is found
 	      System.err.println(e.getMessage());
 	    }
 	    finally
 	    {
-	      try
+	      close(connection);
+	    }
+	    return db_name;
+	}
+
+	/**
+	 * コネクションをクローズする
+	 * @param connection
+	 */
+	public void close(Connection connection) {
+		try
 	      {
 	        if(connection != null)
 	          connection.close();
@@ -469,8 +522,6 @@ public class SQliteDAO {
 	        // connection close failed.
 	        System.err.println(e);
 	      }
-	    }
-	    return db_name;
 	}
 	
 	/**

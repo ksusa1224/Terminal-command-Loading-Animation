@@ -9,15 +9,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.application.controller.dao.QADao;
 import com.application.model.LoginInfoModel;
+import com.application.model.dao.QAModel;
+import com.common.AES;
 import com.common.StringBuilderPlus;
+import com.dao.SQliteDAO;
 
 @Controller
 public class MainPageController {
 
 	/**
 	 * メインページ（暗記ノート本体）
-	 * 
+	 * 問題登録
 	 * Spring MVC　@PathVariableを使ってURLに含まれる動的なパラメータを取得
 	 * http://blog.codebook-10000.com/entry/20140301/1393628782
 	 * @param user_id
@@ -46,27 +50,19 @@ public class MainPageController {
 			return "index";
 		}
 		String session_owner_id = (String)session.getAttribute("owner_id");
+		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
+		AES aes = new AES();
+		String owner_db = aes.decrypt(encrypted_owner_db);
 		
 		if(owner_id.equals(session_owner_id) && is_authenticated == true)		
 		{
-			System.out.println("問題登録しました");
+			QAModel qa = new QAModel();
+			SQliteDAO dao = new SQliteDAO();
+			QADao qa_dao = new QADao();
 			StringBuilderPlus sql = new StringBuilderPlus();
-			sql.appendLine("insert into qa ");
-			sql.appendLine("(");
-			sql.appendLine("");
-			sql.appendLine("");
-			sql.appendLine("");
-			sql.appendLine("");
-			sql.appendLine("");
-			sql.appendLine("");
-			sql.appendLine("");
-			sql.appendLine(");");
-			sql.appendLine("values");
-			sql.appendLine("(");
-			sql.appendLine("");
-			sql.appendLine("");
-			sql.appendLine("");
-			sql.appendLine(");");
+			sql = qa_dao.insert_qa(qa);
+			dao.update(owner_db, sql);
+			System.out.println("問題登録しました");
 			if (request_url.equals(response_url))
 			{
 				return "main";

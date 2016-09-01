@@ -172,7 +172,7 @@ public class TopPageController {
 				session.setAttribute("password", login_info.getEncrypted_password());
 				
 				// セッションに暗号化されたオーナー専用DB名を格納
-				session.setAttribute("db", login_info.getEncrypted_db_name());
+				session.setAttribute("owner_db", login_info.getEncrypted_db_name());
 
 				return "redirect:" + response_url;
 			}
