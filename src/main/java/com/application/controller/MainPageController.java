@@ -1,5 +1,8 @@
 package com.application.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -61,8 +64,11 @@ public class MainPageController {
 			QADao qa_dao = new QADao();
 			StringBuilderPlus sql = new StringBuilderPlus();
 			sql = qa_dao.insert_qa(qa);
-			dao.update(owner_db, sql);
+			//dao.update(owner_db, sql);
 			System.out.println("問題登録しました");
+			List<QAModel> qa_list = new ArrayList<QAModel>();
+			qa_list = qa_dao.select_qa_list(owner_db, qa_list);
+			model.addAttribute("qa_list", qa_list);
 			if (request_url.equals(response_url))
 			{
 				return "main";

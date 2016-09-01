@@ -1,10 +1,143 @@
 package com.application.controller.dao;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.List;
+
 import com.application.model.dao.QAModel;
+import com.common.Constant;
 import com.common.StringBuilderPlus;
+import com.dao.SQliteDAO;
 
 public class QADao {
 
+	/**
+	 * 作成途中
+	 * @param db_name
+	 * @param qa_list
+	 * @return
+	 */
+	public List<QAModel> select_qa_list(String db_name, List<QAModel> qa_list)
+	{		
+		SQliteDAO dao = new SQliteDAO();
+		
+		StringBuilderPlus sql = new StringBuilderPlus();
+		sql.appendLine("select ");
+		// 行番号
+		sql.appendLine("  row_no,");
+		// QA ID
+		sql.appendLine("	qa_id,");
+		// QAタイプ
+		sql.appendLine("	qa_type,");
+		// 読むだけ問題フラグ
+		sql.appendLine("	yomudake_flg,");
+		// 重要度（５段階）
+		sql.appendLine("	juyoudo,");
+		// 難易度（５段階）
+		sql.appendLine("	nanido,");
+		// 問題文と正答のうち問題から始まるかのフラグ
+		sql.appendLine("	is_start_with_q,");
+		// 正答がたくさんある場合の問題文を分割した時の個数
+		sql.appendLine("	q_split_cnt,");
+		// 問題に紐づく正答の個数
+		sql.appendLine("	seitou_cnt,");
+		// 公開範囲
+		sql.appendLine("  koukai_level,");
+		// 無料販売フラグ
+		sql.appendLine("  free_flg,");
+		// 無料配布した数
+		sql.appendLine("  free_sold_num,");
+		// 有料販売フラグ
+		sql.appendLine("  charge_flg,");
+		// 有料で売った数
+		sql.appendLine("  charge_sold_num,");
+		// 削除フラグ
+		sql.appendLine("	del_flg,");
+		// 作成者
+		sql.appendLine("  create_owner,");
+		// 更新者
+		sql.appendLine("  update_owner,");
+		// レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+		sql.appendLine("	create_timestamp,");
+		// レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+		sql.appendLine("	update_timestamp");
+		sql.appendLine(" from qa;");
+		
+		dao.loadDriver();
+		
+		System.out.println(db_name);
+
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+	    try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+	      ResultSet rs = stmt.executeQuery(sql.toString());
+	      while (rs.next()) 
+	      {
+	    	  QAModel qa = new QAModel();
+		      // 行番号
+	    	  qa.setRow_no(rs.getInt("row_no"));
+  	  		  // QA ID
+	    	  qa.setQa_id(rs.getString("qa_id"));
+  	  		  // QAタイプ
+	    	  qa.setQa_type(rs.getInt("qa_type"));
+		      // 読むだけ問題フラグ
+	    	  qa.setYomudake_flg(rs.getInt("yomudake_flg"));
+		      // 重要度（５段階）
+	    	  qa.setJuyoudo(rs.getInt("juyoudo"));
+		      // 難易度（５段階）
+	    	  qa.setNanido(rs.getInt("nanido"));
+		      // 問題文と正答のうち問題から始まるかのフラグ
+	    	  qa.setIs_start_with_q(rs.getInt("is_start_with_q"));
+		      // 正答がたくさんある場合の問題文を分割した時の個数
+	    	  qa.setQ_split_cnt(rs.getInt("q_split_cnt"));
+		      // 問題に紐づく正答の個数
+		      qa.setSeitou_cnt(rs.getInt("seitou_cnt"));
+		      // 公開範囲
+		      qa.setKoukai_level(rs.getInt("koukai_level"));
+		      // 無料販売フラグ
+		      qa.setFree_flg(rs.getInt("free_flg"));
+		      // 無料配布した数
+		      qa.setFree_sold_num(rs.getInt("free_sold_num"));
+		      // 有料販売フラグ
+		      qa.setCharge_sold_num(rs.getInt("charge_flg"));
+		      // 有料で売った数
+		      qa.setCharge_sold_num(rs.getInt("charge_sold_num"));
+		      // 削除フラグ
+		      qa.setDel_flg(rs.getInt("del_flg"));
+		      // 作成者
+		      qa.setCreate_owner(rs.getString("create_owner"));
+		      // 更新者
+		      qa.setUpdate_owner(rs.getString("update_owner"));
+		      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+		      qa.setUpdate_timestamp(rs.getString("create_timestamp"));
+		      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+		      qa.setUpdate_timestamp(rs.getString("update_timestamp"));
+
+		      qa_list.add(qa);
+	      }
+	    }
+	    catch(Exception ex)
+	    {
+	    	//TODO ログ出力
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+	    }	    
+		
+		return qa_list;
+	}
+	
 	/**
 	 * QAテーブルに１件レコードを追加するSQL文を返却
 	 * @param qa

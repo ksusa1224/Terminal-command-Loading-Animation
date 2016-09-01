@@ -14,5 +14,9 @@
 <button name="register" type="submit">問題登録</button>
 </form>
 <hr />
+    <span th:each="qa : ${qa_list}">
+        <span th:text="${qa.row_no}"></span>
+        <span th:text="${qa.create_owner}"></span>
+    </span>
 </body>
 </html>
