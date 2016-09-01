@@ -14,6 +14,54 @@ import com.dao.SQliteDAO;
 public class QADao {
 
 	/**
+	 * 最大行を得る
+	 * @param db_name
+	 * @return
+	 */
+	public int get_qa_max_row_no(String db_name)
+	{	
+		int max_row_no = 0;
+		
+		SQliteDAO dao = new SQliteDAO();
+		
+		StringBuilderPlus sql = new StringBuilderPlus();
+		sql.appendLine("select max(row_no) as row_no from qa limit 1;");
+		dao.loadDriver();
+		
+		System.out.println(db_name);
+
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+	    try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+	      ResultSet rs = stmt.executeQuery(sql.toString());
+	      while (rs.next()) 
+	      {
+	    	  max_row_no = rs.getInt("row_no");
+	    	  System.out.println(max_row_no);
+	      }
+	    }
+	    catch(Exception ex)
+	    {
+	    	//TODO ログ出力
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+	    }	    
+		
+		return max_row_no;
+	}
+	
+	
+	/**
 	 * 作成途中
 	 * @param db_name
 	 * @param qa_list
@@ -67,8 +115,6 @@ public class QADao {
 		
 		dao.loadDriver();
 		
-		System.out.println(db_name);
-
 	    Connection connection = null;
 		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
 		String connection_str = "jdbc:sqlite:" 
@@ -139,12 +185,21 @@ public class QADao {
 	}
 	
 	/**
-	 * QAテーブルに１件レコードを追加するSQL文を返却
+	 * QAテーブルに１件レコードを追加する
 	 * @param qa
 	 * @return
 	 */
-	public StringBuilderPlus insert_qa(QAModel qa)
+	public void insert_qa(String db_name, QAModel qa)
 	{
+		int max_row_no = get_qa_max_row_no(db_name) + 1;
+		
+		SQliteDAO dao = new SQliteDAO();
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+		
 		StringBuilderPlus sql = new StringBuilderPlus();
 		sql.appendLine("insert into qa (");
 		// 行番号
@@ -189,9 +244,9 @@ public class QADao {
 		
 		sql.appendLine("values (");
 	    // 行番号
-		sql.appendLine("" + qa.getRow_no() + ",");
+		sql.appendLine(max_row_no + ",");
 		// QA ID
-		sql.appendLine("'" + qa.getQa_id() + "',");
+		sql.appendLine("'qa_id_" + max_row_no + "_" + qa.getCreate_owner() + "',");
 		// QAタイプ
 		sql.appendLine("" + qa.getQa_type() + ",");
 		// 読むだけ問題フラグ
@@ -227,8 +282,31 @@ public class QADao {
 		// レコード更新日時（H2DBのtimestampと同じフォーマットにする）
 		sql.appendLine("'" + qa.getUpdate_timestamp() + "'");
 		sql.appendLine(");");
+	    
+		try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+
+	      //1行ずつコミットしない
+	      stmt.getConnection().setAutoCommit(false);
+	      
+	      /**
+	       *  SQL実行
+	       */
+	      dao.transaction(stmt, sql);
+	    }
+	    catch(Exception ex)
+	    {
+	    	//TODO ログ出力
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+	    }	    
 		
-		return sql;
 	}	
 	
 	/**

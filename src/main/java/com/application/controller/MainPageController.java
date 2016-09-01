@@ -60,11 +60,10 @@ public class MainPageController {
 		if(owner_id.equals(session_owner_id) && is_authenticated == true)		
 		{
 			QAModel qa = new QAModel();
-			SQliteDAO dao = new SQliteDAO();
+			qa.setCreate_owner(owner_id);
+			
 			QADao qa_dao = new QADao();
-			StringBuilderPlus sql = new StringBuilderPlus();
-			sql = qa_dao.insert_qa(qa);
-			//dao.update(owner_db, sql);
+			qa_dao.insert_qa(owner_db,qa);
 			System.out.println("問題登録しました");
 			List<QAModel> qa_list = new ArrayList<QAModel>();
 			qa_list = qa_dao.select_qa_list(owner_db, qa_list);
