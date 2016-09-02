@@ -217,7 +217,7 @@ public class MondaiDao {
 	    // 問題ID
 		sql.appendLine("'q_id_" + max_row_no + "_" + mondai.getCreate_owner() + "',");
 	    // QA ID
-		sql.appendLine("" + mondai.getQa_id() + ",");
+		sql.appendLine("'" + mondai.getQa_id() + "',");
 	    // QA内での問題パーツの順番
 		sql.appendLine("" + mondai.getJunban() + ",");
 	    // 問題パーツが文字であるかのフラグ
