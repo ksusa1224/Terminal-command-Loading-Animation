@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.application.controller.dao.MondaiDao;
 import com.application.controller.dao.QADao;
 import com.application.model.LoginInfoModel;
+import com.application.model.dao.MondaiModel;
 import com.application.model.dao.QAModel;
 import com.common.AES;
 import com.common.StringBuilderPlus;
@@ -67,6 +69,14 @@ public class MainPageController {
 			System.out.println("問題登録しました");
 			List<QAModel> qa_list = new ArrayList<QAModel>();
 			qa_list = qa_dao.select_qa_list(owner_db, qa_list);
+			for(QAModel qa2 : qa_list)
+			{
+				MondaiModel mondai = new MondaiModel();
+				mondai.setQa_id(qa2.getQa_id());
+				System.out.println(mondai.getQa_id());
+				MondaiDao mondai_dao = new MondaiDao();
+				mondai_dao.insert_mondai(owner_db, mondai);				
+			}
 			model.addAttribute("qa_list", qa_list);
 			if (request_url.equals(response_url))
 			{
