@@ -181,21 +181,18 @@ public class SeitouDao {
 		sql.appendLine("insert into seitou (");
 		// 行番号
 		sql.appendLine("  row_no,");
-
 		// 正答ID
-		sql.appendLine("	s_id text primary key unique not null,");
+		sql.appendLine("	s_id,");
 		// QA ID
-		sql.appendLine("	qa_id text not null,");
+		sql.appendLine("	qa_id,");
 		// QA内での正答の順番
-		sql.appendLine("	junban integer default 1,");
+		sql.appendLine("	junban,");
 		// 正答
-		sql.appendLine("	seitou text,");
+		sql.appendLine("	seitou,");
 		// 重要度（５段階）
-		sql.appendLine("	juyoudo integer default 3,");
+		sql.appendLine("	juyoudo,");
 		// 難易度（５段階）
-		sql.appendLine("	nanido integer default 3,");
-		
-		
+		sql.appendLine("	nanido,");
 		// 言語
 		sql.appendLine("  language,");
 		// 削除フラグ
