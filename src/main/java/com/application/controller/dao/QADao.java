@@ -62,7 +62,6 @@ public class QADao {
 	
 	
 	/**
-	 * 作成途中
 	 * @param db_name
 	 * @param qa_list
 	 * @return
@@ -310,13 +309,21 @@ public class QADao {
 	}	
 	
 	/**
-	 * QAテーブルを１件更新するSQLを返却
+	 * QAテーブルを１件更新する
 	 * @param qa
 	 * @return 
 	 */
-	public StringBuilderPlus update_qa(QAModel qa)
+	public void update_qa(String db_name, QAModel qa)
 	{
+		SQliteDAO dao = new SQliteDAO();
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+		
 		StringBuilderPlus sql = new StringBuilderPlus();
+				
 		sql.appendLine("update qa ");
 		sql.appendLine("values (");
 	    // 行番号
@@ -358,7 +365,28 @@ public class QADao {
 		// レコード更新日時（H2DBのtimestampと同じフォーマットにする）
 		sql.appendLine("  update_timestamp = '" + qa.getUpdate_timestamp() + "'");
 		sql.appendLine(");");
-		
-		return sql;
+		try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+
+	      //1行ずつコミットしない
+	      stmt.getConnection().setAutoCommit(false);
+	      
+	      /**
+	       *  SQL実行
+	       */
+	      dao.transaction(stmt, sql);
+	    }
+	    catch(Exception ex)
+	    {
+	    	//TODO ログ出力
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+	    }		
 	}
 }
