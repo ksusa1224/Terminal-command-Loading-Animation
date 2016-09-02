@@ -29,5 +29,4 @@ public @Data class SeitouModel {
     private String create_timestamp;
     // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
     private String update_timestamp;
-
 }

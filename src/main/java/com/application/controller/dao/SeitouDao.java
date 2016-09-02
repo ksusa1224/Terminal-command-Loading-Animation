@@ -6,26 +6,26 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
 
-import com.application.model.dao.MondaiModel;
+import com.application.model.dao.SeitouModel;
 import com.common.Constant;
 import com.common.StringBuilderPlus;
 import com.dao.SQliteDAO;
 
-public class MondaiDao {
+public class SeitouDao {
 
 	/**
 	 * 最大行を得る
 	 * @param db_name
 	 * @return
 	 */
-	public int get_mondai_max_row_no(String db_name)
+	public int get_seitou_max_row_no(String db_name)
 	{	
 		int max_row_no = 0;
 		
 		SQliteDAO dao = new SQliteDAO();
 		
 		StringBuilderPlus sql = new StringBuilderPlus();
-		sql.appendLine("select max(row_no) as row_no from mondai limit 1;");
+		sql.appendLine("select max(row_no) as row_no from seitou limit 1;");
 		dao.loadDriver();
 		
 		System.out.println(db_name);
@@ -63,10 +63,10 @@ public class MondaiDao {
 	
 	/**
 	 * @param db_name
-	 * @param mondai_list
+	 * @param seitou_list
 	 * @return
 	 */
-	public List<MondaiModel> select_mondai_list(String db_name, List<MondaiModel> mondai_list)
+	public List<SeitouModel> select_seitou_list(String db_name, List<SeitouModel> seitou_list)
 	{		
 		SQliteDAO dao = new SQliteDAO();
 		
@@ -100,7 +100,7 @@ public class MondaiDao {
 		sql.appendLine("	create_timestamp,");
 		// レコード更新日時（H2DBのtimestampと同じフォーマットにする）
 		sql.appendLine("	update_timestamp,");
-		  sql.appendLine(" from mondai;");
+		  sql.appendLine(" from seitou;");
 		
 		dao.loadDriver();
 		
@@ -117,37 +117,35 @@ public class MondaiDao {
 	      ResultSet rs = stmt.executeQuery(sql.toString());
 	      while (rs.next()) 
 	      {
-	    	  MondaiModel mondai = new MondaiModel();
+	    	  SeitouModel seitou = new SeitouModel();
 		      // 行番号
-	    	  mondai.setRow_no(rs.getInt("row_no"));
-	    	  // 問題ID
-	    	  mondai.setQ_id(rs.getString("q_id"));
-	    	  // QA ID
-	    	  mondai.setQa_id(rs.getString("qa_id"));
-	    	  // QA内での問題パーツの順番
-	    	  mondai.setJunban(rs.getInt("junban"));
-	    	  // 問題パーツが文字であるかのフラグ
-	    	  mondai.setIs_text_flg(rs.getInt("is_text_flg"));
-	    	  // 問題パーツがバイナリであるかのフラグ	    	  
-	    	  mondai.setIs_binary_flg(rs.getInt("is_binary_flg"));
-	    	  // 分割された問題文	    	  
-	    	  mondai.setQ_parts_text(rs.getString("q_parts_text"));
-	    	  // QAの中に出てくる音声や画像などのバイナリファイル	    	  
-	    	  mondai.setQ_parts_binary(rs.getBytes("q_parts_binary"));
+	    	  seitou.setRow_no(rs.getInt("row_no"));
+		      // 正答ID
+	    	  seitou.setS_id(rs.getString("s_id"));
+		      // QA ID
+	    	  seitou.setQa_id(rs.getString("qa_id"));
+		      // QA内での正答の順番
+	    	  seitou.setJunban(rs.getInt("junban"));
+		      // 正答
+	    	  seitou.setSeitou(rs.getString("seitou"));
+		      // 重要度（５段階）
+	    	  seitou.setJuyoudo(rs.getInt("juyoudo"));
+		      // 難易度（５段階）
+	    	  seitou.setNanido(rs.getInt("nanido"));
 	    	  // 言語
-	    	  mondai.setLanguage(rs.getString("language"));
+	    	  seitou.setLanguage(rs.getString("language"));
 	    	  // 削除フラグ
-		      mondai.setDel_flg(rs.getInt("del_flg"));
+		      seitou.setDel_flg(rs.getInt("del_flg"));
 		      // 作成者
-		      mondai.setCreate_owner(rs.getString("create_owner"));
+		      seitou.setCreate_owner(rs.getString("create_owner"));
 		      // 更新者
-		      mondai.setUpdate_owner(rs.getString("update_owner"));
+		      seitou.setUpdate_owner(rs.getString("update_owner"));
 		      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
-		      mondai.setUpdate_timestamp(rs.getString("create_timestamp"));
+		      seitou.setUpdate_timestamp(rs.getString("create_timestamp"));
 		      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
-		      mondai.setUpdate_timestamp(rs.getString("update_timestamp"));
+		      seitou.setUpdate_timestamp(rs.getString("update_timestamp"));
 
-		      mondai_list.add(mondai);
+		      seitou_list.add(seitou);
 	      }
 	    }
 	    catch(Exception ex)
@@ -160,17 +158,17 @@ public class MondaiDao {
 	      dao.close(connection);
 	    }	    
 		
-		return mondai_list;
+		return seitou_list;
 	}
 	
 	/**
-	 * 問題テーブルに１件レコードを追加する
-	 * @param mondai
+	 * 正答テーブルに１件レコードを追加する
+	 * @param seitou
 	 * @return
 	 */
-	public void insert_mondai(String db_name, MondaiModel mondai)
+	public void insert_seitou(String db_name, SeitouModel seitou)
 	{
-		int max_row_no = get_mondai_max_row_no(db_name) + 1;
+		int max_row_no = get_seitou_max_row_no(db_name) + 1;
 		
 		SQliteDAO dao = new SQliteDAO();
 	    Connection connection = null;
@@ -180,23 +178,24 @@ public class MondaiDao {
 				  				+ db_name;
 		
 		StringBuilderPlus sql = new StringBuilderPlus();
-		sql.appendLine("insert into mondai (");
+		sql.appendLine("insert into seitou (");
 		// 行番号
 		sql.appendLine("  row_no,");
-		// 問題ID
-		sql.appendLine("  q_id,");
+
+		// 正答ID
+		sql.appendLine("	s_id text primary key unique not null,");
 		// QA ID
-		sql.appendLine("	qa_id,");
-		// QA内での問題パーツの順番
-		sql.appendLine("	junban,");
-		// 問題パーツが文字であるかのフラグ
-		sql.appendLine("  is_text_flg,");
-		// 問題パーツがバイナリであるかのフラグ
-		sql.appendLine("  is_binary_flg,");
-		// 分割された問題文
-		sql.appendLine("  q_parts_text,");
-		// QAの中に出てくる音声や画像などのバイナリファイル
-		sql.appendLine("  q_parts_binary,");
+		sql.appendLine("	qa_id text not null,");
+		// QA内での正答の順番
+		sql.appendLine("	junban integer default 1,");
+		// 正答
+		sql.appendLine("	seitou text,");
+		// 重要度（５段階）
+		sql.appendLine("	juyoudo integer default 3,");
+		// 難易度（５段階）
+		sql.appendLine("	nanido integer default 3,");
+		
+		
 		// 言語
 		sql.appendLine("  language,");
 		// 削除フラグ
@@ -214,32 +213,30 @@ public class MondaiDao {
 		sql.appendLine("values (");
 	    // 行番号
 		sql.appendLine(max_row_no + ",");
-	    // 問題ID
-		sql.appendLine("'q_id_" + max_row_no + "_" + mondai.getCreate_owner() + "',");
-	    // QA ID
-		sql.appendLine("'" + mondai.getQa_id() + "',");
-	    // QA内での問題パーツの順番
-		sql.appendLine("" + mondai.getJunban() + ",");
-	    // 問題パーツが文字であるかのフラグ
-		sql.appendLine("" + mondai.getIs_text_flg() + ",");
-	    // 問題パーツがバイナリであるかのフラグ
-		sql.appendLine("" + mondai.getIs_binary_flg() + ",");
-	    // 分割された問題文
-		sql.appendLine("'" + mondai.getQ_parts_text() + "',");
-	    // QAの中に出てくる音声や画像などのバイナリファイル
-		sql.appendLine("" + mondai.getQ_parts_binary() + ",");
-	    // 言語
-		sql.appendLine("'" + mondai.getLanguage() + "',");
+	    // 正答ID
+		sql.appendLine("'s_id_" + max_row_no + "_" + seitou.getCreate_owner() + "',");
+		// QA ID
+		sql.appendLine("'" + seitou.getQa_id() + "',");
+		// QA内での正答の順番
+		sql.appendLine("" + seitou.getJunban() + ",");
+		// 正答
+		sql.appendLine("'" + seitou.getSeitou() + "',");
+		// 重要度（５段階）
+		sql.appendLine("" + seitou.getJuyoudo() + ",");
+		// 難易度（５段階）
+		sql.appendLine("" + seitou.getNanido() + ",");
+		// 言語
+		sql.appendLine("'" + seitou.getLanguage() + "',");
 		// 削除フラグ
-		sql.appendLine("" + mondai.getDel_flg() + ",");
+		sql.appendLine("" + seitou.getDel_flg() + ",");
 		// 作成者
-		sql.appendLine("'" + mondai.getCreate_owner() + "',");
+		sql.appendLine("'" + seitou.getCreate_owner() + "',");
 		// 更新者
-		sql.appendLine("'" + mondai.getUpdate_owner() + "',");
+		sql.appendLine("'" + seitou.getUpdate_owner() + "',");
 		// レコード作成日時（H2DBのtimestampと同じフォーマットにする）
-		sql.appendLine("'" + mondai.getCreate_timestamp() + "',");
+		sql.appendLine("'" + seitou.getCreate_timestamp() + "',");
 		// レコード更新日時（H2DBのtimestampと同じフォーマットにする）
-		sql.appendLine("'" + mondai.getUpdate_timestamp() + "'");
+		sql.appendLine("'" + seitou.getUpdate_timestamp() + "'");
 		sql.appendLine(");");
 	    
 		try
@@ -270,10 +267,10 @@ public class MondaiDao {
 	
 	/**
 	 * QAテーブルを１件更新する
-	 * @param mondai
+	 * @param seitou
 	 * @return 
 	 */
-	public void update_mondai(String db_name, MondaiModel mondai)
+	public void update_seitou(String db_name, SeitouModel seitou)
 	{
 		SQliteDAO dao = new SQliteDAO();
 	    Connection connection = null;
@@ -284,36 +281,34 @@ public class MondaiDao {
 		
 		StringBuilderPlus sql = new StringBuilderPlus();
 				
-		sql.appendLine("update mondai ");
+		sql.appendLine("update seitou ");
 		sql.appendLine("values (");
 	    // 行番号
-		sql.appendLine("  row_no = " + mondai.getRow_no() + ",");
-		// QA ID
-		sql.appendLine("  qa_id = '" + mondai.getQa_id() + "',");
-	    // 問題ID
-		sql.appendLine("  q_id = '" + mondai.getQ_id() + "',");
-	    // QA内での問題パーツの順番
-		sql.appendLine("  junban = " + mondai.getJunban() + ",");
-	    // 問題パーツが文字であるかのフラグ
-		sql.appendLine("  is_text_flg = " + mondai.getIs_text_flg() + ",");
-	    // 問題パーツがバイナリであるかのフラグ
-		sql.appendLine("  is_binary_flg = " + mondai.getIs_binary_flg() + ",");
-	    // 分割された問題文
-		sql.appendLine("  q_parts_text = '" + mondai.getQ_parts_text() + "',");
-	    // QAの中に出てくる音声や画像などのバイナリファイル
-		sql.appendLine("  q_parts_binary = " + mondai.getQ_parts_binary() + ",");
+		sql.appendLine("  row_no = " + seitou.getRow_no() + ",");
+	    // 正答ID
+		sql.appendLine("  s_id = '" + seitou.getS_id() + "',");
+	    // QA ID
+		sql.appendLine("  qa_id = '" + seitou.getQa_id() + "',");
+	    // QA内での正答の順番
+		sql.appendLine("  junban = " + seitou.getJunban() + ",");
+	    // 正答
+		sql.appendLine("  seitou = '" + seitou.getSeitou() + "',");
+	    // 重要度（５段階）
+		sql.appendLine("  juyoudo = " + seitou.getJuyoudo() + ",");
+	    // 難易度（５段階）
+		sql.appendLine("  nanido = " + seitou.getNanido() + ",");
 	    // 言語
-		sql.appendLine("  language = '" + mondai.getLanguage() + "',");
+		sql.appendLine("  language = '" + seitou.getLanguage() + "',");
 		// 削除フラグ
-		sql.appendLine("  del_flg = " + mondai.getDel_flg() + ",");
+		sql.appendLine("  del_flg = " + seitou.getDel_flg() + ",");
 		// 作成者
-		sql.appendLine("  create_owner = '" + mondai.getCreate_owner() + "',");
+		sql.appendLine("  create_owner = '" + seitou.getCreate_owner() + "',");
 		// 更新者
-		sql.appendLine("  update_owner = '" + mondai.getUpdate_owner() + "',");
+		sql.appendLine("  update_owner = '" + seitou.getUpdate_owner() + "',");
 		// レコード作成日時（H2DBのtimestampと同じフォーマットにする）
-		sql.appendLine("  create_timestamp = '" + mondai.getCreate_timestamp() + "',");
+		sql.appendLine("  create_timestamp = '" + seitou.getCreate_timestamp() + "',");
 		// レコード更新日時（H2DBのtimestampと同じフォーマットにする）
-		sql.appendLine("  update_timestamp = '" + mondai.getUpdate_timestamp() + "'");
+		sql.appendLine("  update_timestamp = '" + seitou.getUpdate_timestamp() + "'");
 		sql.appendLine(");");
 		try
 	    {

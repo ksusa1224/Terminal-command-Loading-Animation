@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.application.controller.dao.MondaiDao;
 import com.application.controller.dao.QADao;
+import com.application.controller.dao.SeitouDao;
 import com.application.model.LoginInfoModel;
 import com.application.model.dao.MondaiModel;
 import com.application.model.dao.QAModel;
+import com.application.model.dao.SeitouModel;
 import com.common.AES;
 import com.common.StringBuilderPlus;
 import com.dao.SQliteDAO;
@@ -75,7 +77,12 @@ public class MainPageController {
 				mondai.setQa_id(qa2.getQa_id());
 				System.out.println(mondai.getQa_id());
 				MondaiDao mondai_dao = new MondaiDao();
-				mondai_dao.insert_mondai(owner_db, mondai);				
+				mondai_dao.insert_mondai(owner_db, mondai);		
+				
+				SeitouModel seitou = new SeitouModel();
+				seitou.setQa_id(qa2.getQa_id());
+				SeitouDao seitou_dao = new SeitouDao();
+				seitou_dao.insert_seitou(owner_db, seitou);
 			}
 			model.addAttribute("qa_list", qa_list);
 			if (request_url.equals(response_url))
