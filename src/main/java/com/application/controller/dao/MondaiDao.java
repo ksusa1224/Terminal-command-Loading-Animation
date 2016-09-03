@@ -174,8 +174,6 @@ public class MondaiDao {
 	 */
 	public void insert_mondai(String db_name, MondaiModel mondai)
 	{
-		int max_row_no = get_mondai_max_row_no(db_name) + 1;
-		
 		SQliteDAO dao = new SQliteDAO();
 	    Connection connection = null;
 		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
@@ -219,9 +217,9 @@ public class MondaiDao {
 		
 		sql.appendLine("values (");
 	    // 行番号
-		sql.appendLine(max_row_no + ",");
+		sql.appendLine("" + mondai.getRow_no() + ",");
 	    // 問題ID
-		sql.appendLine("'q_id_" + max_row_no + "_" + mondai.getCreate_owner() + "',");
+		sql.appendLine("'" + mondai.getQ_id() + "',");
 	    // QA ID
 		sql.appendLine("'" + mondai.getQa_id() + "',");
 	    // QA内での問題パーツの順番

@@ -15,8 +15,20 @@ public class StopWatch {
 
 	  public void stop() {
 	    stopTime = System.currentTimeMillis();
+	    System.out.println("StopWatch: " + getElapsedTime() + " milliseconds.");
+	    System.out.println("StopWatch: " + getElapsedTimeSecs() + " seconds.");
 	  }
 
+	  /**
+	   * メソッド名などを同時に出力したい時用
+	   * @param process_name　処理名
+	   */
+	  public void stop(String process_name) {
+		    stopTime = System.currentTimeMillis();
+		    System.out.println(process_name + " StopWatch: " + getElapsedTime() + " milliseconds.");
+		    System.out.println(process_name + " StopWatch: " + getElapsedTimeSecs() + " seconds.");
+	  }	  
+	  
 	  //elaspsed time in milliseconds
 	  public long getElapsedTime() {
 		  return stopTime - startTime;
@@ -25,7 +37,7 @@ public class StopWatch {
 	  //elaspsed time in seconds
 	  public double getElapsedTimeSecs() {
 	    double elapsed;
-	      elapsed = (double)(stopTime - startTime) / 1000;
+	      elapsed = ((double)(stopTime - startTime)) / 1000;
 	    return elapsed;
 	  }
 } 

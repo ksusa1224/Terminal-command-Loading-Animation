@@ -24,6 +24,11 @@ public @Data class QAModel {
      */
 	private int yomudake_flg;
 	
+	/**
+	 * 問題と正答を入れ替えた結果生成された問題かどうか
+	 */
+	private int is_reversible;
+	
     /**
      *  重要度（５段階）
      */
@@ -98,4 +103,16 @@ public @Data class QAModel {
      *  レコード更新日時（H2DBのtimestampと同じフォーマットにする）
      */
 	private String update_timestamp;	
+	
+	/**
+	 * 所定のフォーマットでqa_idを生成する
+	 * @param row_no
+	 * @param owner_id
+	 * @return
+	 */
+	public String generate_qa_id(int row_no, String owner_id)
+	{
+		// %09d・・・１億桁でゼロ埋め		
+		return "qa_id_" + String.format("%09d", row_no) + "_" + owner_id;
+	}
 }

@@ -2,7 +2,13 @@ package com.common;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+
+import com.cybozu.labs.langdetect.Detector;
+import com.cybozu.labs.langdetect.DetectorFactory;
+import com.cybozu.labs.langdetect.LangDetectException;
+import com.cybozu.labs.langdetect.Language;
 
 /**
  * 
@@ -81,4 +87,77 @@ public class Util {
 	    String strDate = sdfDate.format(now);
 	    return strDate;	
 	}	
+	
+	/**
+	 * 引数の文字列が日本語か日本語以外（現状英語しか対応していない）かを判定する
+	 * @param text
+	 * @return
+	 */
+	public static String check_japanese_or_english(String text)
+	{
+		if (text.matches("^.*[ぁ-ゞァ-タダ-ヶ一-龠].*"))
+		{
+			return Constant.JAPANESE;
+		}
+		else
+		{
+			// TODO 英語以外も判定できるようにする
+			return Constant.ENGLISH;
+		}
+	}
+	
+	/**
+	 * 引数の文字が何語かを判定する
+	 * TODO　loadProfileの部分で実行時エラーとなる
+	 * @param text
+	 * @return
+	 */
+	public static String langDetect(String text) { 
+		String language = "";
+		try
+		{
+			String profileDirectory = "/usr/local/anki_note/langdetect/profiles/";
+
+			// 言語プロファイルの読み込み
+	        DetectorFactory.loadProfile(profileDirectory);
+
+	        Detector detector = DetectorFactory.create();
+
+	        // 判定対象のテキスト設定
+	        detector.append(text);	
+	        
+	        language = detector.detect();
+	        
+	        // 判定結果(言語候補)を取得
+	        ArrayList<Language> languages = detector.getProbabilities();
+	        for (Language lang : languages) {
+	            System.out.println(lang.lang + ":" + lang.prob);
+	        }
+	        
+//			String profileDirectory = "/usr/local/anki_note/langdetect/profiles/";
+//			DetectorFactory.loadProfile(new File(profileDirectory)); // SmProfile is also available
+//			Detector detector = DetectorFactory.create();
+//			detector.append(text);
+//			language = detector.detect();
+		}
+		catch(Exception ex)
+		{
+			language = "";
+			ex.printStackTrace();
+		}
+		return language;
+
+		//		try 
+//		  { 
+//		   Detector detector; 
+//		   detector = DetectorFactory.create(); 
+//		   detector.append(text); 
+//		   String lang = detector.detect(); 
+//		   return lang;
+//		  }
+//		  catch (LangDetectException e) 
+//		  { 
+//		   return ""; 
+//		  }
+	} 	
 }

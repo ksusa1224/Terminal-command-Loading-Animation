@@ -8,14 +8,17 @@
 <body>
 暗記ノート本体<br />
 <form th:action="@{'/' + ${owner_id} + '/main.html'}" method="post">
-問題文<input type="text" name="mondaibun" /><br />
+問題<input type="text" name="mondai" /><br />
 解答<input type="text" name="seitou" /><br />
+読むだけ問題<input type="checkbox" name="yomudake_flg" /><br />
 <button name="register" type="submit">問題登録</button>
 </form>
 <hr />
+<!--
     <span th:each="qa : ${qa_list}">
         <span th:text="${qa.row_no}"></span>
         <span th:text="${qa.qa_id}"></span>
     </span>
+-->
 </body>
 </html>

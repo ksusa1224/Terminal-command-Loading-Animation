@@ -176,8 +176,6 @@ public class SeitouDao {
 	 */
 	public void insert_seitou(String db_name, SeitouModel seitou)
 	{
-		int max_row_no = get_seitou_max_row_no(db_name) + 1;
-		
 		SQliteDAO dao = new SQliteDAO();
 	    Connection connection = null;
 		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
@@ -225,9 +223,9 @@ public class SeitouDao {
 		
 		sql.appendLine("values (");
 	    // 行番号
-		sql.appendLine(max_row_no + ",");
+		sql.appendLine("" + seitou.getRow_no() + ",");
 	    // 正答ID
-		sql.appendLine("'s_id_" + max_row_no + "_" + seitou.getCreate_owner() + "',");
+		sql.appendLine("'" + seitou.getS_id() + "',");
 		// QA ID
 		sql.appendLine("'" + seitou.getQa_id() + "',");
 		// QA内での正答の順番

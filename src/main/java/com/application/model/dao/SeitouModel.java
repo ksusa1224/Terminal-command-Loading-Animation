@@ -37,4 +37,16 @@ public @Data class SeitouModel {
     private String create_timestamp;
     // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
     private String update_timestamp;
+
+	/**
+	 * 所定のフォーマットでs_idを生成する
+	 * @param row_no
+	 * @param owner_id
+	 * @return
+	 */
+	public String generate_s_id(int row_no, String owner_id)
+	{
+		// %09d・・・１億桁でゼロ埋め		
+		return "s_id_" + String.format("%09d", row_no) + "_" + owner_id;
+	}
 }

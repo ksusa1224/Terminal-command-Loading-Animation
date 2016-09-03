@@ -33,4 +33,16 @@ public @Data class MondaiModel {
     private String create_timestamp;
     // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
     private String update_timestamp;
+
+	/**
+	 * 所定のフォーマットでq_idを生成する
+	 * @param row_no
+	 * @param owner_id
+	 * @return
+	 */
+	public String generate_q_id(int row_no, String owner_id)
+	{
+		// %09d・・・１億桁でゼロ埋め		
+		return "q_id_" + String.format("%09d", row_no) + "_" + owner_id;
+	}
 }
