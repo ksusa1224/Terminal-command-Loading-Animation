@@ -168,6 +168,8 @@ public class SQliteDAO {
 	      sql.appendLine("  q_parts_binary blob default null,");
 	      // 言語
 	      sql.appendLine("  language text,");
+	      // テキスト読み上げデータ
+	      sql.appendLine("  yomiage blob default null,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
 	      // 作成者
@@ -200,14 +202,22 @@ public class SQliteDAO {
 	      sql.appendLine("	qa_id text not null,");
 	      // QA内での正答の順番
 	      sql.appendLine("	junban integer default 1,");
+	      // 正答が文字であるかのフラグ
+	      sql.appendLine("  is_text_flg integer default 1,");
+	      // 正答がバイナリであるかのフラグ
+	      sql.appendLine("  is_binary_flg integer default 0,");
 	      // 正答
 	      sql.appendLine("	seitou text,");
+	      // 正答が画像などのバイナリである場合に格納する
+	      sql.appendLine("  seitou_binary blob default null,");
 	      // 重要度（５段階）
 	      sql.appendLine("	juyoudo integer default 3,");
 	      // 難易度（５段階）
 	      sql.appendLine("	nanido integer default 3,");
 	      // 言語
 	      sql.appendLine("  language text,");
+	      // テキスト読み上げデータ
+	      sql.appendLine("  yomiage blob default null,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
 	      // 作成者
