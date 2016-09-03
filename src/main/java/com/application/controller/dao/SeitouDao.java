@@ -74,8 +74,6 @@ public class SeitouDao {
 		sql.appendLine("select ");
 		// 行番号
 		sql.appendLine("  row_no,");
-		// 問題ID
-		sql.appendLine("  q_id,");
 		// QA ID
 		sql.appendLine("	qa_id,");
 		// QA内での問題パーツの順番
@@ -90,6 +88,8 @@ public class SeitouDao {
 		sql.appendLine("  q_parts_binary,");
 		// 言語
 		sql.appendLine("  language,");
+		// テキスト読み上げデータ
+		sql.appendLine("  yomiage,");
 		// 削除フラグ
 		sql.appendLine("	del_flg,");
 		// 作成者
@@ -126,14 +126,22 @@ public class SeitouDao {
 	    	  seitou.setQa_id(rs.getString("qa_id"));
 		      // QA内での正答の順番
 	    	  seitou.setJunban(rs.getInt("junban"));
+	    	  // 正答が文字であるかのフラグ
+	    	  seitou.setIs_text_flg(rs.getInt("is_text_flg"));
+	    	  // 正答がバイナリであるかのフラグ
+	    	  seitou.setIs_binary_flg(rs.getInt("is_binary_flg"));
 		      // 正答
 	    	  seitou.setSeitou(rs.getString("seitou"));
+	    	  // 正答が画像などのバイナリである場合に格納する
+	    	  seitou.setSeitou_binary(rs.getBytes("seitou_binary"));
 		      // 重要度（５段階）
 	    	  seitou.setJuyoudo(rs.getInt("juyoudo"));
 		      // 難易度（５段階）
 	    	  seitou.setNanido(rs.getInt("nanido"));
 	    	  // 言語
 	    	  seitou.setLanguage(rs.getString("language"));
+	    	  // テキスト読み上げデータ
+	    	  seitou.setYomiage(rs.getBytes("yomiage"));
 	    	  // 削除フラグ
 		      seitou.setDel_flg(rs.getInt("del_flg"));
 		      // 作成者
@@ -187,14 +195,22 @@ public class SeitouDao {
 		sql.appendLine("	qa_id,");
 		// QA内での正答の順番
 		sql.appendLine("	junban,");
+		// 正答が文字であるかのフラグ
+		sql.appendLine("	is_text_flg,");
+		// 正答がバイナリであるかのフラグ
+		sql.appendLine("	is_binary_flg,");
 		// 正答
 		sql.appendLine("	seitou,");
+		// 正答が画像などのバイナリである場合に格納する
+		sql.appendLine("	seitou_binary,");
 		// 重要度（５段階）
 		sql.appendLine("	juyoudo,");
 		// 難易度（５段階）
 		sql.appendLine("	nanido,");
 		// 言語
 		sql.appendLine("  language,");
+		// テキスト読み上げデータ
+		sql.appendLine("  yomiage,");
 		// 削除フラグ
 		sql.appendLine("	del_flg,");
 		// 作成者
@@ -216,14 +232,22 @@ public class SeitouDao {
 		sql.appendLine("'" + seitou.getQa_id() + "',");
 		// QA内での正答の順番
 		sql.appendLine("" + seitou.getJunban() + ",");
+		// 正答が文字であるかのフラグ
+		sql.appendLine("" + seitou.getIs_text_flg() + ",");
+		// 正答がバイナリであるかのフラグ
+		sql.appendLine("" + seitou.getIs_binary_flg()+ ",");
 		// 正答
 		sql.appendLine("'" + seitou.getSeitou() + "',");
+		// 正答が画像などのバイナリである場合に格納する
+		sql.appendLine("" + seitou.getSeitou_binary() + ",");
 		// 重要度（５段階）
 		sql.appendLine("" + seitou.getJuyoudo() + ",");
 		// 難易度（５段階）
 		sql.appendLine("" + seitou.getNanido() + ",");
 		// 言語
 		sql.appendLine("'" + seitou.getLanguage() + "',");
+		// テキスト読み上げデータ
+		sql.appendLine("" + seitou.getYomiage() + ",");
 		// 削除フラグ
 		sql.appendLine("" + seitou.getDel_flg() + ",");
 		// 作成者
@@ -288,14 +312,22 @@ public class SeitouDao {
 		sql.appendLine("  qa_id = '" + seitou.getQa_id() + "',");
 	    // QA内での正答の順番
 		sql.appendLine("  junban = " + seitou.getJunban() + ",");
+		// 正答が文字であるかのフラグ
+		sql.appendLine("  is_text_flg = " + seitou.getIs_text_flg() + ",");
+		// 正答がバイナリであるかのフラグ
+		sql.appendLine("  is_binary_flg = " + seitou.getIs_binary_flg() + ",");
 	    // 正答
 		sql.appendLine("  seitou = '" + seitou.getSeitou() + "',");
+		// 正答が画像などのバイナリである場合に格納する
+		sql.appendLine("  seitou_binary = " + seitou.getSeitou_binary() + ",");		
 	    // 重要度（５段階）
 		sql.appendLine("  juyoudo = " + seitou.getJuyoudo() + ",");
 	    // 難易度（５段階）
 		sql.appendLine("  nanido = " + seitou.getNanido() + ",");
 	    // 言語
 		sql.appendLine("  language = '" + seitou.getLanguage() + "',");
+		// テキスト読み上げデータ
+		sql.appendLine("  yomiage = " + seitou.getYomiage() + ",");
 		// 削除フラグ
 		sql.appendLine("  del_flg = " + seitou.getDel_flg() + ",");
 		// 作成者

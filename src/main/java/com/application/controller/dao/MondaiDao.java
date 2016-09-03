@@ -90,6 +90,8 @@ public class MondaiDao {
 		sql.appendLine("  q_parts_binary,");
 		// 言語
 		sql.appendLine("  language,");
+		// テキスト読み上げデータ
+		sql.appendLine("  yomiage,");
 		// 削除フラグ
 		sql.appendLine("	del_flg,");
 		// 作成者
@@ -136,6 +138,8 @@ public class MondaiDao {
 	    	  mondai.setQ_parts_binary(rs.getBytes("q_parts_binary"));
 	    	  // 言語
 	    	  mondai.setLanguage(rs.getString("language"));
+	    	  // テキスト読み上げデータ
+	    	  mondai.setYomiage(rs.getBytes("yomiage"));
 	    	  // 削除フラグ
 		      mondai.setDel_flg(rs.getInt("del_flg"));
 		      // 作成者
@@ -199,6 +203,8 @@ public class MondaiDao {
 		sql.appendLine("  q_parts_binary,");
 		// 言語
 		sql.appendLine("  language,");
+		// テキスト読み上げデータ
+		sql.appendLine("  yomiage,");		
 		// 削除フラグ
 		sql.appendLine("	del_flg,");
 		// 作成者
@@ -230,6 +236,8 @@ public class MondaiDao {
 		sql.appendLine("" + mondai.getQ_parts_binary() + ",");
 	    // 言語
 		sql.appendLine("'" + mondai.getLanguage() + "',");
+		// テキスト読み上げデータ
+		sql.appendLine("" + mondai.getYomiage() + ",");
 		// 削除フラグ
 		sql.appendLine("" + mondai.getDel_flg() + ",");
 		// 作成者
@@ -304,6 +312,8 @@ public class MondaiDao {
 		sql.appendLine("  q_parts_binary = " + mondai.getQ_parts_binary() + ",");
 	    // 言語
 		sql.appendLine("  language = '" + mondai.getLanguage() + "',");
+		// テキスト読み上げデータ
+		sql.appendLine("  yomiage = " + mondai.getYomiage() + ",");
 		// 削除フラグ
 		sql.appendLine("  del_flg = " + mondai.getDel_flg() + ",");
 		// 作成者

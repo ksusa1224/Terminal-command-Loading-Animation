@@ -21,6 +21,8 @@ public @Data class MondaiModel {
     private byte[] q_parts_binary;
     // 言語
     private String language;
+    // テキスト読み上げデータ
+    private byte[] yomiage;
     // 削除フラグ
     private int del_flg;
     // 作成者
