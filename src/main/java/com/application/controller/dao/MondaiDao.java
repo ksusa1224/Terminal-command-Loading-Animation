@@ -66,7 +66,7 @@ public class MondaiDao {
 	 * @param mondai_list
 	 * @return
 	 */
-	public List<MondaiModel> select_mondai_list(String db_name, List<MondaiModel> mondai_list)
+	public List<MondaiModel> select_mondai_list(String db_name, List<MondaiModel> mondai_list, String qa_id)
 	{		
 		SQliteDAO dao = new SQliteDAO();
 		
@@ -101,8 +101,11 @@ public class MondaiDao {
 		// レコード作成日時（H2DBのtimestampと同じフォーマットにする）
 		sql.appendLine("	create_timestamp,");
 		// レコード更新日時（H2DBのtimestampと同じフォーマットにする）
-		sql.appendLine("	update_timestamp,");
-		  sql.appendLine(" from mondai;");
+		sql.appendLine("	update_timestamp");
+		sql.appendLine(" from mondai");
+		sql.appendLine(" where qa_id = '" + qa_id + "'");
+		sql.appendLine(" and del_flg = 0");
+		sql.appendLine(" order by junban asc;");
 		
 		dao.loadDriver();
 		

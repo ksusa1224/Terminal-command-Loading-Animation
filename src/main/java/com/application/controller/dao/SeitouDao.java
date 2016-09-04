@@ -66,41 +66,50 @@ public class SeitouDao {
 	 * @param seitou_list
 	 * @return
 	 */
-	public List<SeitouModel> select_seitou_list(String db_name, List<SeitouModel> seitou_list)
+	public List<SeitouModel> select_seitou_list(String db_name, List<SeitouModel> seitou_list, String qa_id)
 	{		
 		SQliteDAO dao = new SQliteDAO();
 		
 		StringBuilderPlus sql = new StringBuilderPlus();
 		sql.appendLine("select ");
-		// 行番号
+	    // 行番号
 		sql.appendLine("  row_no,");
-		// QA ID
-		sql.appendLine("	qa_id,");
-		// QA内での問題パーツの順番
-		sql.appendLine("	junban,");
-		// 問題パーツが文字であるかのフラグ
+	    // 正答ID
+		sql.appendLine("  s_id,");
+	    // QA ID
+		sql.appendLine("  qa_id,");
+	    // QA内での正答の順番
+		sql.appendLine("  junban,");
+	    // 正答が文字であるかのフラグ
 		sql.appendLine("  is_text_flg,");
-		// 問題パーツがバイナリであるかのフラグ
+	    // 正答がバイナリであるかのフラグ
 		sql.appendLine("  is_binary_flg,");
-		// 分割された問題文
-		sql.appendLine("  q_parts_text,");
-		// QAの中に出てくる音声や画像などのバイナリファイル
-		sql.appendLine("  q_parts_binary,");
-		// 言語
+	    // 正答
+		sql.appendLine("  seitou,");
+	    // 正答が画像などのバイナリである場合に格納する
+		sql.appendLine("  seitou_binary,");
+	    // 重要度（５段階）
+		sql.appendLine("  juyoudo,");
+	    // 難易度（５段階）
+		sql.appendLine("  nanido,");
+	    // 言語
 		sql.appendLine("  language,");
-		// テキスト読み上げデータ
+	    // テキスト読み上げデータ
 		sql.appendLine("  yomiage,");
-		// 削除フラグ
-		sql.appendLine("	del_flg,");
-		// 作成者
+	    // 削除フラグ
+		sql.appendLine("  del_flg,");
+	    // 作成者
 		sql.appendLine("  create_owner,");
-		// 更新者
+	    // 更新者
 		sql.appendLine("  update_owner,");
-		// レコード作成日時（H2DBのtimestampと同じフォーマットにする）
-		sql.appendLine("	create_timestamp,");
-		// レコード更新日時（H2DBのtimestampと同じフォーマットにする）
-		sql.appendLine("	update_timestamp,");
-		  sql.appendLine(" from seitou;");
+	    // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+		sql.appendLine("  create_timestamp,");
+	    // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+		sql.appendLine("  update_timestamp");
+		sql.appendLine(" from seitou");
+		sql.appendLine(" where qa_id = '" + qa_id + "'");
+		sql.appendLine(" and del_flg = 0");
+		sql.appendLine(" order by junban asc;");
 		
 		dao.loadDriver();
 		

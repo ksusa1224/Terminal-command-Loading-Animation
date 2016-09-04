@@ -150,13 +150,13 @@ public class TopPageController {
 			H2dbDao dao = new H2dbDao();
 			login_info = dao.select_login_info(sql);
 			
-			System.out.println(login_info.getEncrypted_db_name());
-			System.out.println(aes.decrypt(login_info.getEncrypted_db_name()));
-			System.out.println(login_info.getEncrypted_password());
-			System.out.println(aes.decrypt(login_info.getEncrypted_password()));
-			System.out.println(encrypted_input_password);
-			System.out.println(aes.decrypt(encrypted_input_password));
-			System.out.println(login_info.getOwner_id());
+//			System.out.println(login_info.getEncrypted_db_name());
+//			System.out.println(aes.decrypt(login_info.getEncrypted_db_name()));
+//			System.out.println(login_info.getEncrypted_password());
+//			System.out.println(aes.decrypt(login_info.getEncrypted_password()));
+//			System.out.println(encrypted_input_password);
+//			System.out.println(aes.decrypt(encrypted_input_password));
+//			System.out.println(login_info.getOwner_id());
 			
 			input_password = aes.decrypt(encrypted_input_password);
 			String password_in_db = aes.decrypt(login_info.getEncrypted_password());

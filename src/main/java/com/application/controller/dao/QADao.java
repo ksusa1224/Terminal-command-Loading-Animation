@@ -118,7 +118,9 @@ public class QADao {
 		sql.appendLine("	create_timestamp,");
 		// レコード更新日時（H2DBのtimestampと同じフォーマットにする）
 		sql.appendLine("	update_timestamp");
-		sql.appendLine(" from qa;");
+		sql.appendLine(" from qa");
+		sql.appendLine(" where del_flg = 0");
+		sql.appendLine(" order by update_timestamp desc;");
 		
 		dao.loadDriver();
 		

@@ -14,11 +14,6 @@
 <button name="register" type="submit">問題登録</button>
 </form>
 <hr />
-<!--
-    <span th:each="qa : ${qa_list}">
-        <span th:text="${qa.row_no}"></span>
-        <span th:text="${qa.qa_id}"></span>
-    </span>
--->
+<div th:utext="${qa_html}"></div>
 </body>
 </html>

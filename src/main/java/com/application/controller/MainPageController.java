@@ -38,6 +38,55 @@ public class MainPageController {
 
 	/**
 	 * メインページ（暗記ノート本体）
+	 * 
+	 * Spring MVC　@PathVariableを使ってURLに含まれる動的なパラメータを取得
+	 * http://blog.codebook-10000.com/entry/20140301/1393628782
+	 * @param user_id
+	 * @return
+	 */
+	@RequestMapping(value={"/{owner_id}", 
+						   "/{owner_id}/", 
+						   "/{owner_id}/main.html", 
+						   "/{owner_id}/main.htm", 
+						   "/{owner_id}/main"},
+							method=RequestMethod.GET)
+	public String main(@PathVariable("owner_id") String owner_id,
+						HttpServletRequest request, 
+						HttpSession session,
+						Model model) {
+		
+		String request_url = request.getRequestURI();
+		String response_url = "/"+ owner_id + "/main.html";
+		   
+		// TODO 認証されてるかどうかはsessionに入れると書き換えられてしまうから毎回DBに接続した方がいいかな
+		Boolean is_authenticated = (Boolean)session.getAttribute("is_authenticated");
+		String session_owner_id = (String)session.getAttribute("owner_id");
+		
+		if(owner_id.equals(session_owner_id) && is_authenticated == true)		
+		{
+			if (request_url.equals(response_url))
+			{
+				byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
+				AES aes = new AES();
+				String owner_db = aes.decrypt(encrypted_owner_db);
+				String qa_html = generate_qa_html(select_qa_plus(owner_db));			
+				model.addAttribute("qa_html", qa_html);
+				return "main";
+			}
+			else
+			{
+				return "redirect:" + response_url;
+			}
+		}		
+		else
+		{
+			return "error";
+		}
+	}	    
+	
+	
+	/**
+	 * メインページ（暗記ノート本体）
 	 * 問題登録
 	 * Spring MVC　@PathVariableを使ってURLに含まれる動的なパラメータを取得
 	 * http://blog.codebook-10000.com/entry/20140301/1393628782
@@ -51,7 +100,7 @@ public class MainPageController {
 						   "/{owner_id}/main"},
 							method=RequestMethod.POST, 
 							params={"register"})
-	public String main(@PathVariable("owner_id") String owner_id,
+	public String mondai_touroku(@PathVariable("owner_id") String owner_id,
 						HttpServletRequest request, 
 						HttpSession session,
 						Model model,
@@ -77,8 +126,14 @@ public class MainPageController {
 		if(owner_id.equals(session_owner_id) && is_authenticated == true)		
 		{
 			create_1_on_1_qa(owner_id, owner_db, mondai, seitou);
-			List<QAPlusModel> qa_plus_list = new ArrayList<QAPlusModel>();
-			//model.addAttribute("qa_plus_list", qa_plus_list);
+
+			
+
+			model.addAttribute("qa_plus_list", select_qa_plus(owner_db));
+			
+			String qa_html = generate_qa_html(select_qa_plus(owner_db));			
+			model.addAttribute("qa_html", qa_html);
+			
 			if (request_url.equals(response_url))
 			{
 				return "main";
@@ -94,6 +149,58 @@ public class MainPageController {
 		}
 	}
 
+	/**
+	 * 
+	 * @param owner_db
+	 * @return
+	 */
+	public List<QAPlusModel> select_qa_plus(String owner_db) {
+		QAPlusDao qa_plus_dao = new QAPlusDao();
+		List<QAPlusModel> qa_plus_list = new ArrayList<QAPlusModel>();
+		qa_plus_list = qa_plus_dao.select_qa_plus_list(owner_db, qa_plus_list);
+		return qa_plus_list;
+	}
+
+	/**
+	 * TODO 現状１問１答式問題しか対応していない
+	 * @return
+	 */
+	public String generate_qa_html(List<QAPlusModel> qa_plus_list)
+	{
+		String qa_html = "";
+
+		System.out.println(qa_plus_list.size());
+		
+		for (QAPlusModel qa_plus : qa_plus_list)
+		{
+//			QAModel qa = qa_plus.getQa();
+			List<MondaiModel> mondai_list = new ArrayList<MondaiModel>();
+			mondai_list = qa_plus.getMondai_list();
+			List<SeitouModel> seitou_list = new ArrayList<SeitouModel>();
+			seitou_list = qa_plus.getSeitou_list();
+			String mondai = mondai_list.get(0).getQ_parts_text();
+			String seitou = seitou_list.get(0).getSeitou();
+			qa_html += "<span class='qa'>&nbsp;";
+			qa_html += "<span class='q'>" + mondai + "</span>&nbsp;";			
+			qa_html += "<span class='a'>" + seitou + "&nbsp;</span>";
+			qa_html += "</span>";
+			
+//			// 問題から始まる場合
+//			if (qa.getIs_start_with_q() == 1)
+//			{
+//				if(mondai_list.size() > 0)
+//				{
+//					int index = 0;
+//					qa_html.appendLine(mondai_list.get(index).getQ_parts_text());
+//					qa_html.appendLine(seitou_list.get(index).getSeitou());
+//				}
+//			}		
+		}
+		
+		return qa_html;
+	}
+	
+	
 	/**
 	 * １問１答式問題を作成する
 	 * @param owner_id
@@ -111,51 +218,54 @@ public class MainPageController {
 		/**
 		 * QA
 		 */
+		QAModel qa = new QAModel();
+
 		// 行番号・QA_ID生成用
 		QADao qa_dao = new QADao();
 		int qa_max_no = qa_dao.get_qa_max_row_no(owner_db);
 
 		// 行番号
-		qa_plus.setRow_no(qa_max_no + 1); 
+		qa.setRow_no(qa_max_no + 1); 
 		// QA ID
-		String qa_id = qa_plus.generate_qa_id(qa_max_no + 1, owner_id);
-		qa_plus.setQa_id(qa_id);
+		String qa_id = qa.generate_qa_id(qa_max_no + 1, owner_id);
+		qa.setQa_id(qa_id);
 		// QAタイプ
-		qa_plus.setQa_type(Constant.QA_TYPE_1_ON_1);
+		qa.setQa_type(Constant.QA_TYPE_1_ON_1);
 		// 読むだけ問題フラグ
-		qa_plus.setYomudake_flg(0);
+		qa.setYomudake_flg(0);
 	    // 問題と正答を入れ替えた結果生成された問題かどうか
-		qa_plus.setIs_reversible(0);
+		qa.setIs_reversible(0);
 		// 重要度（５段階）
-		qa_plus.setJuyoudo(3);
+		qa.setJuyoudo(3);
 		// 難易度（５段階）
-		qa_plus.setNanido(3);
+		qa.setNanido(3);
 		// 問題文と正答のうち問題から始まるかのフラグ
-		qa_plus.setIs_start_with_q(1);
+		qa.setIs_start_with_q(1);
 		// 正答がたくさんある場合の問題文を分割した時の個数
-		qa_plus.setQ_split_cnt(1);
+		qa.setQ_split_cnt(1);
 		// 問題に紐づく正答の個数
-		qa_plus.setSeitou_cnt(1);
+		qa.setSeitou_cnt(1);
 		// 公開範囲
-		qa_plus.setKoukai_level(Constant.KOUKAI_LEVEL_SELF_ONLY);
+		qa.setKoukai_level(Constant.KOUKAI_LEVEL_SELF_ONLY);
 		// 無料販売フラグ
-		qa_plus.setFree_flg(0);
+		qa.setFree_flg(0);
 		// 無料配布した数
-		qa_plus.setFree_sold_num(0);
+		qa.setFree_sold_num(0);
 		// 有料販売フラグ
-		qa_plus.setCharge_flg(0);
+		qa.setCharge_flg(0);
 		// 有料で売った数
-		qa_plus.setCharge_sold_num(0);
+		qa.setCharge_sold_num(0);
 		// 削除フラグ
-		qa_plus.setDel_flg(0);
+		qa.setDel_flg(0);
 		// 作成者
-		qa_plus.setCreate_owner(owner_id);
+		qa.setCreate_owner(owner_id);
 		// 更新者
-		qa_plus.setUpdate_owner(owner_id);
+		qa.setUpdate_owner(owner_id);
 		// レコード作成日時（H2DBのtimestampと同じフォーマットにする）
-		qa_plus.setCreate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+		qa.setCreate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
 		// レコード更新日時（H2DBのtimestampと同じフォーマットにする）
-		qa_plus.setUpdate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+		qa.setUpdate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+		qa_plus.setQa(qa);
 		
 		/**
 		 * 問題
@@ -222,7 +332,7 @@ public class MainPageController {
 	    // QA ID
 		seitou.setQa_id(qa_id);
 	    // QA内での正答の順番
-		seitou.setJunban(1);
+		seitou.setJunban(2);
 	    // 正答が文字であるかのフラグ
 		seitou.setIs_text_flg(1);
 	    // 正答がバイナリであるかのフラグ
@@ -256,6 +366,6 @@ public class MainPageController {
 		qa_plus.setSeitou_list(seitou_list);
 		
 		QAPlusDao qa_plus_dao = new QAPlusDao();
-		qa_plus_dao.insert_qa_plus(owner_db, qa_plus);
+		qa_plus_dao.insert_qa_plus(owner_db, qa_plus);		
 	}	    
 }
