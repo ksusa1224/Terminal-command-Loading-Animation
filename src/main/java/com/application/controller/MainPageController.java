@@ -69,7 +69,7 @@ public class MainPageController {
 				byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 				AES aes = new AES();
 				String owner_db = aes.decrypt(encrypted_owner_db);
-				String qa_html = generate_qa_html(select_1_on_1_qa_plus(owner_db));			
+				String qa_html = generate_qa_html(select_qa_plus(owner_db));			
 				model.addAttribute("qa_html", qa_html);
 				return "main";
 			}
@@ -131,7 +131,7 @@ public class MainPageController {
 
 			//model.addAttribute("qa_plus_list", select_qa_plus(owner_db));
 			
-			String qa_html = generate_qa_html(select_1_on_1_qa_plus(owner_db));			
+			String qa_html = generate_qa_html(select_qa_plus(owner_db));			
 			model.addAttribute("qa_html", qa_html);
 			
 			if (request_url.equals(response_url))
@@ -193,8 +193,10 @@ public class MainPageController {
 			seitou_list = qa_plus.getSeitou_list();
 			String mondai = mondai_list.get(0).getQ_parts_text();
 			String seitou = seitou_list.get(0).getSeitou();
+			String q_lang = mondai_list.get(0).getLanguage();
+			String a_lang = seitou_list.get(0).getLanguage();
 			qa_html += "<span class='qa'>";
-			qa_html += "<span class='q'>" + mondai + "</span>";			
+			qa_html += "<span class='q' onclick=\"control_qa_saisei('" + mondai + "', '" + seitou + "','" + q_lang + "','" + a_lang + "');\"'>" + mondai + "</span>";			
 			qa_html += "<span class='a' onmouseover='this.style.opacity=1' onmouseout='this.style.opacity=0'>" + seitou + "</span>";
 			qa_html += "</span>";
 			

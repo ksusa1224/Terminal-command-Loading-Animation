@@ -36,7 +36,127 @@ public class QAPlusDao extends QADao {
 		SQliteDAO dao = new SQliteDAO();
 		
 		StringBuilderPlus sql = new StringBuilderPlus();
-		sql.appendLine("select * ");
+//		sql.appendLine("select * ");
+//		sql.appendLine(" from qa, mondai, seitou");
+//		sql.appendLine(" where qa.qa_id = mondai.qa_id");
+//		sql.appendLine(" and qa.qa_id = seitou.qa_id");
+		/**
+		 * QAテーブル
+		 */
+		sql.appendLine("  select");
+		// 行番号
+		sql.appendLine("  qa.row_no,");
+		// QA ID
+		sql.appendLine("	qa.qa_id,");
+		// QAタイプ
+		sql.appendLine("	qa.qa_type,");
+		// 読むだけ問題フラグ
+		sql.appendLine("	qa.yomudake_flg,");
+	    // 問題と正答を入れ替えた結果生成された問題かどうか
+	    sql.appendLine("    qa.is_reversible,");
+		// 重要度（５段階）
+		sql.appendLine("	qa.juyoudo,");
+		// 難易度（５段階）
+		sql.appendLine("	qa.nanido,");
+		// 問題文と正答のうち問題から始まるかのフラグ
+		sql.appendLine("	qa.is_start_with_q,");
+		// 正答がたくさんある場合の問題文を分割した時の個数
+		sql.appendLine("	qa.q_split_cnt,");
+		// 問題に紐づく正答の個数
+		sql.appendLine("	qa.seitou_cnt,");
+		// 公開範囲
+		sql.appendLine("  qa.koukai_level,");
+		// 無料販売フラグ
+		sql.appendLine("  qa.free_flg,");
+		// 無料配布した数
+		sql.appendLine("  qa.free_sold_num,");
+		// 有料販売フラグ
+		sql.appendLine("  qa.charge_flg,");
+		// 有料で売った数
+		sql.appendLine("  qa.charge_sold_num,");
+		// 削除フラグ
+		sql.appendLine("	qa.del_flg,");
+		// 作成者
+		sql.appendLine("  qa.create_owner,");
+		// 更新者
+		sql.appendLine("  qa.update_owner,");
+		// レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+		sql.appendLine("	qa.create_timestamp,");
+		// レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+		sql.appendLine("	qa.update_timestamp,");
+		
+		/**
+		 * 問題テーブル
+		 */
+		// 行番号
+		sql.appendLine("  mondai.row_no,");
+		// 問題ID
+		sql.appendLine("  mondai.q_id,");
+		// QA ID
+		sql.appendLine("	mondai.qa_id,");
+		// QA内での問題パーツの順番
+		sql.appendLine("	mondai.junban,");
+		// 問題パーツが文字であるかのフラグ
+		sql.appendLine("  mondai.is_text_flg,");
+		// 問題パーツがバイナリであるかのフラグ
+		sql.appendLine("  mondai.is_binary_flg,");
+		// 分割された問題文
+		sql.appendLine("  mondai.q_parts_text,");
+		// QAの中に出てくる音声や画像などのバイナリファイル
+		sql.appendLine("  mondai.q_parts_binary,");
+		// 言語
+		sql.appendLine("  mondai.language,");
+		// テキスト読み上げデータ
+		sql.appendLine("  mondai.yomiage,");
+		// 削除フラグ
+		sql.appendLine("	mondai.del_flg,");
+		// 作成者
+		sql.appendLine("  mondai.create_owner,");
+		// 更新者
+		sql.appendLine("  mondai.update_owner,");
+		// レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+		sql.appendLine("	mondai.create_timestamp,");
+		// レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+		sql.appendLine("	mondai.update_timestamp,");
+		
+		/**
+		 * 正答テーブル
+		 */
+	    // 行番号
+		sql.appendLine("  seitou.row_no,");
+	    // 正答ID
+		sql.appendLine("  seitou.s_id,");
+	    // QA ID
+		sql.appendLine("  seitou.qa_id,");
+	    // QA内での正答の順番
+		sql.appendLine("  seitou.junban,");
+	    // 正答が文字であるかのフラグ
+		sql.appendLine("  seitou.is_text_flg,");
+	    // 正答がバイナリであるかのフラグ
+		sql.appendLine("  seitou.is_binary_flg,");
+	    // 正答
+		sql.appendLine("  seitou.seitou,");
+	    // 正答が画像などのバイナリである場合に格納する
+		sql.appendLine("  seitou.seitou_binary,");
+	    // 重要度（５段階）
+		sql.appendLine("  seitou.juyoudo,");
+	    // 難易度（５段階）
+		sql.appendLine("  seitou.nanido,");
+	    // 言語
+		sql.appendLine("  seitou.language,");
+	    // テキスト読み上げデータ
+		sql.appendLine("  seitou.yomiage,");
+	    // 削除フラグ
+		sql.appendLine("  seitou.del_flg,");
+	    // 作成者
+		sql.appendLine("  seitou.create_owner,");
+	    // 更新者
+		sql.appendLine("  seitou.update_owner,");
+	    // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+		sql.appendLine("  seitou.create_timestamp,");
+	    // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+		sql.appendLine("  seitou.update_timestamp");
+
 		sql.appendLine(" from qa, mondai, seitou");
 		sql.appendLine(" where qa.qa_id = mondai.qa_id");
 		sql.appendLine(" and qa.qa_id = seitou.qa_id");
