@@ -93,6 +93,17 @@ public class Constant {
 	public static final int QA_TYPE_N_ON_N = 3;	
 	
 	/**
+	 * 回答アクション
+	 */
+	public static final String ACTION_QA_TOUROKU = "問題を新規作成した";
+	public static final String ACTION_IMPORT_FREE_QA = "無料の問題をインポートした";
+	public static final String ACTION_IMPORT_PAYED_QA = "有料の問題をインポートした";
+	public static final String ACTION_CHANGE_RED_CLICK = "覚えたのでクリックで赤くした";
+	public static final String ACTION_CHANGE_WHITE_CLICK = "忘れたのでクリックして白くした";
+	public static final String ACTION_SEIKAI_INPUT = "入力して解いて正解した";
+	public static final String ACTION_HUSEIKAI_INPUT = "入力して解いて不正解した";
+	
+	/**
 	 * 公開範囲
 	 */
 	// 自分のみ

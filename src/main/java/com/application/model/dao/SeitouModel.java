@@ -1,8 +1,15 @@
 package com.application.model.dao;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Data;
 
 public @Data class SeitouModel {
+	
+    // 正答に紐づく回答オブジェクト
+    private List<KaitouModel> kaitou_list = new ArrayList<KaitouModel>();
+	
     // 行番号
     private int row_no;
     // 正答ID
@@ -37,7 +44,7 @@ public @Data class SeitouModel {
     private String create_timestamp;
     // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
     private String update_timestamp;
-
+    
 	/**
 	 * 所定のフォーマットでs_idを生成する
 	 * @param row_no

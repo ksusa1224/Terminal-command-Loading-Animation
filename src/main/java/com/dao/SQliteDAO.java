@@ -253,6 +253,8 @@ public class SQliteDAO {
 	      sql.appendLine("	qa_id text not null,");
 	      // 正答ID
 	      sql.appendLine("	s_id text,");
+	      // 正解フラグ
+	      sql.appendLine("   seikai_flg integer,");
 	      // アクション・・・チェックを入れた、外した、解いて正解した、解いて不正解、等
 	      sql.appendLine("	action text,");
 	      // アクション日時（H2DBのtimestampと同じフォーマットにする）
