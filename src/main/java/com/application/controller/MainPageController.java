@@ -182,7 +182,7 @@ public class MainPageController {
 			String seitou = seitou_list.get(0).getSeitou();
 			qa_html += "<span class='qa'>";
 			qa_html += "<span class='q'>" + mondai + "</span>";			
-			qa_html += "<span class='a'>" + seitou + "</span>";
+			qa_html += "<span class='a' onmouseover='this.style.opacity=1' onmouseout='this.style.opacity=0'>" + seitou + "</span>";
 			qa_html += "</span>";
 			
 //			// 問題から始まる場合

@@ -4,12 +4,32 @@
 <meta charset="UTF-8" />
 <title>暗記ノート</title>
 <link rel="stylesheet" type="text/css" th:href="@{../css/_main.css}" />
+<script type="text/javascript">
+function change_opacity (seitou) {
+	seitou.mouseout(function(){ return false});
+	if (seitou.style.opacity == 1)
+	{
+		seitou.style.opacity = 1;
+	}
+	else
+	{
+		seitou.style.opacity = 0;		
+	}
+}
+
+function mouseout (seitou) {
+	if (seitou.style.opacity == 1)
+	{
+		seitou.style.opacity = 0;
+	}
+}
+</script>
 </head>
-<body>
+<body onload="document.getElementById('mondai_input').focus()">
 暗記ノート本体<br />
 <form th:action="@{'/' + ${owner_id} + '/main.html'}" method="post">
-問題<input type="text" name="mondai" /><br />
-解答<input type="text" name="seitou" /><br />
+問題<input id="mondai_input" type="text" name="mondai" /><br />
+解答<input id="seitou_input" type="text" name="seitou" /><br />
 読むだけ問題<input type="checkbox" name="yomudake_flg" /><br />
 <button name="register" type="submit">問題登録</button>
 </form>
