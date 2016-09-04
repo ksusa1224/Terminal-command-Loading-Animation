@@ -69,7 +69,7 @@ public class MainPageController {
 				byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 				AES aes = new AES();
 				String owner_db = aes.decrypt(encrypted_owner_db);
-				String qa_html = generate_qa_html(select_qa_plus(owner_db));			
+				String qa_html = generate_qa_html(select_1_on_1_qa_plus(owner_db));			
 				model.addAttribute("qa_html", qa_html);
 				return "main";
 			}
@@ -129,9 +129,9 @@ public class MainPageController {
 
 			
 
-			model.addAttribute("qa_plus_list", select_qa_plus(owner_db));
+			//model.addAttribute("qa_plus_list", select_qa_plus(owner_db));
 			
-			String qa_html = generate_qa_html(select_qa_plus(owner_db));			
+			String qa_html = generate_qa_html(select_1_on_1_qa_plus(owner_db));			
 			model.addAttribute("qa_html", qa_html);
 			
 			if (request_url.equals(response_url))
@@ -149,6 +149,19 @@ public class MainPageController {
 		}
 	}
 
+	/**
+	 * 
+	 * @param owner_db
+	 * @return
+	 */
+	public List<QAPlusModel> select_1_on_1_qa_plus(String owner_db) {
+		QAPlusDao qa_plus_dao = new QAPlusDao();
+		List<QAPlusModel> qa_plus_list = new ArrayList<QAPlusModel>();
+		qa_plus_list = qa_plus_dao.select_1_on_1_qa_plus_list_speedy(owner_db, qa_plus_list);
+		return qa_plus_list;
+	}
+	
+	
 	/**
 	 * 
 	 * @param owner_db

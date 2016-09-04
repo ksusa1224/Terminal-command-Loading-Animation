@@ -24,6 +24,192 @@ public class QAPlusDao extends QADao {
 	 * @param qa_plus_list
 	 * @return
 	 */
+	public List<QAPlusModel> select_1_on_1_qa_plus_list_speedy(String db_name, List<QAPlusModel> qa_plus_list)
+	{
+		StopWatch stopwatch = new StopWatch();
+		stopwatch.start();
+
+		/**
+		 * 問題・正答を両方取得するには？UNIONは重いし多分使えないしな
+		 * QAに紐づく問題を取得、QAに紐づく正答を取得、で列がバラバラになるような感じ？
+		 */
+		SQliteDAO dao = new SQliteDAO();
+		
+		StringBuilderPlus sql = new StringBuilderPlus();
+		sql.appendLine("select * ");
+		sql.appendLine(" from qa, mondai, seitou");
+		sql.appendLine(" where qa.qa_id = mondai.qa_id");
+		sql.appendLine(" and qa.qa_id = seitou.qa_id");
+		
+		dao.loadDriver();
+		
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+	    try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+	      ResultSet rs = stmt.executeQuery(sql.toString());
+	      while (rs.next()) 
+	      {
+	    	  QAPlusModel qa_plus = new QAPlusModel();
+	    	  /**
+	    	   * QAテーブル
+	    	   */
+	    	  QAModel qa = new QAModel();
+		      // 行番号
+	    	  qa.setRow_no(rs.getInt("qa.row_no"));
+  	  		  // QA ID
+	    	  qa.setQa_id(rs.getString("qa.qa_id"));
+  	  		  // QAタイプ
+	    	  qa.setQa_type(rs.getInt("qa.qa_type"));
+		      // 読むだけ問題フラグ
+	    	  qa.setYomudake_flg(rs.getInt("qa.yomudake_flg"));
+	  	      // 問題と正答を入れ替えた結果生成された問題かどうか
+	    	  qa.setIs_reversible(rs.getInt("qa.is_reversible"));
+		      // 重要度（５段階）
+	    	  qa.setJuyoudo(rs.getInt("qa.juyoudo"));
+		      // 難易度（５段階）
+	    	  qa.setNanido(rs.getInt("qa.nanido"));
+		      // 問題文と正答のうち問題から始まるかのフラグ
+	    	  qa.setIs_start_with_q(rs.getInt("qa.is_start_with_q"));
+		      // 正答がたくさんある場合の問題文を分割した時の個数
+	    	  qa.setQ_split_cnt(rs.getInt("qa.q_split_cnt"));
+		      // 問題に紐づく正答の個数
+		      qa.setSeitou_cnt(rs.getInt("qa.seitou_cnt"));
+		      // 公開範囲
+		      qa.setKoukai_level(rs.getInt("qa.koukai_level"));
+		      // 無料販売フラグ
+		      qa.setFree_flg(rs.getInt("qa.free_flg"));
+		      // 無料配布した数
+		      qa.setFree_sold_num(rs.getInt("qa.free_sold_num"));
+		      // 有料販売フラグ
+		      qa.setCharge_sold_num(rs.getInt("qa.charge_flg"));
+		      // 有料で売った数
+		      qa.setCharge_sold_num(rs.getInt("qa.charge_sold_num"));
+		      // 削除フラグ
+		      qa.setDel_flg(rs.getInt("qa.del_flg"));
+		      // 作成者
+		      qa.setCreate_owner(rs.getString("qa.create_owner"));
+		      // 更新者
+		      qa.setUpdate_owner(rs.getString("qa.update_owner"));
+		      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+		      qa.setUpdate_timestamp(rs.getString("qa.create_timestamp"));
+		      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+		      qa.setUpdate_timestamp(rs.getString("qa.update_timestamp"));
+
+		      qa_plus.setQa(qa);
+		      
+		      /**
+		       * 問題テーブル
+		       */
+	    	  MondaiModel mondai = new MondaiModel();
+		      // 行番号
+	    	  mondai.setRow_no(rs.getInt("mondai.row_no"));
+	    	  // 問題ID
+	    	  mondai.setQ_id(rs.getString("mondai.q_id"));
+	    	  // QA ID
+	    	  mondai.setQa_id(rs.getString("mondai.qa_id"));
+	    	  // QA内での問題パーツの順番
+	    	  mondai.setJunban(rs.getInt("mondai.junban"));
+	    	  // 問題パーツが文字であるかのフラグ
+	    	  mondai.setIs_text_flg(rs.getInt("mondai.is_text_flg"));
+	    	  // 問題パーツがバイナリであるかのフラグ	    	  
+	    	  mondai.setIs_binary_flg(rs.getInt("mondai.is_binary_flg"));
+	    	  // 分割された問題文	    	  
+	    	  mondai.setQ_parts_text(rs.getString("mondai.q_parts_text"));
+	    	  // QAの中に出てくる音声や画像などのバイナリファイル	    	  
+	    	  mondai.setQ_parts_binary(rs.getBytes("mondai.q_parts_binary"));
+	    	  // 言語
+	    	  mondai.setLanguage(rs.getString("mondai.language"));
+	    	  // テキスト読み上げデータ
+	    	  mondai.setYomiage(rs.getBytes("mondai.yomiage"));
+	    	  // 削除フラグ
+		      mondai.setDel_flg(rs.getInt("mondai.del_flg"));
+		      // 作成者
+		      mondai.setCreate_owner(rs.getString("mondai.create_owner"));
+		      // 更新者
+		      mondai.setUpdate_owner(rs.getString("mondai.update_owner"));
+		      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+		      mondai.setUpdate_timestamp(rs.getString("mondai.create_timestamp"));
+		      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+		      mondai.setUpdate_timestamp(rs.getString("mondai.update_timestamp"));
+
+		     // qa_plus_list.add(qa_list);
+		      List<MondaiModel> mondai_list = new ArrayList<MondaiModel>();
+		      mondai_list.add(mondai);
+		      qa_plus.setMondai_list(mondai_list);
+		      
+		      /**
+		       * 正答テーブル
+		       */
+	    	  SeitouModel seitou = new SeitouModel();
+		      // 行番号
+	    	  seitou.setRow_no(rs.getInt("seitou.row_no"));
+		      // 正答ID
+	    	  seitou.setS_id(rs.getString("seitou.s_id"));
+		      // QA ID
+	    	  seitou.setQa_id(rs.getString("seitou.qa_id"));
+		      // QA内での正答の順番
+	    	  seitou.setJunban(rs.getInt("seitou.junban"));
+	    	  // 正答が文字であるかのフラグ
+	    	  seitou.setIs_text_flg(rs.getInt("seitou.is_text_flg"));
+	    	  // 正答がバイナリであるかのフラグ
+	    	  seitou.setIs_binary_flg(rs.getInt("seitou.is_binary_flg"));
+		      // 正答
+	    	  seitou.setSeitou(rs.getString("seitou.seitou"));
+	    	  // 正答が画像などのバイナリである場合に格納する
+	    	  seitou.setSeitou_binary(rs.getBytes("seitou.seitou_binary"));
+		      // 重要度（５段階）
+	    	  seitou.setJuyoudo(rs.getInt("seitou.juyoudo"));
+		      // 難易度（５段階）
+	    	  seitou.setNanido(rs.getInt("seitou.nanido"));
+	    	  // 言語
+	    	  seitou.setLanguage(rs.getString("seitou.language"));
+	    	  // テキスト読み上げデータ
+	    	  seitou.setYomiage(rs.getBytes("seitou.yomiage"));
+	    	  // 削除フラグ
+		      seitou.setDel_flg(rs.getInt("seitou.del_flg"));
+		      // 作成者
+		      seitou.setCreate_owner(rs.getString("seitou.create_owner"));
+		      // 更新者
+		      seitou.setUpdate_owner(rs.getString("seitou.update_owner"));
+		      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+		      seitou.setUpdate_timestamp(rs.getString("seitou.create_timestamp"));
+		      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+		      seitou.setUpdate_timestamp(rs.getString("seitou.update_timestamp"));
+		      
+		      List<SeitouModel> seitou_list = new ArrayList<SeitouModel>();
+		      seitou_list.add(seitou);
+		      qa_plus.setSeitou_list(seitou_list);
+		      
+		      qa_plus_list.add(qa_plus);
+	      }
+	    }
+	    catch(Exception ex)
+	    {
+	    	//TODO ログ出力
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+	    }	    		
+
+		stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());
+		return qa_plus_list;
+	}	
+	
+	/**
+	 * 
+	 * @param db_name
+	 * @param qa_plus_list
+	 * @return
+	 */
 	public List<QAPlusModel> select_qa_plus_list(String db_name, List<QAPlusModel> qa_plus_list)
 	{
 		StopWatch stopwatch = new StopWatch();
