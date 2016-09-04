@@ -86,6 +86,8 @@ public class QAPlusDao extends QADao {
 		sql.appendLine("	yomudake_flg,");
 		// 問題と正答を入れ替えた結果生成された問題かどうか
 		sql.appendLine("    is_reversible,");
+	    // 広告問題フラグ
+	    sql.appendLine("  koukoku_flg,");	      
 		// 重要度（５段階）
 		sql.appendLine("	juyoudo,");
 		// 難易度（５段階）
@@ -129,6 +131,8 @@ public class QAPlusDao extends QADao {
 		sql.appendLine("" + qa.getYomudake_flg() + ",");
 		// 問題と正答を入れ替えた結果生成された問題かどうか
 		sql.appendLine("" + qa.getIs_reversible() + ",");
+	    // 広告問題フラグ
+	    sql.appendLine("" + qa.getKoukoku_flg() + ",");	      
 		// 重要度（５段階）
 		sql.appendLine("" + qa.getJuyoudo() + ",");
 		// 難易度（５段階）

@@ -88,6 +88,8 @@ public class QADao {
 		sql.appendLine("	yomudake_flg,");
 	    // 問題と正答を入れ替えた結果生成された問題かどうか
 	    sql.appendLine("    is_reversible,");
+	    // 広告問題フラグ
+	    sql.appendLine("  koukoku_flg,");
 		// 重要度（５段階）
 		sql.appendLine("	juyoudo,");
 		// 難易度（５段階）
@@ -148,6 +150,8 @@ public class QADao {
 	    	  qa.setYomudake_flg(rs.getInt("yomudake_flg"));
 	  	      // 問題と正答を入れ替えた結果生成された問題かどうか
 	    	  qa.setIs_reversible(rs.getInt("is_reversible"));
+		      // 広告問題フラグ
+	    	  qa.setKoukoku_flg(rs.getInt("koukoku_flg"));
 		      // 重要度（５段階）
 	    	  qa.setJuyoudo(rs.getInt("juyoudo"));
 		      // 難易度（５段階）
@@ -224,6 +228,8 @@ public class QADao {
 		sql.appendLine("	yomudake_flg,");
 		// 問題と正答を入れ替えた結果生成された問題かどうか
 		sql.appendLine("    is_reversible,");
+	    // 広告問題フラグ
+	    sql.appendLine("  koukoku_flg,");	      
 		// 重要度（５段階）
 		sql.appendLine("	juyoudo,");
 		// 難易度（５段階）
@@ -267,6 +273,8 @@ public class QADao {
 		sql.appendLine("" + qa.getYomudake_flg() + ",");
 		// 問題と正答を入れ替えた結果生成された問題かどうか
 		sql.appendLine("" + qa.getIs_reversible() + ",");
+	    // 広告問題フラグ
+	    sql.appendLine("" + qa.getKoukoku_flg() + ",");    
 		// 重要度（５段階）
 		sql.appendLine("" + qa.getJuyoudo() + ",");
 		// 難易度（５段階）
@@ -353,6 +361,8 @@ public class QADao {
 		sql.appendLine("  yomudake_flg = " + qa.getYomudake_flg() + ",");
 		// 問題と正答を入れ替えた結果生成された問題かどうか
 		sql.appendLine("  is_reversible = " + qa.getIs_reversible() + ",");
+	    // 広告問題フラグ
+	    sql.appendLine("  koukoku_flg = " + qa.getKoukoku_flg() + ",");
 		// 重要度（５段階）
 		sql.appendLine("  juyoudo = " + qa.getJuyoudo() + ",");
 		// 難易度（５段階）

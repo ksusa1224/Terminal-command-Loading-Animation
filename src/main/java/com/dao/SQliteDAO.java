@@ -112,6 +112,8 @@ public class SQliteDAO {
 	      sql.appendLine("	yomudake_flg integer default 0,");
 	      // 問題と正答を入れ替えた結果生成された問題かどうか
 	      sql.appendLine("  is_reversible integer default 0,");
+	      // 広告問題フラグ
+	      sql.appendLine("  koukoku_flg integer default 0,");	      
 	      // 重要度（５段階）
 	      sql.appendLine("	juyoudo integer default 3,");
 	      // 難易度（５段階）

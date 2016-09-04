@@ -30,6 +30,11 @@ public @Data class QAModel {
 	private int is_reversible;
 	
     /**
+     *  広告問題フラグ
+     */
+	private int koukoku_flg;
+	
+    /**
      *  重要度（５段階）
      */
 	private int juyoudo;

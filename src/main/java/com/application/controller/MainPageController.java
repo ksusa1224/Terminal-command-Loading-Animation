@@ -235,6 +235,8 @@ public class MainPageController {
 		qa.setYomudake_flg(0);
 	    // 問題と正答を入れ替えた結果生成された問題かどうか
 		qa.setIs_reversible(0);
+	    // 広告問題フラグ
+		qa.setKoukoku_flg(0);
 		// 重要度（５段階）
 		qa.setJuyoudo(3);
 		// 難易度（５段階）
