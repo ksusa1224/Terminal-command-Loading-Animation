@@ -13,7 +13,9 @@
 読むだけ問題<input type="checkbox" name="yomudake_flg" /><br />
 <button name="register" type="submit">問題登録</button>
 </form>
-<hr />
-<div th:utext="${qa_html}"></div>
+<br />
+<div id="top_border"></div>
+<span id="qa_area" th:utext="${qa_html}"></span>
+<div id="bottom_border"></div>
 </body>
 </html>

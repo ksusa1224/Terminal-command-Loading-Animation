@@ -6,19 +6,45 @@ body{
     font-family:"ＭＳ Ｐ明朝", "MS PMincho", "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", serif;
 }
 
+#qa_area
+{
+    display: block;
+	line-height: 1;	
+	border-collapse:collapse;
+}
+
 .qa
 {
-	border-bottom:#000000 1px solid;
-	line-height:13px;
+	display: inline-block;
+	padding-top: 5px;
+	padding-bottom: 1px;
+	padding-left: 5px;
+	padding-right: 5px;
+	border-bottom:#9B9EA6 1px solid;
+	border-right:#9B9EA6 1px solid;
 }
 
 .q
 {
-	color:#0000FF;
+	display: inline-block;
+	color:#202DA2;
+	padding-right: 5px;
 }
 
 .a
 {
+	display: inline-block;
 	color:#FF0000;
-	border-right:#111111 1px solid;
 }
+
+#top_border
+{
+	border-top:#9B9EA6 1px solid;
+}
+
+#bottom_border
+{
+	border-bottom:#9B9EA6 1px solid;
+	margin-top: -1px;
+}
+

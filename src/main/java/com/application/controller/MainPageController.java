@@ -180,9 +180,9 @@ public class MainPageController {
 			seitou_list = qa_plus.getSeitou_list();
 			String mondai = mondai_list.get(0).getQ_parts_text();
 			String seitou = seitou_list.get(0).getSeitou();
-			qa_html += "<span class='qa'>&nbsp;";
-			qa_html += "<span class='q'>" + mondai + "</span>&nbsp;";			
-			qa_html += "<span class='a'>" + seitou + "&nbsp;</span>";
+			qa_html += "<span class='qa'>";
+			qa_html += "<span class='q'>" + mondai + "</span>";			
+			qa_html += "<span class='a'>" + seitou + "</span>";
 			qa_html += "</span>";
 			
 //			// 問題から始まる場合
