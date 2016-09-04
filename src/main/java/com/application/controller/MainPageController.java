@@ -77,7 +77,8 @@ public class MainPageController {
 		if(owner_id.equals(session_owner_id) && is_authenticated == true)		
 		{
 			create_1_on_1_qa(owner_id, owner_db, mondai, seitou);
-			//model.addAttribute("qa_list", qa_list);
+			List<QAPlusModel> qa_plus_list = new ArrayList<QAPlusModel>();
+			//model.addAttribute("qa_plus_list", qa_plus_list);
 			if (request_url.equals(response_url))
 			{
 				return "main";
