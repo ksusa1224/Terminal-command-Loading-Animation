@@ -212,8 +212,12 @@ public class MainPageController {
 								String mondai_input, 
 								String seitou_input) 
 	{
-		QAPlusModel qa_plus = new QAPlusModel();
+		if (mondai_input.equals("") || seitou_input.equals(""))
+		{
+			return;
+		}
 		
+		QAPlusModel qa_plus = new QAPlusModel();		
 		
 		/**
 		 * QA
