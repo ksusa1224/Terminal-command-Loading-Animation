@@ -116,5 +116,10 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
 <div id="top_border"></div>
 <span id="qa_area" th:utext="${qa_html}"></span>
 <div id="bottom_border"></div>
+<!--
+<div th:utext="${qa_html}" style="width:1663px;height:1174px;'" th:style="'background: url(' + @̣{../img/notebook.png} + ') repeat-y right; width: 6px;'"></div>
+<div th:style="background: url(' + @̣{../img/notebook.png} + ')"></div>
+-->
+<div th:utext="${qa_html}" th:style="'background:url(' + @{../img/notebook.png} + ');width:831px;height:587px;background-size: 831px 587px;'"></div>
 </body>
 </html>
