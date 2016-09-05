@@ -5,83 +5,6 @@
 <title>Insert title here</title>
 <link rel="stylesheet" type="text/css" th:href="@{css/_index.css}" />
 <script type="text/javascript">
-// QA再生制御関数　動作仕様：
-// ①１回目にクリックしたときリピート再生する
-// ②止めたいときはその問題文かどこかしらの問題文をクリックする
-// ③もう１度リピート再生するにはまた問題文をどこかしらクリックする
-var play_mode_cnt = 0;
-function control_qa_saisei(mondaibun__,kaitou__,q_gengo,a_gengo)
-{
-	play_mode_cnt ++;
-
-	// 奇数回目の問題文クリックの場合
-	if (play_mode_cnt % 2 == 1)
-	{
-		play_mode = "repeat";			
-	}
-	// 偶数回目の問題文クリックの場合
-	else
-	{
-		play_mode = "stop";
-	}
-
-	if (play_mode == "repeat")
-	{
-		qa_saisei(mondaibun__,kaitou__,q_gengo,a_gengo,play_mode);
-	}
-	else if (play_mode == "stop")
-	{
-		window.speechSynthesis.cancel();			
-	}
-}
-
-function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
-{
-	var q_msg = new SpeechSynthesisUtterance(mondaibun_);
-	var voices = window.speechSynthesis.getVoices();
- 	if (q_gengo_ == "日本語")
-	{
-        q_msg.default = false;
-// 		q_msg.voice = voices[46]; // Otoya
-		q_msg.volume = 0.4;
-		q_msg.pitch = 0.9;
-		q_msg.lang = "ja-JP";
-	}else
-	{
-        q_msg.default = false;
-		q_msg.voice = voices[62];//Vicky
-		q_msg.volume = 1;
-		q_msg.lang = "en-US";
-	}
-	window.speechSynthesis.speak(q_msg);
-
-	var a_msg = new SpeechSynthesisUtterance(kaitou_);
-	if (a_gengo_ == "日本語")
-	{
-		a_msg.lang = "ja-JP";
- 		//a_msg.voice = voices[46]; // Otoya
-		a_msg.volume = 0.4;
-		a_msg.pitch = 0.9;
-		window.speechSynthesis.speak(a_msg);
-	}
-//	else if (a_gengo == "読むだけ")
-//	{
-		// 読むだけ問題の正答は読み上げない
-//	}
-	else
-	{
-        a_msg.default = false;
-		a_msg.voice = voices[62];//Vicky
-		a_msg.volume = 1;
-		a_msg.lang = "en-US";
-		window.speechSynthesis.speak(a_msg);		
-	}
-	
-	if (play_mode == "repeat")
-	{
-		qa_saisei(mondaibun_,kaitou_,q_gengo_,a_gengo_,play_mode);
-	}
-}
 </script>
 </head>
 <body>
@@ -99,7 +22,5 @@ E-mail<input type="text" name="email" /><br />
 <button name="login" type="submit">ログイン</button>
 </form>
 <hr />
-<input type="button" onclick="control_qa_saisei('frame work', 'フレームワーク','英語','日本語');" />
-<p th:text="${#strings.toUpperCase('Hello World')}">test</p>
 </body>
 </html>
