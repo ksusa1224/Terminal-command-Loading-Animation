@@ -104,22 +104,73 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
 
 </script>
 </head>
-<body onload="document.getElementById('mondai_input').focus()">
+<body onload="document.getElementById('mondai_input').focus()" th:style="'background:url(' + @{../img/notebook-table.jpg} + ');background-size:100%'">
+<br />
+<!--
 暗記ノート本体<br />
+<div id="top_border"></div>
+<span id="qa_area" th:utext="${qa_html}"></span>
+<div id="bottom_border"></div>
+<div th:utext="${qa_html}" style="width:1663px;height:1174px;'" th:style="'background: url(' + @̣{../img/notebook.png} + ') repeat-y right; width: 6px;'"></div>
+<div th:style="background: url(' + @̣{../img/notebook.png} + ')"></div>
+<div th:utext="${qa_html2}" th:style="'background:url(' + @{../img/notebook2.png} + ');width:831px;height:587px;background-size: 831px 587px;'"></div>
+-->
+ <div style="width:355px;padding-top:100px;padding-left:65px;">
+  <div id="top_border"></div>
+  <span id="qa_area" th:utext="${qa_html}"></span>
+  <div id="bottom_border"></div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+ </div>
+ <div style="width:355px;top:109px;right:417px;position:absolute;">
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+  <div id="bottom_border">&nbsp;</div>
+ </div>
+ <br />
+<div style="position:absolute;right:30px;top:100px;background-color:white;padding:20px;">
 <form th:action="@{'/' + ${owner_id} + '/main.html'}" method="post">
 問題<input id="mondai_input" type="text" name="mondai" /><br />
 解答<input id="seitou_input" type="text" name="seitou" /><br />
 読むだけ問題<input type="checkbox" name="yomudake_flg" /><br />
 <button name="register" type="submit">問題登録</button>
 </form>
-<br />
-<div id="top_border"></div>
-<span id="qa_area" th:utext="${qa_html}"></span>
-<div id="bottom_border"></div>
-<!--
-<div th:utext="${qa_html}" style="width:1663px;height:1174px;'" th:style="'background: url(' + @̣{../img/notebook.png} + ') repeat-y right; width: 6px;'"></div>
-<div th:style="background: url(' + @̣{../img/notebook.png} + ')"></div>
--->
-<div th:utext="${qa_html}" th:style="'background:url(' + @{../img/notebook.png} + ');width:831px;height:587px;background-size: 831px 587px;'"></div>
+</div>
 </body>
 </html>

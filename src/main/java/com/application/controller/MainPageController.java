@@ -199,6 +199,7 @@ public class MainPageController {
 			qa_html += "<span class='q' onclick=\"control_qa_saisei('" + mondai + "', '" + seitou + "','" + q_lang + "','" + a_lang + "');\"'>" + mondai + "</span>";			
 			qa_html += "<span class='a' onmouseover='this.style.opacity=1' onmouseout='this.style.opacity=0'>" + seitou + "</span>";
 			qa_html += "</span>";
+			qa_html += "<div id='bottom_border' style='width:100%'></div>";
 			
 //			// 問題から始まる場合
 //			if (qa.getIs_start_with_q() == 1)
