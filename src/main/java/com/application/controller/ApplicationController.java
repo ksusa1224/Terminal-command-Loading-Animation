@@ -50,5 +50,29 @@ public class ApplicationController {
 		{
 			return "redirect:" + response_url;
 		}
-	}	
+	}
+	
+	/**
+	 * 3DCGサンプル
+	 * @return
+	 */
+	@RequestMapping(value={
+			   "/slime",
+			   "/slime.html",
+			   "/slime.htm"}, 
+			   method=RequestMethod.GET)
+	public String cat(HttpServletRequest request)
+	{
+		String request_url = request.getRequestURI();
+		String response_url = "/slime.html";
+		
+		if (request_url.equals(response_url))
+		{
+			return "slime";
+		}
+		else
+		{
+			return "redirect:" + response_url;
+		}
+	}
 }

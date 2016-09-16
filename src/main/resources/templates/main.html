@@ -164,7 +164,21 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
   <div id="bottom_border">&nbsp;</div>
  </div>
  <br />
-<div style="position:absolute;right:30px;top:100px;background-color:white;padding:20px;">
+<div style="position:absolute;right:58px;top:300px;padding:20px;">
+<img th:src="@{../img/eraser.png}" style="z-index:100;width:130px" />
+</div> 
+<!--
+<div style="position:absolute;right:300px;top:200px;padding:20px;">
+<img th:src="@{../img/music_pen.png}" style="z-index:100;width:50px" />
+</div> 
+-->
+<div style="position:absolute;right:160px;top:500px;padding:20px;">
+<img th:src="@{../img/smileslime.png}" style="z-index:100;width:150px" />
+</div> 
+<div style="position:absolute;right:40px;top:40px;">
+<img th:src="@{../img/qa_panel.png}" style="z-index:100;width:300px" />
+</div> 
+<div style="position:absolute;right:100px;top:100px;padding:20px;">
 <form th:action="@{'/' + ${owner_id} + '/main.html'}" method="post">
 問題<input id="mondai_input" type="text" name="mondai" /><br />
 解答<input id="seitou_input" type="text" name="seitou" /><br />
