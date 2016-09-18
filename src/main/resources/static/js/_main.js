@@ -12,12 +12,12 @@ var id = 2;
 
 // 漢字変換後にEnterを押したときにペンの色が変わる
 function enter (obj){
-	$("input").autoresize({padding:0,minWidth:0,maxWidth:1000});
+	//$("input").autoresize({padding:0,minWidth:0,maxWidth:1000});
 	if (window.event.keyCode == 13)
 	{
-		var q_parts = "<input class='q_input' id='" + id + "'>&#8203;</input>";
-		var a_parts = "<input class='a_input' id='" + id + "'>&#8203;</input>";
-		var last = $("#qa_input input:last").attr('class');
+		var q_parts = "<span class='q_input' id='" + id + "'>&#8203;</span>";
+		var a_parts = "<span class='a_input' id='" + id + "'>&#8203;</span>";
+		var last = $("#qa_input span:last").attr('class');
 		if (id == 2)
 		{			
 			$("#qa_input").append(a_parts);	
@@ -31,7 +31,8 @@ function enter (obj){
 			$("#qa_input").append(q_parts);						
 		}		
 		//focus_id(id);
-		$("#"+id).focus();
+//		$("#"+id).focus();
+		focus_last();
 		id++;
 		event.preventDefault();
 	}
