@@ -1,6 +1,6 @@
 ﻿function qa_focus(obj)
 {
-	focus_last();
+	//focus_last();
 }
 
 $(document).keypress(function(e) {
@@ -9,41 +9,106 @@ $(document).keypress(function(e) {
 
 //QA内でのパーツの順番
 var id = 2;
+var q_parts = "<span class='q_input' id='" + id + "'>&#8203;</span>";
+var a_parts = "<span class='a_input' id='" + id + "'>&#8203;</span>";
 
 // 漢字変換後にEnterを押したときにペンの色が変わる
 function enter (obj){
+	if (id ==2)
+	{
+//		focus_last();
+	}
 	//$("input").autoresize({padding:0,minWidth:0,maxWidth:1000});
 	if (window.event.keyCode == 13)
 	{
-		var q_parts = "<span class='q_input' id='" + id + "'>&#8203;</span>";
-		var a_parts = "<span class='a_input' id='" + id + "'>&#8203;</span>";
 		var last = $("#qa_input span:last").attr('class');
 		if (id == 2)
-		{			
+		{	
+			alert(2);
 			$("#qa_input").append(a_parts);	
+//			event.preventDefault();
+			focus_last(true);
+			id++;
+			/*
+			$("obj").trigger($.Event("keypress", { keyCode: 13 }));
+			$.Event("keypress", { keyCode: 13 });
+			$.Event("keypress", { keyCode: 13 });
+			*/
 		}	
 		else if (last == "q_input")
 		{
+			alert("a");
 			$("#qa_input").append(a_parts);	
+			focus_last(false);
+			id++;
 		}
 		else if (last == "a_input")
 		{
+			alert("q");
 			$("#qa_input").append(q_parts);						
+			focus_last(false);
+			id++;
 		}		
 		//focus_id(id);
 //		$("#"+id).focus();
-		focus_last();
-		id++;
 		event.preventDefault();
 	}
 	// win backspace / mac delete・・・実装できていない
 	else if (window.event.keyCode == 8)
 	{
+		/*
 		e.preventDefault();
 		alert("delete");
 		obj.focus();
+		*/
 	}
 }
+
+function focus_last(first_flg){
+	$("#qa_input").append(a_parts);	
+	var node = document.querySelector("#qa_input");
+	node.focus();
+	var textNode = null;
+	if (first_flg == true)
+	{
+		alert("true");
+		textNode = node.lastChild;
+		//alert(textNode);
+	}
+	else
+	{
+		alert("false");
+		textNode = node.lastChild;
+	}
+	var caret = 0; // insert caret after the 10th character say
+	var range = document.createRange();
+/*	
+	var range = window.getSelection().getRangeAt(0),
+	  content = range.extractContents(),
+	     span = document.createElement('SPAN');	
+	*/
+	alert(textNode);
+	range.setStart(textNode, caret);
+	range.setEnd(textNode, caret);
+	var sel = window.getSelection();
+	sel.removeAllRanges();
+	sel.addRange(range);
+}
+
+function focus_next(){
+	var node = document.querySelector("#qa_input");
+	node.focus();
+	var textNode = node.firstChild;
+	
+	var caret = 0; // insert caret after the 10th character say
+	var range = document.createRange();
+	range.setStart(textNode, caret);
+	range.setEnd(textNode, caret);
+	var sel = window.getSelection();
+	sel.removeAllRanges();
+	sel.addRange(range);	
+}
+
 
 function focus_id(_id)
 {
@@ -60,7 +125,7 @@ function focus_id(_id)
 	sel.removeAllRanges();
 	sel.addRange(range);	
 }
-
+/*
 //JQuery plugin:
 $.fn.textWidth = function(_text, _font){//get width of text with font.  usage: $("div").textWidth();
         var fakeEl = $('<span>').hide().appendTo(document.body).text(_text || this.val() || this.text()).css('font', _font || this.css('font')),
@@ -76,21 +141,8 @@ $.fn.autoresize = function(options){//resizes elements based on content size.  u
   }).trigger('input');
   return this;
 }
+*/
 
-function focus_last(){
-	var node = document.querySelector("#qa_input");
-	node.focus();
-	var textNode = node.lastChild;
-	//alert(textNode);
-	
-	var caret = 0; // insert caret after the 10th character say
-	var range = document.createRange();
-	range.setStart(textNode, caret);
-	range.setEnd(textNode, caret);
-	var sel = window.getSelection();
-	sel.removeAllRanges();
-	sel.addRange(range);	
-}
 
 
 var gl; // A global variable for the WebGL context
