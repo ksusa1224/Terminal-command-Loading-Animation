@@ -9,85 +9,53 @@ $(document).keypress(function(e) {
 
 //QA内でのパーツの順番
 var id = 2;
-var q_parts = "<span class='q_input' id='" + id + "'>&#8203;</span>";
-var a_parts = "<span class='a_input' id='" + id + "'>&#8203;</span>";
-
 // 漢字変換後にEnterを押したときにペンの色が変わる
 function enter (obj){
-	if (id ==2)
-	{
-//		focus_last();
-	}
-	//$("input").autoresize({padding:0,minWidth:0,maxWidth:1000});
+	var q_parts = "<span class='q_input' id='" + id + "'>&#8203;</span>";
+	var a_parts = "<span class='a_input' id='" + id + "'>&#8203;</span>";
+	var last = $("#qa_input span:last").attr('class');
+	if (id == 2)
+	{	
+		$("#qa_input").append("<span class='q_input' id='1'>&#8203;</span>");	
+		$("#qa_input").append(a_parts);	
+		focus_last();
+		id++;
+	}	
 	if (window.event.keyCode == 13)
 	{
-		var last = $("#qa_input span:last").attr('class');
-		if (id == 2)
-		{	
-			alert(2);
-			$("#qa_input").append(a_parts);	
-//			event.preventDefault();
-			focus_last(true);
-			id++;
-			/*
-			$("obj").trigger($.Event("keypress", { keyCode: 13 }));
-			$.Event("keypress", { keyCode: 13 });
-			$.Event("keypress", { keyCode: 13 });
-			*/
-		}	
-		else if (last == "q_input")
+		if (last == "q_input")
 		{
-			alert("a");
+			//$("#2").remove();
+			//alert("q");
 			$("#qa_input").append(a_parts);	
-			focus_last(false);
+			focus_last();
 			id++;
 		}
 		else if (last == "a_input")
 		{
-			alert("q");
+	//		alert("q");
 			$("#qa_input").append(q_parts);						
-			focus_last(false);
+			focus_last();
 			id++;
 		}		
-		//focus_id(id);
-//		$("#"+id).focus();
 		event.preventDefault();
 	}
 	// win backspace / mac delete・・・実装できていない
 	else if (window.event.keyCode == 8)
 	{
-		/*
 		e.preventDefault();
 		alert("delete");
-		obj.focus();
-		*/
+		obj.focus();		
 	}
 }
 
-function focus_last(first_flg){
-	$("#qa_input").append(a_parts);	
+function focus_last(){
 	var node = document.querySelector("#qa_input");
 	node.focus();
 	var textNode = null;
-	if (first_flg == true)
-	{
-		alert("true");
-		textNode = node.lastChild;
-		//alert(textNode);
-	}
-	else
-	{
-		alert("false");
-		textNode = node.lastChild;
-	}
+	textNode = node.lastChild;
 	var caret = 0; // insert caret after the 10th character say
 	var range = document.createRange();
-/*	
-	var range = window.getSelection().getRangeAt(0),
-	  content = range.extractContents(),
-	     span = document.createElement('SPAN');	
-	*/
-	alert(textNode);
 	range.setStart(textNode, caret);
 	range.setEnd(textNode, caret);
 	var sel = window.getSelection();
