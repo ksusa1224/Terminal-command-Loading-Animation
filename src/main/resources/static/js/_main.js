@@ -30,39 +30,28 @@ function enter (obj){
 
 	if (window.event.keyCode == 13)
 	{
-		var q_parts = "<span class='q_input'>&#8203;</span>";
+		var q_parts = "<span class='q_input' id='" + id + "'>&#8203;</span>";
 		var a_parts = "<span class='a_input' id='" + id + "'>&#8203;</span>";
 		//alert($("#qa_input span:last").attr('class'));
-		if ($("#qa_input span:last").attr('class') == "q_input")
+		if (id == 2)
+		{			
+			$("#qa_input").append(a_parts);	
+			$("#"+id).focus();
+			id++;
+		}		
+		else if ($("#qa_input span:last").attr('class') == "q_input")
 		{
-			if ($("#qa_input span:last").attr('id') == "first")
-			{
-				//alert("first");
-				$("#qa_input").append(a_parts);	
-				//focus_last();
-				$("#2").focus();
-				//$("#qa_input span:last").focus();
-			}
-			else
-			{
-				$("#qa_input").append(a_parts);	
-				$("#qa_input span:last").focus();
-				//focus_last();
-			}
+			$("#qa_input").append(a_parts);	
 		}
-		else
+		else if ($("#qa_input span:last").attr('class') == "a_input")
 		{
-			$("#qa_input").append(q_parts);						
-			$("#qa_input span:last").focus();
-			focus_last();
+			$("#qa_input").append(q_parts);									
 		}
-		//$("#qa_input span:last").setCursorPosition(1);
+		$("#"+id).focus();
+		id++;
 		
 		event.preventDefault();
-	}
-	else
-	{
-		//alert("else");
+		return false;
 	}
 }
 

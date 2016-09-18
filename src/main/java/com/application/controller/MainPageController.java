@@ -104,8 +104,8 @@ public class MainPageController {
 						HttpServletRequest request, 
 						HttpSession session,
 						Model model,
-						@RequestParam("mondai") String mondai,
-						@RequestParam("seitou") String seitou) {
+						@RequestParam("mondai") String[] mondai,
+						@RequestParam("seitou") String[] seitou) {
 		System.out.println("test");
 		
 		String request_url = request.getRequestURI();
@@ -125,7 +125,7 @@ public class MainPageController {
 		
 		if(owner_id.equals(session_owner_id) && is_authenticated == true)		
 		{
-			create_1_on_1_qa(owner_id, owner_db, mondai, seitou);
+			//create_1_on_1_qa(owner_id, owner_db, mondai, seitou);
 
 			
 

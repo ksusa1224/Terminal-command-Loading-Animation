@@ -33,11 +33,13 @@ box-shadow: 0 0 10px #8fbfe6;
 
 .q_input
 {
+	width:10px;
 	color:#202DA2;
 }
 
 .a_input
 {
+	width:10px;
 	color:#FF0000;	
 }
 
