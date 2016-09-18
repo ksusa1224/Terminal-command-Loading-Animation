@@ -20,38 +20,31 @@
 }
 
 
-// QA内でのパーツの順番
+//QA内でのパーツの順番
 var id = 2;
 
 // 漢字変換後にEnterを押したときにペンの色が変わる
 function enter (obj){
-//	var q_parts = "<span class='q_input'>&nbsp;</span>";
-//	$("#qa_input").append(q_parts);
-
 	if (window.event.keyCode == 13)
 	{
-		var q_parts = "<span class='q_input' id='" + id + "'>&#8203;</span>";
-		var a_parts = "<span class='a_input' id='" + id + "'>&#8203;</span>";
-		//alert($("#qa_input span:last").attr('class'));
+		var q_parts = "<input type='text' class='q_input' id='" + id + "'>&#8203;</input>";
+		var a_parts = "<input type='text' class='a_input' id='" + id + "'>&#8203;</input>";
+		var last = $("#qa_input input:last").attr('class');
 		if (id == 2)
 		{			
 			$("#qa_input").append(a_parts);	
-			$("#"+id).focus();
-			id++;
-		}		
-		else if ($("#qa_input span:last").attr('class') == "q_input")
+		}	
+		else if (last == "q_input")
 		{
 			$("#qa_input").append(a_parts);	
 		}
-		else if ($("#qa_input span:last").attr('class') == "a_input")
+		else if (last == "a_input")
 		{
-			$("#qa_input").append(q_parts);									
-		}
+			$("#qa_input").append(q_parts);						
+		}		
 		$("#"+id).focus();
 		id++;
-		
 		event.preventDefault();
-		return false;
 	}
 }
 

@@ -24,23 +24,22 @@ body{
 	border-right:#9B9EA6 1px solid;
 }
 
-#qa_area {
-border-color: #83b4db;
-box-shadow: 0 0 10px #8fbfe6;
--moz-box-shadow: 0 0 10px #8fbfe6;
--webkit-box-shadow: 0 0 10px #8fbfe6;
+textarea:focus, input:focus{
+    outline: none;
 }
 
 .q_input
 {
-	width:10px;
+	border:none;
 	color:#202DA2;
+	background:transparent;
 }
 
 .a_input
 {
-	width:10px;
+	border:none;
 	color:#FF0000;	
+	background:transparent;
 }
 
 .q

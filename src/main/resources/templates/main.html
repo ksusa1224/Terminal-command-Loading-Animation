@@ -4,7 +4,8 @@
 <meta charset="UTF-8" />
 <title>暗記ノート</title>
 <link rel="stylesheet" type="text/css" th:href="@{../css/_main.css}" />
-<script type="text/javascript" th:src="@{../js/jquery-3.1.0.min.js}"></script>
+<script th:src="@{../js/_main.js}"></script>
+<script th:src="@{../js/jquery-3.1.0.min.js}"></script>
 <script type="text/javascript">
 
 function change_opacity (seitou) {
@@ -114,7 +115,7 @@ function copyContent () {
 
 </script>
 </head>
-<body onload="document.getElementById('qa_input').focus()" th:style="'background:url(' + @{../img/notebook-table.jpg} + ');background-size:100%'">
+<body onload="javascript:document.getElementById('1').focus();" th:style="'background:url(' + @{../img/notebook-table.jpg} + ');background-size:100%'">
 <br />
 <!--
 <div id="top_border"></div>
@@ -200,9 +201,7 @@ function copyContent () {
 QA. 
 
 <!--/* QA文登録エリア start */-->
-<div id="qa_input" contenteditable="true" style="width:250px;" onkeypress="javascript:enter(this);">	
-<span class='q_input' id="1">&#8203;</span>
-</div>
+<div id="qa_input" contenteditable="true" style="width:250px;" onkeypress="javascript:enter(this);"><input type='text' class='q_input' id="1">&#8203;</input></div>
 <!--
 <textarea id="qa_input_hidden" name="qa_input_hidden" style="display:none;">
 </textarea>
