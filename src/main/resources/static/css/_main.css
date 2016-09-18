@@ -24,6 +24,23 @@ body{
 	border-right:#9B9EA6 1px solid;
 }
 
+#qa_area {
+border-color: #83b4db;
+box-shadow: 0 0 10px #8fbfe6;
+-moz-box-shadow: 0 0 10px #8fbfe6;
+-webkit-box-shadow: 0 0 10px #8fbfe6;
+}
+
+.q_input
+{
+	color:#202DA2;
+}
+
+.a_input
+{
+	color:#FF0000;	
+}
+
 .q
 {
 	display: inline-block;

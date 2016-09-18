@@ -1,4 +1,88 @@
-﻿var gl; // A global variable for the WebGL context
+﻿function qa_focus(obj)
+{
+	alert("focus");
+	var q_parts = "<span class='q_input'>&#8203;</span>";
+	$("#qa_input").append(q_parts);						
+
+	var node = document.querySelector("#qa_input");
+	//node.focus();
+	var textNode = node.lastChild;
+	/*
+	var caret = 0; // insert caret after the 10th character say
+	var range = document.createRange();
+	range.setStart(textNode, caret);
+	range.setEnd(textNode, caret);
+	var sel = window.getSelection();
+	sel.removeAllRanges();
+	//sel.addRange(range);
+	event.preventDefault();	
+	*/
+}
+
+
+// QA内でのパーツの順番
+var id = 2;
+
+// 漢字変換後にEnterを押したときにペンの色が変わる
+function enter (obj){
+//	var q_parts = "<span class='q_input'>&nbsp;</span>";
+//	$("#qa_input").append(q_parts);
+
+	if (window.event.keyCode == 13)
+	{
+		var q_parts = "<span class='q_input'>&#8203;</span>";
+		var a_parts = "<span class='a_input' id='" + id + "'>&#8203;</span>";
+		//alert($("#qa_input span:last").attr('class'));
+		if ($("#qa_input span:last").attr('class') == "q_input")
+		{
+			if ($("#qa_input span:last").attr('id') == "first")
+			{
+				//alert("first");
+				$("#qa_input").append(a_parts);	
+				//focus_last();
+				$("#2").focus();
+				//$("#qa_input span:last").focus();
+			}
+			else
+			{
+				$("#qa_input").append(a_parts);	
+				$("#qa_input span:last").focus();
+				//focus_last();
+			}
+		}
+		else
+		{
+			$("#qa_input").append(q_parts);						
+			$("#qa_input span:last").focus();
+			focus_last();
+		}
+		//$("#qa_input span:last").setCursorPosition(1);
+		
+		event.preventDefault();
+	}
+	else
+	{
+		//alert("else");
+	}
+}
+
+function focus_last(){
+	var node = document.querySelector("#qa_input");
+	node.focus();
+	var textNode = node.lastChild;
+	//alert(textNode);
+	
+	var caret = 0; // insert caret after the 10th character say
+	var range = document.createRange();
+	range.setStart(textNode, caret);
+	range.setEnd(textNode, caret);
+	var sel = window.getSelection();
+	sel.removeAllRanges();
+	sel.addRange(range);	
+}
+
+
+var gl; // A global variable for the WebGL context
 var canvas;
 
 function initWebGL(canvas) {

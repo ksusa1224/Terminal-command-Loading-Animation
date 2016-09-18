@@ -4,7 +4,10 @@
 <meta charset="UTF-8" />
 <title>暗記ノート</title>
 <link rel="stylesheet" type="text/css" th:href="@{../css/_main.css}" />
+<script type="text/javascript" th:src="@{../js/_main.js}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script type="text/javascript">
+
 function change_opacity (seitou) {
 	seitou.mouseout(function(){ return false});
 	if (seitou.style.opacity == 1)
@@ -102,12 +105,17 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
 	}
 }
 
+function copyContent () {
+    document.getElementById("qa_input_hidden").value =  
+        document.getElementById("qa_input").innerHTML;
+    return true;
+}
+
 </script>
 </head>
-<body onload="document.getElementById('mondai_input').focus()" th:style="'background:url(' + @{../img/notebook-table.jpg} + ');background-size:100%'">
+<body onload="document.getElementById('qa_input').focus()" th:style="'background:url(' + @{../img/notebook-table.jpg} + ');background-size:100%'">
 <br />
 <!--
-暗記ノート本体<br />
 <div id="top_border"></div>
 <span id="qa_area" th:utext="${qa_html}"></span>
 <div id="bottom_border"></div>
@@ -164,27 +172,48 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
   <div id="bottom_border">&nbsp;</div>
  </div>
  <br />
-<div style="position:absolute;right:58px;top:300px;padding:20px;">
-<img th:src="@{../img/eraser.png}" style="z-index:100;width:130px" />
+<div style="position:absolute;right:58px;top:500px;padding:20px;">
+<img th:src="@{../img/eraser.png}" style="z-index:1000;width:130px" />
 </div> 
 <!--
 <div style="position:absolute;right:300px;top:200px;padding:20px;">
 <img th:src="@{../img/music_pen.png}" style="z-index:100;width:50px" />
 </div> 
 -->
-<div style="position:absolute;right:160px;top:500px;padding:20px;">
+<div style="position:absolute;right:200px;top:500px;padding:20px;">
 <img th:src="@{../img/smileslime.png}" style="z-index:100;width:150px" />
 </div> 
-<div style="position:absolute;right:40px;top:40px;">
-<img th:src="@{../img/qa_panel.png}" style="z-index:100;width:300px" />
-</div> 
-<div style="position:absolute;right:100px;top:100px;padding:20px;">
-<form th:action="@{'/' + ${owner_id} + '/main.html'}" method="post">
+<!--
 問題<input id="mondai_input" type="text" name="mondai" /><br />
 解答<input id="seitou_input" type="text" name="seitou" /><br />
-読むだけ問題<input type="checkbox" name="yomudake_flg" /><br />
-<button name="register" type="submit">問題登録</button>
+-->
+<div style="position:absolute;top:75px;right:0px;">
+<img th:src="@{../img/blue_pen.png}" style="width:400px;" />
+</div>
+<div style="position:absolute;top:125px;right:0px;">
+<img th:src="@{../img/red_pen.png}" style="width:400px;" />
+</div>
+<div th:style="'position:absolute;right:40px;top:125px;background-image:url(' + @{../img/qa_panel.png} + ');background-size:100% 100%;width:350px;height:400px;'">
+<div style="padding-left:30px;padding-top:80px;">
+<form th:action="@{'/' + ${owner_id} + '/main.html'}" method="post" onsubmit='return copyContent()'>
+QA. 
+
+<!--/* QA文登録エリア start */-->
+<div id="qa_input" contenteditable="true" style="width:250px;" onkeypress="javascript:enter(this);">	
+<span class='q_input' id="first">&#8203;</span>
+</div>
+<textarea id="qa_input_hidden" name="qa_input_hidden" style="display:none;">
+</textarea>
+<!--/* QA文登録エリア end */-->
+
+<input type="checkbox" name="yomudake_flg" />読むだけ問題&nbsp;
+<input type="checkbox" name="reversible_flg" />リバーシブル問題<br />
+<button name="register" type="button">問題登録</button>
 </form>
+<!--
+<img th:src="@{../img/qa_panel.png}" style="width:300px" />
+-->
+</div>
 </div>
 </body>
 </html>
