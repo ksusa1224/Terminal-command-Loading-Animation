@@ -28,6 +28,12 @@ textarea:focus, input:focus{
     outline: none;
 }
 
+input
+{
+    font-size:13px;
+    font-family:"ＭＳ Ｐ明朝", "MS PMincho", "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", serif;	
+}
+
 .q_input
 {
 	border:none;

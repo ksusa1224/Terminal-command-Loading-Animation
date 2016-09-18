@@ -19,16 +19,16 @@
 	*/
 }
 
-
 //QA内でのパーツの順番
 var id = 2;
 
 // 漢字変換後にEnterを押したときにペンの色が変わる
 function enter (obj){
+	$("input").autoresize({padding:0,minWidth:0,maxWidth:100});
 	if (window.event.keyCode == 13)
 	{
-		var q_parts = "<input type='text' class='q_input' id='" + id + "'>&#8203;</input>";
-		var a_parts = "<input type='text' class='a_input' id='" + id + "'>&#8203;</input>";
+		var q_parts = "<input class='q_input' id='" + id + "'>&#8203;</input>";
+		var a_parts = "<input class='a_input' id='" + id + "'>&#8203;</input>";
 		var last = $("#qa_input input:last").attr('class');
 		if (id == 2)
 		{			
@@ -42,10 +42,43 @@ function enter (obj){
 		{
 			$("#qa_input").append(q_parts);						
 		}		
+		//focus_id(id);
 		$("#"+id).focus();
 		id++;
 		event.preventDefault();
 	}
+}
+
+function focus_id(_id)
+{
+	//var node = document.getElementById("#"+_id);
+	//node.focus();
+	var textNode = document.getElementById("#"+_id);
+	//alert(textNode);
+	
+	var caret = 0; // insert caret after the 10th character say
+	var range = document.createRange();
+	range.setStart(textNode, caret);
+	range.setEnd(textNode, caret);
+	var sel = window.getSelection();
+	sel.removeAllRanges();
+	sel.addRange(range);	
+}
+
+//JQuery plugin:
+$.fn.textWidth = function(_text, _font){//get width of text with font.  usage: $("div").textWidth();
+        var fakeEl = $('<span>').hide().appendTo(document.body).text(_text || this.val() || this.text()).css('font', _font || this.css('font')),
+            width = fakeEl.width();
+        fakeEl.remove();
+        return width;
+    };
+
+$.fn.autoresize = function(options){//resizes elements based on content size.  usage: $('input').autoresize({padding:10,minWidth:0,maxWidth:100});
+  options = $.extend({padding:10,minWidth:0,maxWidth:10000}, options||{});
+  $(this).on('input', function() {
+    $(this).css('width', Math.min(options.maxWidth,Math.max(options.minWidth,$(this).textWidth() + options.padding)));
+  }).trigger('input');
+  return this;
 }
 
 function focus_last(){
