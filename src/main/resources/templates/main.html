@@ -201,7 +201,11 @@ function copyContent () {
 QA. 
 
 <!--/* QA文登録エリア start */-->
-<div id="qa_input" contenteditable="true" style="width:250px;" onkeypress="javascript:enter(this);"><input type='text' class='q_input' id="1">&#8203;</input></div>
+<div id="qa_input" 
+contenteditable="true" 
+style="width:250px;" 
+onkeypress="javascript:enter(this);" 
+onfocus="javascript:qa_focus(this);"><input type='text' class='q_input' id="1">&#8203;</input></div>
 <!--
 <textarea id="qa_input_hidden" name="qa_input_hidden" style="display:none;">
 </textarea>

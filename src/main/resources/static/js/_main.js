@@ -1,30 +1,18 @@
 ﻿function qa_focus(obj)
 {
-	alert("focus");
-	var q_parts = "<span class='q_input'>&#8203;</span>";
-	$("#qa_input").append(q_parts);						
-
-	var node = document.querySelector("#qa_input");
-	//node.focus();
-	var textNode = node.lastChild;
-	/*
-	var caret = 0; // insert caret after the 10th character say
-	var range = document.createRange();
-	range.setStart(textNode, caret);
-	range.setEnd(textNode, caret);
-	var sel = window.getSelection();
-	sel.removeAllRanges();
-	//sel.addRange(range);
-	event.preventDefault();	
-	*/
+	focus_last();
 }
+
+$(document).keypress(function(e) {
+    //alert(e);       
+});
 
 //QA内でのパーツの順番
 var id = 2;
 
 // 漢字変換後にEnterを押したときにペンの色が変わる
 function enter (obj){
-	$("input").autoresize({padding:0,minWidth:0,maxWidth:100});
+	$("input").autoresize({padding:0,minWidth:0,maxWidth:1000});
 	if (window.event.keyCode == 13)
 	{
 		var q_parts = "<input class='q_input' id='" + id + "'>&#8203;</input>";
@@ -46,6 +34,13 @@ function enter (obj){
 		$("#"+id).focus();
 		id++;
 		event.preventDefault();
+	}
+	// win backspace / mac delete・・・実装できていない
+	else if (window.event.keyCode == 8)
+	{
+		e.preventDefault();
+		alert("delete");
+		obj.focus();
 	}
 }
 
