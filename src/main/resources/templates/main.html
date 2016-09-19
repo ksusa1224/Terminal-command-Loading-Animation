@@ -105,14 +105,6 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
 	}
 }
 
-function copyContent () {
-   /*
-    document.getElementById("qa_input_hidden").value =  
-        document.getElementById("qa_input").innerHTML;
-    return true;
-    */
-}
-
 </script>
 </head>
 <body onload="javascript:document.getElementById('qa_input').focus();" th:style="'background:url(' + @{../img/notebook-table.jpg} + ');background-size:100%'">
@@ -197,22 +189,19 @@ function copyContent () {
 </div>
 <div th:style="'position:absolute;right:40px;top:125px;background-image:url(' + @{../img/qa_panel.png} + ');background-size:100% 100%;width:350px;height:400px;'">
 <div style="padding-left:30px;padding-top:80px;">
-<form th:action="@{'/' + ${owner_id} + '/main.html'}" method="post" onsubmit='return copyContent()'>
+<form th:action="@{'/' + ${owner_id} + '/main.html'}" method="post" onsubmit="javascript:copy_to_hidden();">
 QA. 
 
 <!--/* QA文登録エリア start */-->
 <div id="qa_input" contenteditable="true" style="width:250px;" 
  onkeypress="javascript:enter();" onfocus="javascript:qa_focus(this);">
 </div>
-<!--
-<textarea id="qa_input_hidden" name="qa_input_hidden" style="display:none;">
-</textarea>
--->
+<textarea id="qa_input_hidden" name="qa_input_hidden" style="display:none;">&#8203;</textarea>
 <!--/* QA文登録エリア end */-->
 
-<input type="checkbox" name="yomudake_flg" />読むだけ問題&nbsp;
-<input type="checkbox" name="reversible_flg" />リバーシブル問題<br />
-<button name="register" type="button">問題登録</button>
+<input type="checkbox" name="yomudake_flg" value="on" />読むだけ問題&nbsp;
+<input type="checkbox" name="reversible_flg" value="on" />リバーシブル問題<br />
+<button name="register" type="submit">問題登録</button>
 </form>
 <!--
 <img th:src="@{../img/qa_panel.png}" style="width:300px" />

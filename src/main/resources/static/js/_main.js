@@ -12,6 +12,7 @@ function qa_focus(obj)
 // HTMLタグごとコピーペーストされるのを防ぐ（文字列のみにする）
 $(document).on('paste', function(e){
 	$('#qa_input').children('span').each(function () {
+		// HTMLタグを取り除く
 	    $(this).html($(this).html().replace(/<\/?[^>]+(>|$)/g,""));
 		var pastedData = e.originalEvent.clipboardData.getData('text');
 	    $("#qa_input span:nth-last-child(2)").html(pastedData);
@@ -45,7 +46,29 @@ function enter (){
 			$("#qa_input").append(q_parts);						
 			focus_last();
 			id++;
-		}		
+		}
+		
+		// 空の要素を削除
+		/*
+		if($("#qa_input span:nth-last-child(2)").html() == '\u200B')
+		{
+			$("#qa_input span:nth-last-child(2)").remove();
+		}*/
+		/*
+		$('#qa_input').children('span').each(function () {
+			if ($(this).html().trim() == "\u200B" && $(this) != $("#qa_input span:nth-last-child(1)"))
+		    {
+		    	$(this).remove();
+		    }
+		});
+		*/
+		/*
+		alert($("#qa_input span:nth-last-child(2)").html());
+		if($("#qa_input span:nth-last-child(2)").html() == '')
+		{
+			alert("empty");
+			$("#qa_input span:nth-last-child(2)").remove();*/
+		
 		event.preventDefault();
 	}
 }
@@ -63,4 +86,20 @@ function focus_last(){
 	var sel = window.getSelection();
 	sel.removeAllRanges();
 	sel.addRange(range);
+}
+
+// contenteditableはそのままformでsubmitできないためいったん非表示のテキストエリアにコピー
+function copy_to_hidden () {
+	// 空白タグを取り除く
+	$('#qa_input').children('span').each(function () {
+		// ゼロ幅のスペース
+		if ($(this).html().trim() == "\u200B")
+	    {
+	    	$(this).remove();
+	    }
+	});
+	var content = $("#qa_input").html();
+	$("#qa_input_hidden").html(content);
+//	alert(content);
+    return true;
 }

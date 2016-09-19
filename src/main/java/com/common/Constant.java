@@ -81,16 +81,16 @@ public class Constant {
 	 * QAタイプ
 	 */
 	// 問題１に対して正答１
-	public static final int QA_TYPE_1_ON_1 = 0;
+	public static final int QA_TYPE_1_ON_1 = 1;
 	
 	// 問題１に対して正答複数
-	public static final int QA_TYPE_1_ON_N = 1;
+	public static final int QA_TYPE_1_ON_N = 2;
 	
 	// 問題パーツ複数に対して正答１
-	public static final int QA_TYPE_N_ON_1 = 2;
+	public static final int QA_TYPE_N_ON_1 = 3;
 	
 	// 問題パーツ複数に対して正答複数
-	public static final int QA_TYPE_N_ON_N = 3;	
+	public static final int QA_TYPE_N_ON_N = 4;	
 	
 	/**
 	 * 回答アクション
