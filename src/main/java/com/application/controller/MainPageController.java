@@ -205,8 +205,64 @@ public class MainPageController {
 //			QAModel qa = qa_plus.getQa();
 			List<MondaiModel> mondai_list = new ArrayList<MondaiModel>();
 			mondai_list = qa_plus.getMondai_list();
+			
+			/**
+			 * 問題HTML
+			 */
+			List<String> q_html = new ArrayList<String>();
+			for (int i = 0; i < mondai_list.size(); i++)
+			{
+				String mondai = mondai_list.get(i).getQ_parts_text();
+				String q_lang = mondai_list.get(i).getLanguage();
+				String html = "<span class='q' onclick=\"control_qa_saisei('" + mondai + "', '" + "　" + "','" + q_lang + "','" + Constant.ENGLISH + "');\"'>" + mondai + "</span>";			
+				q_html.add(html);
+			}
+			
+			/**
+			 * 正答HTML
+			 */
 			List<SeitouModel> seitou_list = new ArrayList<SeitouModel>();
 			seitou_list = qa_plus.getSeitou_list();
+			
+			List<String> a_html = new ArrayList<String>();
+			for (int i = 0; i < seitou_list.size(); i++)
+			{
+				String seitou = seitou_list.get(i).getSeitou();
+				String html = "<span class='a' onmouseover='this.style.opacity=1' onmouseout='this.style.opacity=0'>" + seitou + "</span>";
+				a_html.add(html);
+			}	
+			
+			qa_html += "<span class='qa'>";
+			for (int i = 0; i < (mondai_list.size() + seitou_list.size()); i++)
+			{
+				if (qa_plus.getQa().getIs_start_with_q() == 1)
+				{
+					if (i < q_html.size())
+					{
+						qa_html += q_html.get(i);
+					}
+					if (i < a_html.size())
+					{
+						qa_html += a_html.get(i);
+					}
+				}
+				else
+				{
+					if (i < a_html.size())
+					{
+						qa_html += a_html.get(i);
+					}
+					if (i < q_html.size())
+					{
+						qa_html += q_html.get(i);
+					}
+				}
+			}
+			qa_html += "</span>";
+			//qa_html += "<div id='bottom_border' style='width:100%'></div>";
+			
+			
+			/*
 			String mondai = mondai_list.get(0).getQ_parts_text();
 			String seitou = seitou_list.get(0).getSeitou();
 			String q_lang = mondai_list.get(0).getLanguage();
@@ -216,7 +272,7 @@ public class MainPageController {
 			qa_html += "<span class='a' onmouseover='this.style.opacity=1' onmouseout='this.style.opacity=0'>" + seitou + "</span>";
 			qa_html += "</span>";
 			qa_html += "<div id='bottom_border' style='width:100%'></div>";
-			
+			*/
 //			// 問題から始まる場合
 //			if (qa.getIs_start_with_q() == 1)
 //			{
