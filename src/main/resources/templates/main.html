@@ -115,7 +115,7 @@ function copyContent () {
 
 </script>
 </head>
-<body onload="javascript:document.getElementById('1').focus();" th:style="'background:url(' + @{../img/notebook-table.jpg} + ');background-size:100%'">
+<body onload="javascript:document.getElementById('qa_input').focus();" th:style="'background:url(' + @{../img/notebook-table.jpg} + ');background-size:100%'">
 <br />
 <!--
 <div id="top_border"></div>
@@ -201,11 +201,9 @@ function copyContent () {
 QA. 
 
 <!--/* QA文登録エリア start */-->
-<div id="qa_input" 
-contenteditable="true" 
-style="width:250px;" 
-onkeypress="javascript:enter(this);" 
-onfocus="javascript:qa_focus(this);"><!--<span class='q_input' id="1">&#8203;</span>--></div>
+<div id="qa_input" contenteditable="true" style="width:250px;" 
+ onkeypress="javascript:enter();" onfocus="javascript:qa_focus(this);">
+</div>
 <!--
 <textarea id="qa_input_hidden" name="qa_input_hidden" style="display:none;">
 </textarea>

@@ -1,16 +1,16 @@
-﻿function qa_focus(obj)
+﻿//QA内でのパーツの順番
+var id = 2;
+
+function qa_focus(obj)
 {
-	//focus_last();
+	if (id == 2)
+	{
+		enter();
+	}
 }
 
-$(document).keypress(function(e) {
-    //alert(e);       
-});
-
-//QA内でのパーツの順番
-var id = 2;
 // 漢字変換後にEnterを押したときにペンの色が変わる
-function enter (obj){
+function enter (){
 	var q_parts = "<span class='q_input' id='" + id + "'>&#8203;</span>";
 	var a_parts = "<span class='a_input' id='" + id + "'>&#8203;</span>";
 	var last = $("#qa_input span:last").attr('class');
@@ -25,27 +25,17 @@ function enter (obj){
 	{
 		if (last == "q_input")
 		{
-			//$("#2").remove();
-			//alert("q");
 			$("#qa_input").append(a_parts);	
 			focus_last();
 			id++;
 		}
 		else if (last == "a_input")
 		{
-	//		alert("q");
 			$("#qa_input").append(q_parts);						
 			focus_last();
 			id++;
 		}		
 		event.preventDefault();
-	}
-	// win backspace / mac delete・・・実装できていない
-	else if (window.event.keyCode == 8)
-	{
-		e.preventDefault();
-		alert("delete");
-		obj.focus();		
 	}
 }
 
