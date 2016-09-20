@@ -190,7 +190,7 @@ public class MainPageController {
 	}
 
 	/**
-	 * TODO 現状１問１答式問題しか対応していない
+	 * 
 	 * @return
 	 */
 	public String generate_qa_html(List<QAPlusModel> qa_plus_list)

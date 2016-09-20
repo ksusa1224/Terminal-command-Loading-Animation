@@ -8,6 +8,8 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
+import com.slime.SlimeSerif;
+
 @SpringBootApplication
 @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
 public class AnkiNoteApplication {
@@ -15,6 +17,7 @@ public class AnkiNoteApplication {
 	public static void main(String[] args) throws SQLException {
 		// H2のサーバーを起動
 		Server server = Server.createTcpServer(args).start();
+		System.out.println(SlimeSerif.RamdomSerifArg1("冷やし中華"));
 		SpringApplication.run(AnkiNoteApplication.class, args);
 	}
 }

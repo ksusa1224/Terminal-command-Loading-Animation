@@ -107,7 +107,8 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
 
 </script>
 </head>
-<body onload="javascript:document.getElementById('qa_input').focus();" th:style="'background:url(' + @{../img/notebook-table.jpg} + ');background-size:100%'">
+<body onload="javascript:document.getElementById('qa_input').focus();">
+<img th:src="@{../img/notebook-table.jpg}" style="width:100%;position:absolute;top:0;left:0;z-index:-1;" />
 <br />
 <!--
 <div id="top_border"></div>
@@ -166,7 +167,7 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
   <div id="bottom_border">&nbsp;</div>
  </div>
  <br />
-<div style="position:absolute;right:58px;top:500px;padding:20px;">
+<div style="position:absolute;right:58px;top:420px;padding:20px;">
 <img th:src="@{../img/eraser.png}" style="z-index:1000;width:130px" />
 </div> 
 <!--
@@ -187,7 +188,8 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
 <div style="position:absolute;top:125px;right:0px;">
 <img th:src="@{../img/red_pen.png}" style="width:400px;" />
 </div>
-<div th:style="'position:absolute;right:40px;top:125px;background-image:url(' + @{../img/qa_panel.png} + ');background-size:100% 100%;width:350px;height:400px;'">
+<img th:src="@{../img/qa_panel.png}" th:style="'position:absolute;right:40px;top:125px;width:350px;height:320px;'" />
+<div th:style="'position:absolute;right:40px;top:125px;width:350px;height:320px;'">
 <div style="padding-left:30px;padding-top:80px;">
 <form th:action="@{'/' + ${owner_id} + '/main.html'}" method="post" onsubmit="javascript:copy_to_hidden();">
 QA. 
@@ -198,9 +200,10 @@ QA.
 </div>
 <textarea id="qa_input_hidden" name="qa_input_hidden" style="display:none;">&#8203;</textarea>
 <!--/* QA文登録エリア end */-->
-
+<div style="height:5px;"></div>
 <input type="checkbox" name="yomudake_flg" value="on" />読むだけ問題&nbsp;
 <input type="checkbox" name="reversible_flg" value="on" />リバーシブル問題<br />
+重要度：★★★☆☆　難易度：★★★☆☆<br />
 <button name="register" type="submit">問題登録</button>
 </form>
 <!--
