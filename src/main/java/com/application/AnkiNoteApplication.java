@@ -17,7 +17,6 @@ public class AnkiNoteApplication {
 	public static void main(String[] args) throws SQLException {
 		// H2のサーバーを起動
 		Server server = Server.createTcpServer(args).start();
-		System.out.println(SlimeSerif.RamdomSerifArg1("冷やし中華"));
 		SpringApplication.run(AnkiNoteApplication.class, args);
 	}
 }

@@ -137,10 +137,15 @@ public class SlimeSerif {
 	};
 	public static int arg1_minimum = 0;
 	public static int arg1_maximum = arg1_msgs.length;
-	public static int randomNum = arg1_minimum + (int)(Math.random() * arg1_maximum);
 	
-	public static String RamdomSerifArg1(String param)
+	/**
+	 * 引数１個のセリフをランダムで返す
+	 * @param param
+	 * @return
+	 */
+	public String RamdomSerifArg1(String param)
 	{
+		int randomNum = arg1_minimum + (int)(Math.random() * arg1_maximum);
 		String serif = MessageFormat.format(arg1_msgs[randomNum], param);
 		return serif;
 	}

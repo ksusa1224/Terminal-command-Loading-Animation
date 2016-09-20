@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cybozu.labs.langdetect.Detector; 
 import com.cybozu.labs.langdetect.DetectorFactory; 
@@ -39,6 +40,7 @@ import com.common.Constant;
 import com.common.StringBuilderPlus;
 import com.common.Util;
 import com.dao.SQliteDAO;
+import com.slime.SlimeSerif;
 
 @Controller
 public class MainPageController {
@@ -164,6 +166,17 @@ public class MainPageController {
 		}
 	}
 
+	/**
+	 * すらスラ〜のセリフAjaxページ
+	 * @return
+	 */
+	@RequestMapping(value={"/serif.html"}, method=RequestMethod.GET)
+	public @ResponseBody String serif(@RequestParam(value = "a") String a_input) {
+		SlimeSerif slime_serif = new SlimeSerif();
+		String serif = slime_serif.RamdomSerifArg1(a_input);		
+		return serif;
+	}	
+	
 	/**
 	 * 
 	 * @param owner_db

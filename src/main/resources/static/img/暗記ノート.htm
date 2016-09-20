@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="UTF-8" />
+<!-- saved from url=(0036)http://localhost:8080/test/main.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <title>暗記ノート</title>
-<link rel="stylesheet" type="text/css" th:href="@{../css/_main.css}" />
-<script th:src="@{../js/jquery-3.1.0.min.js}"></script>
-<script th:src="@{../js/_main.js}"></script>
+<link rel="stylesheet" type="text/css" href="./暗記ノート_files/_main.css">
+<script src="./暗記ノート_files/jquery-3.1.0.min.js"></script>
+<script src="./暗記ノート_files/_main.js"></script>
 <script type="text/javascript">
 
 function change_opacity (seitou) {
@@ -107,9 +107,9 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
 
 </script>
 </head>
-<body onload="javascript:document.getElementById('qa_input').focus();">
-<img th:src="@{../img/notebook-table.jpg}" style="width:100%;position:absolute;top:0;left:0;z-index:-1;" />
-<br />
+<body onload="javascript:document.getElementById(&#39;qa_input&#39;).focus();">
+<img style="width:100%;position:absolute;top:0;left:0;z-index:-1;" src="./暗記ノート_files/notebook-table.jpg">
+<br>
 <!--
 <div id="top_border"></div>
 <span id="qa_area" th:utext="${qa_html}"></span>
@@ -120,7 +120,7 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
 -->
  <div style="width:355px;padding-top:100px;padding-left:65px;">
   <div id="top_border"></div>
-  <span id="qa_area" th:utext="${qa_html}"></span>
+  <span id="qa_area"><span class="qa"><span class="q" onclick="control_qa_saisei(&#39;​サイト&#39;, &#39;　&#39;,&#39;日本語&#39;,&#39;英語&#39;);" '="">​サイト</span><span class="a" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">​軽く</span><span class="q" onclick="control_qa_saisei(&#39;​なった？&#39;, &#39;　&#39;,&#39;日本語&#39;,&#39;英語&#39;);" '="">​なった？</span></span><span class="qa"><span class="q" onclick="control_qa_saisei(&#39;​重さを&#39;, &#39;　&#39;,&#39;日本語&#39;,&#39;英語&#39;);" '="">​重さを</span><span class="a" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">​てすと</span></span><span class="qa"><span class="q" onclick="control_qa_saisei(&#39;​あ&#39;, &#39;　&#39;,&#39;日本語&#39;,&#39;英語&#39;);" '="">​あ</span><span class="a" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">​あ</span></span><span class="qa"><span class="q" onclick="control_qa_saisei(&#39;​test&#39;, &#39;　&#39;,&#39;英語&#39;,&#39;英語&#39;);" '="">​test</span><span class="a" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">​test</span></span><span class="qa"><span class="q" onclick="control_qa_saisei(&#39;​１問&#39;, &#39;　&#39;,&#39;日本語&#39;,&#39;英語&#39;);" '="">​１問</span><span class="a" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">​多答</span><span class="q" onclick="control_qa_saisei(&#39;​式問題&#39;, &#39;　&#39;,&#39;日本語&#39;,&#39;英語&#39;);" '="">​式問題</span><span class="a" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">​テスト</span><span class="q" onclick="control_qa_saisei(&#39;​登録&#39;, &#39;　&#39;,&#39;日本語&#39;,&#39;英語&#39;);" '="">​登録</span></span><span class="qa"><span class="q" onclick="control_qa_saisei(&#39;​問題&#39;, &#39;　&#39;,&#39;日本語&#39;,&#39;英語&#39;);" '="">​問題</span><span class="a" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">​解答</span></span><span class="qa"><span class="q" onclick="control_qa_saisei(&#39;てstあ&#39;, &#39;　&#39;,&#39;日本語&#39;,&#39;英語&#39;);" '="">てstあ</span><span class="a" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">f</span></span><span class="qa"><span class="q" onclick="control_qa_saisei(&#39;test&#39;, &#39;　&#39;,&#39;英語&#39;,&#39;英語&#39;);" '="">test</span><span class="a" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">テスト</span></span></span>
   <div id="bottom_border"></div>
   <div id="bottom_border">&nbsp;</div>
   <div id="bottom_border">&nbsp;</div>
@@ -166,9 +166,9 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
   <div id="bottom_border">&nbsp;</div>
   <div id="bottom_border">&nbsp;</div>
  </div>
- <br />
+ <br>
 <div style="position:absolute;right:58px;top:420px;padding:20px;">
-<img th:src="@{../img/eraser.png}" style="z-index:1000;width:130px" />
+<img style="z-index:1000;width:130px" src="./暗記ノート_files/eraser.png">
 </div> 
 <!--
 <div style="position:absolute;right:300px;top:200px;padding:20px;">
@@ -176,40 +176,36 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
 </div> 
 -->
 <div style="position:absolute;right:200px;top:500px;padding:20px;">
-<img th:src="@{../img/smileslime.png}" style="z-index:100;width:150px" />
+<img style="z-index:100;width:150px" src="./暗記ノート_files/smileslime.png">
 </div> 
 <div style="position:absolute;right:-5px;top:500px;padding:20px;">
-<img id="balloon" th:src="@{../img/balloon.png}" style="z-index:100;opacity:0" />
+<img id="balloon" style="z-index: 100; opacity: 0;" src="./暗記ノート_files/balloon.png">
 </div> 
-<div id="serif" style="position:absolute;left:1060px;top:530px;width:150px;padding:20px;z-index:101;">
-&#8203;
-</div> 
+<div id="serif" style="position:absolute;left:1060px;top:530px;width:150px;padding:20px;z-index:101;"></div> 
 <!--
 問題<input id="mondai_input" type="text" name="mondai" /><br />
 解答<input id="seitou_input" type="text" name="seitou" /><br />
 -->
 <div style="position:absolute;top:75px;right:0px;">
-<img th:src="@{../img/blue_pen.png}" style="width:400px;" />
+<img style="width:400px;" src="./暗記ノート_files/blue_pen.png">
 </div>
 <div style="position:absolute;top:125px;right:0px;">
-<img th:src="@{../img/red_pen.png}" style="width:400px;" />
+<img style="width:400px;" src="./暗記ノート_files/red_pen.png">
 </div>
-<img th:src="@{../img/qa_panel.png}" th:style="'position:absolute;right:40px;top:125px;width:350px;height:320px;'" />
-<div th:style="'position:absolute;right:40px;top:125px;width:350px;height:320px;'">
+<img src="./暗記ノート_files/qa_panel.png" style="position:absolute;right:40px;top:125px;width:350px;height:320px;">
+<div style="position:absolute;right:40px;top:125px;width:350px;height:320px;">
 <div style="padding-left:30px;padding-top:80px;">
-<form th:action="@{'/' + ${owner_id} + '/main.html'}" method="post" onsubmit="javascript:copy_to_hidden();">
+<form method="post" onsubmit="javascript:copy_to_hidden();" action="http://localhost:8080/test/main.html">
 QA. 
 
-<!--/* QA文登録エリア start */-->
-<div id="qa_input" contenteditable="true" style="width:250px;" 
- onkeypress="javascript:enter();" onfocus="javascript:qa_focus(this);">
-</div>
-<textarea id="qa_input_hidden" name="qa_input_hidden" style="display:none;">&#8203;</textarea>
-<!--/* QA文登録エリア end */-->
+
+<div id="qa_input" contenteditable="true" style="width:250px;" onkeypress="javascript:enter();" onfocus="javascript:qa_focus(this);"><span class="a_input" id="6">​</span><span class="q_input" id="7">​</span></div>
+<textarea id="qa_input_hidden" name="qa_input_hidden" style="display:none;">​</textarea>
+
 <div style="height:5px;"></div>
-<input type="checkbox" name="yomudake_flg" value="on" />読むだけ問題&nbsp;
-<input type="checkbox" name="reversible_flg" value="on" />リバーシブル問題<br />
-重要度：★★★☆☆　難易度：★★★☆☆<br />
+<input type="checkbox" name="yomudake_flg" value="on">読むだけ問題&nbsp;
+<input type="checkbox" name="reversible_flg" value="on">リバーシブル問題<br>
+重要度：★★★☆☆　難易度：★★★☆☆<br>
 <button name="register" type="submit">問題登録</button>
 </form>
 <!--
@@ -217,5 +213,5 @@ QA.
 -->
 </div>
 </div>
-</body>
-</html>
+
+</body></html>
