@@ -24,6 +24,11 @@ body{
 	border-right:#9B9EA6 1px solid;
 }
 
+#score
+{
+	border-bottom: 1px dotted #9B9EA6;
+}
+
 textarea:focus, input:focus{
     outline: none;
 }
@@ -36,16 +41,17 @@ input
     font-family:"ＭＳ Ｐ明朝", "MS PMincho", "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", serif;	
 }
 
+#qa_input
+{
+	border-top: 1px dotted #9B9EA6;
+	border-bottom: 1px dotted #9B9EA6;
+}
+
 .q_input
 {
 	border:none;
 	color:#202DA2;
 	background:transparent;
-}
-
-#score
-{
-	border-bottom: 1px dotted #9B9EA6;
 }
 
 .a_input

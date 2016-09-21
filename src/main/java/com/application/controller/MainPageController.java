@@ -212,16 +212,22 @@ public class MainPageController {
 		
 		String qa_html = generate_qa_html(select_qa_plus(owner_db));			
 
-//		// 正答総数
+		// 正答総数
+		QADao qa_dao = new QADao();
+		int seitou_sum = qa_dao.get_seitou_sum(owner_db);
+		model.addAttribute("seitou_sum", seitou_sum);
+
+		// 正答総数
 //		QADao qa_dao = new QADao();
 //		int seitou_sum = qa_dao.get_seitou_sum(owner_db);
-//		model.addAttribute("seitou_sum", seitou_sum);
-
+//		System.out.println("--------");
+//		System.out.println(seitou_sum);
+//		System.out.println("--------");
 		return qa_html;
 	}	
 
 	/**
-	 * Ajaxで正答総数を取得
+	 * Ajaxで正答総数を取得（TODO 不具合あり）
 	 * @param a_input
 	 * @return
 	 */
@@ -248,20 +254,7 @@ public class MainPageController {
 		SlimeSerif slime_serif = new SlimeSerif();
 		String serif = slime_serif.RamdomSerifArg1(a_input);		
 		return serif;
-	}	
-	
-	/**
-	 * 
-	 * @param owner_db
-	 * @return
-	 */
-	public List<QAPlusModel> select_1_on_1_qa_plus(String owner_db) {
-		QAPlusDao qa_plus_dao = new QAPlusDao();
-		List<QAPlusModel> qa_plus_list = new ArrayList<QAPlusModel>();
-		qa_plus_list = qa_plus_dao.select_1_on_1_qa_plus_list_speedy(owner_db, qa_plus_list);
-		return qa_plus_list;
-	}
-	
+	}		
 	
 	/**
 	 * 

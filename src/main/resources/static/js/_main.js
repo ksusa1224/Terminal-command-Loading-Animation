@@ -118,52 +118,17 @@ function ajax_reload ()
 		dataType: "html",
 		cache: false,
 		success: function(data)
-		{					
-			//alert(data);
+		{				
 			$("#qa_area").html(data);
 			$("#qa_input").html("");
 			$("#qa_input").focus();
 			id = 2;
-
-			jQuery.ajax({
-				url: "../seitou_sum.html",
-				dataType: "html",
-				cache: false,
-				success: function(data)
-				{	
-					alert(data);
-					$("#seitou_sum").html(data);
-				},
-				error: function(data)
-				{
-					alert("ajax error");
-				}
-			});
 		},
 		error: function(data)
 		{
 			alert("ajax error");
 		}
 	});	
-}
-
-function get_seitou_sum()
-{
-	jQuery.ajax({
-		url: "../seitou_sum.html",
-		dataType: "html",
-		cache: false,
-		success: function(data)
-		{	
-			alert(data);
-			$("#seitou_sum").html(data);
-		},
-		error: function(data)
-		{
-			alert("ajax error");
-		}
-	});	
-	event.preventDefault();	
 }
 
 // TODO 常にoffになってしまう

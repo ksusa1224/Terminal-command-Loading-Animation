@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.application.model.dao.MondaiModel;
 import com.application.model.dao.QAModel;
@@ -24,7 +25,7 @@ public class QAPlusDao extends QADao {
 	 * @param qa_plus_list
 	 * @return
 	 */
-	public List<QAPlusModel> select_1_on_1_qa_plus_list_speedy(String db_name, List<QAPlusModel> qa_plus_list)
+	public List<QAPlusModel> select_qa_plus_list_speedy(String db_name, List<QAPlusModel> qa_plus_list)
 	{
 		StopWatch stopwatch = new StopWatch();
 		stopwatch.start();
@@ -36,54 +37,9 @@ public class QAPlusDao extends QADao {
 		SQliteDAO dao = new SQliteDAO();
 		
 		StringBuilderPlus sql = new StringBuilderPlus();
-//		sql.appendLine("select * ");
-//		sql.appendLine(" from qa, mondai, seitou");
-//		sql.appendLine(" where qa.qa_id = mondai.qa_id");
-//		sql.appendLine(" and qa.qa_id = seitou.qa_id");
 		/**
 		 * QAテーブル
 		 */
-		sql.appendLine("  select");
-		// 行番号
-		sql.appendLine("  qa.row_no,");
-		// QA ID
-		sql.appendLine("	qa.qa_id,");
-		// QAタイプ
-		sql.appendLine("	qa.qa_type,");
-		// 読むだけ問題フラグ
-		sql.appendLine("	qa.yomudake_flg,");
-	    // 問題と正答を入れ替えた結果生成された問題かどうか
-	    sql.appendLine("    qa.is_reversible,");
-		// 重要度（５段階）
-		sql.appendLine("	qa.juyoudo,");
-		// 難易度（５段階）
-		sql.appendLine("	qa.nanido,");
-		// 問題文と正答のうち問題から始まるかのフラグ
-		sql.appendLine("	qa.is_start_with_q,");
-		// 正答がたくさんある場合の問題文を分割した時の個数
-		sql.appendLine("	qa.q_split_cnt,");
-		// 問題に紐づく正答の個数
-		sql.appendLine("	qa.seitou_cnt,");
-		// 公開範囲
-		sql.appendLine("  qa.koukai_level,");
-		// 無料販売フラグ
-		sql.appendLine("  qa.free_flg,");
-		// 無料配布した数
-		sql.appendLine("  qa.free_sold_num,");
-		// 有料販売フラグ
-		sql.appendLine("  qa.charge_flg,");
-		// 有料で売った数
-		sql.appendLine("  qa.charge_sold_num,");
-		// 削除フラグ
-		sql.appendLine("	qa.del_flg,");
-		// 作成者
-		sql.appendLine("  qa.create_owner,");
-		// 更新者
-		sql.appendLine("  qa.update_owner,");
-		// レコード作成日時（H2DBのtimestampと同じフォーマットにする）
-		sql.appendLine("	qa.create_timestamp,");
-		// レコード更新日時（H2DBのtimestampと同じフォーマットにする）
-		sql.appendLine("	qa.update_timestamp,");
 		
 		/**
 		 * 問題テーブル
@@ -336,30 +292,85 @@ public class QAPlusDao extends QADao {
 		stopwatch.start();
 		
 		QADao qa_dao = new QADao();
-		List<QAModel> qa_list = new ArrayList<QAModel>();
-		qa_list = qa_dao.select_qa_list(db_name, qa_list);
 		
-		for (QAModel qa : qa_list)
+		List<QAModel> qa_list_all = new ArrayList<QAModel>();
+		qa_list_all = qa_dao.select_qa_list(db_name, qa_list_all);
+			
+		MondaiDao mondai_dao = new MondaiDao();
+		List<MondaiModel> mondai_list_all = new ArrayList<MondaiModel>();
+		mondai_list_all = mondai_dao.select_mondai_list(db_name, mondai_list_all);
+		//qa_plus.setMondai_list(mondai_list);
+		
+		SeitouDao seitou_dao = new SeitouDao();
+		List<SeitouModel> seitou_list_all = new ArrayList<SeitouModel>();
+		seitou_list_all = seitou_dao.select_seitou_list(db_name, seitou_list_all);
+		//qa_plus.setSeitou_list(seitou_list);
+		
+		for (QAModel qa : qa_list_all)
 		{
 			QAPlusModel qa_plus = new QAPlusModel();
+
+			// QA
 			qa_plus.setQa(qa);
+
+			// 問題
+			List<MondaiModel> mondai_list_each = new ArrayList<MondaiModel>();
+			mondai_list_each = (List<MondaiModel>) mondai_list_all.stream()
+					.filter(x -> x.getQa_id().equals(qa.getQa_id()))
+					.collect(Collectors.toList());
+			qa_plus.setMondai_list(mondai_list_each);
 			
-			MondaiDao mondai_dao = new MondaiDao();
-			List<MondaiModel> mondai_list = new ArrayList<MondaiModel>();
-			mondai_list = mondai_dao.select_mondai_list(db_name, mondai_list, qa.getQa_id());
-			qa_plus.setMondai_list(mondai_list);
-			
-			SeitouDao seitou_dao = new SeitouDao();
-			List<SeitouModel> seitou_list = new ArrayList<SeitouModel>();
-			seitou_list = seitou_dao.select_seitou_list(db_name, seitou_list, qa.getQa_id());
-			qa_plus.setSeitou_list(seitou_list);
+			// 正答
+			List<SeitouModel> seitou_list_each = new ArrayList<SeitouModel>();
+			seitou_list_each = (List<SeitouModel>) seitou_list_all
+					.stream().filter(x -> x.getQa_id().equals(qa.getQa_id()))
+					.collect(Collectors.toList());;
+			qa_plus.setSeitou_list(seitou_list_each);
 			
 			qa_plus_list.add(qa_plus);
 		}
-		
+				
 	    stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());
 		return qa_plus_list;
 	}
+	
+	
+	/**
+	 * 
+	 * @param db_name
+	 * @param qa_plus_list
+	 * @return
+	 */
+//	public List<QAPlusModel> select_qa_plus_list(String db_name, List<QAPlusModel> qa_plus_list)
+//	{
+//		StopWatch stopwatch = new StopWatch();
+//		stopwatch.start();
+//		
+//		QADao qa_dao = new QADao();
+//		List<QAModel> qa_list = new ArrayList<QAModel>();
+//		qa_list = qa_dao.select_qa_list(db_name, qa_list);
+//		
+//		for (QAModel qa : qa_list)
+//		{
+//			QAPlusModel qa_plus = new QAPlusModel();
+//			qa_plus.setQa(qa);
+//			
+//			MondaiDao mondai_dao = new MondaiDao();
+//			List<MondaiModel> mondai_list = new ArrayList<MondaiModel>();
+//			mondai_list = mondai_dao.select_mondai_list(db_name, mondai_list, qa.getQa_id());
+//			qa_plus.setMondai_list(mondai_list);
+//			
+//			SeitouDao seitou_dao = new SeitouDao();
+//			List<SeitouModel> seitou_list = new ArrayList<SeitouModel>();
+//			seitou_list = seitou_dao.select_seitou_list(db_name, seitou_list, qa.getQa_id());
+//			qa_plus.setSeitou_list(seitou_list);
+//			
+//			qa_plus_list.add(qa_plus);
+//		}
+//		
+//	    stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());
+//		return qa_plus_list;
+//	}
 	
 	/**
 	 * QAテーブル、問題テーブル、正答テーブルにレコードを追加する

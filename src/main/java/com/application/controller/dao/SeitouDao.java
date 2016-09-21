@@ -60,6 +60,117 @@ public class SeitouDao {
 		return max_row_no;
 	}
 	
+	public List<SeitouModel> select_seitou_list(String db_name, List<SeitouModel> seitou_list)
+	{		
+		SQliteDAO dao = new SQliteDAO();
+		
+		StringBuilderPlus sql = new StringBuilderPlus();
+		sql.appendLine("select ");
+	    // 行番号
+		sql.appendLine("  row_no,");
+	    // 正答ID
+		sql.appendLine("  s_id,");
+	    // QA ID
+		sql.appendLine("  qa_id,");
+	    // QA内での正答の順番
+		sql.appendLine("  junban,");
+	    // 正答が文字であるかのフラグ
+		sql.appendLine("  is_text_flg,");
+	    // 正答がバイナリであるかのフラグ
+		sql.appendLine("  is_binary_flg,");
+	    // 正答
+		sql.appendLine("  seitou,");
+	    // 正答が画像などのバイナリである場合に格納する
+		sql.appendLine("  seitou_binary,");
+	    // 重要度（５段階）
+		sql.appendLine("  juyoudo,");
+	    // 難易度（５段階）
+		sql.appendLine("  nanido,");
+	    // 言語
+		sql.appendLine("  language,");
+	    // テキスト読み上げデータ
+		sql.appendLine("  yomiage,");
+	    // 削除フラグ
+		sql.appendLine("  del_flg,");
+	    // 作成者
+		sql.appendLine("  create_owner,");
+	    // 更新者
+		sql.appendLine("  update_owner,");
+	    // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+		sql.appendLine("  create_timestamp,");
+	    // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+		sql.appendLine("  update_timestamp");
+		sql.appendLine(" from seitou");
+		sql.appendLine(" where ");
+		sql.appendLine(" del_flg = 0");
+		sql.appendLine(" order by qa_id,junban asc;");
+		
+		dao.loadDriver();
+		
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+	    try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+	      ResultSet rs = stmt.executeQuery(sql.toString());
+	      while (rs.next()) 
+	      {
+	    	  SeitouModel seitou = new SeitouModel();
+		      // 行番号
+	    	  seitou.setRow_no(rs.getInt("row_no"));
+		      // 正答ID
+	    	  seitou.setS_id(rs.getString("s_id"));
+		      // QA ID
+	    	  seitou.setQa_id(rs.getString("qa_id"));
+		      // QA内での正答の順番
+	    	  seitou.setJunban(rs.getInt("junban"));
+	    	  // 正答が文字であるかのフラグ
+	    	  seitou.setIs_text_flg(rs.getInt("is_text_flg"));
+	    	  // 正答がバイナリであるかのフラグ
+	    	  seitou.setIs_binary_flg(rs.getInt("is_binary_flg"));
+		      // 正答
+	    	  seitou.setSeitou(rs.getString("seitou"));
+	    	  // 正答が画像などのバイナリである場合に格納する
+	    	  seitou.setSeitou_binary(rs.getBytes("seitou_binary"));
+		      // 重要度（５段階）
+	    	  seitou.setJuyoudo(rs.getInt("juyoudo"));
+		      // 難易度（５段階）
+	    	  seitou.setNanido(rs.getInt("nanido"));
+	    	  // 言語
+	    	  seitou.setLanguage(rs.getString("language"));
+	    	  // テキスト読み上げデータ
+	    	  seitou.setYomiage(rs.getBytes("yomiage"));
+	    	  // 削除フラグ
+		      seitou.setDel_flg(rs.getInt("del_flg"));
+		      // 作成者
+		      seitou.setCreate_owner(rs.getString("create_owner"));
+		      // 更新者
+		      seitou.setUpdate_owner(rs.getString("update_owner"));
+		      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+		      seitou.setUpdate_timestamp(rs.getString("create_timestamp"));
+		      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+		      seitou.setUpdate_timestamp(rs.getString("update_timestamp"));
+
+		      seitou_list.add(seitou);
+	      }
+	    }
+	    catch(Exception ex)
+	    {
+	    	//TODO ログ出力
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+	    }	    
+		
+		return seitou_list;
+	}
 	
 	/**
 	 * @param db_name
