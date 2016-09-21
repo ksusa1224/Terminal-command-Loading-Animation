@@ -167,6 +167,51 @@ public class MainPageController {
 	}
 
 	/**
+	 * AjaxでQA登録、再検索
+	 * @param a_input
+	 * @return
+	 */
+	@RequestMapping(value={"/register_qa.html"}, method=RequestMethod.GET)
+	public @ResponseBody String ajax_reload(
+			HttpSession session,
+			@RequestParam("qa_input") String qa_input,
+			@RequestParam(value="yomudake_flg", required=false) String yomudake_flg,
+			@RequestParam(value="reversible_flg", required=false) String reversible_flg
+			) {
+
+		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
+		AES aes = new AES();
+		String owner_db = aes.decrypt(encrypted_owner_db);
+		   
+		// TODO 認証されてるかどうかはsessionに入れると書き換えられてしまうから毎回DBに接続した方がいいかな
+		Boolean is_authenticated = (Boolean)session.getAttribute("is_authenticated");
+		if (is_authenticated == false)
+		{
+			return "index";
+		}
+		String owner_id = (String)session.getAttribute("owner_id");
+		System.out.println(owner_id);
+		
+		if (yomudake_flg == null)
+		{
+			yomudake_flg = "off";
+		}
+		if (reversible_flg == null)
+		{
+			reversible_flg = "off";
+		}
+		System.out.println(yomudake_flg);
+		System.out.println(reversible_flg);
+			
+		create_qa(owner_id, owner_db, qa_input, yomudake_flg, reversible_flg);
+		
+		String qa_html = generate_qa_html(select_qa_plus(owner_db));			
+
+		return qa_html;
+//		return "main";
+	}	
+	
+	/**
 	 * すらスラ〜のセリフAjaxページ
 	 * @return
 	 */

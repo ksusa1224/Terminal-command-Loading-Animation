@@ -43,7 +43,7 @@ function enter (){
 			id++;
 						
 			jQuery.ajax({
-				url: "http://localhost:8080/serif.html?a=" + last_a,
+				url: "../serif.html?a=" + last_a,
 				dataType: "html",
 				cache: false,
 				success: function(data)
@@ -53,7 +53,6 @@ function enter (){
 						$("#balloon").css("opacity","1");
 						$("#serif").text(data);
 					}
-					//var seikaisu = Number(data);
 				},
 				error: function(data)
 				{
@@ -101,6 +100,46 @@ function copy_to_hidden () {
 	});
 	var content = $("#qa_input").html();
 	$("#qa_input_hidden").html(content);
-//	alert(content);
     return true;
+}
+
+// 問題登録押下時、リロードせずにAjaxで登録と再検索を行う
+function ajax_reload ()
+{
+	var qa_input = $("#qa_input_hidden").html();
+	var decoded = $("#qa_input_hidden").html(qa_input).text();
+	var yomudake_flg = $("#yomudake_flg").val();
+	var reversible_flg = $("#reversible_flg").val();
+	//alert(decoded);
+	jQuery.ajax({
+		url: "../register_qa.html?qa_input=" + decoded + 
+				"&yomudake_flg=" + yomudake_flg +
+				"&reversible_flg=" + reversible_flg,
+		dataType: "html",
+		cache: false,
+		success: function(data)
+		{					
+			//alert(data);
+			$("#qa_area").html(data);
+			$("#qa_input").html("");
+		},
+		error: function(data)
+		{
+			alert("ajax error");
+		}
+	});	
+	event.preventDefault();	
+}
+
+// TODO 常にoffになってしまう
+function change_val(chk_box)
+{
+	if($("this").val() == "off")
+	{
+		$("this").val() == "on"
+	}
+	else
+	{
+		$("this").val() == "off";
+	}
 }
