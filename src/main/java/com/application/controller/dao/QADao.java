@@ -63,6 +63,54 @@ public class QADao {
 		return max_row_no;
 	}
 	
+	/**
+	 * 正答数を得る
+	 * @param db_name
+	 * @return
+	 */
+	public int get_seitou_sum(String db_name)
+	{	
+		StopWatch stopwatch = new StopWatch();
+		stopwatch.start();
+		
+		int seitou_sum = 0;
+		
+		SQliteDAO dao = new SQliteDAO();
+		
+		StringBuilderPlus sql = new StringBuilderPlus();
+		sql.appendLine("select sum(seitou_cnt) from qa where del_flg = 0 limit 1;");
+		dao.loadDriver();
+		
+		System.out.println(sql.toString());
+
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+	    try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+	      ResultSet rs = stmt.executeQuery(sql.toString());
+	      while (rs.next()) 
+	      {
+	    	  seitou_sum = rs.getInt(1);
+	      }
+	    }
+	    catch(Exception ex)
+	    {
+	    	//TODO ログ出力
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+	    }	    
+	    stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());
+		return seitou_sum;
+	}
 	
 	/**
 	 * @param db_name

@@ -80,6 +80,10 @@ public class MainPageController {
 				String owner_db = aes.decrypt(encrypted_owner_db);
 				String qa_html = generate_qa_html(select_qa_plus(owner_db));			
 				model.addAttribute("qa_html", qa_html);
+				// 正答総数
+				QADao qa_dao = new QADao();
+				int seitou_sum = qa_dao.get_seitou_sum(owner_db);
+				model.addAttribute("seitou_sum", seitou_sum);
 				return "main";
 			}
 			else
@@ -174,6 +178,7 @@ public class MainPageController {
 	@RequestMapping(value={"/register_qa.html"}, method=RequestMethod.GET)
 	public @ResponseBody String ajax_reload(
 			HttpSession session,
+			Model model,
 			@RequestParam("qa_input") String qa_input,
 			@RequestParam(value="yomudake_flg", required=false) String yomudake_flg,
 			@RequestParam(value="reversible_flg", required=false) String reversible_flg
@@ -207,8 +212,31 @@ public class MainPageController {
 		
 		String qa_html = generate_qa_html(select_qa_plus(owner_db));			
 
+//		// 正答総数
+//		QADao qa_dao = new QADao();
+//		int seitou_sum = qa_dao.get_seitou_sum(owner_db);
+//		model.addAttribute("seitou_sum", seitou_sum);
+
 		return qa_html;
-//		return "main";
+	}	
+
+	/**
+	 * Ajaxで正答総数を取得
+	 * @param a_input
+	 * @return
+	 */
+	@RequestMapping(value={"/seitou_sum.html"}, method=RequestMethod.GET)
+	public @ResponseBody int ajax_get_seitou_sum(HttpSession session) {
+
+		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
+		AES aes = new AES();
+		String owner_db = aes.decrypt(encrypted_owner_db);
+		   
+		// 正答総数
+		QADao qa_dao = new QADao();
+		int seitou_sum = qa_dao.get_seitou_sum(owner_db);
+		
+		return seitou_sum;
 	}	
 	
 	/**

@@ -43,6 +43,11 @@ input
 	background:transparent;
 }
 
+#score
+{
+	border-bottom: 1px dotted #9B9EA6;
+}
+
 .a_input
 {
 	border:none;

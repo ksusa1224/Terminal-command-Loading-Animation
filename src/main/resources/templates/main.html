@@ -118,7 +118,11 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
 <div th:style="background: url(' + @̣{../img/notebook.png} + ')"></div>
 <div th:utext="${qa_html2}" th:style="'background:url(' + @{../img/notebook2.png} + ');width:831px;height:587px;background-size: 831px 587px;'"></div>
 -->
- <div style="width:355px;padding-top:100px;padding-left:65px;">
+ <div style="position:absolute;width:355px;top:95px;left:75px;color:#566573;">
+ <span id="score">全
+ <span id="seitou_sum" style="color:#202DA2;" th:text="${seitou_sum}"></span>&nbsp;問中&nbsp;<span style="color:#FF0000">0</span>&nbsp;問正解</span>
+ </div>
+ <div style="position:absolute;width:355px;top:129px;left:73px;">
   <div id="top_border"></div>
   <span id="qa_area" th:utext="${qa_html}"></span>
   <div id="bottom_border"></div>
@@ -202,7 +206,7 @@ QA.
 
 <!--/* QA文登録エリア start */-->
 <div id="qa_input" contenteditable="true" style="width:250px;" 
- onkeypress="javascript:enter();" onfocus="javascript:qa_focus(this);">
+ onkeypress="javascript:enter();" onfocus="javascript:qa_focus(this);" tabindex="1">
 </div>
 <textarea id="qa_input_hidden" name="qa_input_hidden" style="display:none;">&#8203;</textarea>
 <!--/* QA文登録エリア end */-->
@@ -210,7 +214,7 @@ QA.
 <input id="yomudake_flg" type="checkbox" name="yomudake_flg" value="off" onclick="change_val(this)" />読むだけ問題&nbsp;
 <input id="reversible_flg" type="checkbox" name="reversible_flg" value="off" onclick="change_val(this)" />リバーシブル問題<br />
 重要度：★★★☆☆　難易度：★★★☆☆<br />
-<button name="register" type="submit">問題登録</button>
+<button name="register" type="submit" tabindex="2">問題登録</button>
 </form>
 <!--
 <img th:src="@{../img/qa_panel.png}" style="width:300px" />
