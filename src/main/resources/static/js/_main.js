@@ -145,14 +145,14 @@ function change_seitou_color(obj)
 		cache: false,
 		success: function(data)
 		{			
-			$(obj).css("opacity",data);
-
-			if (data == '1')
+			if (data == '0')
 			{
+				$(obj).css("opacity","1");
 				$(obj).removeAttr('onmouseout');
 			}
 			else
 			{
+				$(obj).css("opacity","0");
 				$(obj).Attr("onmouseout","this.style.opacity=0");				
 			}
 		},
