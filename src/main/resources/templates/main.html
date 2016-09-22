@@ -108,21 +108,13 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
 </script>
 </head>
 <body onload="javascript:document.getElementById('qa_input').focus();">
-<img th:src="@{../img/notebook-table.jpg}" style="width:100%;position:absolute;top:0;left:0;z-index:-1;" />
+<img id="notebook_table" th:src="@{../img/notebook-table.jpg}" />
 <br />
-<!--
-<div id="top_border"></div>
-<span id="qa_area" th:utext="${qa_html}"></span>
-<div id="bottom_border"></div>
-<div th:utext="${qa_html}" style="width:1663px;height:1174px;'" th:style="'background: url(' + @̣{../img/notebook.png} + ') repeat-y right; width: 6px;'"></div>
-<div th:style="background: url(' + @̣{../img/notebook.png} + ')"></div>
-<div th:utext="${qa_html2}" th:style="'background:url(' + @{../img/notebook2.png} + ');width:831px;height:587px;background-size: 831px 587px;'"></div>
--->
- <div style="position:absolute;width:355px;top:95px;left:75px;color:#566573;">
- <span id="score">全
+ <div id="score">
+ <span id="a_total_num">全
  <span id="seitou_sum" style="color:#202DA2;" th:text="${seitou_sum}"></span>&nbsp;問中&nbsp;<span style="color:#FF0000">0</span>&nbsp;問正解</span>
  </div>
- <div style="position:absolute;width:355px;top:129px;left:73px;">
+ <div id="note_left">
   <div id="top_border"></div>
   <span id="qa_area" th:utext="${qa_html}"></span>
   <div id="bottom_border"></div>
@@ -143,7 +135,7 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
   <div id="bottom_border">&nbsp;</div>
   <div id="bottom_border">&nbsp;</div>
  </div>
- <div style="width:355px;top:109px;right:417px;position:absolute;">
+ <div id="note_right">
   <div id="bottom_border">&nbsp;</div>
   <div id="bottom_border">&nbsp;</div>
   <div id="bottom_border">&nbsp;</div>
@@ -171,36 +163,30 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
   <div id="bottom_border">&nbsp;</div>
  </div>
  <br />
-<div style="position:absolute;right:58px;top:420px;padding:20px;">
-<img th:src="@{../img/eraser.png}" style="z-index:1000;width:130px" />
-</div> 
-<!--
-<div style="position:absolute;right:300px;top:200px;padding:20px;">
-<img th:src="@{../img/music_pen.png}" style="z-index:100;width:50px" />
-</div> 
--->
-<div style="position:absolute;right:200px;top:500px;padding:20px;">
-<img th:src="@{../img/smileslime.png}" style="z-index:100;width:150px" />
-</div> 
-<div style="position:absolute;right:-5px;top:500px;padding:20px;">
-<img id="balloon" th:src="@{../img/balloon.png}" style="z-index:100;opacity:0" />
-</div> 
-<div id="serif" style="position:absolute;left:1060px;top:530px;width:150px;padding:20px;z-index:101;">
-&#8203;
-</div> 
-<!--
-問題<input id="mondai_input" type="text" name="mondai" /><br />
-解答<input id="seitou_input" type="text" name="seitou" /><br />
--->
-<div style="position:absolute;top:75px;right:0px;">
-<img th:src="@{../img/blue_pen.png}" style="width:400px;" />
-</div>
-<div style="position:absolute;top:125px;right:0px;">
-<img th:src="@{../img/red_pen.png}" style="width:400px;" />
-</div>
-<img th:src="@{../img/qa_panel.png}" th:style="'position:absolute;right:40px;top:125px;width:350px;height:320px;'" />
-<div th:style="'position:absolute;right:40px;top:125px;width:350px;height:320px;'">
-<div style="padding-left:30px;padding-top:80px;">
+
+<!--/* 消しゴム */-->
+<img id="erasor" th:src="@{../img/eraser.png}" />
+
+<!--/* スライム */-->
+<img id="slime" th:src="@{../img/smileslime.png}" />
+
+<!--/* 吹き出し */-->
+<img id="balloon" th:src="@{../img/balloon.png}" />
+
+<!--/* セリフ */-->
+<div id="serif">&#8203;</div> 
+
+<!--/* 青ペン */-->
+<img id="blue_pen" th:src="@{../img/blue_pen.png}" />
+
+<!--/* 赤ペン */-->
+<img id="red_pen" th:src="@{../img/red_pen.png}" />
+
+<!--/* QAパネル */-->
+<img id="qa_panel" th:src="@{../img/qa_panel.png}" />
+
+<div id="form_grandparent">
+<div id="form_parent">
 <form th:action="@{'/' + ${owner_id} + '/main.html'}" method="post" onsubmit="javascript:copy_to_hidden();ajax_reload();">
 QA. 
 
@@ -210,15 +196,12 @@ QA.
 </div>
 <textarea id="qa_input_hidden" name="qa_input_hidden" style="display:none;">&#8203;</textarea>
 <!--/* QA文登録エリア end */-->
-<div style="height:5px;"></div>
+<div id="spacer" style="height:5px;"></div>
 <input id="yomudake_flg" type="checkbox" name="yomudake_flg" value="off" onclick="change_val(this)" />読むだけ問題&nbsp;
 <input id="reversible_flg" type="checkbox" name="reversible_flg" value="off" onclick="change_val(this)" />リバーシブル問題<br />
 重要度：★★★☆☆　難易度：★★★☆☆<br />
 <button name="register" type="submit" tabindex="2">問題登録</button>
 </form>
-<!--
-<img th:src="@{../img/qa_panel.png}" style="width:300px" />
--->
 </div>
 </div>
 </body>

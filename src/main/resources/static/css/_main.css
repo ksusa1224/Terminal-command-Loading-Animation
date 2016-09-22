@@ -24,7 +24,121 @@ body{
 	border-right:#9B9EA6 1px solid;
 }
 
+#notebook_table
+{
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	z-index:-1;
+}
+
+#note_left
+{
+	position:absolute;
+	width:355px;
+	top:129px;
+	left:73px;
+}
+
+#note_right
+{
+	width:355px;
+	top:109px;
+	right:417px;
+	position:absolute;
+}
+
+#blue_pen
+{
+	position:absolute;
+	top:75px;
+	right:0px;
+	width:400px;
+}
+
+#red_pen
+{
+	position:absolute;
+	top:125px;
+	right:0px;
+	width:400px;
+}
+
+#qa_panel
+{
+	position:absolute;
+	right:40px;
+	top:125px;
+	width:350px;
+	height:320px;
+}
+
+#form_grandparent
+{
+	position:absolute;
+	top:125px;
+	right:40px;
+	width:350px;
+	height:320px;
+}
+
+#form_parent
+{
+	padding-left:30px;
+	padding-top:80px;
+}
+
+#erasor
+{
+	position:absolute;
+	top:420px;
+	right:58px;
+	padding:20px;
+	width:130px;
+	z-index:1000;
+}
+
+#slime
+{
+	position:absolute;
+	top:500px;
+	z-index:100;
+	right:200px;
+	padding:20px;
+	width:150px;
+}
+
+#balloon
+{
+	position:absolute;
+	top:500px;
+	right:-5px;
+	padding:20px;
+	z-index:100;
+	opacity:0;
+}
+
+#serif
+{
+	position:absolute;
+	left:1060px;
+	top:530px;
+	width:150px;
+	padding:20px;
+	z-index:101;
+}
+
 #score
+{
+	position:absolute;
+	top:95px;
+	left:75px;
+	width:355px;
+	color:#566573;
+}
+
+#a_total_num
 {
 	border-bottom: 1px dotted #9B9EA6;
 }
