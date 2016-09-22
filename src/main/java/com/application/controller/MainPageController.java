@@ -81,10 +81,16 @@ public class MainPageController {
 				String owner_db = aes.decrypt(encrypted_owner_db);
 				String qa_html = generate_qa_html(select_qa_plus(owner_db),owner_db);			
 				model.addAttribute("qa_html", qa_html);
+				
 				// 正答総数
-				QADao qa_dao = new QADao();
-				int seitou_sum = qa_dao.get_seitou_sum(owner_db);
+				SeitouDao seitou_dao = new SeitouDao();
+				int seitou_sum = seitou_dao.get_seitou_cnt(owner_db);
 				model.addAttribute("seitou_sum", seitou_sum);
+				
+				// 正解総数
+				int seikai_sum = seitou_dao.get_seikai_cnt(owner_db);
+				model.addAttribute("seikai_sum", seikai_sum);
+				
 				return "main";
 			}
 			else
@@ -214,8 +220,8 @@ public class MainPageController {
 		String qa_html = generate_qa_html(select_qa_plus(owner_db),owner_db);			
 
 		// 正答総数
-		QADao qa_dao = new QADao();
-		int seitou_sum = qa_dao.get_seitou_sum(owner_db);
+		SeitouDao seitou_dao = new SeitouDao();
+		int seitou_sum = seitou_dao.get_seitou_cnt(owner_db);
 		model.addAttribute("seitou_sum", seitou_sum);
 
 		// 正答総数
@@ -327,8 +333,8 @@ public class MainPageController {
 		String owner_db = aes.decrypt(encrypted_owner_db);
 		   
 		// 正答総数
-		QADao qa_dao = new QADao();
-		int seitou_sum = qa_dao.get_seitou_sum(owner_db);
+		SeitouDao seitou_dao = new SeitouDao();
+		int seitou_sum = seitou_dao.get_seitou_cnt(owner_db);
 		
 		return seitou_sum;
 	}	

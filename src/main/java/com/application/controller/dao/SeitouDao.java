@@ -60,6 +60,109 @@ public class SeitouDao {
 		return max_row_no;
 	}
 	
+	/**
+	 * 正答の総数を返す
+	 * @param db_name
+	 * @return
+	 */
+	public int get_seitou_cnt(String db_name)
+	{	
+		int seitou_cnt = 0;
+		
+		SQliteDAO dao = new SQliteDAO();
+		
+		StringBuilderPlus sql = new StringBuilderPlus();
+		sql.appendLine("select count(row_no) from seitou where del_flg = 0 limit 1;");
+		dao.loadDriver();
+		
+		System.out.println(db_name);
+
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+	    try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+	      ResultSet rs = stmt.executeQuery(sql.toString());
+	      while (rs.next()) 
+	      {
+	    	  seitou_cnt = rs.getInt(1);
+	    	  System.out.println(seitou_cnt);
+	      }
+	    }
+	    catch(Exception ex)
+	    {
+	    	//TODO ログ出力
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+	    }	    
+		
+		return seitou_cnt;
+	}	
+
+	/**
+	 * 正解数を得る
+	 * @param db_name
+	 * @return
+	 */
+	public int get_seikai_cnt(String db_name)
+	{	
+		int seikai_cnt = 0;
+		
+		SQliteDAO dao = new SQliteDAO();
+		
+		StringBuilderPlus sql = new StringBuilderPlus();
+		sql.appendLine("select count(kaitou.seikai_flg) from seitou ");
+		sql.appendLine("inner join kaitou ");
+		sql.appendLine("on seitou.s_id = kaitou.s_id ");
+		sql.appendLine("where seitou.del_flg = 0 ");
+		sql.appendLine("and kaitou.seikai_flg = 1");
+		sql.appendLine("and kaitou.del_flg = 0 ");
+		sql.appendLine("group by kaitou.s_id,kaitou.seikai_flg ");
+		sql.appendLine("order by action_timestamp desc ");
+		sql.appendLine("limit 1");
+
+		dao.loadDriver();
+		
+		System.out.println(db_name);
+
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+	    try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+	      ResultSet rs = stmt.executeQuery(sql.toString());
+	      while (rs.next()) 
+	      {
+	    	  seikai_cnt = rs.getInt(1);
+	    	  System.out.println(seikai_cnt);
+	      }
+	    }
+	    catch(Exception ex)
+	    {
+	    	//TODO ログ出力
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+	    }	    
+		
+		return seikai_cnt;
+	}	
+	
 	public List<SeitouModel> select_seitou_list(String db_name, List<SeitouModel> seitou_list)
 	{		
 		SQliteDAO dao = new SQliteDAO();
