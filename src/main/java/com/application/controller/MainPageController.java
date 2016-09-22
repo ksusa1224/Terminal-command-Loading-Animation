@@ -25,12 +25,13 @@ import com.cybozu.labs.langdetect.Detector;
 import com.cybozu.labs.langdetect.DetectorFactory; 
 import com.cybozu.labs.langdetect.LangDetectException; 
 import com.cybozu.*;
-
+import com.application.controller.dao.KaitouDao;
 import com.application.controller.dao.MondaiDao;
 import com.application.controller.dao.QADao;
 import com.application.controller.dao.QAPlusDao;
 import com.application.controller.dao.SeitouDao;
 import com.application.model.LoginInfoModel;
+import com.application.model.dao.KaitouModel;
 import com.application.model.dao.MondaiModel;
 import com.application.model.dao.QAModel;
 import com.application.model.dao.QAPlusModel;
@@ -78,7 +79,7 @@ public class MainPageController {
 				byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 				AES aes = new AES();
 				String owner_db = aes.decrypt(encrypted_owner_db);
-				String qa_html = generate_qa_html(select_qa_plus(owner_db));			
+				String qa_html = generate_qa_html(select_qa_plus(owner_db),owner_db);			
 				model.addAttribute("qa_html", qa_html);
 				// 正答総数
 				QADao qa_dao = new QADao();
@@ -100,7 +101,7 @@ public class MainPageController {
 	
 	/**
 	 * メインページ（暗記ノート本体）
-	 * 問題登録
+	 * 問題登録 現在未使用（Ajaxの方を使っているため）TODO Ajaxが安定動作するようになったら消す
 	 * Spring MVC　@PathVariableを使ってURLに含まれる動的なパラメータを取得
 	 * http://blog.codebook-10000.com/entry/20140301/1393628782
 	 * @param user_id
@@ -152,7 +153,7 @@ public class MainPageController {
 
 			//model.addAttribute("qa_plus_list", select_qa_plus(owner_db));
 			
-			String qa_html = generate_qa_html(select_qa_plus(owner_db));			
+			String qa_html = generate_qa_html(select_qa_plus(owner_db),owner_db);			
 			model.addAttribute("qa_html", qa_html);
 			
 			if (request_url.equals(response_url))
@@ -210,7 +211,7 @@ public class MainPageController {
 			
 		create_qa(owner_id, owner_db, qa_input, yomudake_flg, reversible_flg);
 		
-		String qa_html = generate_qa_html(select_qa_plus(owner_db));			
+		String qa_html = generate_qa_html(select_qa_plus(owner_db),owner_db);			
 
 		// 正答総数
 		QADao qa_dao = new QADao();
@@ -224,6 +225,93 @@ public class MainPageController {
 //		System.out.println(seitou_sum);
 //		System.out.println("--------");
 		return qa_html;
+	}	
+
+	/**
+	 * 正答の色を変更する（白⇒赤、赤⇒白）
+	 * @param session
+	 * @param now_opacity
+	 * @return
+	 */
+	@RequestMapping(value={"/change_seitou_color.html"}, method=RequestMethod.GET)
+	public @ResponseBody String ajax_change_seitou_color(
+			HttpSession session,
+			@RequestParam("qa_id") String qa_id,
+			@RequestParam("s_id") String s_id,
+			@RequestParam("is_seikai_now") int is_seikai_now) {
+
+		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
+		AES aes = new AES();
+		String owner_db = aes.decrypt(encrypted_owner_db);
+
+		String owner_id = (String)session.getAttribute("owner_id");
+		
+		KaitouModel kaitou = new KaitouModel();
+
+		KaitouDao kaitou_dao = new KaitouDao();
+		
+		// 現在の正解状況（色）
+		int is_seikai = kaitou_dao.is_seikai(owner_db, s_id);
+
+		// 行番号・K_ID生成用
+		int k_max_no = kaitou_dao.get_kaitou_max_row_no(owner_db);
+
+		// 行番号
+		kaitou.setRow_no(k_max_no + 1);
+		// 回答ID
+		String k_id = kaitou.generate_k_id(k_max_no + 1, owner_id);
+		kaitou.setK_id(k_id);
+		// QA ID
+		kaitou.setQa_id(qa_id);
+		// 正答ID
+		kaitou.setS_id(s_id);
+		// 正解フラグ
+		if (is_seikai == 0)
+		{
+			kaitou.setSeikai_flg(1);
+		}
+		else
+		{
+			kaitou.setSeikai_flg(0);			
+		}
+		// アクション・・・チェックを入れた、外した、解いて正解した、解いて不正解、等
+		if (is_seikai == 0)
+		{
+			kaitou.setAction(Constant.ACTION_CHANGE_RED_CLICK);
+		}
+		else
+		{
+			kaitou.setAction(Constant.ACTION_CHANGE_WHITE_CLICK);			
+		}
+		// アクション日時（H2DBのtimestampと同じフォーマットにする）
+		kaitou.setAction_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+		// ユーザーが入力した回答
+		kaitou.setKaitou("");
+		// 言語
+		kaitou.setLanguage("");
+		// 削除フラグ
+		kaitou.setDel_flg(0);
+	    // 作成者
+		kaitou.setCreate_owner(owner_id);
+	    // 更新者
+		kaitou.setUpdate_owner(owner_id);
+	    // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+		kaitou.setCreate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+	    // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+		kaitou.setUpdate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+		
+		kaitou_dao.insert_kaitou(owner_db, kaitou);
+		
+		//is_seikai = kaitou_dao.is_seikai(owner_db, s_id);
+		
+		if (kaitou.getSeikai_flg() == 0)
+		{
+			return "1";
+		}
+		else
+		{
+			return "0";
+		}
 	}	
 
 	/**
@@ -272,7 +360,7 @@ public class MainPageController {
 	 * 
 	 * @return
 	 */
-	public String generate_qa_html(List<QAPlusModel> qa_plus_list)
+	public String generate_qa_html(List<QAPlusModel> qa_plus_list, String owner_db)
 	{
 		String qa_html = "";
 
@@ -292,7 +380,7 @@ public class MainPageController {
 			{
 				String mondai = mondai_list.get(i).getQ_parts_text();
 				String q_lang = mondai_list.get(i).getLanguage();
-				String html = "<span class='q' onclick=\"control_qa_saisei('" + mondai + "', '" + "　" + "','" + q_lang + "','" + Constant.ENGLISH + "');\"'>" + mondai + "</span>";			
+				String html = "<span id='" + mondai_list.get(i).getQ_id() + "' class='q' onclick=\"control_qa_saisei('" + mondai + "', '" + "　" + "','" + q_lang + "','" + Constant.ENGLISH + "');\"'>" + mondai + "</span>";			
 				q_html.add(html);
 			}
 			
@@ -306,11 +394,18 @@ public class MainPageController {
 			for (int i = 0; i < seitou_list.size(); i++)
 			{
 				String seitou = seitou_list.get(i).getSeitou();
-				String html = "<span class='a' onmouseover='this.style.opacity=1' onmouseout='this.style.opacity=0'>" + seitou + "</span>";
+				KaitouDao kaitou_dao = new KaitouDao();
+				int opacity = kaitou_dao.is_seikai(owner_db, seitou_list.get(i).getS_id());
+				String mouseout = "";
+				if (opacity == 0)
+				{
+					mouseout = "onmouseout='this.style.opacity=0'";
+				}
+				String html = "<span id='" + seitou_list.get(i).getS_id() + "' class='a' style='opacity:" + opacity + "' onmouseover='this.style.opacity=1' " + mouseout + " onclick='change_seitou_color(this)'>" + seitou + "</span>";
 				a_html.add(html);
 			}	
 			
-			qa_html += "<span class='qa'>";
+			qa_html += "<span id='" + qa_plus.getQa().getQa_id() + "' class='qa'>";
 			for (int i = 0; i < (mondai_list.size() + seitou_list.size()); i++)
 			{
 				if (qa_plus.getQa().getIs_start_with_q() == 1)
@@ -614,7 +709,7 @@ public class MainPageController {
 
 			SeitouModel seitou = new SeitouModel();
 			
-			// 行番号・Q_ID生成用
+			// 行番号・S_ID生成用
 			SeitouDao seitou_dao = new SeitouDao();
 			int s_max_no = seitou_dao.get_seitou_max_row_no(owner_db);
 			
@@ -622,7 +717,6 @@ public class MainPageController {
 			seitou.setRow_no(s_max_no + a_idx);
 		    // 正答ID
 			String s_id = seitou.generate_s_id(s_max_no + a_idx, owner_id);
-			a_idx++;
 			seitou.setS_id(s_id);
 		    // QA ID
 			seitou.setQa_id(qa_id);
@@ -657,6 +751,47 @@ public class MainPageController {
 			seitou.setUpdate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
 	
 			seitou_list.add(seitou);
+			
+			/**
+			 * 回答の新規登録を追加
+			 */
+			KaitouModel kaitou = new KaitouModel();
+
+			// 行番号・K_ID生成用
+			KaitouDao kaitou_dao = new KaitouDao();
+			int k_max_no = kaitou_dao.get_kaitou_max_row_no(owner_db);
+		    // 行番号
+			kaitou.setRow_no(k_max_no + a_idx);
+			// 回答ID
+			String k_id = kaitou.generate_k_id(k_max_no + a_idx, owner_id);
+			a_idx++;
+			kaitou.setK_id(k_id);
+			// QA ID
+			kaitou.setQa_id(qa_id);
+			// 正答ID
+			kaitou.setS_id(s_id);
+			// 正解フラグ
+			kaitou.setSeikai_flg(0);
+			// アクション・・・チェックを入れた、外した、解いて正解した、解いて不正解、等
+			kaitou.setAction(Constant.ACTION_QA_TOUROKU);
+			// アクション日時（H2DBのtimestampと同じフォーマットにする）
+			kaitou.setAction_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+			// ユーザーが入力した回答
+			kaitou.setKaitou("");
+			// 言語
+			kaitou.setLanguage("");
+			// 削除フラグ
+			kaitou.setDel_flg(0);
+		    // 作成者
+			kaitou.setCreate_owner(owner_id);
+		    // 更新者
+			kaitou.setUpdate_owner(owner_id);
+		    // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+			kaitou.setCreate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+		    // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+			kaitou.setUpdate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+			
+			kaitou_dao.insert_kaitou(owner_db, kaitou);
 		}
 		
 		qa_plus.setSeitou_list(seitou_list);

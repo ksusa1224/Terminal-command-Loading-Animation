@@ -110,7 +110,6 @@ function ajax_reload ()
 	var decoded = $("#qa_input_hidden").html(qa_input).text();
 	var yomudake_flg = $("#yomudake_flg").val();
 	var reversible_flg = $("#reversible_flg").val();
-	//alert(decoded);
 	jQuery.ajax({
 		url: "../register_qa.html?qa_input=" + decoded + 
 				"&yomudake_flg=" + yomudake_flg +
@@ -129,6 +128,39 @@ function ajax_reload ()
 			alert("ajax error");
 		}
 	});	
+}
+
+function change_seitou_color(obj)
+{
+	var qa_id = $(obj).parent().attr("id");
+	var s_id = $(obj).attr("id");
+	var attr = $(obj).attr('onmouseout');
+	var is_seikai_now = 0;
+	if (typeof attr !== typeof undefined && attr !== false) {
+	    is_seikai_now = 1;
+	}
+	jQuery.ajax({
+		url: "../change_seitou_color.html?qa_id="+qa_id+"&s_id="+s_id+"&is_seikai_now="+is_seikai_now,
+		dataType: "html",
+		cache: false,
+		success: function(data)
+		{			
+			$(obj).css("opacity",data);
+
+			if (data == '1')
+			{
+				$(obj).removeAttr('onmouseout');
+			}
+			else
+			{
+				$(obj).Attr("onmouseout","this.style.opacity=0");				
+			}
+		},
+		error: function(data)
+		{
+			alert("ajax error");
+		}
+	});
 }
 
 // TODO 常にoffになってしまう
