@@ -150,12 +150,14 @@ function change_seitou_color(obj)
 				$(obj).css("opacity","1");
 				$(obj).removeAttr('onmouseout');
 				$("#seikai_sum").text(Number($("#seikai_sum").text())+1);
+				document.getElementById("seikai_se").play();
 			}
 			else
 			{
 				$(obj).css("opacity","0");
 				$(obj).attr("onmouseout","this.style.opacity='0'");
 				$("#seikai_sum").text(Number($("#seikai_sum").text())-1);
+				document.getElementById("huseikai_se").play();
 			}
 		},
 		error: function(data)

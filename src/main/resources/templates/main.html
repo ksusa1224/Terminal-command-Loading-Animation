@@ -108,6 +108,13 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
 </script>
 </head>
 <body onload="javascript:document.getElementById('qa_input').focus();">
+<audio id="seikai_se" preload="auto">
+  <source th:src="@{../sound/seikai.mp3}" type="audio/mp3"></source>
+</audio>
+<audio id="huseikai_se" preload="auto">
+  <source th:src="@{../sound/huseikai.mp3}" type="audio/mp3"></source>
+</audio>
+
 <img id="notebook_table" th:src="@{../img/notebook-table.jpg}" />
 <br />
  <div id="score">
