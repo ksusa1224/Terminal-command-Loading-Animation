@@ -119,15 +119,16 @@ public class SeitouDao {
 		SQliteDAO dao = new SQliteDAO();
 		
 		StringBuilderPlus sql = new StringBuilderPlus();
-		sql.appendLine("select count(kaitou.seikai_flg) from seitou ");
-		sql.appendLine("inner join kaitou ");
-		sql.appendLine("on seitou.s_id = kaitou.s_id ");
-		sql.appendLine("where seitou.del_flg = 0 ");
-		sql.appendLine("and kaitou.seikai_flg = 1");
-		sql.appendLine("and kaitou.del_flg = 0 ");
-		sql.appendLine("group by kaitou.s_id,kaitou.seikai_flg ");
-		sql.appendLine("order by action_timestamp desc ");
-		sql.appendLine("limit 1");
+		sql.appendLine("SELECT  mi.* ");
+		sql.appendLine("FROM    (");
+		sql.appendLine("        SELECT  MAX(action_timestamp) AS mid");
+		sql.appendLine("        FROM    kaitou");
+		sql.appendLine("        GROUP BY");
+		sql.appendLine("                s_id");
+		sql.appendLine("        ) mo ");
+		sql.appendLine("JOIN    kaitou mi ");
+		sql.appendLine("ON      mi.action_timestamp = mo.mid");
+		sql.appendLine("AND mi.seikai_flg = 1");
 
 		dao.loadDriver();
 		
@@ -146,8 +147,7 @@ public class SeitouDao {
 	      ResultSet rs = stmt.executeQuery(sql.toString());
 	      while (rs.next()) 
 	      {
-	    	  seikai_cnt = rs.getInt(1);
-	    	  System.out.println(seikai_cnt);
+	    	  seikai_cnt++;
 	      }
 	    }
 	    catch(Exception ex)
