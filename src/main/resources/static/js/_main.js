@@ -208,6 +208,60 @@ function to_right_page()
 			
 		} else {
 		    // your element doesn't have overflow
-			alert("not overflow")
+			//alert("not overflow")
 	}
+}
+
+var mode = "default";
+
+function key_event() {
+	// 解答を全て赤くするショートカット
+    // shiftKey + R
+    if (window.event.shiftKey == true && window.event.keyCode == 82)
+    {
+	    event.preventDefault();
+    	
+        if (mode != "red")
+        {
+        	$(".a").css("opacity","1");
+            mode = "red";
+        }
+        else
+        {
+            // もう一度shiftKey＋Rを押すともとに戻る
+            for(i = 0; i < document.getElementsByClassName("a").length; i++)
+            {
+            	var attr = document.getElementsByClassName("a")[i].getAttribute('onmouseout');
+            	if (attr != null) {
+            		document.getElementsByClassName("a")[i].style.opacity = 0;
+            	}
+            }
+            mode = "default";
+        }
+    }
+
+    // 解答を全て白くするショートカット
+    // shiftKey + W
+    if (window.event.shiftKey == true && window.event.keyCode == 87)
+    {
+	    event.preventDefault();
+
+	    if (mode != "white")
+        {
+        	$(".a").css("opacity","0");
+            mode = "white";
+        }
+        else
+        {
+            // もう一度shiftKey＋Wを押すともとに戻る
+            for(i = 0; i < document.getElementsByClassName("a").length; i++)
+            {
+            	var attr = document.getElementsByClassName("a")[i].getAttribute('onmouseout');
+            	if (attr == null) {
+            		document.getElementsByClassName("a")[i].style.opacity = 1;
+            	}
+            }
+            mode = "default";
+        }
+    }
 }
