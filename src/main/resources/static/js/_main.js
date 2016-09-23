@@ -216,8 +216,8 @@ var mode = "default";
 
 function key_event() {
 	// 解答を全て赤くするショートカット
-    // shiftKey + R
-    if (window.event.shiftKey == true && window.event.keyCode == 82)
+    // altKey + R
+    if (window.event.altKey == true && window.event.keyCode == 82)
     {
 	    event.preventDefault();
     	
@@ -228,7 +228,7 @@ function key_event() {
         }
         else
         {
-            // もう一度shiftKey＋Rを押すともとに戻る
+            // もう一度altKey＋Rを押すともとに戻る
             for(i = 0; i < document.getElementsByClassName("a").length; i++)
             {
             	var attr = document.getElementsByClassName("a")[i].getAttribute('onmouseout');
@@ -241,8 +241,8 @@ function key_event() {
     }
 
     // 解答を全て白くするショートカット
-    // shiftKey + W
-    if (window.event.shiftKey == true && window.event.keyCode == 87)
+    // altKey + W
+    if (window.event.altKey == true && window.event.keyCode == 87)
     {
 	    event.preventDefault();
 
@@ -253,7 +253,7 @@ function key_event() {
         }
         else
         {
-            // もう一度shiftKey＋Wを押すともとに戻る
+            // もう一度altKey＋Wを押すともとに戻る
             for(i = 0; i < document.getElementsByClassName("a").length; i++)
             {
             	var attr = document.getElementsByClassName("a")[i].getAttribute('onmouseout');
