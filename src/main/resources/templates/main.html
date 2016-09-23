@@ -107,7 +107,7 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
 
 </script>
 </head>
-<body onload="javascript:document.getElementById('qa_input').focus();">
+<body onload="javascript:document.getElementById('qa_input').focus();to_right_page();">
 <audio id="seikai_se" preload="auto">
   <source th:src="@{../sound/seikai.mp3}" type="audio/mp3"></source>
 </audio>
@@ -155,6 +155,7 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
 </table>
  </div>
  <div id="note_right">
+  <div id="qa_area_right"></div>
 <table style="position:absolute;top:-2px;border:none;" cellpadding="0" cellspacing="0">
 	<tr><td class="note-line"></td></tr>
 	<tr><td class="note-line"></td></tr>

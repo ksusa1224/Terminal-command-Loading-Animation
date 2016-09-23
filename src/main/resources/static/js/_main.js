@@ -179,3 +179,35 @@ function change_val(chk_box)
 		$("this").val() == "off";
 	}
 }
+
+function to_right_page()
+{
+	if (document.getElementById("qa_area").offsetHeight < document.getElementById("qa_area").scrollHeight ||
+		document.getElementById("qa_area").offsetWidth < document.getElementById("qa_area").scrollWidth) {
+		    // your element have overflow
+//			var hiddenElements = $( "qa_area" ).find( ":hidden" );
+//			alert(hiddenElements.html());
+			var h = $("#qa_area").height();
+			var hiddenEls = new Array();
+
+			$("#qa_area").find(".qa").each(function(){
+			    if ($(this).position().top > h)
+			        hiddenEls.push($(this));
+			});
+
+			var qa = "";
+			for (var i = 0; i < hiddenEls.length; i++)
+			{
+				var qa = qa + $('<span>').append(hiddenEls[i].clone()).html();
+				//alert(hiddenEls[i].html());
+				//alert(aa);
+				
+			}
+			
+			$("#qa_area_right").html(qa);
+			
+		} else {
+		    // your element doesn't have overflow
+			alert("not overflow")
+	}
+}
