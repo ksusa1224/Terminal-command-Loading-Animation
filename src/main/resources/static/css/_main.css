@@ -340,9 +340,9 @@ body {
                 
                 border-radius: 100px; /* Half glass max width height */
                 -moz-border-radius: 100px; /* Half glass max width height */
-                -webkit-border-radius: 0px;
+                -webkit-border-radius: 100px;
                 
-                border: 1px solid red;
+                /*border: 1px solid red;*/
                 background-color: white;
                 
                 z-index: 1000000000;
