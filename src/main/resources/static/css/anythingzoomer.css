@@ -1,6 +1,6 @@
 /* AnythingZoomer */
 .az-wrap, .az-small, .az-large {
-	position: relative;
+	/*position: relative;*/
 }
 .az-wrap-inner {
 	display: block;

@@ -92,6 +92,13 @@
 						// get current offsets in case page positioning has changed
 						// Double demo: expanded text demo will offset image demo zoom window
 						var off = base.$small.offset();
+
+						var offset = $("#loope").offset();
+			            var zoomPointX = offset.left;
+			            var zoomPointY = offset.top;
+
+			            //base.zoomAt( e.pageX - off.left, e.pageY - off.top, null, true );
+
 						base.zoomAt( e.pageX - off.left, e.pageY - off.top, null, true );
 					}
 				})
@@ -298,8 +305,8 @@
 			if (o.edit) { base.edit.html(Math.round(x) + ', ' + Math.round(y)); }
 
 			if ( (x < -ex) || (x > base.smallDim[0] + ex) || (y < -ey) || (y > base.smallDim[1] + ey) ) {
-				base.hideZoom(internal);
-				return;
+//				base.hideZoom(internal);
+//				return;
 			} else {
 				// Sometimes the mouseenter event is delayed
 				base.$zoom.stop(true,true).fadeIn(o.speed);
@@ -313,12 +320,20 @@
 				height : sy
 			});
 
+			var offset = $("#loope").offset();
+            var zoomPointX = offset.left;
+            var zoomPointY = offset.top;
+            
 			// match locations of small element to the large
 			base.$large.css({
 				left : -(x - o.offsetX - sx2/2) * base.ratio[0],
 				top  : -(y - o.offsetY - sy2/2) * base.ratio[1]
 			});
 
+//			base.$large.css({
+//				left : zoomPointX,
+//				top  : zoomPointY
+//			});
 		};
 
 		base.hideZoom = function(internal) {

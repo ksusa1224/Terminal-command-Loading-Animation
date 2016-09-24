@@ -110,14 +110,18 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
 }
 function dialog()
 {
-    $( "#dialog" ).dialog({
-              height: 300,
-              width: 400,
-              resizable: true,
-              draggable: true,
-              dialogClass: "alertDialog", 
-              modal: false
-    });
+	$("#zoom").anythingZoomer({
+			clone: true
+	});
+
+    // $( "#dialog" ).dialog({
+              // height: 300,
+              // width: 400,
+              // resizable: true,
+              // draggable: true,
+              // dialogClass: "alertDialog", 
+              // modal: false
+    // });
     
     $( "#crystal_board" ).draggable();
     $( "#dialog" ).draggable();
@@ -127,10 +131,26 @@ function dialog()
     $( "#red_pen" ).draggable();
     $( "#qa_panel" ).draggable();
     $( ".husen" ).draggable();
+/*
+$('#loope').draggable(
+    {
+        drag: function(){
+            var offset = $(this).offset();
+            var zoomPointX = offset.left;
+            var zoomPointY = offset.top;
+            scalechange = newscale - oldscale;
+			offsetX = -(zoomPointX * scalechange);
+			offsetY = -(zoomPointY * scalechange);
+            // $('#posX').text('x: ' + xPos);
+            // $('#posY').text('y: ' + yPos);
+        }
+    });  */  
 }
 </script>
 </head>
 <body onkeydown="key_event()" onload="javascript:document.getElementById('qa_input').focus();to_right_page();dialog();">
+<div id="zoom" class="text">
+<div class="small">
 <!--
 <div id="dialog" class=".ui-draggable .ui-dialog-titlebar" title="Basic dialog" style="display:none;">
 -->
@@ -139,6 +159,9 @@ function dialog()
 英単語</div>
 <div class="husen">
 大学受験</div>
+<div id="loope" class="large">
+ルーペ</div>
+
 </div>
 
 <audio id="seikai_se" preload="auto">
@@ -258,5 +281,7 @@ QA.
 </form>
 </div>
 </div>
+</div> <!-- end zoom -->
+</div> <!-- end zoom -->
 </body>
 </html>

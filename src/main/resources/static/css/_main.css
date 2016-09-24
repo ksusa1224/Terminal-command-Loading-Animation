@@ -285,9 +285,10 @@ input
 
 #loope
 {
+	position: absolute;
 	width:100px;
 	height:100px;
-	zoom:150%;
+	zoom:200%;
 }
 
 #crystal_board
