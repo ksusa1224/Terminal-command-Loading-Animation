@@ -9,6 +9,8 @@
 <script th:src="@{../js/jquery-3.1.0.min.js}"></script>
 <script th:src="@{../js/jquery-ui.js}"></script>
 <script th:src="@{../js/_main.js}"></script>
+<script type="text/javascript" th:src="@{../js/monocle.js}"></script>
+<script type="text/javascript" th:src="@{../js/example.js}"></script>
 <script th:src="@{../js/jquery.anythingzoomer.js}"></script>
 <script type="text/javascript">
 
@@ -110,18 +112,6 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
 }
 function dialog()
 {
-	$("#zoom").anythingZoomer({
-			clone: true
-	});
-
-    // $( "#dialog" ).dialog({
-              // height: 300,
-              // width: 400,
-              // resizable: true,
-              // draggable: true,
-              // dialogClass: "alertDialog", 
-              // modal: false
-    // });
     
     $( "#crystal_board" ).draggable();
     $( "#dialog" ).draggable();
@@ -132,25 +122,36 @@ function dialog()
     $( "#qa_panel" ).draggable();
     $( ".husen" ).draggable();
 /*
-$('#loope').draggable(
-    {
-        drag: function(){
-            var offset = $(this).offset();
-            var zoomPointX = offset.left;
-            var zoomPointY = offset.top;
-            scalechange = newscale - oldscale;
-			offsetX = -(zoomPointX * scalechange);
-			offsetY = -(zoomPointY * scalechange);
-            // $('#posX').text('x: ' + xPos);
-            // $('#posY').text('y: ' + yPos);
-        }
-    });  */  
+$('.husen')
+        .bind('drag',function( event ){
+		var offset = $(this).offset();
+        var zoomPointX = offset.left;
+        var zoomPointY = offset.top;
+        var offsetX = -(zoomPointX * -0.5);
+		var offsetY = -(zoomPointY * -0.5);
+		alert(offsetX);
+		alert(offsetY);
+        var clone = $("#clone").clone();
+        //alert(clone.html());
+        $("#canvas").html(clone);
+        $("#canvas").css("position","absolute");
+        $("#canvas").css("top",zoomPointY.toString());
+        $("#canvas").css("left",zoomPointX.toString());
+        // $("#canvas").css("top","-200");
+        // $("#canvas").css("left","-100");
+        //$("#canvas").css("clip","circle(60px at center)");
+        // $("#canvas").css("width","50px");
+        // $("#canvas").css("height","50px");
+        // $("#canvas").css("overflow","hidden");
+        //$("#canvas").css("zoom","150%");
+        
+        // $("#canvas").css("","");
+		});*/
 }
 </script>
 </head>
 <body onkeydown="key_event()" onload="javascript:document.getElementById('qa_input').focus();to_right_page();dialog();">
-<div id="zoom" class="text">
-<div class="small">
+<div id="clone">
 <!--
 <div id="dialog" class=".ui-draggable .ui-dialog-titlebar" title="Basic dialog" style="display:none;">
 -->
@@ -159,9 +160,8 @@ $('#loope').draggable(
 英単語</div>
 <div class="husen">
 大学受験</div>
-<div id="loope" class="large">
+<div id="loope">
 ルーペ</div>
-
 </div>
 
 <audio id="seikai_se" preload="auto">
@@ -281,7 +281,35 @@ QA.
 </form>
 </div>
 </div>
-</div> <!-- end zoom -->
-</div> <!-- end zoom -->
+</div> <!-- end clone -->
+<!-- <div id="canvas_wrapper">
+<div id="canvas"></div>
+</div> -->
+
+
+	<div id="page">
+		<div id="the-container">
+			ああああああああああ
+		</div>
+	</div>
+    <h1>jQuery monocle plugin demo</h1>
+
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36251023-1']);
+  _gaq.push(['_setDomainName', 'jqueryscript.net']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+
+
 </body>
 </html>

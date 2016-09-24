@@ -271,12 +271,7 @@ input
     cursor: move;
 }
 
-#canvas {
-    width:500px;
-    height:250px;
-    border:1px solid #444;
-    zoom:0.9;
-}
+
 #dragme {
     width:100px;
     height:50px;
@@ -285,10 +280,10 @@ input
 
 #loope
 {
-	position: absolute;
 	width:100px;
 	height:100px;
-	zoom:200%;
+	zoom:150%;
+	z-index:10000;
 }
 
 #crystal_board
@@ -305,4 +300,23 @@ input
     padding-left:110px;
     cursor: move;
 
+}
+
+#canvas_wrapper
+{
+	position: relative;
+	width:50px;
+	height:50px;
+	overflow: hidden;	
+}
+
+#canvas
+{
+	zoom: 150%;
+	z-index: 10000000;
+	background:white;
+	width: 500px;
+	height:500px;
+	/*clip: rect(0px,60px,200px,0px);*/
+	overflow: hidden;
 }

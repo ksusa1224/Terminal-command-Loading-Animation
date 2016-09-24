@@ -265,4 +265,32 @@ function key_event() {
         }
     }
 }
+/*
+var pointerX;
+var pointerY;
+$("#loope").draggable({
+  start : function(evt, ui) {
+    pointerY = (evt.pageY - $('#canvas').offset().top) / zoom - parseInt($(evt.target).css('top'));
+    pointerX = (evt.pageX - $('#canvas').offset().left) / zoom - parseInt($(evt.target).css('left'));
+  },
+  drag : function(evt, ui) {
+    var canvasTop = $('#canvas').offset().top;
+    var canvasLeft = $('#canvas').offset().left;
+    var canvasHeight = $('#canvas').height();
+    var canvasWidth = $('#canvas').width();
 
+    // Fix for zoom
+    ui.position.top = Math.round((evt.pageY - canvasTop) / zoom - pointerY); 
+    ui.position.left = Math.round((evt.pageX - canvasLeft) / zoom - pointerX); 
+
+    // Check if element is outside canvas
+    if (ui.position.left < 0) ui.position.left = 0;
+    if (ui.position.left + $(this).width() > canvasWidth) ui.position.left = canvasWidth - $(this).width();  
+    if (ui.position.top < 0) ui.position.top = 0;
+    if (ui.position.top + $(this).height() > canvasHeight) ui.position.top = canvasHeight - $(this).height();  
+
+    // Finally, make sure offset aligns with position
+    ui.offset.top = Math.round(ui.position.top + canvasTop);
+    ui.offset.left = Math.round(ui.position.left + canvasLeft);
+  }
+});*/

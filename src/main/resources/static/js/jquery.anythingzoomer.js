@@ -96,6 +96,10 @@
 						var offset = $("#loope").offset();
 			            var zoomPointX = offset.left;
 			            var zoomPointY = offset.top;
+//			            alert(zoomPointX);
+//			            alert(zoomPointY);
+//			            alert("x:"+e.pageX);
+//			            alert("y"+e.pageY);
 
 			            //base.zoomAt( e.pageX - off.left, e.pageY - off.top, null, true );
 
@@ -111,6 +115,28 @@
 						base.showSmall();
 					}
 				});
+			
+//			var loope = $('#crystal_board');
+//			loope
+//		    .bind('dragend', function(e) {
+//				if (!base.enabled) { return; }
+//				base.position = e;
+//				if (!base.hovered) { return; }
+//				if (base.state && base.enabled) {
+//					clearTimeout(base.timer);
+//					// get current offsets in case page positioning has changed
+//					// Double demo: expanded text demo will offset image demo zoom window
+//					var off = base.$small.offset();
+//
+//					var offset = $("#loope").offset();
+//		            var zoomPointX = offset.left;
+//		            var zoomPointY = offset.top;
+//
+//		            //base.zoomAt( e.pageX - off.left, e.pageY - off.top, null, true );
+//
+//		            base.zoomAt( zoomPointX, zoomPointY, null, true );
+//				}
+//		    });
 
 			base.showSmall();
 
@@ -325,15 +351,15 @@
             var zoomPointY = offset.top;
             
 			// match locations of small element to the large
+//			base.$large.css({
+//				left : -(x - o.offsetX - sx2/2) * base.ratio[0],
+//				top  : -(y - o.offsetY - sy2/2) * base.ratio[1]
+//			});
+
 			base.$large.css({
 				left : -(x - o.offsetX - sx2/2) * base.ratio[0],
 				top  : -(y - o.offsetY - sy2/2) * base.ratio[1]
 			});
-
-//			base.$large.css({
-//				left : zoomPointX,
-//				top  : zoomPointY
-//			});
 		};
 
 		base.hideZoom = function(internal) {
