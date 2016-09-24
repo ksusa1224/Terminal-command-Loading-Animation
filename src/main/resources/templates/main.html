@@ -117,14 +117,12 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
 
 <img id="notebook_table" th:src="@{../img/notebook-table.jpg}" />
 <br />
+ <img th:src="@{../img/logo_emboss.png}" style="width:130px;position:absolute;top:90px;left:70px;" />
  <div id="score">
  <span id="a_total_num">全
  <span id="seitou_sum" style="color:#202DA2;" th:text="${seitou_sum}"></span>&nbsp;問中&nbsp;<span id="seikai_sum" style="color:#FF0000" th:text="${seikai_sum}"></span>&nbsp;問正解</span>
  </div>
  <div id="note_left">
- <!--
-  <div id="top_border"></div>
- -->
   <div id="qa_area" th:utext="${qa_html}"></div>
 <table id="lines-left" cellpadding="0" cellspacing="0">
 	<tr><td class="note-line"></td></tr>

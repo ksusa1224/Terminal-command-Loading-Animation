@@ -9,6 +9,14 @@ import lombok.Data;
 public class SlimeSerif {
 	
 	/**
+	 * 引数なし
+	 */
+	static String[] arg0_msgs = 
+	{
+		"英語が得意になるには、脳内にアメリカ人の友だちをつくるといいよ！"
+	};
+	
+	/**
 	 * 引数１個
 	 */
 	static String[] arg1_msgs = 
