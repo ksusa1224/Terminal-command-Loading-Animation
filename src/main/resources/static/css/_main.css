@@ -236,3 +236,37 @@ input
 	margin-top: -3px;
 }
 
+#dialog
+{
+	background: url("../img/crystal_plate.png") no-repeat center;
+	background-size:400px 300px;
+	z-index: 10000;
+    padding-top:40px;
+    padding-left:60px;
+    cursor: move;
+}
+
+.ui-dialog {
+    background-color: rgba(255,255,255,0);
+}
+
+.ui-dialog-titlebar
+{
+	display:none;
+}
+
+.husen
+{
+	background: url("../img/husen_yellow.png") no-repeat center;
+	background-size:110px 30px;
+	padding-top:10px;
+	text-align:center;
+	z-index: 10000;
+	width:110px;
+	height:30px;
+    font-size:13px;
+    font-family:"ＭＳ Ｐ明朝", "MS PMincho", "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", serif;	
+    opacity: 1;
+    color:#202DA2;
+    cursor: move;
+}

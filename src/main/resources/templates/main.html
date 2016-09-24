@@ -4,7 +4,9 @@
 <meta charset="UTF-8" />
 <title>暗記ノート</title>
 <link rel="stylesheet" type="text/css" th:href="@{../css/_main.css}" />
+<link rel="stylesheet" type="text/css" th:href="@{../css/jquery-ui.css}" />
 <script th:src="@{../js/jquery-3.1.0.min.js}"></script>
+<script th:src="@{../js/jquery-ui.js}"></script>
 <script th:src="@{../js/_main.js}"></script>
 <script type="text/javascript">
 
@@ -104,16 +106,43 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
 		qa_saisei(mondaibun_,kaitou_,q_gengo_,a_gengo_,play_mode);
 	}
 }
-
+function dialog()
+{
+    $( "#dialog" ).dialog({
+              height: 300,
+              width: 400,
+              resizable: true,
+              draggable: true,
+              dialogClass: "alertDialog", 
+              modal: false
+    });
+    
+    $( "#dialog" ).draggable();
+    $( "#slime" ).draggable();
+    $( "#erasor" ).draggable();
+    $( "#blue_pen" ).draggable();
+    $( "#red_pen" ).draggable();
+    $( "#qa_panel" ).draggable();
+    $( ".husen" ).draggable();
+}
 </script>
 </head>
-<body onkeydown="key_event()" onload="javascript:document.getElementById('qa_input').focus();to_right_page();">
+<body onkeydown="key_event()" onload="javascript:document.getElementById('qa_input').focus();to_right_page();dialog();">
+
+<div id="dialog" class=".ui-draggable .ui-dialog-titlebar" title="Basic dialog" style="display:none;">
+<div class="husen">
+英単語</div>
+<div class="husen">
+大学受験</div>
+</div>
+
 <audio id="seikai_se" preload="auto">
   <source th:src="@{../sound/seikai.mp3}" type="audio/mp3"></source>
 </audio>
 <audio id="huseikai_se" preload="auto">
   <source th:src="@{../sound/huseikai.mp3}" type="audio/mp3"></source>
 </audio>
+
 
 <img id="notebook_table" th:src="@{../img/notebook-table.jpg}" />
 <br />
