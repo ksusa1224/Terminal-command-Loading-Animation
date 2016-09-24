@@ -5,13 +5,22 @@
 <title>暗記ノート</title>
 <link rel="stylesheet" type="text/css" th:href="@{../css/_main.css}" />
 <link rel="stylesheet" type="text/css" th:href="@{../css/jquery-ui.css}" />
+<!--
 <link rel="stylesheet" type="text/css" th:href="@{../css/anythingzoomer.css}" />
+<link th:href="@{../css/screen.css}" media="screen, projection" rel="stylesheet" type="text/css" />
+<link th:href="@{../css/ie.css}" media="screen, projection" rel="stylesheet" type="text/css" />
+<link th:href="@{../css/loupe.css}" media="screen, projection" rel="stylesheet" type="text/css" />
+<link th:href="@{../css/print.css}" media="screen, projection" rel="stylesheet" type="text/css" />
+<link th:href="@{../css/style.css}" media="screen, projection" rel="stylesheet" type="text/css" />
+-->
 <script th:src="@{../js/jquery-3.1.0.min.js}"></script>
 <script th:src="@{../js/jquery-ui.js}"></script>
 <script th:src="@{../js/_main.js}"></script>
+<!--
 <script type="text/javascript" th:src="@{../js/monocle.js}"></script>
 <script type="text/javascript" th:src="@{../js/example.js}"></script>
 <script th:src="@{../js/jquery.anythingzoomer.js}"></script>
+-->
 <script type="text/javascript">
 
 function change_opacity (seitou) {
@@ -121,6 +130,9 @@ function dialog()
     $( "#red_pen" ).draggable();
     $( "#qa_panel" ).draggable();
     $( ".husen" ).draggable();
+    
+    
+    
 /*
 $('.husen')
         .bind('drag',function( event ){
@@ -147,11 +159,23 @@ $('.husen')
         
         // $("#canvas").css("","");
 		});*/
+
+
+
+
+
+
+
+
+
+
 }
 </script>
 </head>
 <body onkeydown="key_event()" onload="javascript:document.getElementById('qa_input').focus();to_right_page();dialog();">
-<div id="clone">
+	<div id="page">
+		<div id="the-container">
+		<div id="the-image" draggable="true"></div>
 <!--
 <div id="dialog" class=".ui-draggable .ui-dialog-titlebar" title="Basic dialog" style="display:none;">
 -->
@@ -163,6 +187,7 @@ $('.husen')
 <div id="loope">
 ルーペ</div>
 </div>
+
 
 <audio id="seikai_se" preload="auto">
   <source th:src="@{../sound/seikai.mp3}" type="audio/mp3"></source>
@@ -281,18 +306,8 @@ QA.
 </form>
 </div>
 </div>
+</div>
 </div> <!-- end clone -->
-<!-- <div id="canvas_wrapper">
-<div id="canvas"></div>
-</div> -->
-
-
-	<div id="page">
-		<div id="the-container">
-			ああああああああああ
-		</div>
-	</div>
-    <h1>jQuery monocle plugin demo</h1>
 
     <script type="text/javascript">
 
@@ -308,7 +323,6 @@ QA.
   })();
 
 </script>
-
 
 
 </body>

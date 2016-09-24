@@ -294,3 +294,78 @@ $("#loope").draggable({
     ui.offset.left = Math.round(ui.position.left + canvasLeft);
   }
 });*/
+
+$(function() {
+	
+	var scale = 2;
+	
+	var $magnifyingGlass = $('<div class="magnifying_glass"></div>');
+	var $magnifiedContent = $('<div class="magnified_content"></div>');
+	var $magnifyingLens = $('<div class="magnifying_lens"></div>');
+	
+	//setup
+	$magnifiedContent.css({
+	    backgroundColor: $("html").css("background-color") || $("body").css("background-color"),
+	    backgroundImage: $("html").css("background-image") || $("body").css("background-image"),
+	    backgroundAttachment: $("html").css("background-attachment") || $("body").css("background-attachment"),
+	    backgroundPosition: $("html").css("background-position") || $("body").css("background-position")
+	});
+	
+	//$magnifiedContent.html(innerShiv($(document.body).html())); //fix html5 for ie<8, must also include script
+	$magnifiedContent.html($(document.body).html());
+	
+	$magnifyingGlass.append($magnifiedContent);
+	$magnifyingGlass.append($magnifyingLens); //comment this line to allow interaction
+	$(document.body).append($magnifyingGlass);
+	
+	//funcs
+	
+	
+	function updateViewSize() {
+	    $magnifiedContent.css({
+	        width: $(document).width(),
+	        height: $(document).height()
+	    });
+	}
+	
+	//begin
+	updateViewSize();
+	
+	//events
+	$(window).resize(updateViewSize);
+	
+	$magnifyingGlass.mousedown(function(e) {
+	    e.preventDefault();
+	    $(this).data("drag", {
+	        mouse: {
+	            top: e.pageY,
+	            left: e.pageX
+	        },
+	        offset: {
+	            top: $(this).offset().top,
+	            left: $(this).offset().left
+	        }
+	    });
+	});
+	
+	$(document.body).mousemove(function(e) {
+	    if ($magnifyingGlass.data("drag")) {
+	        var drag = $magnifyingGlass.data("drag");
+	
+	        var left = drag.offset.left + (e.pageX - drag.mouse.left);
+	        var top = drag.offset.top + (e.pageY - drag.mouse.top);
+	
+	        $magnifyingGlass.css({
+	            left: left,
+	            top: top
+	        });
+	        $magnifiedContent.css({
+	            left: -left * scale,
+	            top: -top * scale
+	        });
+	
+	    }
+	}).mouseup(function() {
+	    $magnifyingGlass.removeData("drag");
+	});
+});
