@@ -306,16 +306,16 @@ input
 
 /* 虫眼鏡 START */
 .magnifying_glass {
-    width: 120px;
-    height: 120px;
+    width: 124px;
+    height: 124px;
     position: absolute;
     top: 0px;
     left: 0px;
     overflow: hidden;
     
-    border-radius: 60px; /* Half glass max width height */
-    -moz-border-radius: 60px; /* Half glass max width height */
-    -webkit-border-radius: 60px;
+    border-radius: 62px; /* Half glass max width height */
+    -moz-border-radius: 62px; /* Half glass max width height */
+    -webkit-border-radius: 62px;
     
     /*border: 1px solid red;*/
     background-color: white;
@@ -324,11 +324,9 @@ input
 }
 
 .magnifying_glass .magnified_content {
-    top: 0px;
-    left: 0px;
     
-    margin-left: -42px; /* Half glass width */
-    margin-top: -42px; /* Half glass height */
+    margin-left: -62px; /* Half glass width */
+    margin-top: -62px; /* Half glass height */
     
     overflow: visible;
     
@@ -375,7 +373,7 @@ input
 	height:150px;
 	width:300px;
 	z-index: 100;
-	opacity: 0;
+    cursor: move;
 }
 /* 虫眼鏡 END */
 

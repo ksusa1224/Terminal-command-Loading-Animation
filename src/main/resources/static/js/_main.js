@@ -374,45 +374,15 @@ function key_event() {
         }
     }
 }
-/*
-var pointerX;
-var pointerY;
-$("#loope").draggable({
-  start : function(evt, ui) {
-    pointerY = (evt.pageY - $('#canvas').offset().top) / zoom - parseInt($(evt.target).css('top'));
-    pointerX = (evt.pageX - $('#canvas').offset().left) / zoom - parseInt($(evt.target).css('left'));
-  },
-  drag : function(evt, ui) {
-    var canvasTop = $('#canvas').offset().top;
-    var canvasLeft = $('#canvas').offset().left;
-    var canvasHeight = $('#canvas').height();
-    var canvasWidth = $('#canvas').width();
 
-    // Fix for zoom
-    ui.position.top = Math.round((evt.pageY - canvasTop) / zoom - pointerY); 
-    ui.position.left = Math.round((evt.pageX - canvasLeft) / zoom - pointerX); 
-
-    // Check if element is outside canvas
-    if (ui.position.left < 0) ui.position.left = 0;
-    if (ui.position.left + $(this).width() > canvasWidth) ui.position.left = canvasWidth - $(this).width();  
-    if (ui.position.top < 0) ui.position.top = 0;
-    if (ui.position.top + $(this).height() > canvasHeight) ui.position.top = canvasHeight - $(this).height();  
-
-    // Finally, make sure offset aligns with position
-    ui.offset.top = Math.round(ui.position.top + canvasTop);
-    ui.offset.left = Math.round(ui.position.left + canvasLeft);
-  }
-});*/
-
+// 虫眼鏡
 $(function() {
-	
-	
-	
 	var scale = 1.2;
 	
 	var $magnifyingGlass = $('<div class="magnifying_glass"></div>');
 	var $magnifiedContent = $('<div class="magnified_content"></div>');
 	var $magnifyingLens = $('<div class="magnifying_lens"></div>');
+	var $loope = $('<div id="loupe"></div>');
 	
 	//setup
 	$magnifiedContent.css({
@@ -422,15 +392,30 @@ $(function() {
 	    backgroundPosition: $("html").css("background-position") || $("body").css("background-position")
 	});
 	
+	$loope.css({
+		position: "absolute",
+		left:550,
+		top:100
+	});
+	
+	$magnifyingGlass.css({
+		position: "absolute",
+		left:562,
+		top:107
+	});	
+	
+    $magnifiedContent.css({
+        left: -562 * scale,
+        top: -107 * scale
+    });
+	
 	//$magnifiedContent.html(innerShiv($(document.body).html())); //fix html5 for ie<8, must also include script
 	$magnifiedContent.html($(document.body).html());
 	
 	$magnifyingGlass.append($magnifiedContent);
 	$magnifyingGlass.append($magnifyingLens); //comment this line to allow interaction
 	$(document.body).append($magnifyingGlass);
-	
-	//funcs
-	
+	$(document.body).append($loope);
 	
 	function updateViewSize() {
 	    $magnifiedContent.css({
@@ -459,6 +444,52 @@ $(function() {
 	    });
 	});
 	
+	$loope.mousedown(function(e) {
+	    e.preventDefault();
+	    $(this).data("drag", {
+	        mouse: {
+	            top: e.pageY,
+	            left: e.pageX
+	        },
+	        offset: {
+	            top: $(this).offset().top,
+	            left: $(this).offset().left
+	        }
+	    });
+	});
+	
+	
+	
+	$(document.body).mousemove(function(e) {
+	    if ($loope.data("drag")) {
+	        var drag = $loope.data("drag");
+	
+	        var left = drag.offset.left + (e.pageX - drag.mouse.left);
+	        var top = drag.offset.top + (e.pageY - drag.mouse.top);
+	
+	        $magnifyingGlass.css({
+	            left: left,
+	            top: top
+	        });
+	        $magnifiedContent.css({
+	            left: -left * scale,
+	            top: -top * scale
+	        });
+	        
+	        var loupe = jQuery('#loupe');
+	    	//var offset = $(".magnifying_glass").offset();
+
+	        loupe.css({
+	            left: left-10,
+	            top: top-8,
+	        });	
+	    }
+	}).mouseup(function() {
+		$loope.removeData("drag");
+	});	
+	
+	
+	
 	$(document.body).mousemove(function(e) {
 	    if ($magnifyingGlass.data("drag")) {
 	        var drag = $magnifyingGlass.data("drag");
@@ -479,7 +510,6 @@ $(function() {
 	    	//var offset = $(".magnifying_glass").offset();
 
 	        loupe.css({
-	        	opacity: 1,
 	            left: left-15,
 	            top: top-10,
 	        });	
