@@ -297,7 +297,7 @@ $("#loope").draggable({
 
 $(function() {
 	
-	var scale = 2;
+	var scale = 1.2;
 	
 	var $magnifyingGlass = $('<div class="magnifying_glass"></div>');
 	var $magnifiedContent = $('<div class="magnified_content"></div>');

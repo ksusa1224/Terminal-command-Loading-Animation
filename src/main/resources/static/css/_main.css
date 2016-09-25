@@ -263,7 +263,7 @@ input
 	background-size:110px 30px;
 	padding-top:10px;
 	text-align:center;
-	z-index: 10000;
+	z-index: 100000000;
 	width:110px;
 	height:30px;
     font-size:13px;
@@ -331,16 +331,16 @@ body {
                 */
             
             .magnifying_glass {
-                width: 200px;
-                height: 200px;
+                width: 100px;
+                height: 100px;
                 position: absolute;
                 top: 0px;
                 left: 0px;
                 overflow: hidden;
                 
-                border-radius: 100px; /* Half glass max width height */
-                -moz-border-radius: 100px; /* Half glass max width height */
-                -webkit-border-radius: 100px;
+                border-radius: 42px; /* Half glass max width height */
+                -moz-border-radius: 42px; /* Half glass max width height */
+                -webkit-border-radius: 42px;
                 
                 /*border: 1px solid red;*/
                 background-color: white;
@@ -352,19 +352,19 @@ body {
                 top: 0px;
                 left: 0px;
                 
-                margin-left: -100px; /* Half glass width */
-                margin-top: -100px; /* Half glass height */
+                margin-left: -42px; /* Half glass width */
+                margin-top: -42px; /* Half glass height */
                 
                 overflow: visible;
                 
                 position: absolute;
                 display: block;
                 
-                transform:scale(2);
-                -moz-transform:scale(2);
-                -webkit-transform:scale(2);
-                -ms-transform:scale(2);
-                -o-transform:scale(2);
+                transform:scale(1.2);
+                -moz-transform:scale(1.2);
+                -webkit-transform:scale(1.2);
+                -ms-transform:scale(1.2);
+                -o-transform:scale(1.22);
                 
                 transform-origin: left top;
                 -moz-transform-origin: left top;
@@ -392,3 +392,11 @@ body {
 section{margin:25px;padding:15px;border:dotted 1px #ccc;z-index: 1000000000;}
 img{float:left;margin-right:25px;}
 
+#loupe
+{
+	position: absolute;
+	background: url("../img/loupe.png");
+	background-size:300px 150px;
+	height:150px;
+	width:300px;
+}
