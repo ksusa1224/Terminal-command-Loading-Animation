@@ -331,21 +331,21 @@ body {
                 */
             
             .magnifying_glass {
-                width: 100px;
-                height: 100px;
+                width: 120px;
+                height: 120px;
                 position: absolute;
                 top: 0px;
                 left: 0px;
                 overflow: hidden;
                 
-                border-radius: 42px; /* Half glass max width height */
-                -moz-border-radius: 42px; /* Half glass max width height */
-                -webkit-border-radius: 42px;
+                border-radius: 60px; /* Half glass max width height */
+                -moz-border-radius: 60px; /* Half glass max width height */
+                -webkit-border-radius: 60px;
                 
                 /*border: 1px solid red;*/
                 background-color: white;
                 
-                z-index: 1000000000;
+                z-index: 100;
             }
             
             .magnifying_glass .magnified_content {
@@ -383,7 +383,7 @@ body {
                 left: 0px;
                 width: 100%;
                 height: 100%;
-                z-index: 10000000;
+                z-index: 100;
                 opacity: 0.0;
                 -ms-filter: alpha(opacity=0);
 
@@ -395,8 +395,11 @@ img{float:left;margin-right:25px;}
 #loupe
 {
 	position: absolute;
+	top:200;
+	left:500;
 	background: url("../img/loupe.png");
 	background-size:300px 150px;
 	height:150px;
 	width:300px;
+	z-index: 100;
 }

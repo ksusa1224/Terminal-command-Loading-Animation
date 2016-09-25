@@ -133,43 +133,6 @@ function dialog()
     $( "#loupe" ).draggable();
    
     
-    
-/*
-$('.husen')
-        .bind('drag',function( event ){
-		var offset = $(this).offset();
-        var zoomPointX = offset.left;
-        var zoomPointY = offset.top;
-        var offsetX = -(zoomPointX * -0.5);
-		var offsetY = -(zoomPointY * -0.5);
-		alert(offsetX);
-		alert(offsetY);
-        var clone = $("#clone").clone();
-        //alert(clone.html());
-        $("#canvas").html(clone);
-        $("#canvas").css("position","absolute");
-        $("#canvas").css("top",zoomPointY.toString());
-        $("#canvas").css("left",zoomPointX.toString());
-        // $("#canvas").css("top","-200");
-        // $("#canvas").css("left","-100");
-        //$("#canvas").css("clip","circle(60px at center)");
-        // $("#canvas").css("width","50px");
-        // $("#canvas").css("height","50px");
-        // $("#canvas").css("overflow","hidden");
-        //$("#canvas").css("zoom","150%");
-        
-        // $("#canvas").css("","");
-		});*/
-
-
-
-
-
-
-
-
-
-
 }
 </script>
 </head>
@@ -180,6 +143,12 @@ $('.husen')
 <!--
 <div id="dialog" class=".ui-draggable .ui-dialog-titlebar" title="Basic dialog" style="display:none;">
 -->
+
+<div id="loupe">
+</div>
+
+
+
 <div id="crystal_board">
 <div class="husen">
 英単語</div>
@@ -187,8 +156,6 @@ $('.husen')
 大学受験</div>
 <!-- <div id="loope">
 ルーペ</div> -->
-<div id="loupe">
-</div>
 </div>
 
 

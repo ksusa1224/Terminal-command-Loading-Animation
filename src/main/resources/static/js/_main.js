@@ -297,6 +297,8 @@ $("#loope").draggable({
 
 $(function() {
 	
+	
+	
 	var scale = 1.2;
 	
 	var $magnifyingGlass = $('<div class="magnifying_glass"></div>');
@@ -363,9 +365,16 @@ $(function() {
 	            left: -left * scale,
 	            top: -top * scale
 	        });
-	
+	        
+	        var loupe = jQuery('#loupe');
+	    	//var offset = $(".magnifying_glass").offset();
+
+	        loupe.css({
+	            left: left-15,
+	            top: top-10,
+	        });	
 	    }
 	}).mouseup(function() {
 	    $magnifyingGlass.removeData("drag");
-	});
+	});	
 });
