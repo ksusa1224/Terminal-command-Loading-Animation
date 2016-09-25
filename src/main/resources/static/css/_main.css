@@ -155,6 +155,7 @@ body{
 	right:200px;
 	padding:20px;
 	width:150px;
+	cursor: pointer;
 }
 
 #balloon

@@ -42,65 +42,21 @@
  <span id="a_total_num">全
  <span id="seitou_sum" style="color:#202DA2;" th:text="${seitou_sum}"></span>&nbsp;問中&nbsp;<span id="seikai_sum" style="color:#FF0000" th:text="${seikai_sum}"></span>&nbsp;問正解</span>
  </div>
+
+<!--/* ノートの左ページ */-->
  <div id="note_left">
   <div id="qa_area" th:utext="${qa_html}"></div>
-<table id="lines-left" cellpadding="0" cellspacing="0">
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-</table>
+	<table id="lines-left" cellpadding="0" cellspacing="0">
+		<tr th:each="i : ${#numbers.sequence( 1, 25)}"><td class="note-line"></td></tr>
+	</table>
  </div>
+
+<!--/* ノートの右ページ */-->
  <div id="note_right">
   <div id="qa_area_right"></div>
-<table style="position:absolute;top:-2px;border:none;z-index:-1" cellpadding="0" cellspacing="0">
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-	<tr><td class="note-line"></td></tr>
-</table>
+	<table style="position:absolute;top:-2px;border:none;z-index:-1" cellpadding="0" cellspacing="0">
+		<tr th:each="i : ${#numbers.sequence( 1, 25)}"><td class="note-line"></td></tr>
+	</table>
  </div>
  <br />
 
@@ -108,7 +64,7 @@
 <img id="erasor" th:src="@{../img/eraser.png}" />
 
 <!--/* スライム */-->
-<img id="slime" th:src="@{../img/smileslime.png}" />
+<img id="slime" th:src="@{../img/smileslime.png}" onclick="slime_speak();" />
 
 <!--/* 吹き出し */-->
 <img id="balloon" th:src="@{../img/balloon.png}" />

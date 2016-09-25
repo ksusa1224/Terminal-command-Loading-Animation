@@ -344,9 +344,19 @@ public class MainPageController {
 	 * @return
 	 */
 	@RequestMapping(value={"/serif.html"}, method=RequestMethod.GET)
-	public @ResponseBody String serif(@RequestParam(value = "a") String a_input) {
+	public @ResponseBody String serif(
+			@RequestParam(value="args_num", required=false) String args_num,
+			@RequestParam(value = "a", required=false) String a_input) {
 		SlimeSerif slime_serif = new SlimeSerif();
-		String serif = slime_serif.RamdomSerifArg1(a_input);		
+		String serif = "";
+		if (args_num != null)
+		{
+			serif = slime_serif.RamdomSerifArg0();
+		}
+		else
+		{
+			serif = slime_serif.RamdomSerifArg1(a_input);
+		}
 		return serif;
 	}		
 	

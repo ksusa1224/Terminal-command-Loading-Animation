@@ -98,7 +98,7 @@ function body_load()
 {
     $( "#crystal_board" ).draggable();
     $( "#dialog" ).draggable();
-    $( "#slime" ).draggable();
+    //$( "#slime" ).draggable();
     $( "#erasor" ).draggable();
     $( "#blue_pen" ).draggable();
     $( "#red_pen" ).draggable();
@@ -518,3 +518,32 @@ $(function() {
 	    $magnifyingGlass.removeData("drag");
 	});	
 });
+
+function slime_speak()
+{	
+	jQuery.ajax({
+		url: "../serif.html?args_num=0",
+		dataType: "html",
+		cache: false,
+		success: function(data)
+		{					
+			$("#balloon").css("opacity","1");
+			$("#serif").text(data);
+			//sleep(5000);
+			//$("#balloon").css("opacity","0");			
+		},
+		error: function(data)
+		{
+			alert("ajax error");
+		}
+	});
+}
+
+function sleep(milliseconds) {
+	  var start = new Date().getTime();
+	  for (var i = 0; i < 1e7; i++) {
+	    if ((new Date().getTime() - start) > milliseconds){
+	      break;
+	    }
+	  }
+}
