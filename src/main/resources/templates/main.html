@@ -5,144 +5,14 @@
 <title>暗記ノート</title>
 <link rel="stylesheet" type="text/css" th:href="@{../css/_main.css}" />
 <link rel="stylesheet" type="text/css" th:href="@{../css/jquery-ui.css}" />
-<!--
-<link rel="stylesheet" type="text/css" th:href="@{../css/anythingzoomer.css}" />
-<link th:href="@{../css/screen.css}" media="screen, projection" rel="stylesheet" type="text/css" />
-<link th:href="@{../css/ie.css}" media="screen, projection" rel="stylesheet" type="text/css" />
-<link th:href="@{../css/loupe.css}" media="screen, projection" rel="stylesheet" type="text/css" />
-<link th:href="@{../css/print.css}" media="screen, projection" rel="stylesheet" type="text/css" />
-<link th:href="@{../css/style.css}" media="screen, projection" rel="stylesheet" type="text/css" />
--->
 <script th:src="@{../js/jquery-3.1.0.min.js}"></script>
 <script th:src="@{../js/jquery-ui.js}"></script>
 <script th:src="@{../js/_main.js}"></script>
-<!--
-<script type="text/javascript" th:src="@{../js/monocle.js}"></script>
-<script type="text/javascript" th:src="@{../js/example.js}"></script>
-<script th:src="@{../js/jquery.anythingzoomer.js}"></script>
--->
 <script type="text/javascript">
 
-function change_opacity (seitou) {
-	seitou.mouseout(function(){ return false});
-	if (seitou.style.opacity == 1)
-	{
-		seitou.style.opacity = 1;
-	}
-	else
-	{
-		seitou.style.opacity = 0;		
-	}
-}
-
-function mouseout (seitou) {
-	if (seitou.style.opacity == 1)
-	{
-		seitou.style.opacity = 0;
-	}
-}
-
-// QA再生制御関数　動作仕様：
-// ①１回目にクリックしたときリピート再生する
-// ②止めたいときはその問題文かどこかしらの問題文をクリックする
-// ③もう１度リピート再生するにはまた問題文をどこかしらクリックする
-var play_mode_cnt = 0;
-function control_qa_saisei(mondaibun__,kaitou__,q_gengo,a_gengo)
-{
-	play_mode_cnt ++;
-
-	// 奇数回目の問題文クリックの場合
-	if (play_mode_cnt % 2 == 1)
-	{
-		play_mode = "repeat";			
-	}
-	// 偶数回目の問題文クリックの場合
-	else
-	{
-		play_mode = "stop";
-	}
-
-	if (play_mode == "repeat")
-	{
-		qa_saisei(mondaibun__,kaitou__,q_gengo,a_gengo,play_mode);
-	}
-	else if (play_mode == "stop")
-	{
-		window.speechSynthesis.cancel();			
-	}
-}
-
-function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
-{
-	var q_msg = new SpeechSynthesisUtterance(mondaibun_);
-	var voices = window.speechSynthesis.getVoices();
- 	if (q_gengo_ == "日本語")
-	{
-        q_msg.default = true;
- 		q_msg.voice = voices[0]; // Otoya
-		q_msg.volume = 0.4;
-		q_msg.pitch = 0.9;
-		q_msg.lang = "ja-JP";
-	}else
-	{
-        q_msg.default = true;
-		// q_msg.voice = voices[6];//Vicky
-		q_msg.volume = 1;
-		q_msg.lang = "en-US";
-	}
-	window.speechSynthesis.speak(q_msg);
-
-	var a_msg = new SpeechSynthesisUtterance(kaitou_);
-	if (a_gengo_ == "日本語")
-	{
-		a_msg.lang = "ja-JP";
- 		//a_msg.voice = voices[46]; // Otoya
-		a_msg.volume = 0.4;
-		a_msg.pitch = 1;
-		window.speechSynthesis.speak(a_msg);
-	}
-//	else if (a_gengo == "読むだけ")
-//	{
-		// 読むだけ問題の正答は読み上げない
-//	}
-	else
-	{
-        a_msg.default = true;
-		a_msg.voice = voices[62];//Vicky
-		a_msg.volume = 1;
-		a_msg.lang = "en-US";
-		window.speechSynthesis.speak(a_msg);		
-	}
-	
-	if (play_mode == "repeat")
-	{
-		qa_saisei(mondaibun_,kaitou_,q_gengo_,a_gengo_,play_mode);
-	}
-}
-function dialog()
-{
-    
-    $( "#crystal_board" ).draggable();
-    $( "#dialog" ).draggable();
-    $( "#slime" ).draggable();
-    $( "#erasor" ).draggable();
-    $( "#blue_pen" ).draggable();
-    $( "#red_pen" ).draggable();
-    $( "#qa_panel" ).draggable();
-    $( ".husen" ).draggable();
-    $( "#loupe" ).draggable();
-   
-    
-}
 </script>
 </head>
-<body onkeydown="key_event()" onload="javascript:document.getElementById('qa_input').focus();to_right_page();dialog();">
-	<div id="page">
-		<div id="the-container">
-		<div id="the-image" draggable="true"></div>
-<!--
-<div id="dialog" class=".ui-draggable .ui-dialog-titlebar" title="Basic dialog" style="display:none;">
--->
+<body onkeydown="key_event()" onload="javascript:document.getElementById('qa_input').focus();to_right_page();body_load();">
 
 <div id="loupe">
 </div>
@@ -276,24 +146,5 @@ QA.
 </form>
 </div>
 </div>
-</div>
-</div> <!-- end clone -->
-
-    <script type="text/javascript">
-
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-36251023-1']);
-  _gaq.push(['_setDomainName', 'jqueryscript.net']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-</script>
-
-
 </body>
 </html>

@@ -4,8 +4,9 @@ body{
 	color:black;
     font-size:13px;
     font-family:"ＭＳ Ｐ明朝", "MS PMincho", "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", serif;
-                position: relative;
-                padding: 0px;
+    position: relative;
+    padding: 0px;
+    margin: 0;
 }
 
 #qa_area
@@ -301,96 +302,68 @@ input
     padding-top:90px;
     padding-left:110px;
     cursor: move;
-
 }
 
-#canvas_wrapper
-{
-	position: relative;
-	width:50px;
-	height:50px;
-	overflow: hidden;	
+/* 虫眼鏡 START */
+.magnifying_glass {
+    width: 120px;
+    height: 120px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    overflow: hidden;
+    
+    border-radius: 60px; /* Half glass max width height */
+    -moz-border-radius: 60px; /* Half glass max width height */
+    -webkit-border-radius: 60px;
+    
+    /*border: 1px solid red;*/
+    background-color: white;
+    
+    z-index: 100;
 }
 
-#canvas
-{
-	zoom: 150%;
-	z-index: 100;
-	background:white;
-	width: 500px;
-	height:500px;
-	/*clip: rect(0px,60px,200px,0px);*/
-	overflow: hidden;
+.magnifying_glass .magnified_content {
+    top: 0px;
+    left: 0px;
+    
+    margin-left: -42px; /* Half glass width */
+    margin-top: -42px; /* Half glass height */
+    
+    overflow: visible;
+    
+    position: absolute;
+    display: block;
+    
+    transform:scale(1.2);
+    -moz-transform:scale(1.2);
+    -webkit-transform:scale(1.2);
+    -ms-transform:scale(1.2);
+    -o-transform:scale(1.22);
+    
+    transform-origin: left top;
+    -moz-transform-origin: left top;
+    -ms-transform-origin: left top;
+    -webkit-transform-origin: left top;
+    -o-transform-origin: left top;
+    
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
 }
 
-	/*
-body {
-                position: relative;
-                padding: 0px;
-            }
-                */
-            
-            .magnifying_glass {
-                width: 120px;
-                height: 120px;
-                position: absolute;
-                top: 0px;
-                left: 0px;
-                overflow: hidden;
-                
-                border-radius: 60px; /* Half glass max width height */
-                -moz-border-radius: 60px; /* Half glass max width height */
-                -webkit-border-radius: 60px;
-                
-                /*border: 1px solid red;*/
-                background-color: white;
-                
-                z-index: 100;
-            }
-            
-            .magnifying_glass .magnified_content {
-                top: 0px;
-                left: 0px;
-                
-                margin-left: -42px; /* Half glass width */
-                margin-top: -42px; /* Half glass height */
-                
-                overflow: visible;
-                
-                position: absolute;
-                display: block;
-                
-                transform:scale(1.2);
-                -moz-transform:scale(1.2);
-                -webkit-transform:scale(1.2);
-                -ms-transform:scale(1.2);
-                -o-transform:scale(1.22);
-                
-                transform-origin: left top;
-                -moz-transform-origin: left top;
-                -ms-transform-origin: left top;
-                -webkit-transform-origin: left top;
-                -o-transform-origin: left top;
-                
-                user-select: none;
-                -moz-user-select: none;
-                -webkit-user-select: none;
-            }
-            
-            .magnifying_glass .magnifying_lens {
-                position: absolute;
-                top: 0px;
-                left: 0px;
-                width: 100%;
-                height: 100%;
-                z-index: 100;
-                opacity: 0.0;
-                -ms-filter: alpha(opacity=0);
+.magnifying_glass .magnifying_lens {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    opacity: 0.0;
+    -ms-filter: alpha(opacity=0);
 
-                cursor: move;
+    cursor: move;
 }
-section{margin:25px;padding:15px;border:dotted 1px #ccc;z-index: 1000000000;}
-img{float:left;margin-right:25px;}
 
 #loupe
 {
@@ -402,4 +375,7 @@ img{float:left;margin-right:25px;}
 	height:150px;
 	width:300px;
 	z-index: 100;
+	opacity: 0;
 }
+/* 虫眼鏡 END */
+
