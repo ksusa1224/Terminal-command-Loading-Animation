@@ -1,5 +1,6 @@
 package com.dao;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -53,6 +54,44 @@ public class SQliteDAO {
 	    }	    
 	}
 
+	public void update_log_db(StringBuilderPlus sql) 
+	{
+		loadDriver();
+
+		String now = Util.getNow("yyyy_MM");
+		String db_name = "system_log_" + now + ".db";
+		String db_save_path = Constant.SQLITE_LOG_FOLDER_PATH;
+		
+	    Connection connection = null;
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+	    try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+
+	      //1行ずつコミットしない
+	      stmt.getConnection().setAutoCommit(false);
+	      
+	      /**
+	       *  SQL実行
+	       */
+	      transaction(stmt, sql);
+	    }
+	    catch(Exception ex)
+	    {
+	    	//TODO ログ出力
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      close(connection);
+	    }	    
+	}
+	
+	
 	public void loadDriver() {
 		// load the sqlite-JDBC driver using the current class loader
 		try 
@@ -521,6 +560,91 @@ public class SQliteDAO {
 	    }
 	    return db_name;
 	}
+	
+	/**
+	 * 月次ログDBを作成する
+	 */
+	public void create_log_db()
+	{
+		loadDriver();
+
+	    Connection connection = null;
+		String now = Util.getNow("yyyy_MM");
+		String db_name = "system_log_" + now + ".db";
+		String db_save_path = Constant.SQLITE_LOG_FOLDER_PATH;
+		
+		// 月次ログDBがすでに存在すれば、ログDBの作成処理は行わない
+		File monthly_db = new File(db_save_path + db_name);
+		if(monthly_db.exists() && !monthly_db.isDirectory()) { 
+		    return;
+		}
+		
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+	    try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+
+	      //1行ずつコミットしない
+	      stmt.getConnection().setAutoCommit(false);
+	      
+	      StringBuilderPlus sql = new StringBuilderPlus();
+	      
+	      /**
+	       *  パフォーマンスチューニング　
+	       *  参考URL:http://arbitrage.jpn.org/it/2015-07-07-2/
+	       */
+	      // TODO 記載位置が合っているか要確認　TODO DB BROWSER FOR SQLITEで開いたら、以下は反映されていなかった模様。
+		  sql.appendLine("PRAGMA default_synchronous = OFF;");
+		  sql.appendLine("PRAGMA journal_mode = PESIST;");
+	      
+	      /**
+	       *  アクセスログテーブル
+	       */
+	      sql.appendLine("create table access_log (");
+	      // タイムスタンプ
+	      sql.appendLine("timestamp text,");
+	      // オーナーID
+	      sql.appendLine("owner_id text,");
+	      // リクエストURI
+	      sql.appendLine("request_uri text,");
+	      // メソッド名
+	      sql.appendLine("method_name text,");
+	      // IPアドレス
+	      sql.appendLine("client_ip text,");
+	      // OS
+	      sql.appendLine("client_os text,");
+	      // ブラウザ
+	      sql.appendLine("client_browser text");
+	      sql.appendLine(");");
+	      
+	      /**
+	       *  エラーログテーブル
+	       */
+	      sql.appendLine("create table error_log (");
+	      // タイムスタンプ
+	      sql.appendLine("timestamp text,");
+	      // エラー種別
+	      sql.appendLine("error_type text,");
+	      // スタックトレース
+	      sql.appendLine("stack_trace text");
+	      sql.appendLine(");");	      
+
+	      transaction(stmt, sql);
+	    }
+	    catch(SQLException e)
+	    {
+	    	//TODO ログ出力
+	      System.err.println(e.getMessage());
+	    }
+	    finally
+	    {
+	      close(connection);
+	    }		
+	}	
 
 	/**
 	 * コネクションをクローズする

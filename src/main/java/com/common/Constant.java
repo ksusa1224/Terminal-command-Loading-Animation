@@ -134,4 +134,13 @@ public class Constant {
 	 */
 	// DB(SQLite、H2共通)の日付型のフォーマット
 	public static final String DB_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
+	// ログDB用の日付型のフォーマット
+	public static final String LOG_DB_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
+	
+	// FATALエラー
+	public static final String ERROR_TYPE_FATAL = "FATAL";
+
+	// ERRORエラー
+	public static final String ERROR_TYPE_ERROR = "ERROR";
 }

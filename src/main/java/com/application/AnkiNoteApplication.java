@@ -10,25 +10,25 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
+import com.common.Log;
 import com.common.SystemOutToLog;
+import com.dao.SQliteDAO;
 import com.slime.SlimeSerif;
 
 @SpringBootApplication
 @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
 public class AnkiNoteApplication {
 
-	public static String LOG = "/usr/local/anki_note/application/spring_log/console.log";
+	//public static String LOG = "/usr/local/anki_note/application/spring_log/console.log";
 	
 	public static void main(String[] args) throws SQLException {
 		// H2のサーバーを起動
 		Server server = Server.createTcpServer(args).start();
 		
-        try {
-            // 上記 MyPrintStream を生成して setOut.
-            System.setOut( new SystemOutToLog(LOG) );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+		// 月次ログDBがなければ作成
+		SQliteDAO dao = new SQliteDAO();
+		dao.create_log_db();
+		
         SpringApplication.run(AnkiNoteApplication.class, args);
 	}
 }

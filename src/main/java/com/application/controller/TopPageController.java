@@ -3,6 +3,7 @@ package com.application.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.application.model.LoginInfoModel;
 import com.common.AES;
 import com.common.Constant;
+import com.common.Log;
 import com.common.StringBuilderPlus;
 import com.dao.H2dbDao;
 import com.dao.SQliteDAO;
@@ -36,6 +38,7 @@ public class TopPageController {
 	  @RequestMapping(value="/", method=RequestMethod.POST, params={"register"})
 	  public String createOwner(
 			  HttpSession session,
+			  HttpServletRequest request,
 			  @RequestParam("owner_id") String owner_id,
 			  @RequestParam("login_password") String login_password,
 			  @RequestParam("owner_name") String owner_name,
@@ -106,6 +109,19 @@ public class TopPageController {
 			sql2.appendLine(");");
 			h2db_dao.update(sql2, params);
 			
+			
+		/**
+		 * アクセスログ記録
+		 */
+		String request_uri = request.getRequestURI();
+		String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
+		String client_ip = Log.getClientIpAddress(request);
+		String client_os = Log.getClientOS(request);
+		String client_browser = Log.getClientBrowser(request);
+		Log log = new Log();
+		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
+		
+			
 	      return "index";
 	  }
 	  
@@ -113,6 +129,7 @@ public class TopPageController {
 	  @RequestMapping(value="/", method=RequestMethod.POST, params={"login"})
 	  public String login(
 			  HttpSession session,
+			  HttpServletRequest request,
 			  // 同じフォームにowner_id入れてもemail入れてもログインできるようにするため
 			  @RequestParam("owner_id_or_email") String owner_id_or_email,
 			  @RequestParam("login_password") String input_password) 
@@ -163,6 +180,20 @@ public class TopPageController {
 			encrypted_db_name = login_info.getEncrypted_db_name();
 			
 			String response_url = "/"+ login_info.getOwner_id() + "/main.html";
+			
+			
+			/**
+			 * アクセスログ記録
+			 */
+			String owner_id = (String)session.getAttribute("owner_id");
+			String request_uri = request.getRequestURI();
+			String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
+			String client_ip = Log.getClientIpAddress(request);
+			String client_os = Log.getClientOS(request);
+			String client_browser = Log.getClientBrowser(request);
+			Log log = new Log();
+			log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
+			
 			
 			if (input_password.equals(password_in_db))
 			{

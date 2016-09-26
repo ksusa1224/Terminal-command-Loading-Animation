@@ -38,6 +38,7 @@ import com.application.model.dao.QAPlusModel;
 import com.application.model.dao.SeitouModel;
 import com.common.AES;
 import com.common.Constant;
+import com.common.Log;
 import com.common.StringBuilderPlus;
 import com.common.Util;
 import com.dao.SQliteDAO;
@@ -71,6 +72,19 @@ public class MainPageController {
 		// TODO 認証されてるかどうかはsessionに入れると書き換えられてしまうから毎回DBに接続した方がいいかな
 		Boolean is_authenticated = (Boolean)session.getAttribute("is_authenticated");
 		String session_owner_id = (String)session.getAttribute("owner_id");
+		
+		
+		/**
+		 * アクセスログ記録
+		 */
+		String request_uri = request.getRequestURI();
+		String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
+		String client_ip = Log.getClientIpAddress(request);
+		String client_os = Log.getClientOS(request);
+		String client_browser = Log.getClientBrowser(request);
+		Log log = new Log();
+		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
+		
 		
 		if(owner_id.equals(session_owner_id) && is_authenticated == true)		
 		{
@@ -184,6 +198,7 @@ public class MainPageController {
 	 */
 	@RequestMapping(value={"/register_qa.html"}, method=RequestMethod.GET)
 	public @ResponseBody String ajax_reload(
+			HttpServletRequest request,
 			HttpSession session,
 			Model model,
 			@RequestParam("qa_input") String qa_input,
@@ -230,6 +245,18 @@ public class MainPageController {
 //		System.out.println("--------");
 //		System.out.println(seitou_sum);
 //		System.out.println("--------");
+		
+		/**
+		 * アクセスログ記録
+		 */
+		String request_uri = request.getRequestURI();
+		String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
+		String client_ip = Log.getClientIpAddress(request);
+		String client_os = Log.getClientOS(request);
+		String client_browser = Log.getClientBrowser(request);
+		Log log = new Log();
+		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
+		
 		return qa_html;
 	}	
 
