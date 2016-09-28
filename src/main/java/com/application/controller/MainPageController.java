@@ -133,18 +133,16 @@ public class MainPageController {
 	
 	@RequestMapping(value={"/tag_search.html"},
 				method=RequestMethod.GET)
-	public @ResponseBody String tag_search(@PathVariable("owner_id") String owner_id,
-				@RequestParam("husen_name") String husen_name,
+	public @ResponseBody String tag_search(@RequestParam("husen_name") String husen_name,
 				HttpServletRequest request, 
 				HttpSession session,
 				Model model) {
 
 		String request_url = request.getRequestURI();
-		String response_url = "/"+ owner_id + "/main.html";
 		
 		// TODO 認証されてるかどうかはsessionに入れると書き換えられてしまうから毎回DBに接続した方がいいかな
 		Boolean is_authenticated = (Boolean)session.getAttribute("is_authenticated");
-		String session_owner_id = (String)session.getAttribute("owner_id");
+		String owner_id = (String)session.getAttribute("owner_id");
 		
 		
 		/**
@@ -159,7 +157,7 @@ public class MainPageController {
 		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
 		
 		
-		if(owner_id.equals(session_owner_id) && is_authenticated == true)		
+		if(is_authenticated == true)		
 		{
 			byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 			AES aes = new AES();

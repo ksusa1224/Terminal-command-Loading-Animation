@@ -128,7 +128,7 @@ function body_load()
 				cache: false,
 				success: function(data)
 				{
-					alert(data);
+					$("#qa_area").html(data);
 				},
 				error: function(data)
 				{
@@ -142,8 +142,8 @@ function body_load()
     $('#crystal_board').droppable({
         accept:'.husen',
         drop: function(event,ui){
-        	alert($(ui.draggable).text());
-        	alert($(this).attr('id'));
+//        	alert($(ui.draggable).text());
+//        	alert($(this).attr('id'));
         }
     });    
 }
