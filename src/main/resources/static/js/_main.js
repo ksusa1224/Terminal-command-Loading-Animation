@@ -120,6 +120,9 @@ function body_load()
 
     $('#loupe').droppable({
         accept:'.husen',
+        out: function (event, ui) {
+        	//alert("out");
+        },
         drop: function(event,ui){
         	var husen_name = $(ui.draggable).text();
 			jQuery.ajax({

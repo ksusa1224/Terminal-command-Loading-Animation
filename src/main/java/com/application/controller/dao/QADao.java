@@ -309,11 +309,18 @@ public class QADao {
 		sql.appendLine("	qa.create_timestamp,");
 		// レコード更新日時（H2DBのtimestampと同じフォーマットにする）
 		sql.appendLine("	qa.update_timestamp");
-		sql.appendLine(" from qa, qa_tag_relation,tag");
+		sql.appendLine(" from qa");
+        if (!tag_name.equals(""))
+        {
+        	sql.appendLine(", qa_tag_relation,tag");
+        }
 		sql.appendLine(" where qa.del_flg = 0");
-		sql.appendLine(" and qa.qa_id = qa_tag_relation.qa_id");
-		sql.appendLine(" and tag.tag_id = qa_tag_relation.tag_id");
-		sql.appendLine(" and tag.tag_name = '" + tag_name + "'");
+        if (!tag_name.equals(""))
+        {
+			sql.appendLine(" and qa.qa_id = qa_tag_relation.qa_id");
+			sql.appendLine(" and tag.tag_id = qa_tag_relation.tag_id");
+			sql.appendLine(" and tag.tag_name = '" + tag_name + "'");
+        }
 		sql.appendLine(" order by qa.update_timestamp desc;");
 		
 		dao.loadDriver();
