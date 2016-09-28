@@ -113,7 +113,7 @@ function body_load()
         accept:'.husen',
         drop: function(event,ui){
         	var husen_name = $(ui.draggable).text();
-        	$("#qa_husen").append("<span data-junban='"+ qa_husen_junban +"'>" + husen_name +"</span>")
+        	$("#qa_husen").html("<span data-junban='"+ qa_husen_junban +"'>" + husen_name +"</span>")
         	qa_husen_junban++;
         }
     });    
@@ -121,8 +121,21 @@ function body_load()
     $('#loupe').droppable({
         accept:'.husen',
         drop: function(event,ui){
-        	alert($(ui.draggable).text());
-        	alert($(this).attr('id'));
+        	var husen_name = $(ui.draggable).text();
+			jQuery.ajax({
+				url: "../tag_search.html?husen_name=" + husen_name,
+				dataType: "html",
+				cache: false,
+				success: function(data)
+				{
+					alert(data);
+				},
+				error: function(data)
+				{
+					$("#balloon").css("opacity","1");
+					$("#serif").text(server_error);
+				}
+			});
         }
     });    
 
@@ -158,6 +171,14 @@ $(document).on('paste', function(e){
 	});
 });
 
+//$( '#husen_wrapper' ).on( 'mousewheel', function ( e ) {
+//    var event = e.originalEvent,
+//        d = event.wheelDelta || -event.detail;
+//
+//    this.scrollTop += ( d < 0 ? 1 : -1 ) * 30;
+//    e.preventDefault();
+//});
+
 function husen_touroku(obj)
 {
 	if (window.event.keyCode == 13)
@@ -176,8 +197,10 @@ function husen_touroku(obj)
 				}
 				else
 				{
+					$("#crystal_board").prepend('<div class="husen" contenteditable="true" onkeypress="javascript:husen_touroku(this);"></div>');
 					$("#balloon").css("opacity","1");
 					$("#serif").text("付箋「" + tag_name + "」を作ったよ");
+					$("#qa_input").focus();
 				}
 			},
 			error: function(data)

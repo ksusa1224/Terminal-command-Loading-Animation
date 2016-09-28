@@ -10,6 +10,7 @@ import com.application.model.dao.QaTagRelationModel;
 import com.application.model.dao.SeitouModel;
 import com.common.Constant;
 import com.common.Log;
+import com.common.StopWatch;
 import com.common.StringBuilderPlus;
 import com.dao.SQliteDAO;
 
@@ -258,12 +259,15 @@ public class QaTagRelationDao {
 //	}
 	
 	/**
-	 * 正答テーブルに１件レコードを追加する
+	 * QAタグ関連テーブルに１件レコードを追加する
 	 * @param seitou
 	 * @return
 	 */
 	public void insert_qa_tag_relation(String db_name, QaTagRelationModel qa_tag_relation)
 	{
+		StopWatch stopwatch = new StopWatch();
+		stopwatch.start();
+
 		SQliteDAO dao = new SQliteDAO();
 	    Connection connection = null;
 		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
@@ -331,18 +335,20 @@ public class QaTagRelationDao {
 	    catch(Exception ex)
 	    {
 			Log log = new Log();
-			log.insert_error_log("ERROR", ex.getStackTrace().toString());
+			log.insert_error_log("ERROR", ex.getMessage());
 		    System.err.println(ex.getMessage());
+		    ex.printStackTrace();
 	    }
 	    finally
 	    {
+		  stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());
 	      dao.close(connection);
 	    }	    
 		
 	}	
 	
 	/**
-	 * QAテーブルを１件更新する
+	 * QAタグ関連テーブルを１件更新する
 	 * @param seitou
 	 * @return 
 	 */

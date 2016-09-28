@@ -130,6 +130,65 @@ public class MainPageController {
 		}
 	}
 
+	
+	@RequestMapping(value={"/tag_search.html"},
+				method=RequestMethod.GET)
+	public @ResponseBody String tag_search(@PathVariable("owner_id") String owner_id,
+				@RequestParam("husen_name") String husen_name,
+				HttpServletRequest request, 
+				HttpSession session,
+				Model model) {
+
+		String request_url = request.getRequestURI();
+		String response_url = "/"+ owner_id + "/main.html";
+		
+		// TODO 認証されてるかどうかはsessionに入れると書き換えられてしまうから毎回DBに接続した方がいいかな
+		Boolean is_authenticated = (Boolean)session.getAttribute("is_authenticated");
+		String session_owner_id = (String)session.getAttribute("owner_id");
+		
+		
+		/**
+		* アクセスログ記録
+		*/
+		String request_uri = request.getRequestURI();
+		String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
+		String client_ip = Log.getClientIpAddress(request);
+		String client_os = Log.getClientOS(request);
+		String client_browser = Log.getClientBrowser(request);
+		Log log = new Log();
+		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
+		
+		
+		if(owner_id.equals(session_owner_id) && is_authenticated == true)		
+		{
+			byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
+			AES aes = new AES();
+			String owner_db = aes.decrypt(encrypted_owner_db);
+			String qa_html = generate_qa_html(select_qa_plus_by_tag(owner_db, husen_name),owner_db);			
+			model.addAttribute("qa_html", qa_html);
+			
+			// 正答総数
+			SeitouDao seitou_dao = new SeitouDao();
+			int seitou_sum = seitou_dao.get_seitou_cnt(owner_db);
+			model.addAttribute("seitou_sum", seitou_sum);
+			
+			// 正解総数
+			int seikai_sum = seitou_dao.get_seikai_cnt(owner_db);
+			model.addAttribute("seikai_sum", seikai_sum);
+			
+			// 付箋
+			String husen_html = generate_husen_html(owner_db);
+			model.addAttribute("tags", husen_html);
+			
+			return qa_html;
+		}		
+		else
+		{
+			return "error";
+		}
+	}
+	
+	
 	/**
 	 * 付箋ボードに付箋を表示するHTMLを生成
 	 * @param owner_db
@@ -217,6 +276,7 @@ public class MainPageController {
 			model.addAttribute("seikai_sum", seikai_sum);
 			
 			create_qa(owner_id, owner_db, qa_input, qa_husen,yomudake_flg, reversible_flg);
+			
 			
 			// 付箋
 			String husen_html = generate_husen_html(owner_db);
@@ -532,6 +592,19 @@ public class MainPageController {
 		return qa_plus_list;
 	}
 
+	/**
+	 * 
+	 * @param owner_db
+	 * @param husen_name
+	 * @return
+	 */
+	public List<QAPlusModel> select_qa_plus_by_tag(String owner_db, String husen_name) {
+		QAPlusDao qa_plus_dao = new QAPlusDao();
+		List<QAPlusModel> qa_plus_list = new ArrayList<QAPlusModel>();
+		qa_plus_list = qa_plus_dao.select_qa_plus_list(owner_db, qa_plus_list, husen_name);
+		return qa_plus_list;
+	}	
+	
 	/**
 	 * 
 	 * @return
@@ -982,17 +1055,18 @@ public class MainPageController {
 			{
 				QaTagRelationDao qa_tag_relation_dao = new QaTagRelationDao();
 				Document huden_doc = Jsoup.parse(qa_husen);
-				Elements husen_spans = doc.getElementsByTag("span");
+				Elements husen_spans = huden_doc.getElementsByTag("span");
 				for (Element husen_span: husen_spans) {
 					QaTagRelationModel qa_tag_relation = new QaTagRelationModel();
+					TagDao tag_dao = new TagDao();
 				    // 行番号
 					qa_tag_relation.setRow_no(qa_tag_relation_dao.get_max_row_no(owner_db)+1);
 				    // QA ID
 					qa_tag_relation.setQa_id(qa_id);
 				    // タグID
-					qa_tag_relation.setTag_id("");
+					qa_tag_relation.setTag_id(tag_dao.select_tag_id(owner_db, husen_span.text()));
 				    // タグ内でのQAの順番
-					//qa_tag_relation.setJunban(husen_span.data(""));
+					qa_tag_relation.setJunban(0);
 				    // 公開範囲
 					qa_tag_relation.setKoukai_level(Constant.KOUKAI_LEVEL_SELF_ONLY);
 				    // 作成者
@@ -1003,6 +1077,8 @@ public class MainPageController {
 					qa_tag_relation.setCreate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
 				    // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
 					qa_tag_relation.setUpdate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+					
+					qa_tag_relation_dao.insert_qa_tag_relation(owner_db, qa_tag_relation);
 				}
 			}
 		}

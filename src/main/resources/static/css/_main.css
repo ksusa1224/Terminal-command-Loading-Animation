@@ -7,6 +7,7 @@ body{
     position: relative;
     padding: 0px;
     margin: 0;
+    overflow:hidden;
 }
 
 #qa_area
@@ -291,6 +292,17 @@ input
     color:#202DA2;
     cursor: move;
     outline: none;
+}
+
+#husen_wrapper
+{
+	height:150px;
+/*	overflow: scroll;*/
+    -ms-overflow-style: none;  // IE 10+
+    overflow: -moz-scrollbars-none;  // Firefox
+}
+#husen_wrapper::-webkit-scrollbar { 
+    display: none;  // Safari and Chrome
 }
 
 

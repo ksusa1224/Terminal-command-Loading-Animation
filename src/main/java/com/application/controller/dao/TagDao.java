@@ -63,6 +63,46 @@ public class TagDao {
 		return max_row_no;
 	}
 	
+	public String select_tag_id(String db_name, String tag_name)
+	{
+		String tag_id = "";
+		
+		SQliteDAO dao = new SQliteDAO();
+		StringBuilderPlus sql = new StringBuilderPlus();
+		sql.appendLine("select tag_id from tag where tag_name = '" + tag_name + "'");
+		dao.loadDriver();		
+
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+	    try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+	      ResultSet rs = stmt.executeQuery(sql.toString());
+	      while (rs.next()) 
+	      {
+	    	  tag_id = rs.getString("tag_id");
+	      }
+	    }
+	    catch(Exception ex)
+	    {
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+	    }	    
+		
+		return tag_id;
+	}
+	
+	
 	public Boolean is_exist(String db_name, String tag_name)
 	{
 		Boolean is_exist = false;
