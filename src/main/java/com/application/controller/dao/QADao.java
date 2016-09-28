@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.application.model.dao.QAModel;
 import com.common.Constant;
+import com.common.Log;
 import com.common.StopWatch;
 import com.common.StringBuilderPlus;
 import com.dao.SQliteDAO;
@@ -32,7 +33,7 @@ public class QADao {
 		sql.appendLine("select max(row_no) as row_no from qa limit 1;");
 		dao.loadDriver();
 		
-		System.out.println(sql.toString());
+		//System.out.println(sql.toString());
 
 	    Connection connection = null;
 		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
@@ -52,7 +53,8 @@ public class QADao {
 	    }
 	    catch(Exception ex)
 	    {
-	    	//TODO ログ出力
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
 		    System.err.println(ex.getMessage());
 	    }
 	    finally
@@ -81,7 +83,7 @@ public class QADao {
 		sql.appendLine("select sum(seitou_cnt) from qa where del_flg = 0 limit 1;");
 		dao.loadDriver();
 		
-		System.out.println(sql.toString());
+		//System.out.println(sql.toString());
 
 	    Connection connection = null;
 		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
@@ -101,7 +103,8 @@ public class QADao {
 	    }
 	    catch(Exception ex)
 	    {
-	    	//TODO ログ出力
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
 		    System.err.println(ex.getMessage());
 	    }
 	    finally
@@ -236,7 +239,8 @@ public class QADao {
 	    }
 	    catch(Exception ex)
 	    {
-	    	//TODO ログ出力
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
 		    System.err.println(ex.getMessage());
 	    }
 	    finally
@@ -371,7 +375,8 @@ public class QADao {
 	    }
 	    catch(Exception ex)
 	    {
-	    	//TODO ログ出力
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
 		    System.err.println(ex.getMessage());
 	    }
 	    finally
@@ -458,7 +463,8 @@ public class QADao {
 	    }
 	    catch(Exception ex)
 	    {
-	    	//TODO ログ出力
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
 		    System.err.println(ex.getMessage());
 	    }
 	    finally

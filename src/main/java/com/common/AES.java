@@ -53,7 +53,8 @@ public class AES {
 		}
 		catch(Exception ex)
 		{
-			// TODO ログ出力
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
 			ex.printStackTrace();
 		}
 	}
@@ -75,7 +76,8 @@ public class AES {
 		}
 		catch(Exception ex)
 		{
-			// TODO ログ出力
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
 			ex.printStackTrace();
 		}
 		return encrypted;
@@ -98,7 +100,8 @@ public class AES {
 		    byte[] original = cipher_obj.doFinal(encrypted);
 		    original_str = new String(original);
 		} catch (Exception ex) {
-			// TODO ログ出力
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
 			ex.printStackTrace();
 		}
 	    

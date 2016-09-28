@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.application.model.dao.MondaiModel;
 import com.common.Constant;
+import com.common.Log;
 import com.common.StringBuilderPlus;
 import com.dao.SQliteDAO;
 
@@ -28,7 +29,7 @@ public class MondaiDao {
 		sql.appendLine("select max(row_no) as row_no from mondai limit 1;");
 		dao.loadDriver();
 		
-		System.out.println(db_name);
+		//System.out.println(db_name);
 
 	    Connection connection = null;
 		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
@@ -49,7 +50,8 @@ public class MondaiDao {
 	    }
 	    catch(Exception ex)
 	    {
-	    	//TODO ログ出力
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
 		    System.err.println(ex.getMessage());
 	    }
 	    finally
@@ -159,7 +161,8 @@ public class MondaiDao {
 	    }
 	    catch(Exception ex)
 	    {
-	    	//TODO ログ出力
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
 		    System.err.println(ex.getMessage());
 	    }
 	    finally
@@ -268,7 +271,8 @@ public class MondaiDao {
 	    }
 	    catch(Exception ex)
 	    {
-	    	//TODO ログ出力
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
 		    System.err.println(ex.getMessage());
 	    }
 	    finally
@@ -376,7 +380,8 @@ public class MondaiDao {
 	    }
 	    catch(Exception ex)
 	    {
-	    	//TODO ログ出力
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
 		    System.err.println(ex.getMessage());
 	    }
 	    finally
@@ -451,7 +456,8 @@ public class MondaiDao {
 	    }
 	    catch(Exception ex)
 	    {
-	    	//TODO ログ出力
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
 		    System.err.println(ex.getMessage());
 	    }
 	    finally

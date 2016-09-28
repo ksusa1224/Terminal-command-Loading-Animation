@@ -218,10 +218,19 @@ function copy_to_hidden () {
 // 問題登録押下時、リロードせずにAjaxで登録と再検索を行う
 function ajax_reload ()
 {
+	e.preventDefault();
 	var qa_input = $("#qa_input_hidden").html();
 	var decoded = $("#qa_input_hidden").html(qa_input).text();
 	var yomudake_flg = $("#yomudake_flg").val();
 	var reversible_flg = $("#reversible_flg").val();
+	var add_seitou_cnt = $('.qa_input_hidden').children('.a').length;
+	alert(add_seitou_cnt);
+	$("#seikai_sum").text("1");
+	/*
+	var now_seitou_cnt = Number($("#seikai_sum").text());
+	added_seitou_cnt = new_seitou_cnt + add_seitou_cnt;
+	alert(added_seitou_cnt);
+	*/
 	jQuery.ajax({
 		url: "../register_qa.html?qa_input=" + decoded + 
 				"&yomudake_flg=" + yomudake_flg +

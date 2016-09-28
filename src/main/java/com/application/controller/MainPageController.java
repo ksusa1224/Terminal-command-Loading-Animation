@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+//import org.json.simple.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -43,6 +44,8 @@ import com.common.StringBuilderPlus;
 import com.common.Util;
 import com.dao.SQliteDAO;
 import com.slime.SlimeSerif;
+
+import net.arnx.jsonic.JSON;
 
 @Controller
 public class MainPageController {
@@ -167,6 +170,14 @@ public class MainPageController {
 			{
 				reversible_flg = "off";
 			}
+			// 正答総数
+			SeitouDao seitou_dao = new SeitouDao();
+			int seitou_sum = seitou_dao.get_seitou_cnt(owner_db);
+			model.addAttribute("seitou_sum", seitou_sum);
+			
+			// 正解総数
+			int seikai_sum = seitou_dao.get_seikai_cnt(owner_db);
+			model.addAttribute("seikai_sum", seikai_sum);
 			
 			create_qa(owner_id, owner_db, qa_input, yomudake_flg, reversible_flg);
 			
@@ -217,7 +228,7 @@ public class MainPageController {
 			return "index";
 		}
 		String owner_id = (String)session.getAttribute("owner_id");
-		System.out.println(owner_id);
+		//System.out.println(owner_id);
 		
 		if (yomudake_flg == null)
 		{
@@ -238,13 +249,14 @@ public class MainPageController {
 		SeitouDao seitou_dao = new SeitouDao();
 		int seitou_sum = seitou_dao.get_seitou_cnt(owner_db);
 		model.addAttribute("seitou_sum", seitou_sum);
-
-		// 正答総数
-//		QADao qa_dao = new QADao();
-//		int seitou_sum = qa_dao.get_seitou_sum(owner_db);
-//		System.out.println("--------");
-//		System.out.println(seitou_sum);
-//		System.out.println("--------");
+		
+		// 正解総数
+		int seikai_sum = seitou_dao.get_seikai_cnt(owner_db);
+		model.addAttribute("seikai_sum", seikai_sum);
+		
+//		JSONObject obj = new JSONObject();
+//		obj.put("qa_html", qa_html);
+//		obj.put("seitou_sum", seitou_sum);
 		
 		/**
 		 * アクセスログ記録

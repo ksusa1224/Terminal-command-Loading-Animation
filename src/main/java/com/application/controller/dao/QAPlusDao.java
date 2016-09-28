@@ -13,6 +13,7 @@ import com.application.model.dao.QAModel;
 import com.application.model.dao.QAPlusModel;
 import com.application.model.dao.SeitouModel;
 import com.common.Constant;
+import com.common.Log;
 import com.common.StopWatch;
 import com.common.StringBuilderPlus;
 import com.dao.SQliteDAO;
@@ -268,7 +269,8 @@ public class QAPlusDao extends QADao {
 	    }
 	    catch(Exception ex)
 	    {
-	    	//TODO ログ出力
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
 		    System.err.println(ex.getMessage());
 	    }
 	    finally
@@ -634,7 +636,7 @@ public class QAPlusDao extends QADao {
 			sql.appendLine(");");			
 		}
 		
-		System.out.println(sql.toString());
+		//System.out.println(sql.toString());
 	    
 		try
 	    {
@@ -652,7 +654,8 @@ public class QAPlusDao extends QADao {
 	    }
 	    catch(Exception ex)
 	    {
-	    	//TODO ログ出力
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
 		    System.err.println(ex.getMessage());
 	    }
 	    finally

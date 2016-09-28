@@ -45,7 +45,8 @@ public class SQliteDAO {
 	    }
 	    catch(Exception ex)
 	    {
-	    	//TODO ログ出力
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
 		    System.err.println(ex.getMessage());
 	    }
 	    finally
@@ -82,7 +83,8 @@ public class SQliteDAO {
 	    }
 	    catch(Exception ex)
 	    {
-	    	//TODO ログ出力
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
 		    System.err.println(ex.getMessage());
 	    }
 	    finally
@@ -551,7 +553,8 @@ public class SQliteDAO {
 	    }
 	    catch(SQLException e)
 	    {
-	    	//TODO ログ出力
+			Log log = new Log();
+			log.insert_error_log("ERROR", e.getStackTrace().toString());
 	      System.err.println(e.getMessage());
 	    }
 	    finally
@@ -637,7 +640,8 @@ public class SQliteDAO {
 	    }
 	    catch(SQLException e)
 	    {
-	    	//TODO ログ出力
+			Log log = new Log();
+			log.insert_error_log("ERROR", e.getStackTrace().toString());
 	      System.err.println(e.getMessage());
 	    }
 	    finally

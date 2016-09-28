@@ -40,7 +40,10 @@
  <img th:src="@{../img/logo_emboss.png}" style="width:130px;position:absolute;top:90px;left:70px;" />
  <div id="score">
  <span id="a_total_num">全
- <span id="seitou_sum" style="color:#202DA2;" th:text="${seitou_sum}"></span>&nbsp;問中&nbsp;<span id="seikai_sum" style="color:#FF0000" th:text="${seikai_sum}"></span>&nbsp;問正解</span>
+ <span id="seitou_sum" style="color:#202DA2;" th:text="${seitou_sum}">&#8203;</span>
+ 問中
+ <span id="seikai_sum" style="color:#FF0000;" th:text="${seikai_sum}">&#8203;</span>
+ 問正解</span>
  </div>
 
 <!--/* ノートの左ページ */-->
@@ -83,7 +86,7 @@
 
 <div id="form_grandparent">
 <div id="form_parent">
-<form th:action="@{'/' + ${owner_id} + '/main.html'}" method="post" onsubmit="javascript:copy_to_hidden();ajax_reload();">
+<form th:action="@{'/' + ${owner_id} + '/main.html'}" method="post" onsubmit="javascript:copy_to_hidden();">
 QA. 
 
 <!--/* QA文登録エリア start */-->

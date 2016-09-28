@@ -9,6 +9,7 @@ import java.util.List;
 import com.application.model.dao.KaitouModel;
 import com.application.model.dao.SeitouModel;
 import com.common.Constant;
+import com.common.Log;
 import com.common.StopWatch;
 import com.common.StringBuilderPlus;
 import com.dao.SQliteDAO;
@@ -30,7 +31,7 @@ public class KaitouDao {
 		sql.appendLine("select max(row_no) as row_no from kaitou limit 1;");
 		dao.loadDriver();
 		
-		System.out.println(db_name);
+		//System.out.println(db_name);
 
 	    Connection connection = null;
 		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
@@ -46,12 +47,13 @@ public class KaitouDao {
 	      while (rs.next()) 
 	      {
 	    	  max_row_no = rs.getInt("row_no");
-	    	  System.out.println(max_row_no);
+	    	  //System.out.println(max_row_no);
 	      }
 	    }
 	    catch(Exception ex)
 	    {
-	    	//TODO ログ出力
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
 		    System.err.println(ex.getMessage());
 	    }
 	    finally
@@ -72,7 +74,7 @@ public class KaitouDao {
 		sql.appendLine("select seikai_flg from kaitou where s_id = '" + s_id + "' order by action_timestamp desc limit 1;");
 		dao.loadDriver();
 		
-		System.out.println(db_name);
+		//System.out.println(db_name);
 
 	    Connection connection = null;
 		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
@@ -93,7 +95,8 @@ public class KaitouDao {
 	    }
 	    catch(Exception ex)
 	    {
-	    	//TODO ログ出力
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
 		    System.err.println(ex.getMessage());
 	    }
 	    finally
@@ -202,7 +205,8 @@ public class KaitouDao {
 	    }
 	    catch(Exception ex)
 	    {
-	    	//TODO ログ出力
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
 		    System.err.println(ex.getMessage());
 	    }
 	    finally
@@ -309,7 +313,8 @@ public class KaitouDao {
 	    }
 	    catch(Exception ex)
 	    {
-	    	//TODO ログ出力
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
 		    System.err.println(ex.getMessage());
 	    }
 	    finally
@@ -380,7 +385,8 @@ public class KaitouDao {
 	    }
 	    catch(Exception ex)
 	    {
-	    	//TODO ログ出力
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
 		    System.err.println(ex.getMessage());
 	    }
 	    finally

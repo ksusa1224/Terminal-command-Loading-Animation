@@ -56,7 +56,6 @@ public class ApplicationController {
 		Log log = new Log();
 		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
 		
-		System.out.println("ip:"+client_ip);
 		if (request_url.equals(response_url))
 		{
 			return "index";
