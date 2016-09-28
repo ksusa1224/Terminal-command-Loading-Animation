@@ -107,6 +107,32 @@ function body_load()
     $( "#qa_panel" ).draggable();
     $( ".husen" ).draggable();
     $( "#loupe" ).draggable();
+    
+    var qa_husen_junban = 1;
+    $('#husen_paste').droppable({
+        accept:'.husen',
+        drop: function(event,ui){
+        	var husen_name = $(ui.draggable).text();
+        	$("#qa_husen").append("<span data-junban='"+ qa_husen_junban +"'>" + husen_name +"</span>")
+        	qa_husen_junban++;
+        }
+    });    
+
+    $('#loupe').droppable({
+        accept:'.husen',
+        drop: function(event,ui){
+        	alert($(ui.draggable).text());
+        	alert($(this).attr('id'));
+        }
+    });    
+
+    $('#crystal_board').droppable({
+        accept:'.husen',
+        drop: function(event,ui){
+        	alert($(ui.draggable).text());
+        	alert($(this).attr('id'));
+        }
+    });    
 }
 
 //QA内でのパーツの順番
@@ -131,6 +157,38 @@ $(document).on('paste', function(e){
 	    event.preventDefault();
 	});
 });
+
+function husen_touroku(obj)
+{
+	if (window.event.keyCode == 13)
+	{
+		var tag_name = obj.innerHTML;
+		jQuery.ajax({
+			url: "../tag_touroku.html?tag_name=" + tag_name,
+			dataType: "html",
+			cache: false,
+			success: function(data)
+			{
+				if (data == 'deplicate')
+				{
+					$("#balloon").css("opacity","1");
+					$("#serif").text("「" + tag_name + "」の付箋はすでにあるよ〜");					
+				}
+				else
+				{
+					$("#balloon").css("opacity","1");
+					$("#serif").text("付箋「" + tag_name + "」を作ったよ");
+				}
+			},
+			error: function(data)
+			{
+				$("#balloon").css("opacity","1");
+				$("#serif").text(server_error);
+			}
+		});		
+		event.preventDefault();
+	}
+}
 
 // 漢字変換後にEnterを押したときにペンの色が変わる
 function enter (){
@@ -390,8 +448,13 @@ function key_event() {
     }
 }
 
-// 虫眼鏡
+
 $(function() {
+
+	//$('.a').attr('onMouseOver', 'this.style.opacity=1;');
+	$('.a').attr('onClick', 'change_seitou_color(this);');
+	
+	// 虫眼鏡
 	var scale = 1.2;
 	
 	var $magnifyingGlass = $('<div class="magnifying_glass"></div>');

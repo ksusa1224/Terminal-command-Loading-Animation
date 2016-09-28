@@ -259,6 +259,23 @@ input
 	display:none;
 }
 
+#husen_paste
+{
+	text-align:center;
+	color: #54A0DC;
+	font-size:12px;
+	display: table-cell;
+	vertical-align: middle;
+	width:250px;
+	border: gray dotted 1px;
+	height:80px;
+}
+
+#qa_husen
+{
+	display:none;
+}
+
 .husen
 {
 	background: url("../img/husen_yellow.png") no-repeat center;
@@ -273,6 +290,7 @@ input
     opacity: 1;
     color:#202DA2;
     cursor: move;
+    outline: none;
 }
 
 

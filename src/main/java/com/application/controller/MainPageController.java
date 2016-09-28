@@ -30,13 +30,17 @@ import com.application.controller.dao.KaitouDao;
 import com.application.controller.dao.MondaiDao;
 import com.application.controller.dao.QADao;
 import com.application.controller.dao.QAPlusDao;
+import com.application.controller.dao.QaTagRelationDao;
 import com.application.controller.dao.SeitouDao;
+import com.application.controller.dao.TagDao;
 import com.application.model.LoginInfoModel;
 import com.application.model.dao.KaitouModel;
 import com.application.model.dao.MondaiModel;
 import com.application.model.dao.QAModel;
 import com.application.model.dao.QAPlusModel;
+import com.application.model.dao.QaTagRelationModel;
 import com.application.model.dao.SeitouModel;
+import com.application.model.dao.TagModel;
 import com.common.AES;
 import com.common.Constant;
 import com.common.Log;
@@ -44,6 +48,7 @@ import com.common.StringBuilderPlus;
 import com.common.Util;
 import com.dao.SQliteDAO;
 import com.slime.SlimeSerif;
+import com.sun.medialib.mlib.Constants;
 
 import net.arnx.jsonic.JSON;
 
@@ -108,6 +113,10 @@ public class MainPageController {
 				int seikai_sum = seitou_dao.get_seikai_cnt(owner_db);
 				model.addAttribute("seikai_sum", seikai_sum);
 				
+				// 付箋
+				String husen_html = generate_husen_html(owner_db);
+				model.addAttribute("tags", husen_html);
+				
 				return "main";
 			}
 			else
@@ -119,12 +128,28 @@ public class MainPageController {
 		{
 			return "error";
 		}
+	}
+
+	/**
+	 * 付箋ボードに付箋を表示するHTMLを生成
+	 * @param owner_db
+	 * @return
+	 */
+	public String generate_husen_html(String owner_db) {
+		TagDao tag_dao = new TagDao();
+		List<TagModel> tag_list = new ArrayList<TagModel>();
+		String husen_html = "";
+		tag_list = tag_dao.select_tag_list(owner_db, tag_list);
+		for (TagModel tag : tag_list)
+		{
+			husen_html += ("<div class='husen'>" + tag.getTag_name() + "</div>");
+		}
+		return husen_html;
 	}	    
 	
 	
 	/**
-	 * メインページ（暗記ノート本体）
-	 * 問題登録 現在未使用（Ajaxの方を使っているため）TODO Ajaxが安定動作するようになったら消す
+	 * 問題登録
 	 * Spring MVC　@PathVariableを使ってURLに含まれる動的なパラメータを取得
 	 * http://blog.codebook-10000.com/entry/20140301/1393628782
 	 * @param user_id
@@ -142,9 +167,21 @@ public class MainPageController {
 						HttpSession session,
 						Model model,
 						@RequestParam("qa_input_hidden") String qa_input,
+						@RequestParam(value="qa_husen",required=false) String qa_husen,
 						@RequestParam(value="yomudake_flg", required=false) String yomudake_flg,
 						@RequestParam(value="reversible_flg", required=false) String reversible_flg) {
 		
+		/**
+		 * アクセスログ記録
+		 */
+		String request_uri = request.getRequestURI();
+		String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
+		String client_ip = Log.getClientIpAddress(request);
+		String client_os = Log.getClientOS(request);
+		String client_browser = Log.getClientBrowser(request);
+		Log log = new Log();
+		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
+
 		String request_url = request.getRequestURI();
 		String response_url = "/"+ owner_id + "/main.html";
 		model.addAttribute("owner_id", owner_id);
@@ -179,8 +216,11 @@ public class MainPageController {
 			int seikai_sum = seitou_dao.get_seikai_cnt(owner_db);
 			model.addAttribute("seikai_sum", seikai_sum);
 			
-			create_qa(owner_id, owner_db, qa_input, yomudake_flg, reversible_flg);
+			create_qa(owner_id, owner_db, qa_input, qa_husen,yomudake_flg, reversible_flg);
 			
+			// 付箋
+			String husen_html = generate_husen_html(owner_db);
+			model.addAttribute("tags", husen_html);
 
 			//model.addAttribute("qa_plus_list", select_qa_plus(owner_db));
 			
@@ -204,73 +244,74 @@ public class MainPageController {
 
 	/**
 	 * AjaxでQA登録、再検索
+	 * 誤動作多い、かつ重いため現在未使用
 	 * @param a_input
 	 * @return
 	 */
-	@RequestMapping(value={"/register_qa.html"}, method=RequestMethod.GET)
-	public @ResponseBody String ajax_reload(
-			HttpServletRequest request,
-			HttpSession session,
-			Model model,
-			@RequestParam("qa_input") String qa_input,
-			@RequestParam(value="yomudake_flg", required=false) String yomudake_flg,
-			@RequestParam(value="reversible_flg", required=false) String reversible_flg
-			) {
-
-		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
-		AES aes = new AES();
-		String owner_db = aes.decrypt(encrypted_owner_db);
-		   
-		// TODO 認証されてるかどうかはsessionに入れると書き換えられてしまうから毎回DBに接続した方がいいかな
-		Boolean is_authenticated = (Boolean)session.getAttribute("is_authenticated");
-		if (is_authenticated == false)
-		{
-			return "index";
-		}
-		String owner_id = (String)session.getAttribute("owner_id");
-		//System.out.println(owner_id);
-		
-		if (yomudake_flg == null)
-		{
-			yomudake_flg = "off";
-		}
-		if (reversible_flg == null)
-		{
-			reversible_flg = "off";
-		}
-		System.out.println(yomudake_flg);
-		System.out.println(reversible_flg);
-			
-		create_qa(owner_id, owner_db, qa_input, yomudake_flg, reversible_flg);
-		
-		String qa_html = generate_qa_html(select_qa_plus(owner_db),owner_db);			
-
-		// 正答総数
-		SeitouDao seitou_dao = new SeitouDao();
-		int seitou_sum = seitou_dao.get_seitou_cnt(owner_db);
-		model.addAttribute("seitou_sum", seitou_sum);
-		
-		// 正解総数
-		int seikai_sum = seitou_dao.get_seikai_cnt(owner_db);
-		model.addAttribute("seikai_sum", seikai_sum);
-		
-//		JSONObject obj = new JSONObject();
-//		obj.put("qa_html", qa_html);
-//		obj.put("seitou_sum", seitou_sum);
-		
-		/**
-		 * アクセスログ記録
-		 */
-		String request_uri = request.getRequestURI();
-		String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
-		String client_ip = Log.getClientIpAddress(request);
-		String client_os = Log.getClientOS(request);
-		String client_browser = Log.getClientBrowser(request);
-		Log log = new Log();
-		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
-		
-		return qa_html;
-	}	
+//	@RequestMapping(value={"/register_qa.html"}, method=RequestMethod.GET)
+//	public @ResponseBody String ajax_reload(
+//			HttpServletRequest request,
+//			HttpSession session,
+//			Model model,
+//			@RequestParam("qa_input") String qa_input,
+//			@RequestParam(value="yomudake_flg", required=false) String yomudake_flg,
+//			@RequestParam(value="reversible_flg", required=false) String reversible_flg
+//			) {
+//
+//		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
+//		AES aes = new AES();
+//		String owner_db = aes.decrypt(encrypted_owner_db);
+//		   
+//		// TODO 認証されてるかどうかはsessionに入れると書き換えられてしまうから毎回DBに接続した方がいいかな
+//		Boolean is_authenticated = (Boolean)session.getAttribute("is_authenticated");
+//		if (is_authenticated == false)
+//		{
+//			return "index";
+//		}
+//		String owner_id = (String)session.getAttribute("owner_id");
+//		//System.out.println(owner_id);
+//		
+//		if (yomudake_flg == null)
+//		{
+//			yomudake_flg = "off";
+//		}
+//		if (reversible_flg == null)
+//		{
+//			reversible_flg = "off";
+//		}
+//		System.out.println(yomudake_flg);
+//		System.out.println(reversible_flg);
+//			
+//		create_qa(owner_id, owner_db, qa_input, yomudake_flg, reversible_flg);
+//		
+//		String qa_html = generate_qa_html(select_qa_plus(owner_db),owner_db);			
+//
+//		// 正答総数
+//		SeitouDao seitou_dao = new SeitouDao();
+//		int seitou_sum = seitou_dao.get_seitou_cnt(owner_db);
+//		model.addAttribute("seitou_sum", seitou_sum);
+//		
+//		// 正解総数
+//		int seikai_sum = seitou_dao.get_seikai_cnt(owner_db);
+//		model.addAttribute("seikai_sum", seikai_sum);
+//		
+////		JSONObject obj = new JSONObject();
+////		obj.put("qa_html", qa_html);
+////		obj.put("seitou_sum", seitou_sum);
+//		
+//		/**
+//		 * アクセスログ記録
+//		 */
+//		String request_uri = request.getRequestURI();
+//		String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
+//		String client_ip = Log.getClientIpAddress(request);
+//		String client_os = Log.getClientOS(request);
+//		String client_browser = Log.getClientBrowser(request);
+//		Log log = new Log();
+//		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
+//		
+//		return qa_html;
+//	}	
 
 	/**
 	 * 正答の色を変更する（白⇒赤、赤⇒白）
@@ -379,6 +420,86 @@ public class MainPageController {
 	}	
 	
 	/**
+	 * 付箋登録
+	 * @param tag_name
+	 * @return
+	 */
+	@RequestMapping(value={"/tag_touroku.html"}, method=RequestMethod.GET)
+	public @ResponseBody String tag_touroku(
+			HttpSession session,
+			@RequestParam(value = "tag_name", required=false) String tag_name) {
+
+		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
+		AES aes = new AES();
+		String owner_db = aes.decrypt(encrypted_owner_db);
+
+		String owner_id = (String)session.getAttribute("owner_id");
+		
+		return insert_tag(tag_name, owner_db, owner_id);
+	}
+
+
+	/**
+	 * タグを新規作成
+	 * @param tag_name
+	 * @param owner_db
+	 * @param owner_id
+	 * @return
+	 */
+	public String insert_tag(String tag_name, String owner_db, String owner_id) {
+		if (tag_name != null)
+		{
+			if (!tag_name.equals(""))
+			{
+				TagDao tag_dao = new TagDao();
+				
+				// すでに存在するタグ名の場合、deplicateを返却
+				if (tag_dao.is_exist(owner_db, tag_name))
+				{
+					return "deplicate";
+				}
+				
+				TagModel tag = new TagModel();
+			    // 行番号
+				tag.setRow_no(tag_dao.get_max_row_no(owner_db)+1);
+			    // タグID
+				tag.setTag_id(tag.generate_tag_id(tag.getRow_no() + 1, owner_id));
+			    // タグ名
+				tag.setTag_name(tag_name);
+			    // 表示順
+//				tag.setJunban(junban);
+			    // 表示フラグ
+				tag.setDisplay_flg(1);
+			    // 重要度（５段階）
+				tag.setJuyoudo(3);
+			    // 難易度（５段階）
+				tag.setNanido(3);
+			    // システムタグフラグ
+				tag.setSystem_tag_flg(0);
+			    // タグ種別
+//				tag.setTag_type(tag_type);
+			    // 公開範囲
+				tag.setKoukai_level(Constant.KOUKAI_LEVEL_SELF_ONLY);
+			    // 言語
+				tag.setLanguage(Util.check_japanese_or_english(tag_name));
+			    // 削除フラグ
+				tag.setDel_flg(0);
+			    // 作成者
+				tag.setCreate_owner(owner_id);
+			    // 更新者
+				tag.setUpdate_owner(owner_id);
+			    // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+				tag.setCreate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+			    // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+				tag.setUpdate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+				
+				tag_dao.insert_tag(owner_db, tag);
+			}
+		}
+		return tag_name;
+	}		
+
+	/**
 	 * すらスラ〜のセリフAjaxページ
 	 * @return
 	 */
@@ -419,7 +540,7 @@ public class MainPageController {
 	{
 		String qa_html = "";
 
-		System.out.println(qa_plus_list.size());
+		//System.out.println(qa_plus_list.size());
 		
 		for (QAPlusModel qa_plus : qa_plus_list)
 		{
@@ -456,7 +577,7 @@ public class MainPageController {
 				{
 					mouseout = "onmouseout='this.style.opacity=0'";
 				}
-				String html = "<span id='" + seitou_list.get(i).getS_id() + "' class='a' style='opacity:" + opacity + "' onmouseover='this.style.opacity=1' " + mouseout + " onclick='change_seitou_color(this)'>" + seitou + "</span>";
+				String html = "<span id='" + seitou_list.get(i).getS_id() + "' class='a' style='opacity:" + opacity + "' onmouseover='this.style.opacity=1' " + mouseout + ">" + seitou + "</span>";
 				a_html.add(html);
 			}	
 			
@@ -504,10 +625,11 @@ public class MainPageController {
 			String owner_id, 
 			String owner_db, 
 			String qa_input,
+			String qa_husen,
 			String yomudake_flg,
 			String reversible_flg)
 	{
-		System.out.println("qa_input"+qa_input);
+		//System.out.println("qa_input"+qa_input);
 		
 		// 順番、問題文/正答
 		Map<String,String> qa_map = new HashMap<String,String>();
@@ -853,5 +975,37 @@ public class MainPageController {
 		
 		QAPlusDao qa_plus_dao = new QAPlusDao();
 		qa_plus_dao.insert_qa_plus(owner_db, qa_plus);		
+		
+		if (qa_husen != null)
+		{
+			if (!qa_husen.equals(""))
+			{
+				QaTagRelationDao qa_tag_relation_dao = new QaTagRelationDao();
+				Document huden_doc = Jsoup.parse(qa_husen);
+				Elements husen_spans = doc.getElementsByTag("span");
+				for (Element husen_span: husen_spans) {
+					QaTagRelationModel qa_tag_relation = new QaTagRelationModel();
+				    // 行番号
+					qa_tag_relation.setRow_no(qa_tag_relation_dao.get_max_row_no(owner_db)+1);
+				    // QA ID
+					qa_tag_relation.setQa_id(qa_id);
+				    // タグID
+					qa_tag_relation.setTag_id("");
+				    // タグ内でのQAの順番
+					//qa_tag_relation.setJunban(husen_span.data(""));
+				    // 公開範囲
+					qa_tag_relation.setKoukai_level(Constant.KOUKAI_LEVEL_SELF_ONLY);
+				    // 作成者
+					qa_tag_relation.setCreate_owner(owner_id);
+				    // 更新者
+					qa_tag_relation.setUpdate_owner(owner_id);
+				    // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+					qa_tag_relation.setCreate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+				    // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+					qa_tag_relation.setUpdate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+				}
+			}
+		}
+		
 	}	
 }

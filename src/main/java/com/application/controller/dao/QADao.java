@@ -457,7 +457,7 @@ public class QADao {
 	      stmt.getConnection().setAutoCommit(false);
 	      
 	      /**
-	       *  SQL実行
+	       *  SQL実行	
 	       */
 	      dao.transaction(stmt, sql);
 	    }
