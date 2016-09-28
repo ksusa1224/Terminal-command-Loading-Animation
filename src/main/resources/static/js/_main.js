@@ -1,4 +1,6 @@
-﻿function change_opacity (seitou) {
+﻿var server_error = "GORORON堂のサーバーが混みあってるみたい";
+
+function change_opacity (seitou) {
 	seitou.mouseout(function(){ return false});
 	if (seitou.style.opacity == 1)
 	{
@@ -165,7 +167,8 @@ function enter (){
 				},
 				error: function(data)
 				{
-					alert("ajax error");
+					$("#balloon").css("opacity","1");
+					$("#serif").text(server_error);
 				}
 			});
 			
@@ -234,7 +237,9 @@ function ajax_reload ()
 		},
 		error: function(data)
 		{
-			alert("ajax error");
+			location.reload();
+			$("#balloon").css("opacity","1");
+			$("#serif").text(server_error);
 		}
 	});	
 }
@@ -271,7 +276,8 @@ function change_seitou_color(obj)
 		},
 		error: function(data)
 		{
-			alert("ajax error");
+			$("#balloon").css("opacity","1");
+			$("#serif").text(server_error);
 		}
 	});
 }
@@ -534,7 +540,8 @@ function slime_speak()
 		},
 		error: function(data)
 		{
-			alert("ajax error");
+			$("#balloon").css("opacity","1");
+			$("#serif").text(server_error);
 		}
 	});
 }
