@@ -298,7 +298,7 @@ public class MondaiDao {
 				  				+ db_name;
 		
 		StringBuilderPlus sql = new StringBuilderPlus();
-		sql.appendLine("insert into mondai (");
+		sql.appendLine("replace into mondai (");
 		// 行番号
 		sql.appendLine("  row_no,");
 		// 問題ID

@@ -19,6 +19,11 @@ public @Data class QAModel {
      */
 	private int qa_type;
 	
+	/**
+	 * QA入力エリアのHTML
+	 */
+	private String qa_html;
+	
     /**
      *  読むだけ問題フラグ
      */

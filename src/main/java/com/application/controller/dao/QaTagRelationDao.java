@@ -276,7 +276,7 @@ public class QaTagRelationDao {
 				  				+ db_name;
 		
 		StringBuilderPlus sql = new StringBuilderPlus();
-		sql.appendLine("insert into qa_tag_relation (");
+		sql.appendLine("replace into qa_tag_relation (");
 		// 行番号
 		sql.appendLine("  row_no,");
 		// QA ID

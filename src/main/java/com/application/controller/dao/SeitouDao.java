@@ -413,7 +413,7 @@ public class SeitouDao {
 				  				+ db_name;
 		
 		StringBuilderPlus sql = new StringBuilderPlus();
-		sql.appendLine("insert into seitou (");
+		sql.appendLine("replace into seitou (");
 		// 行番号
 		sql.appendLine("  row_no,");
 		// 正答ID

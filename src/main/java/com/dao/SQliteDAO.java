@@ -149,6 +149,8 @@ public class SQliteDAO {
 	      sql.appendLine("	qa_id text primary key unique not null,");
 	      // QAタイプ
 	      sql.appendLine("	qa_type integer,");
+	      // QA入力エリアのHTML
+	      sql.appendLine("  qa_html text,");
 	      // 読むだけ問題フラグ
 	      sql.appendLine("	yomudake_flg integer default 0,");
 	      // 問題と正答を入れ替えた結果生成された問題かどうか

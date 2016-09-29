@@ -305,6 +305,10 @@ input
     display: none;  // Safari and Chrome
 }
 
+#qa_id
+{
+	display:none;
+}
 
 #dragme {
     width:100px;

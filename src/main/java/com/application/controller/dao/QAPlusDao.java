@@ -144,6 +144,8 @@ public class QAPlusDao extends QADao {
 	    	  qa.setQa_id(rs.getString("qa.qa_id"));
   	  		  // QAタイプ
 	    	  qa.setQa_type(rs.getInt("qa.qa_type"));
+	  	      // QA入力エリアのHTML
+	    	  qa.setQa_html(rs.getString("qa_html"));
 		      // 読むだけ問題フラグ
 	    	  qa.setYomudake_flg(rs.getInt("qa.yomudake_flg"));
 	  	      // 問題と正答を入れ替えた結果生成された問題かどうか
@@ -442,13 +444,18 @@ public class QAPlusDao extends QADao {
 				  				+ db_name;
 		
 		StringBuilderPlus sql = new StringBuilderPlus();
-		sql.appendLine("insert into qa (");
+		
+		sql.appendLine("delete from qa where qa_id = '" + qa.getQa_id() + "';");
+		
+		sql.appendLine("replace into qa (");
 		// 行番号
 		sql.appendLine("  row_no,");
 		// QA ID
 		sql.appendLine("	qa_id,");
 		// QAタイプ
 		sql.appendLine("	qa_type,");
+	    // QA入力エリアのHTML
+	    sql.appendLine("  qa_html,");
 		// 読むだけ問題フラグ
 		sql.appendLine("	yomudake_flg,");
 		// 問題と正答を入れ替えた結果生成された問題かどうか
@@ -494,6 +501,8 @@ public class QAPlusDao extends QADao {
 		sql.appendLine("'" + qa.getQa_id() + "',");
 		// QAタイプ
 		sql.appendLine("" + qa.getQa_type() + ",");
+	    // QA入力エリアのHTML
+		sql.appendLine("'" + qa.getQa_html() + "',");
 		// 読むだけ問題フラグ
 		sql.appendLine("" + qa.getYomudake_flg() + ",");
 		// 問題と正答を入れ替えた結果生成された問題かどうか
@@ -537,7 +546,9 @@ public class QAPlusDao extends QADao {
 		 */
 		for (MondaiModel mondai : qa_plus.getMondai_list())
 		{
-			sql.appendLine("insert into mondai (");
+			sql.appendLine("delete from mondai where qa_id = '" + mondai.getQa_id() + "';");			
+			
+			sql.appendLine("replace into mondai (");
 			// 行番号
 			sql.appendLine("  row_no,");
 			// 問題ID
@@ -609,7 +620,9 @@ public class QAPlusDao extends QADao {
 		 */
 		for (SeitouModel seitou : qa_plus.getSeitou_list())
 		{
-			sql.appendLine("insert into seitou (");
+			sql.appendLine("delete from seitou where qa_id = '" + seitou.getQa_id() + "';");						
+			
+			sql.appendLine("replace into seitou (");
 			// 行番号
 			sql.appendLine("  row_no,");
 			// 正答ID

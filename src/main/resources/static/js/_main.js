@@ -652,3 +652,27 @@ function sleep(milliseconds) {
 	    }
 	  }
 }
+
+function edit_qa(q_obj)
+{
+	var qa_id = $(q_obj).parent().attr('id');
+	jQuery.ajax({
+		url: "../edit_qa.html?qa_id="+qa_id,
+		dataType: "html",
+		cache: false,
+		success: function(data)
+		{
+			$("#qa_input").html(data);
+			$("#qa_id").val(qa_id);
+		},
+		error: function(data)
+		{
+			$("#balloon").css("opacity","1");
+			$("#serif").text(server_error);
+		}
+	});
+}
+
+
+
+

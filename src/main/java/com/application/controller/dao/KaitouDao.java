@@ -235,7 +235,7 @@ public class KaitouDao {
 				  				+ db_name;
 		
 		StringBuilderPlus sql = new StringBuilderPlus();
-		sql.appendLine("insert into kaitou (");
+		sql.appendLine("replace into kaitou (");
 		// 行番号
 		sql.appendLine("  row_no,");
 		// 回答ID

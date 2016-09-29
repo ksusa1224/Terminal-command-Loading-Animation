@@ -116,6 +116,57 @@ public class QADao {
 	}
 	
 	/**
+	 * 編集用に、QA入力エリアのHTMLを取得
+	 * @param db_name
+	 * @param qa_id
+	 * @return
+	 */
+	public String get_qa_html(String db_name, String qa_id)
+	{	
+		StopWatch stopwatch = new StopWatch();
+		stopwatch.start();
+		
+		String qa_html = "";
+		
+		SQliteDAO dao = new SQliteDAO();
+		
+		StringBuilderPlus sql = new StringBuilderPlus();
+		sql.appendLine("select qa_html from qa where qa_id = '" + qa_id + "'");
+		dao.loadDriver();
+		
+		//System.out.println(sql.toString());
+
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+	    try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+	      ResultSet rs = stmt.executeQuery(sql.toString());
+	      while (rs.next()) 
+	      {
+	    	  qa_html = rs.getString("qa_html");
+	      }
+	    }
+	    catch(Exception ex)
+	    {
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+	    }	    
+	    stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());
+		return qa_html;
+	}
+	
+	/**
 	 * @param db_name
 	 * @param qa_list
 	 * @return
@@ -135,6 +186,8 @@ public class QADao {
 		sql.appendLine("	qa_id,");
 		// QAタイプ
 		sql.appendLine("	qa_type,");
+	    // QA入力エリアのHTML
+	    sql.appendLine("  qa_html,");		
 		// 読むだけ問題フラグ
 		sql.appendLine("	yomudake_flg,");
 	    // 問題と正答を入れ替えた結果生成された問題かどうか
@@ -197,6 +250,8 @@ public class QADao {
 	    	  qa.setQa_id(rs.getString("qa_id"));
   	  		  // QAタイプ
 	    	  qa.setQa_type(rs.getInt("qa_type"));
+		      // QA入力エリアのHTML
+	    	  qa.setQa_html(rs.getString("qa_html"));
 		      // 読むだけ問題フラグ
 	    	  qa.setYomudake_flg(rs.getInt("yomudake_flg"));
 	  	      // 問題と正答を入れ替えた結果生成された問題かどうか
@@ -273,6 +328,8 @@ public class QADao {
 		sql.appendLine("	qa.qa_id,");
 		// QAタイプ
 		sql.appendLine("	qa.qa_type,");
+	    // QA入力エリアのHTML
+	    sql.appendLine("  qa.qa_html,");
 		// 読むだけ問題フラグ
 		sql.appendLine("	qa.yomudake_flg,");
 	    // 問題と正答を入れ替えた結果生成された問題かどうか
@@ -345,6 +402,8 @@ public class QADao {
 	    	  qa.setQa_id(rs.getString("qa_id"));
   	  		  // QAタイプ
 	    	  qa.setQa_type(rs.getInt("qa_type"));
+		      // QA入力エリアのHTML
+	    	  qa.setQa_html(rs.getString("qa_html"));
 		      // 読むだけ問題フラグ
 	    	  qa.setYomudake_flg(rs.getInt("yomudake_flg"));
 	  	      // 問題と正答を入れ替えた結果生成された問題かどうか
@@ -417,13 +476,15 @@ public class QADao {
 				  				+ db_name;
 		
 		StringBuilderPlus sql = new StringBuilderPlus();
-		sql.appendLine("insert into qa (");
+		sql.appendLine("replace into qa (");
 		// 行番号
-		sql.appendLine("  row_no,");
+		//sql.appendLine("  row_no,");
 		// QA ID
 		sql.appendLine("	qa_id,");
 		// QAタイプ
 		sql.appendLine("	qa_type,");
+	    // QA入力エリアのHTML
+		sql.appendLine("   qa_html,");
 		// 読むだけ問題フラグ
 		sql.appendLine("	yomudake_flg,");
 		// 問題と正答を入れ替えた結果生成された問題かどうか
@@ -464,11 +525,13 @@ public class QADao {
 		
 		sql.appendLine("values (");
 	    // 行番号
-		sql.appendLine("" + qa.getRow_no() + ",");
+		//sql.appendLine("" + qa.getRow_no() + ",");
 		// QA ID
 		sql.appendLine("'" + qa.getQa_id() + "',");
 		// QAタイプ
 		sql.appendLine("" + qa.getQa_type() + ",");
+	    // QA入力エリアのHTML
+		sql.appendLine("'" + qa.getQa_html() + "',");
 		// 読むだけ問題フラグ
 		sql.appendLine("" + qa.getYomudake_flg() + ",");
 		// 問題と正答を入れ替えた結果生成された問題かどうか
@@ -558,6 +621,8 @@ public class QADao {
 		sql.appendLine("  qa_id = '" + qa.getQa_id() + "',");
 		// QAタイプ
 		sql.appendLine("  qa_type = " + qa.getQa_type() + ",");
+	    // QA入力エリアのHTML
+		sql.appendLine("  qa_html = " + qa.getQa_html() + ",");
 		// 読むだけ問題フラグ
 		sql.appendLine("  yomudake_flg = " + qa.getYomudake_flg() + ",");
 		// 問題と正答を入れ替えた結果生成された問題かどうか

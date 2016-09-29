@@ -225,6 +225,7 @@ public class MainPageController {
 						Model model,
 						@RequestParam("qa_input_hidden") String qa_input,
 						@RequestParam(value="qa_husen",required=false) String qa_husen,
+						@RequestParam(value="qa_id", required=false) String qa_id,
 						@RequestParam(value="yomudake_flg", required=false) String yomudake_flg,
 						@RequestParam(value="reversible_flg", required=false) String reversible_flg) {
 		
@@ -273,8 +274,14 @@ public class MainPageController {
 			int seikai_sum = seitou_dao.get_seikai_cnt(owner_db);
 			model.addAttribute("seikai_sum", seikai_sum);
 			
-			create_qa(owner_id, owner_db, qa_input, qa_husen,yomudake_flg, reversible_flg);
-			
+			if (qa_id == null || qa_id.equals(""))
+			{
+				create_qa(owner_id, owner_db, qa_input, qa_husen,yomudake_flg, reversible_flg);
+			}
+			else
+			{
+				edit_qa(owner_id, owner_db, qa_input, qa_husen,yomudake_flg, reversible_flg, qa_id);
+			}
 			
 			// 付箋
 			String husen_html = generate_husen_html(owner_db);
@@ -577,6 +584,19 @@ public class MainPageController {
 		}
 		return serif;
 	}		
+
+	@RequestMapping(value={"/edit_qa.html"}, method=RequestMethod.GET)
+	public @ResponseBody String edit_qa(HttpSession session,
+			@RequestParam(value="qa_id", required=false) String qa_id) {
+		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
+		AES aes = new AES();
+		String owner_db = aes.decrypt(encrypted_owner_db);
+
+		QADao qa_dao = new QADao();
+		String qa_html = qa_dao.get_qa_html(owner_db, qa_id);
+		return qa_html;
+	}		
+	
 	
 	/**
 	 * 
@@ -627,7 +647,7 @@ public class MainPageController {
 			{
 				String mondai = mondai_list.get(i).getQ_parts_text();
 				String q_lang = mondai_list.get(i).getLanguage();
-				String html = "<span id='" + mondai_list.get(i).getQ_id() + "' class='q' onclick=\"control_qa_saisei('" + mondai + "', '" + "　" + "','" + q_lang + "','" + Constant.ENGLISH + "');\"'>" + mondai + "</span>";			
+				String html = "<span id='" + mondai_list.get(i).getQ_id() + "' class='q' onclick=\"control_qa_saisei('" + mondai + "', '" + "　" + "','" + q_lang + "','" + Constant.ENGLISH + "');edit_qa(this);\"'>" + mondai + "</span>";			
 				q_html.add(html);
 			}
 			
@@ -710,65 +730,7 @@ public class MainPageController {
 
 		int is_start_with_q = 0;
 		
-		/**
-		 * qが連続した場合はつなげる、aが連続した場合はつなげる
-		 */
-		int idx = 0;
-		int junban = 1;
-		for (Element span: spans) {
-			String class_name = span.className();
-			String next_class_name = "";
-			String back_class_name = "";
-			if (idx < spans.size() - 1)
-			{
-				next_class_name = spans.get(idx + 1).className();
-			}
-			if (0 < idx)
-			{
-				back_class_name = spans.get(idx - 1).className();
-			}
-			if (class_name.equals("q_input"))
-			{
-				if (back_class_name.equals(class_name))
-				{
-					qa_map.put("q" + (junban), spans.get(idx - 1).text() + span.text());
-					idx++;
-					continue;
-				}
-				else if (class_name.equals(next_class_name))
-				{
-					qa_map.put("q" + (junban), span.text() + spans.get(idx + 1).text());
-					idx++;
-					continue;
-				}
-				else
-				{
-					qa_map.put("q" + (junban), span.text());
-					idx++;
-				}
-			}
-			else if (span.className().equals("a_input"))
-			{
-				if (back_class_name.equals(class_name))
-				{
-					qa_map.put("a" + (junban), spans.get(idx - 1).text() + span.text());
-					idx++;
-					continue;
-				}
-				else if (class_name.equals(next_class_name))
-				{
-					qa_map.put("a" + (junban), span.text() + spans.get(idx + 1).text());
-					idx++;
-					continue;
-				}
-				else
-				{
-					qa_map.put("a" + junban, span.text());
-					idx++;
-				}
-			}
-			junban++;
-		}
+		create_qa_map(qa_map, spans);
 		
 		// 順番（QA内での正答も含めた順番）、問題パーツ
 		Map<Integer, String> q_map = new HashMap<Integer,String>();
@@ -829,24 +791,10 @@ public class MainPageController {
 		String qa_id = qa.generate_qa_id(qa_max_no + 1, owner_id);
 		qa.setQa_id(qa_id);
 		// QAタイプ
-		int qa_type = 0;
-		if (q_map.size() == 1 && a_map.size() == 1)
-		{
-			qa_type = Constant.QA_TYPE_1_ON_1;
-		}
-		else if (q_map.size() == 1 && a_map.size() > 1)
-		{
-			qa_type = Constant.QA_TYPE_1_ON_N;
-		}
-		else if (q_map.size() > 1 && q_map.size() == 1)
-		{
-			qa_type = Constant.QA_TYPE_N_ON_1;
-		}
-		else if (q_map.size() > 1 && q_map.size() > 1)
-		{
-			qa_type = Constant.QA_TYPE_N_ON_N;
-		}
+		int qa_type = set_qa_type(q_map, a_map);
 		qa.setQa_type(qa_type);
+	    // QA入力エリアのHTML
+		qa.setQa_html(qa_input);
 		// 読むだけ問題フラグ
 		int yomudake = 0;
 		if (yomudake_flg.equals("on"))
@@ -1081,5 +1029,416 @@ public class MainPageController {
 			}
 		}
 		
+	}
+
+
+	public void edit_qa(
+			String owner_id, 
+			String owner_db, 
+			String qa_input,
+			String qa_husen,
+			String yomudake_flg,
+			String reversible_flg,
+			String qa_id)
+	{
+		//System.out.println("qa_input"+qa_input);
+		
+		// 順番、問題文/正答
+		Map<String,String> qa_map = new HashMap<String,String>();
+		
+		Document doc = Jsoup.parse(qa_input);
+		Elements spans = doc.getElementsByTag("span");
+
+		int is_start_with_q = 0;
+		
+		create_qa_map(qa_map, spans);
+		
+		// 順番（QA内での正答も含めた順番）、問題パーツ
+		Map<Integer, String> q_map = new HashMap<Integer,String>();
+		// 順番（QA内での問題も含めた順番）、正答パーツ
+		Map<Integer, String> a_map = new HashMap<Integer,String>();
+		
+		for (Map.Entry<String, String> entry : qa_map.entrySet())
+		{
+			if (entry.getKey().contains("q"))
+			{
+				q_map.put(Integer.parseInt(entry.getKey().replace("q", "")), 
+						  entry.getValue());
+			}
+			else if (entry.getKey().contains("a"))
+			{
+				a_map.put(Integer.parseInt(entry.getKey().replace("a", "")), 
+						  entry.getValue());		
+			}
+			if (entry.getKey().equals("q1"))
+			{
+				is_start_with_q = 1;
+			}
+		    System.out.println(entry.getKey() + "/" + entry.getValue());
+		}
+		
+		// 問題文がない場合は登録しない
+		// TODO エラーメッセージを出す
+		if (q_map.size() == 0)
+		{
+			return;
+		}
+		
+		// 正答がなく、読むだけ問題でもない場合は登録しない
+		// TODO エラーメッセージを出す
+		System.out.println(yomudake_flg);
+		if (a_map.size() == 0 && yomudake_flg.equals("off"))
+		{
+			return;
+		}
+		
+		/**
+		 * モデルにデータを挿入
+		 */
+		QAPlusModel qa_plus = new QAPlusModel();
+		
+		/**
+		 * QA
+		 */
+		QAModel qa = new QAModel();
+
+		// 行番号・QA_ID生成用
+		QADao qa_dao = new QADao();
+		int qa_max_no = qa_dao.get_qa_max_row_no(owner_db);
+
+		// 行番号
+		qa.setRow_no(qa_max_no + 1); 
+		// QA ID
+		qa.setQa_id(qa_id);
+		// QAタイプ
+		int qa_type = set_qa_type(q_map, a_map);
+		qa.setQa_type(qa_type);
+	    // QA入力エリアのHTML
+		qa.setQa_html(qa_input);
+		// 読むだけ問題フラグ
+		int yomudake = 0;
+		if (yomudake_flg.equals("on"))
+		{
+			yomudake = 1;
+		}
+		qa.setYomudake_flg(yomudake);
+	    // 問題と正答を入れ替えた結果生成された問題かどうか
+		qa.setIs_reversible(0);
+	    // 広告問題フラグ
+		qa.setKoukoku_flg(0);
+		// 重要度（５段階）
+		qa.setJuyoudo(3);
+		// 難易度（５段階）
+		qa.setNanido(3);
+		// 問題文と正答のうち問題から始まるかのフラグ
+		qa.setIs_start_with_q(is_start_with_q);
+		// 正答がたくさんある場合の問題文を分割した時の個数
+		qa.setQ_split_cnt(q_map.size());
+		// 問題に紐づく正答の個数
+		qa.setSeitou_cnt(a_map.size());
+		// 公開範囲
+		qa.setKoukai_level(Constant.KOUKAI_LEVEL_SELF_ONLY);
+		// 無料販売フラグ
+		qa.setFree_flg(0);
+		// 無料配布した数
+		qa.setFree_sold_num(0);
+		// 有料販売フラグ
+		qa.setCharge_flg(0);
+		// 有料で売った数
+		qa.setCharge_sold_num(0);
+		// 削除フラグ
+		qa.setDel_flg(0);
+		// 作成者
+		qa.setCreate_owner(owner_id);
+		// 更新者
+		qa.setUpdate_owner(owner_id);
+		// レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+		qa.setCreate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+		// レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+		qa.setUpdate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+		qa_plus.setQa(qa);
+		
+		
+		/**
+		 * 問題
+		 */
+		List<MondaiModel> mondai_list = new ArrayList<MondaiModel>();
+		
+		int q_idx = 1;
+		for (Map.Entry<Integer, String> entry : q_map.entrySet())
+		{
+			MondaiModel mondai = new MondaiModel();
+	
+			// 行番号・Q_ID生成用
+			MondaiDao mondai_dao = new MondaiDao();
+			int q_max_no = mondai_dao.get_mondai_max_row_no(owner_db);
+	
+		    // 行番号
+			mondai.setRow_no(q_max_no + q_idx);
+		    // 問題ID
+			String q_id = mondai.generate_q_id(q_idx, owner_id);
+			q_idx++;
+			mondai.setQ_id(q_id);
+		    // QA ID
+			mondai.setQa_id(qa_id);
+		    // QA内での問題パーツの順番
+			mondai.setJunban(entry.getKey());
+		    // 問題パーツが文字であるかのフラグ
+			mondai.setIs_text_flg(1);
+		    // 問題パーツがバイナリであるかのフラグ
+			mondai.setIs_binary_flg(0);
+		    // 分割された問題文
+			mondai.setQ_parts_text(entry.getValue());
+		    // QAの中に出てくる音声や画像などのバイナリファイル
+			mondai.setQ_parts_binary(null);
+		    // 言語
+			mondai.setLanguage(Util.check_japanese_or_english(entry.getValue()));
+	//		mondai.setLanguage(Util.langDetect(mondai_input));
+		    // テキスト読み上げデータ
+			mondai.setYomiage(null);
+		    // 削除フラグ
+			mondai.setDel_flg(0);
+		    // 作成者
+			mondai.setCreate_owner(owner_id);
+		    // 更新者
+			mondai.setUpdate_owner(owner_id);
+		    // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+			mondai.setCreate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+		    // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+			mondai.setUpdate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+			
+			mondai_list.add(mondai);
+		}
+		
+		qa_plus.setMondai_list(mondai_list);
+
+		
+		/**
+		 * 正答
+		 */
+		List<SeitouModel> seitou_list = new ArrayList<SeitouModel>();
+
+		int a_idx = 1;
+		
+		for (Map.Entry<Integer, String> entry : a_map.entrySet())
+		{
+
+			SeitouModel seitou = new SeitouModel();
+			
+			// 行番号・S_ID生成用
+			SeitouDao seitou_dao = new SeitouDao();
+			int s_max_no = seitou_dao.get_seitou_max_row_no(owner_db);
+			
+		    // 行番号
+			seitou.setRow_no(s_max_no + a_idx);
+		    // 正答ID
+			String s_id = seitou.generate_s_id(a_idx, owner_id);
+			seitou.setS_id(s_id);
+		    // QA ID
+			seitou.setQa_id(qa_id);
+		    // QA内での正答の順番
+			seitou.setJunban(entry.getKey());
+		    // 正答が文字であるかのフラグ
+			seitou.setIs_text_flg(1);
+		    // 正答がバイナリであるかのフラグ
+			seitou.setIs_binary_flg(0);
+		    // 正答
+			seitou.setSeitou(entry.getValue());
+		    // 正答が画像などのバイナリである場合に格納する
+			seitou.setSeitou_binary(null);
+		    // 重要度（５段階）
+			seitou.setJuyoudo(3);
+		    // 難易度（５段階）
+			seitou.setNanido(3);
+		    // 言語
+	//		seitou.setLanguage(Util.langDetect(seitou_input));
+			seitou.setLanguage(Util.check_japanese_or_english(entry.getValue()));
+		    // テキスト読み上げデータ
+			seitou.setYomiage(null);
+		    // 削除フラグ
+			seitou.setDel_flg(0);
+		    // 作成者
+			seitou.setCreate_owner(owner_id);
+		    // 更新者
+			seitou.setUpdate_owner(owner_id);
+		    // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+			seitou.setCreate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+		    // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+			seitou.setUpdate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+	
+			seitou_list.add(seitou);
+			
+			/**
+			 * 回答の新規登録を追加
+			 */
+			KaitouModel kaitou = new KaitouModel();
+
+			// 行番号・K_ID生成用
+			KaitouDao kaitou_dao = new KaitouDao();
+			int k_max_no = kaitou_dao.get_kaitou_max_row_no(owner_db);
+		    // 行番号
+			kaitou.setRow_no(k_max_no + a_idx);
+			// 回答ID
+			String k_id = kaitou.generate_k_id(k_max_no + a_idx, owner_id);
+			a_idx++;
+			kaitou.setK_id(k_id);
+			// QA ID
+			kaitou.setQa_id(qa_id);
+			// 正答ID
+			kaitou.setS_id(s_id);
+			// 正解フラグ
+			kaitou.setSeikai_flg(0);
+			// アクション・・・チェックを入れた、外した、解いて正解した、解いて不正解、等
+			kaitou.setAction(Constant.ACTION_QA_TOUROKU);
+			// アクション日時（H2DBのtimestampと同じフォーマットにする）
+			kaitou.setAction_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+			// ユーザーが入力した回答
+			kaitou.setKaitou("");
+			// 言語
+			kaitou.setLanguage("");
+			// 削除フラグ
+			kaitou.setDel_flg(0);
+		    // 作成者
+			kaitou.setCreate_owner(owner_id);
+		    // 更新者
+			kaitou.setUpdate_owner(owner_id);
+		    // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+			kaitou.setCreate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+		    // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+			kaitou.setUpdate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+			
+			kaitou_dao.insert_kaitou(owner_db, kaitou);
+		}
+		
+		qa_plus.setSeitou_list(seitou_list);
+		
+		QAPlusDao qa_plus_dao = new QAPlusDao();
+		qa_plus_dao.insert_qa_plus(owner_db, qa_plus);		
+		
+		if (qa_husen != null)
+		{
+			if (!qa_husen.equals(""))
+			{
+				QaTagRelationDao qa_tag_relation_dao = new QaTagRelationDao();
+				Document huden_doc = Jsoup.parse(qa_husen);
+				Elements husen_spans = huden_doc.getElementsByTag("span");
+				for (Element husen_span: husen_spans) {
+					QaTagRelationModel qa_tag_relation = new QaTagRelationModel();
+					TagDao tag_dao = new TagDao();
+				    // 行番号
+					qa_tag_relation.setRow_no(qa_tag_relation_dao.get_max_row_no(owner_db)+1);
+				    // QA ID
+					qa_tag_relation.setQa_id(qa_id);
+				    // タグID
+					qa_tag_relation.setTag_id(tag_dao.select_tag_id(owner_db, husen_span.text()));
+				    // タグ内でのQAの順番
+					qa_tag_relation.setJunban(0);
+				    // 公開範囲
+					qa_tag_relation.setKoukai_level(Constant.KOUKAI_LEVEL_SELF_ONLY);
+				    // 作成者
+					qa_tag_relation.setCreate_owner(owner_id);
+				    // 更新者
+					qa_tag_relation.setUpdate_owner(owner_id);
+				    // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+					qa_tag_relation.setCreate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+				    // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+					qa_tag_relation.setUpdate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+					
+					qa_tag_relation_dao.insert_qa_tag_relation(owner_db, qa_tag_relation);
+				}
+			}
+		}
+		
+	}
+	
+	
+	/**
+	 * QA種別を返却する
+	 * @param q_map
+	 * @param a_map
+	 * @return
+	 */
+	public int set_qa_type(Map<Integer, String> q_map, Map<Integer, String> a_map) {
+		int qa_type = 0;
+		if (q_map.size() == 1 && a_map.size() == 1)
+		{
+			qa_type = Constant.QA_TYPE_1_ON_1;
+		}
+		else if (q_map.size() == 1 && a_map.size() > 1)
+		{
+			qa_type = Constant.QA_TYPE_1_ON_N;
+		}
+		else if (q_map.size() > 1 && q_map.size() == 1)
+		{
+			qa_type = Constant.QA_TYPE_N_ON_1;
+		}
+		else if (q_map.size() > 1 && q_map.size() > 1)
+		{
+			qa_type = Constant.QA_TYPE_N_ON_N;
+		}
+		return qa_type;
+	}
+
+
+	public void create_qa_map(Map<String, String> qa_map, Elements spans) {
+		/**
+		 * qが連続した場合はつなげる、aが連続した場合はつなげる
+		 */
+		int idx = 0;
+		int junban = 1;
+		for (Element span: spans) {
+			String class_name = span.className();
+			String next_class_name = "";
+			String back_class_name = "";
+			if (idx < spans.size() - 1)
+			{
+				next_class_name = spans.get(idx + 1).className();
+			}
+			if (0 < idx)
+			{
+				back_class_name = spans.get(idx - 1).className();
+			}
+			if (class_name.equals("q_input"))
+			{
+				if (back_class_name.equals(class_name))
+				{
+					qa_map.put("q" + (junban), spans.get(idx - 1).text() + span.text());
+					idx++;
+					continue;
+				}
+				else if (class_name.equals(next_class_name))
+				{
+					qa_map.put("q" + (junban), span.text() + spans.get(idx + 1).text());
+					idx++;
+					continue;
+				}
+				else
+				{
+					qa_map.put("q" + (junban), span.text());
+					idx++;
+				}
+			}
+			else if (span.className().equals("a_input"))
+			{
+				if (back_class_name.equals(class_name))
+				{
+					qa_map.put("a" + (junban), spans.get(idx - 1).text() + span.text());
+					idx++;
+					continue;
+				}
+				else if (class_name.equals(next_class_name))
+				{
+					qa_map.put("a" + (junban), span.text() + spans.get(idx + 1).text());
+					idx++;
+					continue;
+				}
+				else
+				{
+					qa_map.put("a" + junban, span.text());
+					idx++;
+				}
+			}
+			junban++;
+		}
 	}	
 }
