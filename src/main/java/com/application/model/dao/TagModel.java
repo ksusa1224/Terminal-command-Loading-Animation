@@ -22,6 +22,8 @@ public @Data class TagModel {
 	private int system_tag_flg;
     // タグ種別
 	private int tag_type;
+    // デザイン種別
+    private int design_type;
     // 公開範囲
 	private int koukai_level;
     // 言語

@@ -171,6 +171,8 @@ public class TagDao {
 		sql.appendLine("  system_tag_flg,");
 	    // タグ種別
 		sql.appendLine("  tag_type,");
+	    // デザイン種別
+	    sql.appendLine("	design_type,");
 	    // 公開範囲
 		sql.appendLine("  koukai_level,");
 	    // 言語
@@ -224,6 +226,8 @@ public class TagDao {
 	    	  tag.setSystem_tag_flg(rs.getInt("system_tag_flg"));
 	    	  // タグ種別
 	    	  tag.setTag_type(rs.getInt("tag_type"));
+		      // デザイン種別
+	    	  tag.setDesign_type(rs.getInt("design_type"));		     
 	    	  // 公開範囲
 	    	  tag.setKoukai_level(rs.getInt("koukai_level"));
 	    	  // 言語
@@ -400,6 +404,8 @@ public class TagDao {
 		sql.appendLine("  system_tag_flg,");
 	    // タグ種別
 		sql.appendLine("  tag_type,");
+	    // デザイン種別
+		sql.appendLine("  design_type,");
 	    // 公開範囲
 		sql.appendLine("  koukai_level,");
 	    // 言語
@@ -435,6 +441,8 @@ public class TagDao {
 		sql.appendLine("" + tag.getSystem_tag_flg() + ",");
 	    // タグ種別
 		sql.appendLine("" + tag.getTag_type() + ",");
+	    // デザイン種別
+		sql.appendLine("" + tag.getDesign_type() + ",");
 	    // 公開範囲
 		sql.appendLine("" + tag.getKoukai_level() + ",");
 	    // 言語

@@ -381,6 +381,8 @@ public class SQliteDAO {
 	      sql.appendLine("	system_tag_flg integer default 0,");
 	      // タグ種別
 	      sql.appendLine("	tag_type text,");
+	      // デザイン種別
+	      sql.appendLine("	design_type integer,");
 	      // 公開範囲
 	      sql.appendLine("  koukai_level integer,");
 	      // 言語

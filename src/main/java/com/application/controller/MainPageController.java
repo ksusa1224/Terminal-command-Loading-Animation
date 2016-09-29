@@ -543,6 +543,8 @@ public class MainPageController {
 				tag.setSystem_tag_flg(0);
 			    // タグ種別
 //				tag.setTag_type(tag_type);
+			    // デザイン種別
+				tag.setDesign_type(0);
 			    // 公開範囲
 				tag.setKoukai_level(Constant.KOUKAI_LEVEL_SELF_ONLY);
 			    // 言語
