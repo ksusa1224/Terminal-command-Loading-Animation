@@ -313,7 +313,7 @@ public class QADao {
 	 * @param tag_name
 	 * @return
 	 */
-	public List<QAModel> select_qa_list_by_tag(String db_name, List<QAModel> qa_list, String tag_name)
+	public List<QAModel> select_qa_list_by_tag(String db_name, List<QAModel> qa_list, String tag_names)
 	{
 		StopWatch stopwatch = new StopWatch();
 		stopwatch.start();
@@ -367,16 +367,25 @@ public class QADao {
 		// レコード更新日時（H2DBのtimestampと同じフォーマットにする）
 		sql.appendLine("	qa.update_timestamp");
 		sql.appendLine(" from qa");
-        if (!tag_name.equals(""))
+        if (!tag_names.equals(""))
         {
         	sql.appendLine(", qa_tag_relation,tag");
         }
 		sql.appendLine(" where qa.del_flg = 0");
-        if (!tag_name.equals(""))
+        if (!tag_names.equals(""))
         {
 			sql.appendLine(" and qa.qa_id = qa_tag_relation.qa_id");
 			sql.appendLine(" and tag.tag_id = qa_tag_relation.tag_id");
-			sql.appendLine(" and tag.tag_name = '" + tag_name + "'");
+			sql.appendLine(" and (");
+			for (int i = 0; i < tag_names.split(",").length; i++)
+			{
+				sql.appendLine("tag.tag_name = '" + tag_names.split(",")[i] + "'");
+				if (i < tag_names.split(",").length - 1)
+				{
+					sql.appendLine(" or ");
+				}
+			}
+	        sql.appendLine(")");
         }
 		sql.appendLine(" order by qa.update_timestamp desc;");
 		

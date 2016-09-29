@@ -338,7 +338,7 @@ public class QAPlusDao extends QADao {
 		return qa_plus_list;
 	}
 	
-	public List<QAPlusModel> select_qa_plus_list(String db_name, List<QAPlusModel> qa_plus_list, String tag_name)
+	public List<QAPlusModel> select_qa_plus_list(String db_name, List<QAPlusModel> qa_plus_list, String tag_names)
 	{
 		StopWatch stopwatch = new StopWatch();
 		stopwatch.start();
@@ -346,7 +346,7 @@ public class QAPlusDao extends QADao {
 		QADao qa_dao = new QADao();
 		
 		List<QAModel> qa_list_all = new ArrayList<QAModel>();
-		qa_list_all = qa_dao.select_qa_list_by_tag(db_name, qa_list_all, tag_name);
+		qa_list_all = qa_dao.select_qa_list_by_tag(db_name, qa_list_all, tag_names);
 			
 		MondaiDao mondai_dao = new MondaiDao();
 		List<MondaiModel> mondai_list_all = new ArrayList<MondaiModel>();

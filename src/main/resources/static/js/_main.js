@@ -118,15 +118,54 @@ function body_load()
         }
     });    
 
+    var husen_names = [];
     $('#loupe').droppable({
         accept:'.husen',
         out: function (event, ui) {
-        	//alert("out");
+        	var removeItem = $(ui.draggable).text();
+        	husen_names = jQuery.grep(husen_names, function(value) {
+        		  return value != removeItem;
+        	});
+        	var husens_str = "";
+        	var loop_length = husen_names.length;
+        	for (var i = 0; i < loop_length; i++)
+        	{
+        		husens_str += husen_names[i];
+        		if (i < loop_length - 1)
+        		{
+        			husens_str += ",";
+        		}
+        	}
+        	
+			jQuery.ajax({
+				url: "../tag_search.html?husen_names=" + husens_str,
+				dataType: "html",
+				cache: false,
+				success: function(data)
+				{
+					$("#qa_area").html(data);
+				},
+				error: function(data)
+				{
+					$("#balloon").css("opacity","1");
+					$("#serif").text(server_error);
+				}
+			});
         },
         drop: function(event,ui){
-        	var husen_name = $(ui.draggable).text();
+        	husen_names.push($(ui.draggable).text());
+        	var husens_str = "";
+        	var loop_length = husen_names.length;
+        	for (var i = 0; i < loop_length; i++)
+        	{
+        		husens_str += husen_names[i];
+        		if (i < loop_length - 1)
+        		{
+        			husens_str += ",";
+        		}
+        	}
 			jQuery.ajax({
-				url: "../tag_search.html?husen_name=" + husen_name,
+				url: "../tag_search.html?husen_names=" + husens_str,
 				dataType: "html",
 				cache: false,
 				success: function(data)
@@ -478,7 +517,7 @@ function key_event() {
 $(function() {
 
 	//$('.a').attr('onMouseOver', 'this.style.opacity=1;');
-	$('.a').attr('onClick', 'change_seitou_color(this);');
+///	$('.a').attr('onClick', 'change_seitou_color(this);');
 	
 	// 虫眼鏡
 	var scale = 1.2;

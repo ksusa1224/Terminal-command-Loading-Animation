@@ -133,12 +133,10 @@ public class MainPageController {
 	
 	@RequestMapping(value={"/tag_search.html"},
 				method=RequestMethod.GET)
-	public @ResponseBody String tag_search(@RequestParam("husen_name") String husen_name,
+	public @ResponseBody String tag_search(@RequestParam("husen_names") String husen_names,
 				HttpServletRequest request, 
 				HttpSession session,
 				Model model) {
-
-		String request_url = request.getRequestURI();
 		
 		// TODO 認証されてるかどうかはsessionに入れると書き換えられてしまうから毎回DBに接続した方がいいかな
 		Boolean is_authenticated = (Boolean)session.getAttribute("is_authenticated");
@@ -162,7 +160,7 @@ public class MainPageController {
 			byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 			AES aes = new AES();
 			String owner_db = aes.decrypt(encrypted_owner_db);
-			String qa_html = generate_qa_html(select_qa_plus_by_tag(owner_db, husen_name),owner_db);			
+			String qa_html = generate_qa_html(select_qa_plus_by_tag(owner_db, husen_names),owner_db);			
 			model.addAttribute("qa_html", qa_html);
 			
 			// 正答総数
@@ -618,10 +616,10 @@ public class MainPageController {
 	 * @param husen_name
 	 * @return
 	 */
-	public List<QAPlusModel> select_qa_plus_by_tag(String owner_db, String husen_name) {
+	public List<QAPlusModel> select_qa_plus_by_tag(String owner_db, String husen_names) {
 		QAPlusDao qa_plus_dao = new QAPlusDao();
 		List<QAPlusModel> qa_plus_list = new ArrayList<QAPlusModel>();
-		qa_plus_list = qa_plus_dao.select_qa_plus_list(owner_db, qa_plus_list, husen_name);
+		qa_plus_list = qa_plus_dao.select_qa_plus_list(owner_db, qa_plus_list, husen_names);
 		return qa_plus_list;
 	}	
 	
@@ -670,7 +668,7 @@ public class MainPageController {
 				{
 					mouseout = "onmouseout='this.style.opacity=0'";
 				}
-				String html = "<span id='" + seitou_list.get(i).getS_id() + "' class='a' style='opacity:" + opacity + "' onmouseover='this.style.opacity=1' " + mouseout + ">" + seitou + "</span>";
+				String html = "<span id='" + seitou_list.get(i).getS_id() + "' class='a' style='opacity:" + opacity + "' onmouseover='this.style.opacity=1' " + mouseout + " onclick='change_seitou_color(this)'>" + seitou + "</span>";				
 				a_html.add(html);
 			}	
 			
