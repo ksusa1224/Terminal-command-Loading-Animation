@@ -314,9 +314,6 @@ public class QAPlusDao extends QADao {
 		{
 			QAPlusModel qa_plus = new QAPlusModel();
 
-			// QA
-			qa_plus.setQa(qa);
-
 			// 問題
 			List<MondaiModel> mondai_list_each = new ArrayList<MondaiModel>();
 			mondai_list_each = (List<MondaiModel>) mondai_list_all.stream()
@@ -330,6 +327,12 @@ public class QAPlusDao extends QADao {
 					.stream().filter(x -> x.getQa_id().equals(qa.getQa_id()))
 					.collect(Collectors.toList());;
 			qa_plus.setSeitou_list(seitou_list_each);
+			
+			// QA
+			if (!mondai_list_each.isEmpty() && !seitou_list_each.isEmpty())
+			{
+				qa_plus.setQa(qa);
+			}
 			
 			qa_plus_list.add(qa_plus);
 		}
