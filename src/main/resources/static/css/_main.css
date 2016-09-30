@@ -296,8 +296,8 @@ input
 
 #husen_wrapper
 {
-	height:150px;
-/*	overflow: scroll;*/
+	height:140px;
+	overflow: scroll;
     -ms-overflow-style: none;  // IE 10+
     overflow: -moz-scrollbars-none;  // Firefox
 }

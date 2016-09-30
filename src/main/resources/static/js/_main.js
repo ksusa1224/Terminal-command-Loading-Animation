@@ -105,7 +105,20 @@ function body_load()
     $( "#blue_pen" ).draggable();
     $( "#red_pen" ).draggable();
     $( "#qa_panel" ).draggable();
-    $( ".husen" ).draggable();
+    $( ".husen" ).draggable({
+    	revert: 'true', 
+    	//appendTo: 'body',
+    	//containment: 'window',
+    	scroll: true,
+    	helper: 'clone',
+		stop : function(e, ui){
+	         $('.husen').draggable().data()["ui-draggable"].cancelHelperRemoval = true;
+	         this.style.opacity=0;
+	    },
+		drag : function(e, ui){
+	        this.style.opacity=0;
+	    }    		
+    });
     $( "#loupe" ).draggable();
     
     var qa_husen_junban = 1;
@@ -184,7 +197,10 @@ function body_load()
     $('#crystal_board').droppable({
         accept:'.husen',
         drop: function(event,ui){
-//        	alert($(ui.draggable).text());
+        	//alert($(ui.draggable).html());
+        	//$("#husen_wrapper").append($(ui.draggable).parent().html());
+        	//$('#husen_wrapper').append($(ui.draggable).clone()).html();
+        	//        	alert($(ui.draggable).text());
 //        	alert($(this).attr('id'));
         }
     });    
