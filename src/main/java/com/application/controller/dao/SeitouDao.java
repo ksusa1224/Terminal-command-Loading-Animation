@@ -74,7 +74,8 @@ public class SeitouDao {
 		SQliteDAO dao = new SQliteDAO();
 		
 		StringBuilderPlus sql = new StringBuilderPlus();
-		sql.appendLine("select count(row_no) from seitou where del_flg = 0 limit 1;");
+		sql.appendLine("select count(seitou) from seitou ");
+		sql.appendLine(" where del_flg = 0 and seitou != '' and seitou is not null limit 1;");
 		dao.loadDriver();
 		
 		//System.out.println(db_name);

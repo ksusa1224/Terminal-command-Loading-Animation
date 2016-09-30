@@ -64,6 +64,73 @@ public class KaitouDao {
 		return max_row_no;
 	}
 	
+	/**
+	 * 正解数を得る
+	 * @param db_name
+	 * @return
+	 */
+	public int get_seikai_cnt(String db_name)
+	{	
+		StopWatch stopwatch = new StopWatch();
+		stopwatch.start();
+
+		int max_row_no = 0;
+		
+		SQliteDAO dao = new SQliteDAO();
+		
+		StringBuilderPlus sql = new StringBuilderPlus();
+		
+		sql.appendLine("SELECT  count(mi.seikai_flg) ");
+		sql.appendLine("FROM    (");
+		sql.appendLine("        SELECT  MAX(action_timestamp) AS mid");
+		sql.appendLine("        FROM    kaitou");
+		sql.appendLine("        GROUP BY");
+		sql.appendLine("                s_id");
+		sql.appendLine("        ) mo ");
+		sql.appendLine("JOIN    kaitou mi ");
+		sql.appendLine("ON      mi.action_timestamp = mo.mid");
+		sql.appendLine("AND mi.seikai_flg = 1");
+		sql.appendLine("JOIN    seitou ");
+		sql.appendLine("ON      seitou.s_id = mi.s_id");
+		sql.appendLine("AND seitou.seitou != '' AND seitou.seitou is not null");
+		
+		dao.loadDriver();
+		
+		//System.out.println(db_name);
+
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+	    try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+	      ResultSet rs = stmt.executeQuery(sql.toString());
+	      while (rs.next()) 
+	      {
+	    	  max_row_no = rs.getInt(1);
+	    	  //System.out.println(max_row_no);
+	      }
+	    }
+	    catch(Exception ex)
+	    {
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+	    }	    
+		
+	    stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());
+
+	    return max_row_no;
+	}
+	
 	public int is_seikai(String db_name, String s_id)
 	{
 		int is_seikai = 0;

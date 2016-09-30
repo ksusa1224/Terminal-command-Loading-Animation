@@ -110,7 +110,8 @@ public class MainPageController {
 				model.addAttribute("seitou_sum", seitou_sum);
 				
 				// 正解総数
-				int seikai_sum = seitou_dao.get_seikai_cnt(owner_db);
+				KaitouDao kaitou_dao = new KaitouDao();
+				int seikai_sum = kaitou_dao.get_seikai_cnt(owner_db);
 				model.addAttribute("seikai_sum", seikai_sum);
 				
 				// 付箋
