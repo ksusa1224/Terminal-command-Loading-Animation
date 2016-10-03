@@ -132,6 +132,8 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
     });
 })(jQuery);
 
+var tag_search_conditions_uri = "";
+
 function body_load()
 {	
 	//$("#entire_page").center();
@@ -187,7 +189,8 @@ function body_load()
         			husens_str += ",";
         		}
         	}
-        	
+        	husens_str = encodeURIComponent(husens_str);
+        	tag_search_conditions_uri = husens_str;
 			jQuery.ajax({
 				url: "../tag_search.html?husen_names=" + husens_str,
 				dataType: "html",
@@ -216,6 +219,7 @@ function body_load()
         		}
         	}
         	husens_str = encodeURIComponent(husens_str);
+        	tag_search_conditions_uri = husens_str;
 			jQuery.ajax({
 				url: "../tag_search.html?husen_names=" + husens_str,
 				dataType: "html",
@@ -572,27 +576,42 @@ function key_event() {
     // 右矢印 次のページ
     if (window.event.keyCode == 39)
     {
-    	var now_page = 1;
-    	now_page = Number($("#page_left").text());
-    	next_page(now_page);
+    	var now_page = Number($("#page_left").text());
+    	paging(now_page, "next");
     }
     // 左矢印　前のページ
-    if (window.event.kerCode == 37)
+    if (window.event.keyCode == 37)
     {
-    	previous_page();
+    	var now_page = Number($("#page_left").text());
+    	paging(now_page, "prev");
     }
 }
 
-function next_page(page)
+function paging(page,next_or_prev)
 {
+	//TODO 検索条件
 	jQuery.ajax({
-		url: "../next_page.html?now_page="+page,
-		dataType: "html",
+		url: "../paging.html?now_page="+page+"&next_or_prev="+next_or_prev+"&husen_str="+tag_search_conditions_uri,
+		dataType: "json",
 		cache: false,
 		success: function(data)
 		{
-			$("#qa_input").html(data);
-			$("#qa_id").val(qa_id);
+			$("#qa_area").html(data[0]);
+			$("#qa_area_right").html(data[1]);
+			
+			if (next_or_prev == 'next')
+			{
+				$("#page_left").text(page + 2);
+				$("#page_right").text(page + 3);
+			}
+			else
+			{
+				$("#page_left").text(page - 2);				
+				$("#page_right").text(page - 1);
+			}
+			//alert(data);
+//			$("#qa_input").html(data);
+//			$("#qa_id").val(qa_id);
 		},
 		error: function(data)
 		{

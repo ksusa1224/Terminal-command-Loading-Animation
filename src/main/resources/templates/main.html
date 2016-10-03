@@ -57,7 +57,9 @@
 	<table id="lines-left" cellpadding="0" cellspacing="0">
 		<tr th:each="i : ${#numbers.sequence( 1, 25)}"><td class="note-line"></td></tr>
 	</table>
-	<div id="page_left" class="page">1</div>
+	<div class="page">Page <span id="page_left" class="page">1</span>
+	/
+	<span th:text="${total_pages}"></span></div>
  </div>
 
 <!--/* ノートの右ページ */-->
@@ -66,6 +68,9 @@
 	<table style="position:absolute;top:-2px;border:none;z-index:-1" cellpadding="0" cellspacing="0">
 		<tr th:each="i : ${#numbers.sequence( 1, 25)}"><td class="note-line"></td></tr>
 	</table>
+	<div class="page_right">Page <span id="page_right" class="page">2</span>
+	/
+	<span th:text="${total_pages}"></span></div>
  </div>
  <br />
 <!--/* ノートエリア END */-->

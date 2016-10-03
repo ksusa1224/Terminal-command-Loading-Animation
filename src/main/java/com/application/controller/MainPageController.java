@@ -112,12 +112,9 @@ public class MainPageController {
 				model.addAttribute("qa_html", qa_html);
 				model.addAttribute("qa_html_right", qa_html_right);
 				
-				Map<Integer, String> qa_html_per_pages = new HashMap<Integer, String>();
-				for (int i = 1; i < qa_plus_map.size(); i ++)
-				{
-					qa_html_per_pages.put(i, generate_qa_html(qa_plus_map.get(i),owner_db));
-				}
-				model.addAttribute("qa_html_per_pages", qa_html_per_pages);
+				model.addAttribute("total_pages", qa_plus_map.size());
+				
+//				model.addAttribute("qa_html_per_pages", qa_html_per_pages);
 				//model.addAttribute("page", 1);
 				// 正答総数
 				SeitouDao seitou_dao = new SeitouDao();
@@ -601,6 +598,61 @@ public class MainPageController {
 		return serif;
 	}		
 
+	/**
+	 * ページング
+	 * @param now_page
+	 * @param next_or_prev
+	 * @param husen_str
+	 * @return
+	 */
+	@RequestMapping(value={"/paging.html"}, method=RequestMethod.GET)
+	public @ResponseBody String paging(
+			HttpSession session,
+			Model model,
+			@RequestParam(value="now_page") int now_page,
+			@RequestParam(value = "next_or_prev") String next_or_prev,
+			@RequestParam(value = "husen_str", required=false) String husen_str) {
+
+		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
+		AES aes = new AES();
+		String owner_db = aes.decrypt(encrypted_owner_db);
+		Map<Integer, List<QAPlusModel>> qa_plus_map 
+			= new HashMap<Integer,List<QAPlusModel>>();
+		qa_plus_map = select_qa_plus(owner_db);
+		
+		int left_page = 0;
+		int right_page = 0;
+		if (next_or_prev.equals("next"))
+		{
+			left_page = now_page + 2;
+			right_page = now_page + 3;
+		}
+		else
+		{
+			left_page = now_page - 2;
+			right_page = now_page - 1;
+//			if (left_page < 0)
+//			{
+//				left_page = 1;
+//				right_page = 2;
+//			}
+		}
+		String left_page_html = generate_qa_html(qa_plus_map.get(left_page),owner_db);	
+		String right_page_html = generate_qa_html(qa_plus_map.get(right_page),owner_db);	
+		model.addAttribute("qa_html", left_page_html);
+		
+//		Map<Integer, String> qa_html_per_pages = new HashMap<Integer, String>();
+//		qa_plus_map.get(i),owner_db);
+		String json = JSON.encode(new String[] {left_page_html,right_page_html});
+		return json;
+	}		
+	
+	/**
+	 * 
+	 * @param session
+	 * @param qa_id
+	 * @return
+	 */
 	@RequestMapping(value={"/edit_qa.html"}, method=RequestMethod.GET)
 	public @ResponseBody String edit_qa(HttpSession session,
 			@RequestParam(value="qa_id", required=false) String qa_id) {
@@ -649,7 +701,7 @@ public class MainPageController {
 	public String generate_qa_html(List<QAPlusModel> qa_plus_list, String owner_db)
 	{
 		StopWatch stopwatch = new StopWatch();
-		StringBuilderPlus qa_html = new StringBuilderPlus();
+		StringBuffer qa_html = new StringBuffer();
 
 		//System.out.println(qa_plus_list.size());
 		
@@ -699,10 +751,12 @@ public class MainPageController {
 				{
 					if (i < q_html.size())
 					{
+//						qa_html += q_html.get(i);
 						qa_html.append(q_html.get(i));
 					}
 					if (i < a_html.size())
 					{
+//						qa_html += a_html.get(i);
 						qa_html.append(a_html.get(i));
 					}
 				}
@@ -710,14 +764,17 @@ public class MainPageController {
 				{
 					if (i < a_html.size())
 					{
+//						qa_html += a_html.get(i);
 						qa_html.append(a_html.get(i));
 					}
 					if (i < q_html.size())
 					{
+//						qa_html += q_html.get(i);
 						qa_html.append(q_html.get(i));
 					}
 				}
 			}
+//			qa_html += "</span>";
 			qa_html.append("</span>");
 			//qa_html += "<div id='bottom_border' style='width:100%'></div>";		
 		}

@@ -16,10 +16,20 @@ body{
 	margin:auto;
 }
 
-.page
+div.page
 {
 	margin-top:5px;
-	display:block;
+	text-align:center;
+	color:gray;
+    font-size:13px;
+    font-family:"ＭＳ Ｐ明朝", "MS PMincho", "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", serif;
+}
+
+div.page_right
+{
+	position:absolute;
+	top:485px;
+	left:140px;
 	text-align:center;
 	color:gray;
     font-size:13px;
