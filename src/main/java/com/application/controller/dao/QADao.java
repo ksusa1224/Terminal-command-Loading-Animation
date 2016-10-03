@@ -167,11 +167,16 @@ public class QADao {
 	}
 	
 	/**
+	 * 
 	 * @param db_name
 	 * @param qa_list
+	 * @param limit
+	 * @param offset
 	 * @return
 	 */
-	public List<QAModel> select_qa_list(String db_name, List<QAModel> qa_list)
+	public List<QAModel> select_qa_list(
+			String db_name, 
+			List<QAModel> qa_list)
 	{
 		StopWatch stopwatch = new StopWatch();
 		stopwatch.start();
@@ -227,6 +232,7 @@ public class QADao {
 		sql.appendLine(" from qa");
 		sql.appendLine(" where del_flg = 0");
 		sql.appendLine(" order by update_timestamp desc;");
+		//sql.appendLine("  limit " + limit + " offset + " + offset + ";");
 		
 		dao.loadDriver();
 		

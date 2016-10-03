@@ -103,9 +103,21 @@ public class MainPageController {
 				byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 				AES aes = new AES();
 				String owner_db = aes.decrypt(encrypted_owner_db);
-				String qa_html = generate_qa_html(select_qa_plus(owner_db),owner_db);			
+				Map<Integer, List<QAPlusModel>> qa_plus_map 
+					= new HashMap<Integer,List<QAPlusModel>>();
+				qa_plus_map = select_qa_plus(owner_db);
+				String qa_html = generate_qa_html(qa_plus_map.get(1),owner_db);			
+				String qa_html_right = generate_qa_html(qa_plus_map.get(2),owner_db);
 				model.addAttribute("qa_html", qa_html);
+				model.addAttribute("qa_html_right", qa_html_right);
 				
+				Map<Integer, String> qa_html_per_pages = new HashMap<Integer, String>();
+				for (int i = 1; i < qa_plus_map.size(); i ++)
+				{
+					qa_html_per_pages.put(i, generate_qa_html(qa_plus_map.get(i),owner_db));
+				}
+				model.addAttribute("qa_html_per_pages", qa_html_per_pages);
+				//model.addAttribute("page", 1);
 				// 正答総数
 				SeitouDao seitou_dao = new SeitouDao();
 				int seitou_sum = seitou_dao.get_seitou_cnt(owner_db);
@@ -290,7 +302,7 @@ public class MainPageController {
 
 			//model.addAttribute("qa_plus_list", select_qa_plus(owner_db));
 			
-			String qa_html = generate_qa_html(select_qa_plus(owner_db),owner_db);			
+			String qa_html = generate_qa_html(select_qa_plus(owner_db).get(1),owner_db);			
 			model.addAttribute("qa_html", qa_html);
 			
 			if (request_url.equals(response_url))
@@ -606,11 +618,14 @@ public class MainPageController {
 	 * @param owner_db
 	 * @return
 	 */
-	public List<QAPlusModel> select_qa_plus(String owner_db) {
+	public Map<Integer,List<QAPlusModel>> select_qa_plus(String owner_db) {
 		QAPlusDao qa_plus_dao = new QAPlusDao();
+		Map<Integer,List<QAPlusModel>> qa_plus_map = new HashMap<Integer,List<QAPlusModel>>();
 		List<QAPlusModel> qa_plus_list = new ArrayList<QAPlusModel>();
-		qa_plus_list = qa_plus_dao.select_qa_plus_list(owner_db, qa_plus_list);
-		return qa_plus_list;
+		int limit = Constant.QA_NUM_PER_PAGE;
+		int offset = 0;
+		qa_plus_map = qa_plus_dao.select_qa_plus_map(owner_db, qa_plus_list);
+		return qa_plus_map;
 	}
 
 	/**

@@ -94,10 +94,47 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
 	if (play_mode == "repeat")
 	{
 		qa_saisei(mondaibun_,kaitou_,q_gengo_,a_gengo_,play_mode);
+
 	}
 }
+
+(function($){
+    $.fn.extend({
+         center: function (options) {
+              var options =  $.extend({ // Default values
+                   inside:window, // element, center into window
+                   transition: 0, // millisecond, transition time
+                   minX:0, // pixel, minimum left element value
+                   minY:0, // pixel, minimum top element value
+                   withScrolling:false, // booleen, take care of the scrollbar (scrollTop)
+                   vertical:false, // booleen, center vertical
+                   horizontal:true // booleen, center horizontal
+              }, options);
+              return this.each(function() {
+                   var props = {position:'absolute'};
+                   if (options.vertical) {
+                        var top = ($(options.inside).height() - $(this).outerHeight()) / 2;
+                        if (options.withScrolling) top += $(options.inside).scrollTop() || 0;
+                        top = (top > options.minY ? top : options.minY);
+                        $.extend(props, {top: top+'px'});
+                   }
+                   if (options.horizontal) {
+                         var left = ($(options.inside).width() - $(this).outerWidth()) / 2;
+                         if (options.withScrolling) left += $(options.inside).scrollLeft() || 0;
+                         left = (left > options.minX ? left : options.minX);
+                         $.extend(props, {left: left+'px'});
+                   }
+                   if (options.transition > 0) $(this).animate(props, options.transition);
+                   else $(this).css(props);
+                   return $(this);
+              });
+         }
+    });
+})(jQuery);
+
 function body_load()
-{
+{	
+	//$("#entire_page").center();
     $( "#crystal_board" ).draggable();
     $( "#dialog" ).draggable();
     //$( "#slime" ).draggable();
@@ -447,6 +484,7 @@ function change_val(chk_box)
 
 function to_right_page()
 {
+	/*
 	if (document.getElementById("qa_area").offsetHeight < document.getElementById("qa_area").scrollHeight ||
 		document.getElementById("qa_area").offsetWidth < document.getElementById("qa_area").scrollWidth) {
 		    // your element have overflow
@@ -475,6 +513,7 @@ function to_right_page()
 		    // your element doesn't have overflow
 			//alert("not overflow")
 	}
+	*/
 }
 
 var mode = "default";
@@ -528,6 +567,17 @@ function key_event() {
             }
             mode = "default";
         }
+    }
+    
+    // 右矢印 次のページ
+    if (window.event.keyCode == 39)
+    {
+    	next_page();
+    }
+    // 左矢印　前のページ
+    if (window.event.kerCode == 37)
+    {
+    	previous_page();
     }
 }
 

@@ -5,7 +5,9 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.application.model.dao.MondaiModel;
@@ -290,7 +292,7 @@ public class QAPlusDao extends QADao {
 	 * @param qa_plus_list
 	 * @return
 	 */
-	public List<QAPlusModel> select_qa_plus_list(String db_name, List<QAPlusModel> qa_plus_list)
+	public Map<Integer,List<QAPlusModel>> select_qa_plus_map(String db_name, List<QAPlusModel> qa_plus_list)
 	{
 		StopWatch stopwatch = new StopWatch();
 		stopwatch.start();
@@ -337,8 +339,27 @@ public class QAPlusDao extends QADao {
 			qa_plus_list.add(qa_plus);
 		}
 				
+	    
+	    int limit = Constant.QA_NUM_PER_PAGE;
+	    int offset = 0;
+	    
+	    // ページング番号毎のQAPlusリスト
+	    Map<Integer, List<QAPlusModel>> qa_plus_per_page = new HashMap<Integer, List<QAPlusModel>>();
+	    int qa_plus_cnt = qa_plus_list.size();
+	    int loop_cnt = qa_plus_cnt / Constant.QA_NUM_PER_PAGE;
+	    for (int i = 1; i < loop_cnt; i++)
+	    {
+	    	offset = Constant.QA_NUM_PER_PAGE * i;
+	    	limit += offset;
+	    	if (limit > qa_plus_cnt)
+	    	{
+	    		limit = qa_plus_cnt;
+	    	}
+	    	qa_plus_per_page.put(i, qa_plus_list.subList(offset, limit));	    	
+	    }
+	    
 	    stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());
-		return qa_plus_list;
+		return qa_plus_per_page;
 	}
 	
 	public List<QAPlusModel> select_qa_plus_list(String db_name, List<QAPlusModel> qa_plus_list, String tag_names)

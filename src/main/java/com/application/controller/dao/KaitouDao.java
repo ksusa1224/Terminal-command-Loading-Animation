@@ -157,7 +157,7 @@ public class KaitouDao {
 	      while (rs.next()) 
 	      {
 	    	  is_seikai = rs.getInt(1);
-	    	  System.out.println("is_seikai"+is_seikai);
+	    	  //System.out.println("is_seikai"+is_seikai);
 	      }
 	    }
 	    catch(Exception ex)
