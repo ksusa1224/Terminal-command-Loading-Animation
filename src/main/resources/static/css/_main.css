@@ -7,7 +7,29 @@ body{
     position: relative;
     padding: 0px;
     margin: 0;
-    overflow:hidden;
+    overflow-y:hidden;
+}
+
+#note_area
+{
+	margin:0;
+	padding:0;
+	position: relative;
+}
+
+#wood_table
+{
+	position:absolute;
+	z-index: -1;
+}
+
+#notebook
+{
+	position:absolute;
+	top:5px;
+	left:5px;
+	width:880px;
+	z-index:-1;
 }
 
 #qa_area
@@ -82,43 +104,51 @@ body{
 	z-index:-1;
 }
 
+#logo
+{
+	width:130px;
+	position:absolute;
+	top:40px;
+	left:50px;
+}
+
 #note_left
 {
 	position:absolute;
 	width:355px;
-	top:129px;
-	left:73px;
+	top:84px;
+	left:53px;
 }
 
 #note_right
 {
 	width:355px;
-	top:129px;
-	right:417px;
+	top:84px;
+	left:492px;
 	position:absolute;
 }
 
 #blue_pen
 {
 	position:absolute;
-	top:75px;
-	right:0px;
-	width:400px;
+	top:30px;
+	left:875px;
+	width:360px;
 }
 
 #red_pen
 {
 	position:absolute;
-	top:125px;
-	right:0px;
-	width:400px;
+	top:75px;
+	left:875px;
+	width:360px;
 }
 
 #qa_panel
 {
 	position:absolute;
-	right:40px;
-	top:125px;
+	left:890px;
+	top:95px;
 	width:350px;
 	height:320px;
 }
@@ -126,8 +156,8 @@ body{
 #form_grandparent
 {
 	position:absolute;
-	top:125px;
-	right:40px;
+	top:85px;
+	left:890px;
 	width:350px;
 	height:320px;
 }
@@ -141,8 +171,8 @@ body{
 #erasor
 {
 	position:absolute;
-	top:420px;
-	right:58px;
+	top:390px;
+	left:1060px;
 	padding:20px;
 	width:130px;
 	z-index:1000;
@@ -151,9 +181,9 @@ body{
 #slime
 {
 	position:absolute;
-	top:500px;
-	z-index:100;
-	right:200px;
+	top:440px;
+	z-index:1000;
+	left:870px;
 	padding:20px;
 	width:150px;
 	cursor: pointer;
@@ -162,8 +192,8 @@ body{
 #balloon
 {
 	position:absolute;
-	top:500px;
-	right:-5px;
+	top:440px;
+	left:1000px;
 	padding:20px;
 	z-index:100;
 	opacity:0;
@@ -173,7 +203,7 @@ body{
 {
 	position:absolute;
 	left:1060px;
-	top:530px;
+	top:470px;
 	width:150px;
 	padding:20px;
 	z-index:101;
@@ -187,8 +217,8 @@ body{
 #score
 {
 	position:absolute;
-	top:95px;
-	left:300px;
+	top:50px;
+	left:280px;
 	width:355px;
 	color:#566573;
 }

@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>暗記ノート</title>
 <link rel="stylesheet" type="text/css" th:href="@{../css/_main.css}" />
 <link rel="stylesheet" type="text/css" th:href="@{../css/jquery-ui.css}" />
@@ -30,11 +31,20 @@
 <audio id="huseikai_se" preload="auto">
   <source th:src="@{../sound/huseikai.mp3}" type="audio/mp3"></source>
 </audio>
+<!--/* テーブル */-->
+<img width="120%" id="wood_table" th:src="@{../img/wood_table.jpg}" />
 
+<!--/* ノートエリア START */-->
+<div id="note_area">
+<!--/* ノート */-->
+<img id="notebook" th:src="@{../img/ring_note.png}" />
 
-<img id="notebook_table" th:src="@{../img/notebook-table.jpg}" />
+<!--
+<img id="notebook_table" th:src="@{../img/table.jpg}" />
+-->
 <br />
- <img th:src="@{../img/logo_emboss.png}" style="width:130px;position:absolute;top:90px;left:70px;" />
+<!--/* ノートの左ページ */-->
+ <img id="logo" th:src="@{../img/logo_emboss.png}" />
  <div id="score">
  <span id="a_total_num">全
  <span id="seitou_sum" style="color:#202DA2;" th:text="${seitou_sum}">&#8203;</span>
@@ -59,6 +69,8 @@
 	</table>
  </div>
  <br />
+<!--/* ノートエリア END */-->
+</div>
 
 <!--/* 消しゴム */-->
 <img id="erasor" th:src="@{../img/eraser.png}" />

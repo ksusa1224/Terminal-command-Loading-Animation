@@ -105,6 +105,7 @@ function body_load()
     $( "#blue_pen" ).draggable();
     $( "#red_pen" ).draggable();
     $( "#qa_panel" ).draggable();
+    $( "#note_area" ).draggable();
     $( ".husen" ).draggable({
     	revert: 'true', 
     	//appendTo: 'body',

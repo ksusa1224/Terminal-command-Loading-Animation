@@ -44,6 +44,8 @@ public class TopPageController {
 			  @RequestParam("owner_name") String owner_name,
 			  @RequestParam("email") String email) 
 	  {
+		  try
+		  {
 			SQliteDAO sqlite_dao = new SQliteDAO();
 			String db_name = sqlite_dao.createOwnerDB(owner_id);
 			
@@ -120,6 +122,19 @@ public class TopPageController {
 		String client_browser = Log.getClientBrowser(request);
 		Log log = new Log();
 		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
+		}
+		catch(Exception ex)
+		{
+			String trace = ex.toString() + "\n";                     
+
+			for (StackTraceElement e1 : ex.getStackTrace()) {
+			    trace += "\t at " + e1.toString() + "\n";
+			} 
+			Log log = new Log();
+			log.insert_error_log(ex.toString(), trace);
+			
+			ex.printStackTrace();
+		}
 		
 			
 	      return "index";
@@ -193,7 +208,6 @@ public class TopPageController {
 			String client_browser = Log.getClientBrowser(request);
 			Log log = new Log();
 			log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
-			
 			
 			if (input_password.equals(password_in_db))
 			{

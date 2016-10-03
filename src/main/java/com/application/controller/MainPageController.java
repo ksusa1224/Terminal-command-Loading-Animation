@@ -73,6 +73,8 @@ public class MainPageController {
 						HttpServletRequest request, 
 						HttpSession session,
 						Model model) {
+		Log log = new Log();
+		log.insert_error_log("INFO", "main method start.");
 		
 		String request_url = request.getRequestURI();
 		String response_url = "/"+ owner_id + "/main.html";
@@ -81,6 +83,7 @@ public class MainPageController {
 		Boolean is_authenticated = (Boolean)session.getAttribute("is_authenticated");
 		String session_owner_id = (String)session.getAttribute("owner_id");
 		
+		log.insert_error_log("INFO", "session_owner_id:" + session_owner_id);
 		
 		/**
 		 * アクセスログ記録
@@ -90,9 +93,8 @@ public class MainPageController {
 		String client_ip = Log.getClientIpAddress(request);
 		String client_os = Log.getClientOS(request);
 		String client_browser = Log.getClientBrowser(request);
-		Log log = new Log();
+
 		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
-		
 		
 		if(owner_id.equals(session_owner_id) && is_authenticated == true)		
 		{
