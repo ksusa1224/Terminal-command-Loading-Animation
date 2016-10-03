@@ -346,8 +346,8 @@ public class QAPlusDao extends QADao {
 	    // ページング番号毎のQAPlusリスト
 	    Map<Integer, List<QAPlusModel>> qa_plus_per_page = new HashMap<Integer, List<QAPlusModel>>();
 	    int qa_plus_cnt = qa_plus_list.size();
-	    int loop_cnt = qa_plus_cnt / Constant.QA_NUM_PER_PAGE;
-	    for (int i = 1; i < loop_cnt; i++)
+	    int loop_cnt = qa_plus_cnt / Constant.QA_NUM_PER_PAGE + 1;
+	    for (int i = 0; i < loop_cnt; i++)
 	    {
 	    	offset = Constant.QA_NUM_PER_PAGE * i;
 	    	limit += offset;
@@ -355,7 +355,7 @@ public class QAPlusDao extends QADao {
 	    	{
 	    		limit = qa_plus_cnt;
 	    	}
-	    	qa_plus_per_page.put(i, qa_plus_list.subList(offset, limit));	    	
+	    	qa_plus_per_page.put(i + 1, qa_plus_list.subList(offset, limit));	    	
 	    }
 	    
 	    stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());

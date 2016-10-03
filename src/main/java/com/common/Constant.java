@@ -144,5 +144,5 @@ public class Constant {
 	// ERRORエラー
 	public static final String ERROR_TYPE_ERROR = "ERROR";
 	
-	public static final int QA_NUM_PER_PAGE = 5;
+	public static final int QA_NUM_PER_PAGE = 100;
 }

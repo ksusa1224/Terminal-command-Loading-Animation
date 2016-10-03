@@ -107,8 +107,17 @@ public class MainPageController {
 				Map<Integer, List<QAPlusModel>> qa_plus_map 
 					= new HashMap<Integer,List<QAPlusModel>>();
 				qa_plus_map = select_qa_plus(owner_db);
-				String qa_html = generate_qa_html(qa_plus_map.get(1),owner_db);			
-				String qa_html_right = generate_qa_html(qa_plus_map.get(2),owner_db);
+				System.out.println("qa_plus_map.size:"+qa_plus_map.size());
+				String qa_html = "";
+				if (qa_plus_map.size() >= 1)
+				{
+					qa_html = generate_qa_html(qa_plus_map.get(1),owner_db);
+				}
+				String qa_html_right = "";
+				if (qa_plus_map.size() >= 2)
+				{
+					qa_html_right = generate_qa_html(qa_plus_map.get(2),owner_db);
+				}
 				model.addAttribute("qa_html", qa_html);
 				model.addAttribute("qa_html_right", qa_html_right);
 				
@@ -144,6 +153,14 @@ public class MainPageController {
 	}
 
 	
+	/**
+	 * タグで検索
+	 * @param husen_names
+	 * @param request
+	 * @param session
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value={"/tag_search.html"},
 				method=RequestMethod.GET)
 	public @ResponseBody String tag_search(@RequestParam("husen_names") String husen_names,
@@ -637,9 +654,17 @@ public class MainPageController {
 //				right_page = 2;
 //			}
 		}
-		String left_page_html = generate_qa_html(qa_plus_map.get(left_page),owner_db);	
-		String right_page_html = generate_qa_html(qa_plus_map.get(right_page),owner_db);	
-		model.addAttribute("qa_html", left_page_html);
+		String left_page_html = "";
+		if (qa_plus_map.size() >= right_page)
+		{
+			left_page_html = generate_qa_html(qa_plus_map.get(left_page),owner_db);	
+		}
+		String right_page_html = "";
+		if (qa_plus_map.size() >= right_page)
+		{
+			right_page_html = generate_qa_html(qa_plus_map.get(right_page),owner_db);
+		}
+		//model.addAttribute("qa_html", left_page_html);
 		
 //		Map<Integer, String> qa_html_per_pages = new HashMap<Integer, String>();
 //		qa_plus_map.get(i),owner_db);
