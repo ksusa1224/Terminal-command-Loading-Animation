@@ -178,6 +178,7 @@ function body_load()
         			husens_str += ",";
         		}
         	}
+        	husens_str = encodeURIComponent(husens_str);
 			jQuery.ajax({
 				url: "../tag_search.html?husen_names=" + husens_str,
 				dataType: "html",
