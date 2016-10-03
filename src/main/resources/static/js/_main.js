@@ -572,13 +572,34 @@ function key_event() {
     // 右矢印 次のページ
     if (window.event.keyCode == 39)
     {
-    	next_page();
+    	var now_page = 1;
+    	now_page = Number($("#page_left").text());
+    	next_page(now_page);
     }
     // 左矢印　前のページ
     if (window.event.kerCode == 37)
     {
     	previous_page();
     }
+}
+
+function next_page(page)
+{
+	jQuery.ajax({
+		url: "../next_page.html?now_page="+page,
+		dataType: "html",
+		cache: false,
+		success: function(data)
+		{
+			$("#qa_input").html(data);
+			$("#qa_id").val(qa_id);
+		},
+		error: function(data)
+		{
+			$("#balloon").css("opacity","1");
+			$("#serif").text(server_error);
+		}
+	});
 }
 
 

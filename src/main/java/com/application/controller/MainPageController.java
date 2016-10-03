@@ -44,6 +44,7 @@ import com.application.model.dao.TagModel;
 import com.common.AES;
 import com.common.Constant;
 import com.common.Log;
+import com.common.StopWatch;
 import com.common.StringBuilderPlus;
 import com.common.Util;
 import com.dao.SQliteDAO;
@@ -647,7 +648,8 @@ public class MainPageController {
 	 */
 	public String generate_qa_html(List<QAPlusModel> qa_plus_list, String owner_db)
 	{
-		String qa_html = "";
+		StopWatch stopwatch = new StopWatch();
+		StringBuilderPlus qa_html = new StringBuilderPlus();
 
 		//System.out.println(qa_plus_list.size());
 		
@@ -690,37 +692,38 @@ public class MainPageController {
 				a_html.add(html);
 			}	
 			
-			qa_html += "<span id='" + qa_plus.getQa().getQa_id() + "' class='qa'>";
+			qa_html.append("<span id='" + qa_plus.getQa().getQa_id() + "' class='qa'>");
 			for (int i = 0; i < (mondai_list.size() + seitou_list.size()); i++)
 			{
 				if (qa_plus.getQa().getIs_start_with_q() == 1)
 				{
 					if (i < q_html.size())
 					{
-						qa_html += q_html.get(i);
+						qa_html.append(q_html.get(i));
 					}
 					if (i < a_html.size())
 					{
-						qa_html += a_html.get(i);
+						qa_html.append(a_html.get(i));
 					}
 				}
 				else
 				{
 					if (i < a_html.size())
 					{
-						qa_html += a_html.get(i);
+						qa_html.append(a_html.get(i));
 					}
 					if (i < q_html.size())
 					{
-						qa_html += q_html.get(i);
+						qa_html.append(q_html.get(i));
 					}
 				}
 			}
-			qa_html += "</span>";
+			qa_html.append("</span>");
 			//qa_html += "<div id='bottom_border' style='width:100%'></div>";		
 		}
+	    stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());
 		
-		return qa_html;
+		return qa_html.toString();
 	}
 	
 	/**

@@ -8,12 +8,15 @@
 <script th:src="@{../js/jquery-3.1.0.min.js}"></script>
 <script th:src="@{../js/jquery-ui.js}"></script>
 <script th:src="@{../js/_main.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+/*]]>*/
+</script>
 </head>
-<body th:with="x=1" onkeydown="key_event()" onload="javascript:document.getElementById('qa_input').focus();to_right_page();body_load();">
+<body onkeydown="key_event()" onload="javascript:document.getElementById('qa_input').focus();to_right_page();body_load();">
 <div id="entire_page">
 
 <div id="crystal_board" class="husen_draggable">
-<div id="test">aaa</div>
 <div class="husen" contenteditable="true" onkeypress="javascript:husen_touroku(this);"></div>
 <div id="husen_wrapper" th:utext="${tags}">
 </div>
@@ -54,7 +57,7 @@
 	<table id="lines-left" cellpadding="0" cellspacing="0">
 		<tr th:each="i : ${#numbers.sequence( 1, 25)}"><td class="note-line"></td></tr>
 	</table>
-	<span id="page_left"></span>
+	<div id="page_left" class="page">1</div>
  </div>
 
 <!--/* ノートの右ページ */-->
@@ -113,37 +116,6 @@ QA.
 </div>
 
 </div>
-</div>
-
-<div th:with="x=1,y=2">
-    <p th:text="${x}"></p>
-    <p th:text="${y}"></p>
-<script type="text/javascript" th:inline="javascript">
-/*<![CDATA[*/
-//var left_page = 1;
-var page = 1;
-var myVariable= /*[[${myVariable}]]*/ 1;
-var total_page= /*[[${qa_html_per_pages.size()}]]*/ total_page;
-alert(total_page);
-function next_page()
-{
-	page += 2;
-	myVariable= /*[[${myVariable}]]*/ '1';
-	alert(/*[[${x = x + 2}]]*/);
-	alert(/*[[${session.page = session.page + 2}]]*/);
-	//var a = 
-}
-function previous_page()
-{
-	$("#qa_area").html(/*[[ ${qa_html_per_pages.get(3)} ]]*/);
-	left_page -= 2;
-	if (left_page< 0)
-	{
-		left_page = 1;
-	}
-}
-/*]]>*/
-</script>
 </div>
 </body>
 </html>
