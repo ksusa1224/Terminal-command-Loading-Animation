@@ -315,10 +315,25 @@ public class MainPageController {
 			String husen_html = generate_husen_html(owner_db);
 			model.addAttribute("tags", husen_html);
 
-			//model.addAttribute("qa_plus_list", select_qa_plus(owner_db));
-			
-			String qa_html = generate_qa_html(select_qa_plus(owner_db).get(1),owner_db);			
+			Map<Integer, List<QAPlusModel>> qa_plus_map 
+			= new HashMap<Integer,List<QAPlusModel>>();
+
+			qa_plus_map = select_qa_plus(owner_db);
+
+			String qa_html = "";
+			if (qa_plus_map.size() >= 1)
+			{
+				qa_html = generate_qa_html(qa_plus_map.get(1),owner_db);
+			}
+			String qa_html_right = "";
+			if (qa_plus_map.size() >= 2)
+			{
+				qa_html_right = generate_qa_html(qa_plus_map.get(2),owner_db);
+			}
 			model.addAttribute("qa_html", qa_html);
+			model.addAttribute("qa_html_right", qa_html_right);
+			
+			model.addAttribute("total_pages", qa_plus_map.size());
 			
 			if (request_url.equals(response_url))
 			{
@@ -655,7 +670,7 @@ public class MainPageController {
 //			}
 		}
 		String left_page_html = "";
-		if (qa_plus_map.size() >= right_page)
+		if (qa_plus_map.size() >= left_page)
 		{
 			left_page_html = generate_qa_html(qa_plus_map.get(left_page),owner_db);	
 		}

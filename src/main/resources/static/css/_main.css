@@ -75,7 +75,18 @@ div.page_right
 { 
     display: none;  // Safari and Chrome
 }
-
+#qa_area_right
+{
+	height:480px;
+	overflow-y: scroll;
+    -ms-overflow-style: none;  // IE 10+
+    overflow: -moz-scrollbars-none;  // Firefox
+	
+}
+#qa_area_right::-webkit-scrollbar 
+{ 
+    display: none;  // Safari and Chrome
+}
 
 .note-line
 {

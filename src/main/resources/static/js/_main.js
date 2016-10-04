@@ -589,6 +589,21 @@ function key_event() {
 
 function paging(page,next_or_prev)
 {
+	var total_pages = Number($("#total_pages").text());
+
+	// 最後のページで⇒を押した場合
+	if (next_or_prev == "next" && (total_pages == page || total_pages == (page + 1)))
+	{
+		// TODO ノートを閉じる
+		return false;
+	}
+	// 最初のページで⇦を押した場合
+	else if (next_or_prev == "prev" && page == 1)
+	{
+		// TODO ノートを閉じる
+		return false;
+	}
+	
 	//TODO 検索条件
 	jQuery.ajax({
 		url: "../paging.html?now_page="+page+"&next_or_prev="+next_or_prev+"&husen_str="+tag_search_conditions_uri,
@@ -609,6 +624,8 @@ function paging(page,next_or_prev)
 				$("#page_left").text(page - 2);				
 				$("#page_right").text(page - 1);
 			}
+			remove_loupe();
+			loupe();
 			//alert(data);
 //			$("#qa_input").html(data);
 //			$("#qa_id").val(qa_id);
@@ -624,9 +641,22 @@ function paging(page,next_or_prev)
 
 $(function() {
 
+	loupe();
 	//$('.a').attr('onMouseOver', 'this.style.opacity=1;');
 ///	$('.a').attr('onClick', 'change_seitou_color(this);');
 	
+});
+
+function remove_loupe()
+{
+	$loope.remove();
+	$magnifyingGlass.remove();
+	$magnifiedContent.remove();
+	$magnifyingLens.remove();
+}
+
+function loupe()
+{
 	// 虫眼鏡
 	var scale = 1.2;
 	
@@ -768,7 +798,8 @@ $(function() {
 	}).mouseup(function() {
 	    $magnifyingGlass.removeData("drag");
 	});	
-});
+	
+}
 
 function slime_speak()
 {	
