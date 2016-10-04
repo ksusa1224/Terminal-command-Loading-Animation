@@ -5,11 +5,14 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import com.application.model.dao.KaitouModel;
 import com.application.model.dao.MondaiModel;
 import com.application.model.dao.QAModel;
 import com.application.model.dao.QAPlusModel;
@@ -292,7 +295,11 @@ public class QAPlusDao extends QADao {
 	 * @param qa_plus_list
 	 * @return
 	 */
-	public Map<Integer,List<QAPlusModel>> select_qa_plus_map(String db_name, List<QAPlusModel> qa_plus_list)
+	public List<QAPlusModel> select_qa_plus_map(
+			String db_name, 
+			List<QAPlusModel> qa_plus_list,
+			int limit,
+			int offset)
 	{
 		StopWatch stopwatch = new StopWatch();
 		stopwatch.start();
@@ -300,8 +307,28 @@ public class QAPlusDao extends QADao {
 		QADao qa_dao = new QADao();
 		
 		List<QAModel> qa_list_all = new ArrayList<QAModel>();
-		qa_list_all = qa_dao.select_qa_list(db_name, qa_list_all);
+		qa_list_all = qa_dao.select_qa_list(db_name, qa_list_all, limit, offset);
 			
+//		Stream<QAModel> sorted = qa_list_all.stream()
+//		.sorted((p1,p2) -> p1.getQa_id().compareTo(p2.getQa_id()));
+		
+//		// QA_IDでソート
+//		String start_qa_id = qa_list_all.stream()
+//				.sorted((p1,p2) -> p1.getQa_id().compareTo(p2.getQa_id()))
+//				.findFirst().get().getQa_id();
+//
+//		// QA_IDでソート
+//		String end_qa_id = qa_list_all
+//				.stream()
+//				.sorted((p1,p2) -> p1.getQa_id().compareTo(p2.getQa_id()))
+//				.reduce((a, b) -> b)
+//				.orElse(null)
+//				.getQa_id();
+		
+//		System.out.println("start_qa_id:"+start_qa_id);
+//		System.out.println("end_qa_id:"+end_qa_id);
+		
+		
 		MondaiDao mondai_dao = new MondaiDao();
 		List<MondaiModel> mondai_list_all = new ArrayList<MondaiModel>();
 		mondai_list_all = mondai_dao.select_mondai_list(db_name, mondai_list_all);
@@ -339,27 +366,24 @@ public class QAPlusDao extends QADao {
 			qa_plus_list.add(qa_plus);
 		}
 				
-	    
-	    int limit = Constant.QA_NUM_PER_PAGE;
-	    int offset = 0;
-	    
-	    // ページング番号毎のQAPlusリスト
-	    Map<Integer, List<QAPlusModel>> qa_plus_per_page = new HashMap<Integer, List<QAPlusModel>>();
-	    int qa_plus_cnt = qa_plus_list.size();
-	    int loop_cnt = qa_plus_cnt / Constant.QA_NUM_PER_PAGE + 1;
-	    for (int i = 0; i < loop_cnt; i++)
-	    {
-	    	offset = Constant.QA_NUM_PER_PAGE * i;
-	    	limit += offset;
-	    	if (limit > qa_plus_cnt)
-	    	{
-	    		limit = qa_plus_cnt;
-	    	}
-	    	qa_plus_per_page.put(i + 1, qa_plus_list.subList(offset, limit));	    	
-	    }
+	    	    
+//	    // ページング番号毎のQAPlusリスト
+//	    Map<Integer, List<QAPlusModel>> qa_plus_per_page = new HashMap<Integer, List<QAPlusModel>>();
+//	    int qa_plus_cnt = qa_plus_list.size();
+//	    int loop_cnt = qa_plus_cnt / Constant.QA_NUM_PER_PAGE + 1;
+//	    for (int i = 0; i < loop_cnt; i++)
+//	    {
+//	    	offset = Constant.QA_NUM_PER_PAGE * i;
+//	    	limit += offset;
+//	    	if (limit > qa_plus_cnt)
+//	    	{
+//	    		limit = qa_plus_cnt;
+//	    	}
+//	    	qa_plus_per_page.put(i + 1, qa_plus_list.subList(offset, limit));	    	
+//	    }
 	    
 	    stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());
-		return qa_plus_per_page;
+		return qa_plus_list;
 	}
 	
 	public List<QAPlusModel> select_qa_plus_list(String db_name, List<QAPlusModel> qa_plus_list, String tag_names)
@@ -402,6 +426,7 @@ public class QAPlusDao extends QADao {
 					.stream().filter(x -> x.getQa_id().equals(qa.getQa_id()))
 					.collect(Collectors.toList());;
 			qa_plus.setSeitou_list(seitou_list_each);
+
 			
 			qa_plus_list.add(qa_plus);
 		}

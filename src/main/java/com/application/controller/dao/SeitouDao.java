@@ -188,6 +188,8 @@ public class SeitouDao {
 		sql.appendLine("  is_binary_flg,");
 	    // 正答
 		sql.appendLine("  seitou,");
+	    // 正解フラグ
+		sql.appendLine("  seikai_flg,");
 	    // 正答が画像などのバイナリである場合に格納する
 		sql.appendLine("  seitou_binary,");
 	    // 重要度（５段階）
@@ -243,6 +245,8 @@ public class SeitouDao {
 	    	  seitou.setIs_binary_flg(rs.getInt("is_binary_flg"));
 		      // 正答
 	    	  seitou.setSeitou(rs.getString("seitou"));
+	    	  // 正解フラグ
+	    	  seitou.setSeikai_flg(rs.getInt("seikai_flg"));
 	    	  // 正答が画像などのバイナリである場合に格納する
 	    	  seitou.setSeitou_binary(rs.getBytes("seitou_binary"));
 		      // 重要度（５段階）
@@ -281,6 +285,16 @@ public class SeitouDao {
 		return seitou_list;
 	}
 	
+	public void update_seikai_flg(String db_name, String s_id, int seikai_flg)
+	{
+		SQliteDAO dao = new SQliteDAO();
+		StringBuilderPlus sql = new StringBuilderPlus();
+		sql.appendLine("update seitou ");		
+		sql.appendLine("set seikai_flg = " + seikai_flg);
+		sql.appendLine(" where s_id = '" + s_id + "'");
+		dao.update(db_name, sql);
+	}
+	
 	/**
 	 * @param db_name
 	 * @param seitou_list
@@ -306,6 +320,8 @@ public class SeitouDao {
 		sql.appendLine("  is_binary_flg,");
 	    // 正答
 		sql.appendLine("  seitou,");
+		// 正解フラグ
+		sql.appendLine("  seikai_flg,");
 	    // 正答が画像などのバイナリである場合に格納する
 		sql.appendLine("  seitou_binary,");
 	    // 重要度（５段階）
@@ -361,6 +377,8 @@ public class SeitouDao {
 	    	  seitou.setIs_binary_flg(rs.getInt("is_binary_flg"));
 		      // 正答
 	    	  seitou.setSeitou(rs.getString("seitou"));
+	    	  // 正解フラグ
+	    	  seitou.setSeikai_flg(rs.getInt("seikai_flg"));	    	  
 	    	  // 正答が画像などのバイナリである場合に格納する
 	    	  seitou.setSeitou_binary(rs.getBytes("seitou_binary"));
 		      // 重要度（５段階）
@@ -429,6 +447,8 @@ public class SeitouDao {
 		sql.appendLine("	is_binary_flg,");
 		// 正答
 		sql.appendLine("	seitou,");
+		// 正解フラグ
+		sql.appendLine("    seikai_flg,");
 		// 正答が画像などのバイナリである場合に格納する
 		sql.appendLine("	seitou_binary,");
 		// 重要度（５段階）
@@ -466,6 +486,8 @@ public class SeitouDao {
 		sql.appendLine("" + seitou.getIs_binary_flg()+ ",");
 		// 正答
 		sql.appendLine("'" + seitou.getSeitou() + "',");
+		// 正解フラグ
+		sql.appendLine("" + seitou.getSeikai_flg() + ",");
 		// 正答が画像などのバイナリである場合に格納する
 		sql.appendLine("" + seitou.getSeitou_binary() + ",");
 		// 重要度（５段階）
@@ -547,6 +569,8 @@ public class SeitouDao {
 		sql.appendLine("  is_binary_flg = " + seitou.getIs_binary_flg() + ",");
 	    // 正答
 		sql.appendLine("  seitou = '" + seitou.getSeitou() + "',");
+		// 正解フラグ
+		sql.appendLine("  seikai_flg = " + seitou.getSeikai_flg() + ",");
 		// 正答が画像などのバイナリである場合に格納する
 		sql.appendLine("  seitou_binary = " + seitou.getSeitou_binary() + ",");		
 	    // 重要度（５段階）

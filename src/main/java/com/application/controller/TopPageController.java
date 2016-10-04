@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.application.controller.dao.KaitouDao;
+import com.application.controller.dao.SeitouDao;
 import com.application.model.LoginInfoModel;
+import com.application.model.dao.SeitouModel;
 import com.common.AES;
 import com.common.Constant;
 import com.common.Log;
@@ -194,7 +197,11 @@ public class TopPageController {
 			String password_in_db = aes.decrypt(login_info.getEncrypted_password());
 			encrypted_db_name = login_info.getEncrypted_db_name();
 			
+			
 			String response_url = "/"+ login_info.getOwner_id() + "/main.html";
+			
+			String owner_db = aes.decrypt(encrypted_db_name);
+			add_is_seikai_to_seitou_tbl(owner_db);
 			
 			
 			/**
@@ -227,5 +234,37 @@ public class TopPageController {
 			    return "index";
 			}	
 	  }
+
+	public void add_is_seikai_to_seitou_tbl(String db_name) {
+		/**
+		 * DBパッチ
+		 */
+		try
+		{
+			SQliteDAO sqlite_dao = new SQliteDAO();
+//			sql.appendLine("alter table seitou ");
+//			sql.appendLine("add column seikai_flg integer;");
+//			sqlite_dao.update(db_name, sql);
+			
+			List<SeitouModel> seitou_list = new ArrayList<SeitouModel>();
+			SeitouDao seitou_dao = new SeitouDao();
+			seitou_list = seitou_dao.select_seitou_list(db_name, seitou_list);
+			for (SeitouModel seitou : seitou_list)
+			{
+				StringBuilderPlus sql = new StringBuilderPlus();
+				KaitouDao kaitou_dao = new KaitouDao();
+				int seikai_flg = kaitou_dao.is_seikai(db_name, seitou.getS_id());
+				sql.appendLine("update seitou set seikai_flg = " + seikai_flg);
+				sql.appendLine(" where s_id = '" + seitou.getS_id() + "'");
+				sqlite_dao.update(db_name, sql);
+				System.out.println(sql.toString());
+			}
+			
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+	}
 	  
 }

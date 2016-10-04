@@ -104,24 +104,28 @@ public class MainPageController {
 				byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 				AES aes = new AES();
 				String owner_db = aes.decrypt(encrypted_owner_db);
-				Map<Integer, List<QAPlusModel>> qa_plus_map 
-					= new HashMap<Integer,List<QAPlusModel>>();
-				qa_plus_map = select_qa_plus(owner_db);
-				System.out.println("qa_plus_map.size:"+qa_plus_map.size());
+				int limit = Constant.QA_NUM_PER_PAGE;
+				int left_offset = 0;
+				List<QAPlusModel> qa_plus_list_left = new ArrayList<QAPlusModel>();
+				qa_plus_list_left = select_qa_plus(owner_db, limit, left_offset);
 				String qa_html = "";
-				if (qa_plus_map.size() >= 1)
+				if (qa_plus_list_left.size() > 0)
 				{
-					qa_html = generate_qa_html(qa_plus_map.get(1),owner_db);
+					qa_html = generate_qa_html(qa_plus_list_left,owner_db);
 				}
+
 				String qa_html_right = "";
-				if (qa_plus_map.size() >= 2)
+				int right_offset = Constant.QA_NUM_PER_PAGE;
+				List<QAPlusModel> qa_plus_list_right= new ArrayList<QAPlusModel>();
+				qa_plus_list_right = select_qa_plus(owner_db, limit, right_offset);
+				if (qa_plus_list_right.size() > 0)
 				{
-					qa_html_right = generate_qa_html(qa_plus_map.get(2),owner_db);
+					qa_html_right = generate_qa_html(qa_plus_list_right,owner_db);
 				}
 				model.addAttribute("qa_html", qa_html);
 				model.addAttribute("qa_html_right", qa_html_right);
 				
-				model.addAttribute("total_pages", qa_plus_map.size());
+				//model.addAttribute("total_pages", qa_plus_map.size());
 				
 //				model.addAttribute("qa_html_per_pages", qa_html_per_pages);
 				//model.addAttribute("page", 1);
@@ -315,25 +319,31 @@ public class MainPageController {
 			String husen_html = generate_husen_html(owner_db);
 			model.addAttribute("tags", husen_html);
 
-			Map<Integer, List<QAPlusModel>> qa_plus_map 
-			= new HashMap<Integer,List<QAPlusModel>>();
-
-			qa_plus_map = select_qa_plus(owner_db);
-
+			int limit = Constant.QA_NUM_PER_PAGE;
+			int left_offset = 0;
+			List<QAPlusModel> qa_plus_list_left = new ArrayList<QAPlusModel>();
+			qa_plus_list_left = select_qa_plus(owner_db, limit, left_offset);
 			String qa_html = "";
-			if (qa_plus_map.size() >= 1)
+			if (qa_plus_list_left.size() > 0)
 			{
-				qa_html = generate_qa_html(qa_plus_map.get(1),owner_db);
+				qa_html = generate_qa_html(qa_plus_list_left,owner_db);
 			}
+
 			String qa_html_right = "";
-			if (qa_plus_map.size() >= 2)
+			int right_offset = Constant.QA_NUM_PER_PAGE;
+			List<QAPlusModel> qa_plus_list_right= new ArrayList<QAPlusModel>();
+			qa_plus_list_right = select_qa_plus(owner_db, limit, right_offset);
+			if (qa_plus_list_right.size() > 0)
 			{
-				qa_html_right = generate_qa_html(qa_plus_map.get(2),owner_db);
+				qa_html_right = generate_qa_html(qa_plus_list_right,owner_db);
 			}
 			model.addAttribute("qa_html", qa_html);
 			model.addAttribute("qa_html_right", qa_html_right);
 			
-			model.addAttribute("total_pages", qa_plus_map.size());
+			model.addAttribute("qa_html", qa_html);
+			model.addAttribute("qa_html_right", qa_html_right);
+			
+//			model.addAttribute("total_pages", qa_plus_map.size());
 			
 			if (request_url.equals(response_url))
 			{
@@ -460,12 +470,15 @@ public class MainPageController {
 		// 正答ID
 		kaitou.setS_id(s_id);
 		// 正解フラグ
+		SeitouDao seitou_dao = new SeitouDao();
 		if (is_seikai == 0)
 		{
+			seitou_dao.update_seikai_flg(owner_db, s_id, 1);
 			kaitou.setSeikai_flg(1);
 		}
 		else
 		{
+			seitou_dao.update_seikai_flg(owner_db, s_id, 0);
 			kaitou.setSeikai_flg(0);			
 		}
 		// アクション・・・チェックを入れた、外した、解いて正解した、解いて不正解、等
@@ -648,9 +661,9 @@ public class MainPageController {
 		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 		AES aes = new AES();
 		String owner_db = aes.decrypt(encrypted_owner_db);
-		Map<Integer, List<QAPlusModel>> qa_plus_map 
-			= new HashMap<Integer,List<QAPlusModel>>();
-		qa_plus_map = select_qa_plus(owner_db);
+		int limit = Constant.QA_NUM_PER_PAGE;
+		int offset_left = 0;
+		int offset_right = 0;
 		
 		int left_page = 0;
 		int right_page = 0;
@@ -663,21 +676,23 @@ public class MainPageController {
 		{
 			left_page = now_page - 2;
 			right_page = now_page - 1;
-//			if (left_page < 0)
-//			{
-//				left_page = 1;
-//				right_page = 2;
-//			}
 		}
+		offset_left = left_page * Constant.QA_NUM_PER_PAGE - Constant.QA_NUM_PER_PAGE;
+		offset_right = right_page * Constant.QA_NUM_PER_PAGE - Constant.QA_NUM_PER_PAGE;
+
 		String left_page_html = "";
-		if (qa_plus_map.size() >= left_page)
+		List<QAPlusModel> qa_plus_list_left = new ArrayList<QAPlusModel>();
+		qa_plus_list_left = select_qa_plus(owner_db,limit,offset_left);
+		if (qa_plus_list_left.size() > 0)
 		{
-			left_page_html = generate_qa_html(qa_plus_map.get(left_page),owner_db);	
+			left_page_html = generate_qa_html(qa_plus_list_left,owner_db);	
 		}
 		String right_page_html = "";
-		if (qa_plus_map.size() >= right_page)
+		List<QAPlusModel> qa_plus_list_right = new ArrayList<QAPlusModel>();
+		qa_plus_list_right = select_qa_plus(owner_db,limit,offset_right);
+		if (qa_plus_list_right.size() > 0)
 		{
-			right_page_html = generate_qa_html(qa_plus_map.get(right_page),owner_db);
+			right_page_html = generate_qa_html(qa_plus_list_right,owner_db);	
 		}
 		//model.addAttribute("qa_html", left_page_html);
 		
@@ -711,14 +726,11 @@ public class MainPageController {
 	 * @param owner_db
 	 * @return
 	 */
-	public Map<Integer,List<QAPlusModel>> select_qa_plus(String owner_db) {
+	public List<QAPlusModel> select_qa_plus(String owner_db, int limit, int offset) {
 		QAPlusDao qa_plus_dao = new QAPlusDao();
-		Map<Integer,List<QAPlusModel>> qa_plus_map = new HashMap<Integer,List<QAPlusModel>>();
 		List<QAPlusModel> qa_plus_list = new ArrayList<QAPlusModel>();
-		int limit = Constant.QA_NUM_PER_PAGE;
-		int offset = 0;
-		qa_plus_map = qa_plus_dao.select_qa_plus_map(owner_db, qa_plus_list);
-		return qa_plus_map;
+		qa_plus_list = qa_plus_dao.select_qa_plus_map(owner_db, qa_plus_list, limit, offset);
+		return qa_plus_list;
 	}
 
 	/**
@@ -741,6 +753,8 @@ public class MainPageController {
 	public String generate_qa_html(List<QAPlusModel> qa_plus_list, String owner_db)
 	{
 		StopWatch stopwatch = new StopWatch();
+		stopwatch.start();
+
 		StringBuffer qa_html = new StringBuffer();
 
 		//System.out.println(qa_plus_list.size());
@@ -750,6 +764,8 @@ public class MainPageController {
 //			QAModel qa = qa_plus.getQa();
 			List<MondaiModel> mondai_list = new ArrayList<MondaiModel>();
 			mondai_list = qa_plus.getMondai_list();
+			
+	//		System.out.println("mondai_list:"+mondai_list.size());
 			
 			/**
 			 * 問題HTML
@@ -769,12 +785,15 @@ public class MainPageController {
 			List<SeitouModel> seitou_list = new ArrayList<SeitouModel>();
 			seitou_list = qa_plus.getSeitou_list();
 			
+			System.out.println("seitou_list:"+seitou_list.size());
+
 			List<String> a_html = new ArrayList<String>();
 			for (int i = 0; i < seitou_list.size(); i++)
 			{
 				String seitou = seitou_list.get(i).getSeitou();
-				KaitouDao kaitou_dao = new KaitouDao();
-				int opacity = kaitou_dao.is_seikai(owner_db, seitou_list.get(i).getS_id());
+//				KaitouDao kaitou_dao = new KaitouDao();
+//				int opacity = kaitou_dao.is_seikai(owner_db, seitou_list.get(i).getS_id());
+				int opacity = seitou_list.get(i).getSeikai_flg();
 				String mouseout = "";
 				if (opacity == 0)
 				{
@@ -785,8 +804,11 @@ public class MainPageController {
 			}	
 			
 			qa_html.append("<span id='" + qa_plus.getQa().getQa_id() + "' class='qa'>");
+		//	StopWatch watch2 = new StopWatch();
+		//	System.out.println("mondai_list.size() + seitou_list.size()" + mondai_list.size() + seitou_list.size());
 			for (int i = 0; i < (mondai_list.size() + seitou_list.size()); i++)
 			{
+			//	System.out.println("i:"+i);
 				if (qa_plus.getQa().getIs_start_with_q() == 1)
 				{
 					if (i < q_html.size())
@@ -814,6 +836,7 @@ public class MainPageController {
 					}
 				}
 			}
+//			watch2.stop("for文");
 //			qa_html += "</span>";
 			qa_html.append("</span>");
 			//qa_html += "<div id='bottom_border' style='width:100%'></div>";		
@@ -871,7 +894,7 @@ public class MainPageController {
 			{
 				is_start_with_q = 1;
 			}
-		    System.out.println(entry.getKey() + "/" + entry.getValue());
+		  //  System.out.println(entry.getKey() + "/" + entry.getValue());
 		}
 		
 		// 問題文がない場合は登録しない
@@ -1192,7 +1215,7 @@ public class MainPageController {
 			{
 				is_start_with_q = 1;
 			}
-		    System.out.println(entry.getKey() + "/" + entry.getValue());
+		  //  System.out.println(entry.getKey() + "/" + entry.getValue());
 		}
 		
 		// 問題文がない場合は登録しない

@@ -254,6 +254,8 @@ public class SQliteDAO {
 	      sql.appendLine("  is_binary_flg integer default 0,");
 	      // 正答
 	      sql.appendLine("	seitou text,");
+	      // 正解フラグ
+	      sql.appendLine("	seikai_flg integer,");
 	      // 正答が画像などのバイナリである場合に格納する
 	      sql.appendLine("  seitou_binary blob default null,");
 	      // 重要度（５段階）

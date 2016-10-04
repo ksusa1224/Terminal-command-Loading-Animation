@@ -24,6 +24,8 @@ public @Data class SeitouModel {
     private int is_binary_flg;
     // 正答
     private String seitou;
+    // 正解フラグ
+    private int seikai_flg;
     // 正答が画像などのバイナリである場合に格納する
     private byte[] seitou_binary;
     // 重要度（５段階）
