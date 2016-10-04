@@ -863,5 +863,33 @@ function edit_qa(q_obj)
 }
 
 
+function show_red() {
+	$(".a").css("opacity","1");
+}
+
+function hide_red()
+{
+	$(".a").css("opacity","0");
+}
+
+function reset_red()
+{
+    for(i = 0; i < document.getElementsByClassName("a").length; i++)
+    {
+    	var attr = document.getElementsByClassName("a")[i].getAttribute('onmouseout');
+    	if (attr == null) {
+    		document.getElementsByClassName("a")[i].style.opacity = 1;
+    	}
+    }
+
+    for(i = 0; i < document.getElementsByClassName("a").length; i++)
+    {
+    	var attr = document.getElementsByClassName("a")[i].getAttribute('onmouseout');
+    	if (attr != null) {
+    		document.getElementsByClassName("a")[i].style.opacity = 0;
+    	}
+    }
+}
+
 
 

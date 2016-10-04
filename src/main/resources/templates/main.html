@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <title>暗記ノート</title>
+<link rel="stylesheet" th:href="@{../css/bootstrap.min.css}" />
 <link rel="stylesheet" type="text/css" th:href="@{../css/_main.css}" />
 <link rel="stylesheet" type="text/css" th:href="@{../css/jquery-ui.css}" />
 <script th:src="@{../js/jquery-3.1.0.min.js}"></script>
@@ -122,5 +123,25 @@ QA.
 
 </div>
 </div>
+
+<div id="context-menu" style="display:none"> 
+  <!-- The actual menu that will be displayed-->
+  <ul class="dropdown-menu">
+    <li><a href="#" onclick="javascript:show_red();">一時的に全ての解答を表示（ALT+R）</a></li>
+    <li><a href="#" onclick="javascript:hide_red();">一時的に全ての解答を隠す（ALT+W）</a></li>
+    <li><a href="#" onclick="javascript:reset_red();">解いた解答だけ表示する（ALT+R / ALT+W）</a></li>
+    <li class="divider"></li>
+    <li><a href="#">検索中の全問題を未正解に戻す</a></li>
+  </ul>
+</div>
+<script th:src="@{../js/contextmenu.js}"></script> 
+<script>
+$(document).ready(function(){
+    $('#note_area').contextmenu({
+        target: "#context-menu"
+    });
+});
+</script>
+
 </body>
 </html>
