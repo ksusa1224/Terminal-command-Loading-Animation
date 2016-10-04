@@ -143,6 +143,11 @@ public class MainPageController {
 				String husen_html = generate_husen_html(owner_db);
 				model.addAttribute("tags", husen_html);
 				
+				// ページング総数
+				QADao qa_dao = new QADao();
+				int total_pages = qa_dao.get_pages(owner_db, "");
+				model.addAttribute("total_pages", total_pages);
+				
 				return "main";
 			}
 			else
@@ -226,13 +231,17 @@ public class MainPageController {
 			// 付箋
 			String husen_html = generate_husen_html(owner_db);
 			model.addAttribute("tags", husen_html);
+			
+			// ページング総数
+			QADao qa_dao = new QADao();
+			String total_pages = String.valueOf(qa_dao.get_pages(owner_db, husen_names));			
 
 			String seitou_cnt = String.valueOf(seitou_dao.get_seitou_cnt(owner_db, husen_names));
 			String seikai_cnt = String.valueOf(seitou_dao.get_seikai_cnt(owner_db, husen_names));
 			
 			String json = JSON.encode(
 					new String[] 
-					{qa_html,qa_html_right,seitou_cnt,seikai_cnt});
+					{qa_html,qa_html_right,seitou_cnt,seikai_cnt,total_pages});
 			return json;
 		}		
 		else
@@ -717,6 +726,11 @@ public class MainPageController {
 		{
 			right_page_html = generate_qa_html(qa_plus_list_right,owner_db);	
 		}
+
+		// ページング総数
+		QADao qa_dao = new QADao();
+		String total_pages = String.valueOf(qa_dao.get_pages(owner_db, husen_str));			
+		
 		//model.addAttribute("qa_html", left_page_html);
 		SeitouDao seitou_dao = new SeitouDao();
 		String seitou_cnt = String.valueOf(seitou_dao.get_seitou_cnt(owner_db, husen_str));
@@ -725,7 +739,7 @@ public class MainPageController {
 //		qa_plus_map.get(i),owner_db);
 		String json = JSON.encode(
 				new String[] 
-				{left_page_html, right_page_html, seitou_cnt, seikai_cnt});
+				{left_page_html, right_page_html, seitou_cnt, seikai_cnt,total_pages});
 		return json;
 	}		
 	

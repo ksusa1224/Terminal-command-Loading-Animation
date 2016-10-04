@@ -201,6 +201,7 @@ function body_load()
 					$("#qa_area_right").html(data[1]);
 					$("#seitou_sum").html(data[2]);
 					$("#seikai_sum").html(data[3]);
+					$(".total_pages").html(data[4]);
 				},
 				error: function(data)
 				{
@@ -233,6 +234,7 @@ function body_load()
 					$("#qa_area_right").html(data[1]);
 					$("#seitou_sum").html(data[2]);
 					$("#seikai_sum").html(data[3]);
+					$(".total_pages").html(data[4]);
 				},
 				error: function(data)
 				{
@@ -621,6 +623,7 @@ function paging(page,next_or_prev)
 			$("#qa_area_right").html(data[1]);
 			$("#seitou_sum").html(data[2]);
 			$("#seikai_sum").html(data[3]);
+			$(".total_pages").html(data[4]);
 			
 			if (next_or_prev == 'next')
 			{

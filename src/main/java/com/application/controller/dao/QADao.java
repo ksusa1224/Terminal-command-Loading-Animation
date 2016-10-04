@@ -114,6 +114,79 @@ public class QADao {
 	    stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());
 		return seitou_sum;
 	}
+
+	/**
+	 * 
+	 * @param db_name
+	 * @param tag_names
+	 * @return
+	 */
+	public int get_pages(
+			String db_name, 
+			String tag_names)
+	{
+		StopWatch stopwatch = new StopWatch();
+		stopwatch.start();
+		
+		int page_cnt = 0;
+		
+		SQliteDAO dao = new SQliteDAO();
+		
+		StringBuilderPlus sql = new StringBuilderPlus();
+		sql.appendLine("select count(qa.qa_id) ");
+		sql.appendLine(" from qa");
+        if (!tag_names.equals(""))
+        {
+        	sql.appendLine(", qa_tag_relation,tag");
+        }
+		sql.appendLine(" where qa.del_flg = 0");
+        if (!tag_names.equals(""))
+        {
+			sql.appendLine(" and qa.qa_id = qa_tag_relation.qa_id");
+			sql.appendLine(" and tag.tag_id = qa_tag_relation.tag_id");
+			sql.appendLine(" and (");
+			for (int i = 0; i < tag_names.split(",").length; i++)
+			{
+				sql.appendLine("tag.tag_name = '" + tag_names.split(",")[i] + "'");
+				if (i < tag_names.split(",").length - 1)
+				{
+					sql.appendLine(" or ");
+				}
+			}
+	        sql.appendLine(")");
+        }
+		
+		dao.loadDriver();
+		
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+	    try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+	      ResultSet rs = stmt.executeQuery(sql.toString());
+	      while (rs.next()) 
+	      {
+	    	  page_cnt = rs.getInt(1) / Constant.QA_NUM_PER_PAGE + 1;
+	      }
+	    }
+	    catch(Exception ex)
+	    {
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+	    }	    		
+	    stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());
+		return page_cnt;
+	}		
 	
 	/**
 	 * 編集用に、QA入力エリアのHTMLを取得
