@@ -110,6 +110,79 @@ public class SeitouDao {
 		
 		return seitou_cnt;
 	}	
+	
+	/**
+	 * タグ名に紐づく正答総数を出す
+	 * @param db_name
+	 * @param tag_names
+	 * @return
+	 */
+	public int get_seitou_cnt(String db_name, String tag_names)
+	{	
+		int seitou_cnt = 0;
+		
+		SQliteDAO dao = new SQliteDAO();
+		
+		StringBuilderPlus sql = new StringBuilderPlus();
+		sql.appendLine("select count(seitou) from seitou ");
+        if (!tag_names.equals(""))
+        {
+        	sql.appendLine(",qa, qa_tag_relation,tag");
+        }
+		sql.appendLine(" where seitou.del_flg = 0 and seitou != '' and seitou is not null ");
+        if (!tag_names.equals(""))
+        {
+			sql.appendLine(" and qa.qa_id = qa_tag_relation.qa_id");
+			sql.appendLine(" and qa.qa_id = seitou.qa_id");
+			sql.appendLine(" and tag.tag_id = qa_tag_relation.tag_id");
+			sql.appendLine(" and (");
+			for (int i = 0; i < tag_names.split(",").length; i++)
+			{
+				sql.appendLine("tag.tag_name = '" + tag_names.split(",")[i] + "'");
+				if (i < tag_names.split(",").length - 1)
+				{
+					sql.appendLine(" or ");
+				}
+			}
+	        sql.appendLine(")");
+        }
+
+		
+		dao.loadDriver();
+		
+		//System.out.println(db_name);
+
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+	    try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+	      ResultSet rs = stmt.executeQuery(sql.toString());
+	      while (rs.next()) 
+	      {
+	    	  seitou_cnt = rs.getInt(1);
+	    	  System.out.println(seitou_cnt);
+	      }
+	    }
+	    catch(Exception ex)
+	    {
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+	    }	    
+		
+		return seitou_cnt;
+	}	
+	
 
 	/**
 	 * 正解数を得る
@@ -123,16 +196,9 @@ public class SeitouDao {
 		SQliteDAO dao = new SQliteDAO();
 		
 		StringBuilderPlus sql = new StringBuilderPlus();
-		sql.appendLine("SELECT  mi.* ");
-		sql.appendLine("FROM    (");
-		sql.appendLine("        SELECT  MAX(action_timestamp) AS mid");
-		sql.appendLine("        FROM    kaitou");
-		sql.appendLine("        GROUP BY");
-		sql.appendLine("                s_id");
-		sql.appendLine("        ) mo ");
-		sql.appendLine("JOIN    kaitou mi ");
-		sql.appendLine("ON      mi.action_timestamp = mo.mid");
-		sql.appendLine("AND mi.seikai_flg = 1");
+		sql.appendLine("SELECT  count(seikai_flg) ");
+		sql.appendLine("FROM    seitou ");
+		sql.appendLine("WHERE seikai_flg = 1");
 
 		dao.loadDriver();
 		
@@ -151,7 +217,7 @@ public class SeitouDao {
 	      ResultSet rs = stmt.executeQuery(sql.toString());
 	      while (rs.next()) 
 	      {
-	    	  seikai_cnt++;
+	    	  seikai_cnt = rs.getInt(1);
 	      }
 	    }
 	    catch(Exception ex)
@@ -167,6 +233,77 @@ public class SeitouDao {
 		
 		return seikai_cnt;
 	}	
+
+	/**
+	 * タグ名に紐づく正解総数を得る
+	 * @param db_name
+	 * @param tag_names
+	 * @return
+	 */
+	public int get_seikai_cnt(String db_name, String tag_names)
+	{	
+		int seikai_cnt = 0;
+		
+		SQliteDAO dao = new SQliteDAO();
+		
+		StringBuilderPlus sql = new StringBuilderPlus();
+		sql.appendLine("SELECT  count(seikai_flg) ");
+		sql.appendLine("FROM    seitou ");
+        if (!tag_names.equals(""))
+        {
+        	sql.appendLine(",qa, qa_tag_relation,tag");
+        }
+		sql.appendLine("WHERE seikai_flg = 1");
+        if (!tag_names.equals(""))
+        {
+			sql.appendLine(" and qa.qa_id = qa_tag_relation.qa_id");
+			sql.appendLine(" and qa.qa_id = seitou.qa_id");
+			sql.appendLine(" and tag.tag_id = qa_tag_relation.tag_id");
+			sql.appendLine(" and (");
+			for (int i = 0; i < tag_names.split(",").length; i++)
+			{
+				sql.appendLine("tag.tag_name = '" + tag_names.split(",")[i] + "'");
+				if (i < tag_names.split(",").length - 1)
+				{
+					sql.appendLine(" or ");
+				}
+			}
+	        sql.appendLine(")");
+        }
+
+		dao.loadDriver();
+		
+		//System.out.println(db_name);
+
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+	    try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+	      ResultSet rs = stmt.executeQuery(sql.toString());
+	      while (rs.next()) 
+	      {
+	    	  seikai_cnt = rs.getInt(1);
+	      }
+	    }
+	    catch(Exception ex)
+	    {
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+	    }	    
+		
+		return seikai_cnt;
+	}		
 	
 	public List<SeitouModel> select_seitou_list(String db_name, List<SeitouModel> seitou_list)
 	{		

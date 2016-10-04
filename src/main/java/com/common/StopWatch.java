@@ -11,8 +11,7 @@ public class StopWatch {
 
 	  public StopWatch()
 	  {
-		  startTime = 0;
-		  stopTime = 0;
+		    startTime = System.currentTimeMillis();
 	  }
 	  
 	  public void start() {

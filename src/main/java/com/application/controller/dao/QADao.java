@@ -321,7 +321,12 @@ public class QADao {
 	 * @param tag_name
 	 * @return
 	 */
-	public List<QAModel> select_qa_list_by_tag(String db_name, List<QAModel> qa_list, String tag_names)
+	public List<QAModel> select_qa_list_by_tag(
+			String db_name, 
+			List<QAModel> qa_list, 
+			String tag_names,
+			int limit,
+			int offset)
 	{
 		StopWatch stopwatch = new StopWatch();
 		stopwatch.start();
@@ -395,7 +400,8 @@ public class QADao {
 			}
 	        sql.appendLine(")");
         }
-		sql.appendLine(" order by qa.update_timestamp desc;");
+		sql.appendLine(" order by qa.update_timestamp desc");
+		sql.appendLine("  limit " + limit + " offset + " + offset + ";");
 		
 		dao.loadDriver();
 		

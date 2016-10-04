@@ -194,7 +194,24 @@ public class MainPageController {
 			byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 			AES aes = new AES();
 			String owner_db = aes.decrypt(encrypted_owner_db);
-			String qa_html = generate_qa_html(select_qa_plus_by_tag(owner_db, husen_names),owner_db);			
+			int limit = Constant.QA_NUM_PER_PAGE;
+			int offset_left = 0;
+			List<QAPlusModel> qa_list_left = new ArrayList<QAPlusModel>();
+			qa_list_left = select_qa_plus_by_tag(owner_db, husen_names, limit, offset_left);
+			String qa_html = "";
+			if (qa_list_left.size() > 0)
+			{
+				qa_html = generate_qa_html(qa_list_left,owner_db);	
+			}
+			int offset_right = limit;
+			List<QAPlusModel> qa_list_right = new ArrayList<QAPlusModel>();
+			qa_list_right = select_qa_plus_by_tag(owner_db, husen_names, limit, offset_right);
+			String qa_html_right = "";
+			if (qa_list_right.size() > 0)
+			{
+				qa_html_right = generate_qa_html(qa_list_right,owner_db);	
+			}
+			
 			model.addAttribute("qa_html", qa_html);
 			
 			// 正答総数
@@ -209,8 +226,14 @@ public class MainPageController {
 			// 付箋
 			String husen_html = generate_husen_html(owner_db);
 			model.addAttribute("tags", husen_html);
+
+			String seitou_cnt = String.valueOf(seitou_dao.get_seitou_cnt(owner_db, husen_names));
+			String seikai_cnt = String.valueOf(seitou_dao.get_seikai_cnt(owner_db, husen_names));
 			
-			return qa_html;
+			String json = JSON.encode(
+					new String[] 
+					{qa_html,qa_html_right,seitou_cnt,seikai_cnt});
+			return json;
 		}		
 		else
 		{
@@ -682,23 +705,27 @@ public class MainPageController {
 
 		String left_page_html = "";
 		List<QAPlusModel> qa_plus_list_left = new ArrayList<QAPlusModel>();
-		qa_plus_list_left = select_qa_plus(owner_db,limit,offset_left);
+		qa_plus_list_left = select_qa_plus_by_tag(owner_db, husen_str, limit, offset_left);
 		if (qa_plus_list_left.size() > 0)
 		{
 			left_page_html = generate_qa_html(qa_plus_list_left,owner_db);	
 		}
 		String right_page_html = "";
 		List<QAPlusModel> qa_plus_list_right = new ArrayList<QAPlusModel>();
-		qa_plus_list_right = select_qa_plus(owner_db,limit,offset_right);
+		qa_plus_list_right = select_qa_plus_by_tag(owner_db,husen_str,limit,offset_right);
 		if (qa_plus_list_right.size() > 0)
 		{
 			right_page_html = generate_qa_html(qa_plus_list_right,owner_db);	
 		}
 		//model.addAttribute("qa_html", left_page_html);
-		
-//		Map<Integer, String> qa_html_per_pages = new HashMap<Integer, String>();
+		SeitouDao seitou_dao = new SeitouDao();
+		String seitou_cnt = String.valueOf(seitou_dao.get_seitou_cnt(owner_db, husen_str));
+		String seikai_cnt = String.valueOf(seitou_dao.get_seikai_cnt(owner_db, husen_str));
+		//		Map<Integer, String> qa_html_per_pages = new HashMap<Integer, String>();
 //		qa_plus_map.get(i),owner_db);
-		String json = JSON.encode(new String[] {left_page_html,right_page_html});
+		String json = JSON.encode(
+				new String[] 
+				{left_page_html, right_page_html, seitou_cnt, seikai_cnt});
 		return json;
 	}		
 	
@@ -739,10 +766,10 @@ public class MainPageController {
 	 * @param husen_name
 	 * @return
 	 */
-	public List<QAPlusModel> select_qa_plus_by_tag(String owner_db, String husen_names) {
+	public List<QAPlusModel> select_qa_plus_by_tag(String owner_db, String husen_names, int limit, int offset) {
 		QAPlusDao qa_plus_dao = new QAPlusDao();
 		List<QAPlusModel> qa_plus_list = new ArrayList<QAPlusModel>();
-		qa_plus_list = qa_plus_dao.select_qa_plus_list(owner_db, qa_plus_list, husen_names);
+		qa_plus_list = qa_plus_dao.select_qa_plus_list(owner_db, qa_plus_list, husen_names, limit , offset);
 		return qa_plus_list;
 	}	
 	
@@ -785,7 +812,7 @@ public class MainPageController {
 			List<SeitouModel> seitou_list = new ArrayList<SeitouModel>();
 			seitou_list = qa_plus.getSeitou_list();
 			
-			System.out.println("seitou_list:"+seitou_list.size());
+			//System.out.println("seitou_list:"+seitou_list.size());
 
 			List<String> a_html = new ArrayList<String>();
 			for (int i = 0; i < seitou_list.size(); i++)

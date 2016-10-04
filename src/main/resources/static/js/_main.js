@@ -193,11 +193,14 @@ function body_load()
         	tag_search_conditions_uri = husens_str;
 			jQuery.ajax({
 				url: "../tag_search.html?husen_names=" + husens_str,
-				dataType: "html",
+				dataType: "json",
 				cache: false,
 				success: function(data)
 				{
-					$("#qa_area").html(data);
+					$("#qa_area").html(data[0]);
+					$("#qa_area_right").html(data[1]);
+					$("#seitou_sum").html(data[2]);
+					$("#seikai_sum").html(data[3]);
 				},
 				error: function(data)
 				{
@@ -222,11 +225,14 @@ function body_load()
         	tag_search_conditions_uri = husens_str;
 			jQuery.ajax({
 				url: "../tag_search.html?husen_names=" + husens_str,
-				dataType: "html",
+				dataType: "json",
 				cache: false,
 				success: function(data)
 				{
-					$("#qa_area").html(data);
+					$("#qa_area").html(data[0]);
+					$("#qa_area_right").html(data[1]);
+					$("#seitou_sum").html(data[2]);
+					$("#seikai_sum").html(data[3]);
 				},
 				error: function(data)
 				{
@@ -613,6 +619,8 @@ function paging(page,next_or_prev)
 		{
 			$("#qa_area").html(data[0]);
 			$("#qa_area_right").html(data[1]);
+			$("#seitou_sum").html(data[2]);
+			$("#seikai_sum").html(data[3]);
 			
 			if (next_or_prev == 'next')
 			{

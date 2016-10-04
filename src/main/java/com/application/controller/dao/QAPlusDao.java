@@ -386,49 +386,61 @@ public class QAPlusDao extends QADao {
 		return qa_plus_list;
 	}
 	
-	public List<QAPlusModel> select_qa_plus_list(String db_name, List<QAPlusModel> qa_plus_list, String tag_names)
+	public List<QAPlusModel> select_qa_plus_list(
+			String db_name, 
+			List<QAPlusModel> qa_plus_list, 
+			String tag_names,
+			int limit,
+			int offset)
 	{
 		StopWatch stopwatch = new StopWatch();
 		stopwatch.start();
-		
-		QADao qa_dao = new QADao();
-		
-		List<QAModel> qa_list_all = new ArrayList<QAModel>();
-		qa_list_all = qa_dao.select_qa_list_by_tag(db_name, qa_list_all, tag_names);
-			
-		MondaiDao mondai_dao = new MondaiDao();
-		List<MondaiModel> mondai_list_all = new ArrayList<MondaiModel>();
-		mondai_list_all = mondai_dao.select_mondai_list(db_name, mondai_list_all);
-		//qa_plus.setMondai_list(mondai_list);
-		
-		SeitouDao seitou_dao = new SeitouDao();
-		List<SeitouModel> seitou_list_all = new ArrayList<SeitouModel>();
-		seitou_list_all = seitou_dao.select_seitou_list(db_name, seitou_list_all);
-		//qa_plus.setSeitou_list(seitou_list);
-		
-		for (QAModel qa : qa_list_all)
+		try
 		{
-			QAPlusModel qa_plus = new QAPlusModel();
-
-			// QA
-			qa_plus.setQa(qa);
-
-			// 問題
-			List<MondaiModel> mondai_list_each = new ArrayList<MondaiModel>();
-			mondai_list_each = (List<MondaiModel>) mondai_list_all.stream()
-					.filter(x -> x.getQa_id().equals(qa.getQa_id()))
-					.collect(Collectors.toList());
-			qa_plus.setMondai_list(mondai_list_each);
 			
-			// 正答
-			List<SeitouModel> seitou_list_each = new ArrayList<SeitouModel>();
-			seitou_list_each = (List<SeitouModel>) seitou_list_all
-					.stream().filter(x -> x.getQa_id().equals(qa.getQa_id()))
-					.collect(Collectors.toList());;
-			qa_plus.setSeitou_list(seitou_list_each);
-
+			QADao qa_dao = new QADao();
 			
-			qa_plus_list.add(qa_plus);
+			List<QAModel> qa_list_all = new ArrayList<QAModel>();
+			qa_list_all = qa_dao.select_qa_list_by_tag(db_name, qa_list_all, tag_names, limit, offset);
+				
+			MondaiDao mondai_dao = new MondaiDao();
+			List<MondaiModel> mondai_list_all = new ArrayList<MondaiModel>();
+			mondai_list_all = mondai_dao.select_mondai_list(db_name, mondai_list_all);
+			//qa_plus.setMondai_list(mondai_list);
+			
+			SeitouDao seitou_dao = new SeitouDao();
+			List<SeitouModel> seitou_list_all = new ArrayList<SeitouModel>();
+			seitou_list_all = seitou_dao.select_seitou_list(db_name, seitou_list_all);
+			//qa_plus.setSeitou_list(seitou_list);
+			
+			for (QAModel qa : qa_list_all)
+			{
+				QAPlusModel qa_plus = new QAPlusModel();
+	
+				// QA
+				qa_plus.setQa(qa);
+	
+				// 問題
+				List<MondaiModel> mondai_list_each = new ArrayList<MondaiModel>();
+				mondai_list_each = (List<MondaiModel>) mondai_list_all.stream()
+						.filter(x -> x.getQa_id().equals(qa.getQa_id()))
+						.collect(Collectors.toList());
+				qa_plus.setMondai_list(mondai_list_each);
+				
+				// 正答
+				List<SeitouModel> seitou_list_each = new ArrayList<SeitouModel>();
+				seitou_list_each = (List<SeitouModel>) seitou_list_all
+						.stream().filter(x -> x.getQa_id().equals(qa.getQa_id()))
+						.collect(Collectors.toList());;
+				qa_plus.setSeitou_list(seitou_list_each);
+	
+				
+				qa_plus_list.add(qa_plus);
+			}
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
 		}
 				
 	    stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());
