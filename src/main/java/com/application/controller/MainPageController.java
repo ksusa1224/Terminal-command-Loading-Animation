@@ -1,10 +1,18 @@
 package com.application.controller;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -13,7 +21,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
+import org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,7 +62,7 @@ import com.sun.medialib.mlib.Constants;
 import net.arnx.jsonic.JSON;
 
 @Controller
-public class MainPageController {
+public class MainPageController extends WebMvcAutoConfiguration{
 
 	/**
 	 * メインページ（暗記ノート本体）
@@ -101,6 +109,19 @@ public class MainPageController {
 		{
 			if (request_url.equals(response_url))
 			{
+				try {
+					String command = "find " + Constant.SPEECH_DATA_FOLDER_PATH + " -type f -exec chmod +x {} \\;";
+					Runtime.getRuntime().exec(command.replace("\\", "\\\\"));
+					
+					File file = new File(Constant.SPEECH_DATA_FOLDER_PATH);
+					file.mkdirs();
+					boolean rc1 = file.setExecutable(true, true);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				
 				byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 				AES aes = new AES();
 				String owner_db = aes.decrypt(encrypted_owner_db);
@@ -844,7 +865,7 @@ public class MainPageController {
 				a_html.add(html);
 			}	
 			
-			qa_html.append("<span id='" + qa_plus.getQa().getQa_id() + "' class='qa'>");
+			qa_html.append("<span id='" + qa_plus.getQa().getQa_id() + "' class='qa' onmouseover='qa_mouseover(this)'>");
 		//	StopWatch watch2 = new StopWatch();
 		//	System.out.println("mondai_list.size() + seitou_list.size()" + mondai_list.size() + seitou_list.size());
 			for (int i = 0; i < (mondai_list.size() + seitou_list.size()); i++)
@@ -902,6 +923,7 @@ public class MainPageController {
 			String yomudake_flg,
 			String reversible_flg)
 	{
+		StopWatch stop_watch = new StopWatch();
 		//System.out.println("qa_input"+qa_input);
 		
 		// 順番、問題文/正答
@@ -1114,9 +1136,47 @@ public class MainPageController {
 			seitou.setNanido(3);
 		    // 言語
 	//		seitou.setLanguage(Util.langDetect(seitou_input));
-			seitou.setLanguage(Util.check_japanese_or_english(entry.getValue()));
+			String language = Util.check_japanese_or_english(entry.getValue());
+			seitou.setLanguage(language);
 		    // テキスト読み上げデータ
-			seitou.setYomiage(null);
+			byte[] yomiage = null;
+			if (language == Constant.ENGLISH)
+			{
+				try {
+				String speaker = "Alex";
+//				String path = new File(".").getAbsolutePath() + "/speech/";
+				String file_name = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + ".m4a";
+				String command = "say -v " + speaker + " '" + seitou.getSeitou() + "' -o " + file_name;
+				System.out.println(command);
+//				String command2 = "chmod +x " + file_name;
+					Runtime.getRuntime().exec(command);
+					Runtime.getRuntime().exec("sh " + Constant.SPEECH_DATA_FOLDER_PATH + "chmod.sh");
+//					command = "find " + Constant.SPEECH_DATA_FOLDER_PATH + " -type f -exec chmod +x {} \\;";
+//					Runtime.getRuntime().exec(command2);
+				    String[] cmd = {"/bin/bash","-c","echo password| sudo -S ls"};
+				    Process pb = Runtime.getRuntime().exec(cmd);
+
+				    String line;
+				    BufferedReader input = new BufferedReader(new InputStreamReader(pb.getInputStream()));
+				    while ((line = input.readLine()) != null) {
+				        System.out.println(line);
+				    }
+				    input.close();					
+					File file = new File(file_name);
+					file.mkdir();
+					Boolean a = file.setExecutable(true, false);
+					System.out.println("setexec:"+a);
+//					System.out.println(new File(file_name).toURI().toURL());
+//					System.out.println(MainPageController.class.getProtectionDomain().getCodeSource().getLocation());
+//					File file = new File(file_name);
+//					Path path = file.toPath();
+//					yomiage = Files.readAllBytes(path);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			seitou.setYomiage(yomiage);
 		    // 削除フラグ
 			seitou.setDel_flg(0);
 		    // 作成者
@@ -1210,7 +1270,7 @@ public class MainPageController {
 				}
 			}
 		}
-		
+		stop_watch.stop("create_qa");
 	}
 
 

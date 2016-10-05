@@ -143,7 +143,7 @@ function body_load()
     $( "#erasor" ).draggable();
     $( "#blue_pen" ).draggable();
     $( "#red_pen" ).draggable();
-    $( "#qa_panel" ).draggable();
+    //$( "#qa_panel" ).draggable();
     $( "#note_area" ).draggable();
     $( ".husen" ).draggable({
     	revert: 'true', 
@@ -255,6 +255,43 @@ function body_load()
 //        	alert($(this).attr('id'));
         }
     });    
+
+
+    
+    $(".qa").hover(function() {
+    	var id = $(this).attr("id");
+//    	alert(id);
+    	var s_id = $(this).children(".a").attr("id");
+    	//alert(s_id);
+//    	var root = "file:/usr/local/anki_note/application/speech/";
+    	var path = "../speech/" + s_id + ".m4a";
+    	//alert(path);
+    	//path = "../sound/seikai.mp3";
+    	path = "../speech/s_id_000000023_audio.m4a";
+    	//path = "file:/usr/local/anki_note/application/speech/s_id_000000023_audio.m4a";
+    	$("#play_qa").attr("src",path);
+		document.getElementById("play_qa").play();
+    	
+
+        // Show other div if a key is pressed.
+        // You can of course check for on particular key.
+      $(document).keydown(function(obj) {
+    	  if (window.event.keyCode == 32)
+    	  {
+    		//  var Id = $(this).attr('id');
+    	  }
+         // $("div.b").show();
+      });
+
+  }, function() {
+
+       // unbind the keydown handler on mouseleave
+     $(document).unbind("keydown");
+     //alert("mouseout");
+     //$("div.b").hide();
+  });
+
+
 }
 
 //QA内でのパーツの順番
@@ -891,5 +928,53 @@ function reset_red()
     }
 }
 
+////function qa_keydown(obj)
+////{
+////	alert("play");
+////	if (window.event.keyCode == 32)
+////	{
+////		alert("play");
+////	}
+////}
+//
+////$('.qa').hover(function(){
+////	   $(this).toggleClass('play'); // if hovered then it has class play
+////});
+//$(".qa").hover(
+//   function() {
+//	   alert("a");
+////	  alert($(this).attr("id"));
+////	  $(this).toggleClass('play'); // if hovered then it has class play
+////      $(this).animate({"marginTop": "0px"}, "fast");
+//   },
+//   function() {
+////      $(this).animate({"marginTop": "16px"}, "fast");
+//   }
+//);
+//$(document).keypress(function(e) {    
+//    if(e.which == 32){
+//    
+//       //$('.play').remove(); // if d is pressed then remove play 
+//    }
+//});
 
-
+//$(function() {
+//
+//    // Define the mouseenter and mouseleave handlers with hover
+//  $(".qa").hover(function() {
+//
+//        // Show other div if a key is pressed.
+//        // You can of course check for on particular key.
+//      $(document).keydown(function() {
+//    	  alert("key");
+//         // $("div.b").show();
+//      });
+//
+//  }, function() {
+//
+//       // unbind the keydown handler on mouseleave
+//     $(document).unbind("keydown");
+//     alert("mouseout");
+//     //$("div.b").hide();
+//  });
+//});​

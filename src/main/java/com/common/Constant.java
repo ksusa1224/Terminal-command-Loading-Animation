@@ -1,5 +1,7 @@
 package com.common;
 
+import org.springframework.beans.factory.annotation.Value;
+
 public class Constant {
 
 	/**
@@ -55,7 +57,11 @@ public class Constant {
 	
 	public static final String SQLITE_OWNER_DB_FOLDEDR_PATH 
 		= SQLITE_FOLDER_PATH + "owner_db" + "/" + OWNER_DB_CURRENT_VERSION;
-
+	
+	// TODO 本番ではパスを変える
+	public static final String SPEECH_DATA_FOLDER_PATH
+		= "/Users/ksusa/Documents/anki_note_workspace/anki_note/src/main/resources/static/speech/";
+	
 	// WINDOWS
 	/* 
 	public static final String ANKI_NOTE_ROOT_PATH 
