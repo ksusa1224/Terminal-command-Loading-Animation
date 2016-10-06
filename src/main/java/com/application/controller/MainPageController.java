@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -15,13 +16,17 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.spi.AudioFileReader;
 
 //import org.json.simple.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -62,7 +67,7 @@ import com.sun.medialib.mlib.Constants;
 import net.arnx.jsonic.JSON;
 
 @Controller
-public class MainPageController extends WebMvcAutoConfiguration{
+public class MainPageController{
 
 	/**
 	 * メインページ（暗記ノート本体）
@@ -109,17 +114,17 @@ public class MainPageController extends WebMvcAutoConfiguration{
 		{
 			if (request_url.equals(response_url))
 			{
-				try {
-					String command = "find " + Constant.SPEECH_DATA_FOLDER_PATH + " -type f -exec chmod +x {} \\;";
-					Runtime.getRuntime().exec(command.replace("\\", "\\\\"));
-					
-					File file = new File(Constant.SPEECH_DATA_FOLDER_PATH);
-					file.mkdirs();
-					boolean rc1 = file.setExecutable(true, true);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+//				try {
+//					String command = "find " + Constant.SPEECH_DATA_FOLDER_PATH + " -type f -exec chmod +x {} \\;";
+//					Runtime.getRuntime().exec(command.replace("\\", "\\\\"));
+//					
+//					File file = new File(Constant.SPEECH_DATA_FOLDER_PATH);
+//					file.mkdirs();
+//					boolean rc1 = file.setExecutable(true, true);
+//				} catch (Exception e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 
 				
 				byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
@@ -1143,35 +1148,66 @@ public class MainPageController extends WebMvcAutoConfiguration{
 			if (language == Constant.ENGLISH)
 			{
 				try {
-				String speaker = "Alex";
+				String speaker = "Vicki";
 //				String path = new File(".").getAbsolutePath() + "/speech/";
-				String file_name = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + ".m4a";
-				String command = "say -v " + speaker + " '" + seitou.getSeitou() + "' -o " + file_name;
+				String file_name = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + ".wav";
+//				String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + seitou.getSeitou() + "' -o " + file_name;
+				String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + seitou.getSeitou() + "' -o " + file_name;
 				System.out.println(command);
 //				String command2 = "chmod +x " + file_name;
 					Runtime.getRuntime().exec(command);
-					Runtime.getRuntime().exec("sh " + Constant.SPEECH_DATA_FOLDER_PATH + "chmod.sh");
-//					command = "find " + Constant.SPEECH_DATA_FOLDER_PATH + " -type f -exec chmod +x {} \\;";
-//					Runtime.getRuntime().exec(command2);
-				    String[] cmd = {"/bin/bash","-c","echo password| sudo -S ls"};
-				    Process pb = Runtime.getRuntime().exec(cmd);
-
-				    String line;
-				    BufferedReader input = new BufferedReader(new InputStreamReader(pb.getInputStream()));
-				    while ((line = input.readLine()) != null) {
-				        System.out.println(line);
-				    }
-				    input.close();					
+//					Runtime.getRuntime().exec("sh " + Constant.SPEECH_DATA_FOLDER_PATH + "chmod.sh");
+////					command = "find " + Constant.SPEECH_DATA_FOLDER_PATH + " -type f -exec chmod +x {} \\;";
+////					Runtime.getRuntime().exec(command2);
+//				    String[] cmd = {"/bin/bash","-c","echo password| sudo -S ls"};
+//				    Process pb = Runtime.getRuntime().exec(cmd);
+//
+//				    String line;
+//				    BufferedReader input = new BufferedReader(new InputStreamReader(pb.getInputStream()));
+//				    while ((line = input.readLine()) != null) {
+//				        System.out.println(line);
+//				    }
+//				    input.close();					
 					File file = new File(file_name);
-					file.mkdir();
+//					file.mkdir();
+					Thread.sleep(seitou.getSeitou().length() * 30);
 					Boolean a = file.setExecutable(true, false);
 					System.out.println("setexec:"+a);
+					String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=18K -vn " + file_name.replace("wav", "m4a");
+					Runtime.getRuntime().exec(command2);
+//					String sh_file_name = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + ".sh";
+//					PrintWriter writer = new PrintWriter(sh_file_name, "UTF-8");
+//					writer.println(command2);
+//					writer.close();
+//					Thread.sleep(seitou.getSeitou().length() * 10);
+//					File file2 = new File(sh_file_name);
+//					Boolean b = file2.setExecutable(true, false);
+//					System.out.println("setexec b:"+b);
+//					Thread.sleep(seitou.getSeitou().length() * 100);
+//					Runtime.getRuntime().exec("sh " + sh_file_name);
+//					Thread.sleep(seitou.getSeitou().length() * 100);
+////					String[] cmd = {"sh",  "audio.sh", sh_file_name};
+////					Runtime.getRuntime().exec(cmd);
+//					System.out.println("sh " + sh_file_name);
+
+//					//source file
+//					File file1 = new File(file_name);
+//					//destination file
+//					File file2 = new File(file_name.replace("audio", "test"));
+//					
+//					AudioInputStream in1 = AudioSystem.getAudioInputStream(file1);
+//					
+//					AudioFormat inFormat = getOutFormat(in1.getFormat());
+//					
+//					AudioInputStream in2 = AudioSystem.getAudioInputStream(inFormat, in1);
+//					AudioSystem.write(in2, AudioFileFormat.Type.WAVE, file2);
+//					
 //					System.out.println(new File(file_name).toURI().toURL());
 //					System.out.println(MainPageController.class.getProtectionDomain().getCodeSource().getLocation());
 //					File file = new File(file_name);
 //					Path path = file.toPath();
 //					yomiage = Files.readAllBytes(path);
-				} catch (IOException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -1273,7 +1309,13 @@ public class MainPageController extends WebMvcAutoConfiguration{
 		stop_watch.stop("create_qa");
 	}
 
-
+	private AudioFormat getOutFormat(AudioFormat inFormat) {
+		int ch = inFormat.getChannels();
+		float rate = inFormat.getSampleRate();	
+		return new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 72000, 16, ch, ch * 2, rate,
+				inFormat.isBigEndian());
+	}
+	
 	public void edit_qa(
 			String owner_id, 
 			String owner_db, 

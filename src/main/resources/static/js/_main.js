@@ -267,7 +267,7 @@ function body_load()
     	var path = "../speech/" + s_id + ".m4a";
     	//alert(path);
     	//path = "../sound/seikai.mp3";
-    	path = "../speech/s_id_000000023_audio.m4a";
+//    	path = "../speech/s_id_000000023_audio.m4a";
     	//path = "file:/usr/local/anki_note/application/speech/s_id_000000023_audio.m4a";
     	$("#play_qa").attr("src",path);
 		document.getElementById("play_qa").play();
@@ -278,6 +278,7 @@ function body_load()
       $(document).keydown(function(obj) {
     	  if (window.event.keyCode == 32)
     	  {
+    		 // alert(32);
     		//  var Id = $(this).attr('id');
     	  }
          // $("div.b").show();
