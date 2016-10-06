@@ -182,7 +182,7 @@ div.page_right
 #blue_pen
 {
 	position:absolute;
-	top:30px;
+	top:330px;
 	left:875px;
 	width:360px;
 }
@@ -190,7 +190,7 @@ div.page_right
 #red_pen
 {
 	position:absolute;
-	top:75px;
+	top:380px;
 	left:875px;
 	width:360px;
 }
@@ -198,8 +198,8 @@ div.page_right
 #qa_panel
 {
 	position:absolute;
-	left:890px;
-	top:95px;
+	left:880px;
+	top:10px;
 	width:350px;
 	height:320px;
 }
@@ -207,7 +207,7 @@ div.page_right
 #form_grandparent
 {
 	position:absolute;
-	top:85px;
+	top:100px;
 	left:890px;
 	width:350px;
 	height:320px;
@@ -222,8 +222,8 @@ div.page_right
 #erasor
 {
 	position:absolute;
-	top:390px;
-	left:1060px;
+	top:420px;
+	left:1070px;
 	padding:20px;
 	width:130px;
 	z-index:1000;
@@ -293,6 +293,7 @@ input
 
 #qa_input
 {
+	width:260px;
 	border-top: 1px dotted #9B9EA6;
 	border-bottom: 1px dotted #9B9EA6;
 }
@@ -348,9 +349,17 @@ input
 	font-size:12px;
 	display: table-cell;
 	vertical-align: middle;
-	width:250px;
+	width:180px;
 	border: gray dotted 1px;
-	height:80px;
+	height:70px;
+}
+
+#wax_stamp
+{
+	position: absolute;
+	top:110px;
+	left:225px;
+	cursor: pointer;
 }
 
 #qa_husen
