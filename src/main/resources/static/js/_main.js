@@ -260,36 +260,23 @@ function body_load()
     
     $(".qa").hover(function() {
     	var id = $(this).attr("id");
-//    	alert(id);
     	var s_id = $(this).children(".a").attr("id");
-    	//alert(s_id);
-//    	var root = "file:/usr/local/anki_note/application/speech/";
     	var path = "../speech/" + s_id + ".m4a";
-    	//alert(path);
-    	//path = "../sound/seikai.mp3";
-//    	path = "../speech/s_id_000000023_audio.m4a";
-    	//path = "file:/usr/local/anki_note/application/speech/s_id_000000023_audio.m4a";
     	$("#play_qa").attr("src",path);
-		document.getElementById("play_qa").play();
-    	
+		document.getElementById("play_qa").play();    	
 
-        // Show other div if a key is pressed.
-        // You can of course check for on particular key.
       $(document).keydown(function(obj) {
+    	  // スペースキー
     	  if (window.event.keyCode == 32)
     	  {
-    		 // alert(32);
-    		//  var Id = $(this).attr('id');
     	  }
-         // $("div.b").show();
       });
 
   }, function() {
 
        // unbind the keydown handler on mouseleave
      $(document).unbind("keydown");
-     //alert("mouseout");
-     //$("div.b").hide();
+		document.getElementById("play_qa").stop();
   });
 
 
@@ -317,14 +304,6 @@ $(document).on('paste', function(e){
 	    event.preventDefault();
 	});
 });
-
-//$( '#husen_wrapper' ).on( 'mousewheel', function ( e ) {
-//    var event = e.originalEvent,
-//        d = event.wheelDelta || -event.detail;
-//
-//    this.scrollTop += ( d < 0 ? 1 : -1 ) * 30;
-//    e.preventDefault();
-//});
 
 function husen_touroku(obj)
 {
@@ -530,40 +509,6 @@ function change_val(chk_box)
 	{
 		$("this").val() == "off";
 	}
-}
-
-function to_right_page()
-{
-	/*
-	if (document.getElementById("qa_area").offsetHeight < document.getElementById("qa_area").scrollHeight ||
-		document.getElementById("qa_area").offsetWidth < document.getElementById("qa_area").scrollWidth) {
-		    // your element have overflow
-//			var hiddenElements = $( "qa_area" ).find( ":hidden" );
-//			alert(hiddenElements.html());
-			var h = $("#qa_area").height();
-			var hiddenEls = new Array();
-
-			$("#qa_area").find(".qa").each(function(){
-			    if ($(this).position().top > h)
-			        hiddenEls.push($(this));
-			});
-
-			var qa = "";
-			for (var i = 0; i < hiddenEls.length; i++)
-			{
-				var qa = qa + $('<span>').append(hiddenEls[i].clone()).html();
-				//alert(hiddenEls[i].html());
-				//alert(aa);
-				
-			}
-			
-			$("#qa_area_right").html(qa);
-			
-		} else {
-		    // your element doesn't have overflow
-			//alert("not overflow")
-	}
-	*/
 }
 
 var mode = "default";
@@ -928,54 +873,3 @@ function reset_red()
     	}
     }
 }
-
-////function qa_keydown(obj)
-////{
-////	alert("play");
-////	if (window.event.keyCode == 32)
-////	{
-////		alert("play");
-////	}
-////}
-//
-////$('.qa').hover(function(){
-////	   $(this).toggleClass('play'); // if hovered then it has class play
-////});
-//$(".qa").hover(
-//   function() {
-//	   alert("a");
-////	  alert($(this).attr("id"));
-////	  $(this).toggleClass('play'); // if hovered then it has class play
-////      $(this).animate({"marginTop": "0px"}, "fast");
-//   },
-//   function() {
-////      $(this).animate({"marginTop": "16px"}, "fast");
-//   }
-//);
-//$(document).keypress(function(e) {    
-//    if(e.which == 32){
-//    
-//       //$('.play').remove(); // if d is pressed then remove play 
-//    }
-//});
-
-//$(function() {
-//
-//    // Define the mouseenter and mouseleave handlers with hover
-//  $(".qa").hover(function() {
-//
-//        // Show other div if a key is pressed.
-//        // You can of course check for on particular key.
-//      $(document).keydown(function() {
-//    	  alert("key");
-//         // $("div.b").show();
-//      });
-//
-//  }, function() {
-//
-//       // unbind the keydown handler on mouseleave
-//     $(document).unbind("keydown");
-//     alert("mouseout");
-//     //$("div.b").hide();
-//  });
-//});​

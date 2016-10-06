@@ -114,19 +114,6 @@ public class MainPageController{
 		{
 			if (request_url.equals(response_url))
 			{
-//				try {
-//					String command = "find " + Constant.SPEECH_DATA_FOLDER_PATH + " -type f -exec chmod +x {} \\;";
-//					Runtime.getRuntime().exec(command.replace("\\", "\\\\"));
-//					
-//					File file = new File(Constant.SPEECH_DATA_FOLDER_PATH);
-//					file.mkdirs();
-//					boolean rc1 = file.setExecutable(true, true);
-//				} catch (Exception e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-
-				
 				byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 				AES aes = new AES();
 				String owner_db = aes.decrypt(encrypted_owner_db);
@@ -1148,16 +1135,16 @@ public class MainPageController{
 			if (language == Constant.ENGLISH)
 			{
 				try {
-					String speaker = "Victoria";
+					String speaker = "Vicki";
 					String file_name = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + ".wav";
-					String command = "say --data-format=LEF32@8000 -r 70 -v " + speaker + " '" + seitou.getSeitou() + "' -o " + file_name;
+					String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + seitou.getSeitou() + "' -o " + file_name;
 					System.out.println(command);
 					Runtime.getRuntime().exec(command);
 					File file = new File(file_name);
 					Thread.sleep(seitou.getSeitou().length() * 30);
 					Boolean a = file.setExecutable(true, false);
 					System.out.println("setexec:"+a);
-					String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=16K -vn " + file_name.replace("wav", "m4a");
+					String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=18K -vn " + file_name.replace("wav", "m4a");
 					Runtime.getRuntime().exec(command2);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
