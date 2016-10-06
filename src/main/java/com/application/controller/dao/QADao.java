@@ -627,7 +627,7 @@ public class QADao {
 		// QAタイプ
 		sql.appendLine("" + qa.getQa_type() + ",");
 	    // QA入力エリアのHTML
-		sql.appendLine("'" + qa.getQa_html() + "',");
+		sql.appendLine("'" + qa.getQa_html().replace("'", "''") + "',");
 		// 読むだけ問題フラグ
 		sql.appendLine("" + qa.getYomudake_flg() + ",");
 		// 問題と正答を入れ替えた結果生成された問題かどうか

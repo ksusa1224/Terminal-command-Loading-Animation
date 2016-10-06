@@ -683,7 +683,8 @@ public class SQliteDAO {
 			throws SQLException {
 		try
 	      {
-	    	  stmt.executeUpdate(sql.toString());
+			  System.out.println(sql.toString());
+	    	  stmt.executeUpdate(sql.toString());	    	  
 	      }
 	      catch(Exception e)
 	      {

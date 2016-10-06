@@ -345,7 +345,7 @@ public class MondaiDao {
 	    // 問題パーツがバイナリであるかのフラグ
 		sql.appendLine("" + mondai.getIs_binary_flg() + ",");
 	    // 分割された問題文
-		sql.appendLine("'" + mondai.getQ_parts_text() + "',");
+		sql.appendLine("'" + mondai.getQ_parts_text().replace("'", "''") + "',");
 	    // QAの中に出てくる音声や画像などのバイナリファイル
 		sql.appendLine("" + mondai.getQ_parts_binary() + ",");
 	    // 言語

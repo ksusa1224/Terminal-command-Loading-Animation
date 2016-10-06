@@ -4,6 +4,8 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.cybozu.labs.langdetect.Detector;
 import com.cybozu.labs.langdetect.DetectorFactory;
@@ -159,5 +161,29 @@ public class Util {
 //		  { 
 //		   return ""; 
 //		  }
-	} 	
+	}
+	
+	/**
+	 * SQL内のシングルクォートをエスケープ（SQLインジェクション対策を兼ねる）
+	 * TODO 動作不良
+	 * ※パラメータ内に２つ以上シングルクォートがあった場合は非対応
+	 * @param sql
+	 * @return
+	 */
+	public static String sql_escape(String sql)
+	{
+		// パラメータ内のシングルクォートを探す
+		String	regex = "'[^']*'[^']*'\\)|'[^']*'[^']*',";
+		Pattern pattern = Pattern.compile(regex);	
+		Matcher matcher = pattern.matcher(sql);
+		while (matcher.find())
+		{
+			String group = matcher.group();
+			System.out.println("グループ:"+ group);
+			group = group.substring(1, group.length()-2);
+			String replacement = group.replace("'", "''");
+			sql = sql.replace(group, replacement);
+		}
+		return sql;
+	}
 }

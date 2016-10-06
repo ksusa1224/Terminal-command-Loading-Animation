@@ -563,7 +563,7 @@ public class QAPlusDao extends QADao {
 		// QAタイプ
 		sql.appendLine("" + qa.getQa_type() + ",");
 	    // QA入力エリアのHTML
-		sql.appendLine("'" + qa.getQa_html() + "',");
+		sql.appendLine("'" + qa.getQa_html().replace("'", "''") + "',");
 		// 読むだけ問題フラグ
 		sql.appendLine("" + qa.getYomudake_flg() + ",");
 		// 問題と正答を入れ替えた結果生成された問題かどうか
@@ -656,7 +656,7 @@ public class QAPlusDao extends QADao {
 		    // 問題パーツがバイナリであるかのフラグ
 			sql.appendLine("" + mondai.getIs_binary_flg() + ",");
 		    // 分割された問題文
-			sql.appendLine("'" + mondai.getQ_parts_text() + "',");
+			sql.appendLine("'" + mondai.getQ_parts_text().replace("'", "''") + "',");
 		    // QAの中に出てくる音声や画像などのバイナリファイル
 			sql.appendLine("" + mondai.getQ_parts_binary() + ",");
 		    // 言語
@@ -734,7 +734,7 @@ public class QAPlusDao extends QADao {
 			// 正答がバイナリであるかのフラグ
 			sql.appendLine("" + seitou.getIs_binary_flg()+ ",");
 			// 正答
-			sql.appendLine("'" + seitou.getSeitou() + "',");
+			sql.appendLine("'" + seitou.getSeitou().replace("'", "''") + "',");
 			// 正答が画像などのバイナリである場合に格納する
 			sql.appendLine("" + seitou.getSeitou_binary() + ",");
 			// 重要度（５段階）

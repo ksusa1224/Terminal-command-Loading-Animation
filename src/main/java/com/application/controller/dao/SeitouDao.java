@@ -622,7 +622,7 @@ public class SeitouDao {
 		// 正答がバイナリであるかのフラグ
 		sql.appendLine("" + seitou.getIs_binary_flg()+ ",");
 		// 正答
-		sql.appendLine("'" + seitou.getSeitou() + "',");
+		sql.appendLine("'" + (seitou.getSeitou()).replace("'", "''") + "',");
 		// 正解フラグ
 		sql.appendLine("" + seitou.getSeikai_flg() + ",");
 		// 正答が画像などのバイナリである場合に格納する

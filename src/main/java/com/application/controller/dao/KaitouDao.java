@@ -349,7 +349,7 @@ public class KaitouDao {
 	    // アクション日時（H2DBのtimestampと同じフォーマットにする）
 		sql.appendLine("'" + kaitou.getAction_timestamp() + "',");
 	    // ユーザーが入力した回答
-		sql.appendLine("'" + kaitou.getKaitou() + "',");
+		sql.appendLine("'" + kaitou.getKaitou().replace("'", "''") + "',");
 	    // 言語
 		sql.appendLine("'" + kaitou.getLanguage() + "',");
 		// 削除フラグ
