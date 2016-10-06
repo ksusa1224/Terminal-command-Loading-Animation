@@ -360,12 +360,15 @@ input
 
 .husen
 {
+	display:inline-block;
 	background: url("../img/husen_yellow-min.png") no-repeat center;
-	background-size:110px 30px;
+	background-size:120px 30px;
 	padding-top:10px;
+	margin-bottom:10px;
+	margin-right:20px;
 	text-align:center;
 	z-index: 100000000;
-	width:110px;
+	width:130px;
 	height:30px;
     font-size:13px;
     font-family:"ＭＳ Ｐ明朝", "MS PMincho", "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", serif;	
@@ -375,8 +378,14 @@ input
     outline: none;
 }
 
+#blank_husen
+{
+	float:left;
+}
+
 #husen_wrapper
 {
+	width:100%;
 	height:140px;
 	overflow: scroll;
     -ms-overflow-style: none;  // IE 10+
