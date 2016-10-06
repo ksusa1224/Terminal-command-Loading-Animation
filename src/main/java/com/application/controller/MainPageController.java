@@ -272,7 +272,7 @@ public class MainPageController{
 	public String generate_husen_html(String owner_db) {
 		TagDao tag_dao = new TagDao();
 		List<TagModel> tag_list = new ArrayList<TagModel>();
-		String husen_html = "";
+		String husen_html = "<div id='blank_husen' class='husen' contenteditable='true' onkeypress='javascript:husen_touroku(this);'></div>";
 		tag_list = tag_dao.select_tag_list(owner_db, tag_list);
 		for (TagModel tag : tag_list)
 		{
