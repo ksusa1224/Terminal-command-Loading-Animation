@@ -263,21 +263,52 @@ function body_load()
     	var s_id = $(this).children(".a").attr("id");
     	var path = "../speech/" + s_id + ".m4a";
     	$("#play_qa").attr("src",path);
-		document.getElementById("play_qa").play();    	
 
       $(document).keydown(function(obj) {
     	  // スペースキー
     	  if (window.event.keyCode == 32)
     	  {
+//    		  document.getElementById("play_qa").play();    	
     	  }
       });
 
   }, function() {
+	  	$("#play_qa").attr("src","");
 
        // unbind the keydown handler on mouseleave
      $(document).unbind("keydown");
 		document.getElementById("play_qa").stop();
   });
+    
+	$('#play_qa').on('ended', function() {
+	  	$("#balloon").css("opacity","0");
+		$("#serif").text("");		
+	});
+}
+
+var speech_mode = "false";
+function slime_speech()
+{	
+	speech_mode = "true";
+	var serif = "";
+    $(".qa").hover(function() {
+    	if (speech_mode == "true")
+    	{
+        	var id = $(this).attr("id");
+        	var s_id = $(this).children(".a").attr("id");
+        	serif = $(this).children(".a").text();
+        	var path = "../speech/" + s_id + ".m4a";
+        	$("#play_qa").attr("src",path);
+	        document.getElementById("play_qa").play();    	
+	    	$("#balloon").css("opacity","1");
+	    	$("#serif").text(serif);
+	    	speech_mode = "false";
+    	}
+  }, function() {
+  	$("#balloon").css("opacity","0");
+	$("#serif").text("");
+
+  });	
 
 
 }
