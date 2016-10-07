@@ -134,6 +134,18 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
 
 var tag_search_conditions_uri = "";
 
+var pulun = "false";
+
+function slime_pulupulu()
+{
+	$("#slime").animate({width: '150px', height:'145px', top:'445px'}, 600);
+	$("#slime").animate({width: '150px', height:'150px', top:'440px'}, 600);
+	if (pulun == "true")
+	{
+		slime_pulupulu();
+	}
+}
+
 function body_load()
 {	
 	//$("#entire_page").center();
@@ -284,7 +296,20 @@ function body_load()
 	  	$("#balloon").css("opacity","0");
 		$("#serif").text("");		
 	});
+	
+	var factor = 2;
+
+	$('#slime').hover(
+	    function(){
+	    	pulun = "true";
+	    	slime_pulupulu();
+	    },        
+	    function(){
+	    	pulun = "false";
+	    }
+	 );	
 }
+
 
 var speech_mode = "false";
 function slime_speech()
