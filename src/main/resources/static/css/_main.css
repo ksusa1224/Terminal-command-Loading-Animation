@@ -244,7 +244,7 @@ div.page_right
 	left:1070px;
 	padding:20px;
 	width:130px;
-	z-index:1000;
+	z-index:100;
 }
 
 #slime
@@ -264,7 +264,7 @@ div.page_right
 	top:440px;
 	left:1000px;
 	padding:20px;
-	z-index:100;
+	z-index:101;
 	opacity:0;
 }
 
@@ -275,7 +275,17 @@ div.page_right
 	top:470px;
 	width:150px;
 	padding:20px;
-	z-index:101;
+	z-index:102;
+}
+
+#premium
+{
+	position:absolute;
+	left:1090px;
+	top:495px;
+	width:100px;
+	padding:20px;
+	z-index:100;	
 }
 
 #lines-left
