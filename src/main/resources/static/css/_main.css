@@ -271,11 +271,17 @@ div.page_right
 #serif
 {
 	position:absolute;
-	left:1060px;
-	top:470px;
+	left:1080px;
+	top:490px;
 	width:150px;
-	padding:20px;
+	height:80px;
 	z-index:102;
+	overflow: scroll;
+    -ms-overflow-style: none;  // IE 10+
+    overflow: -moz-scrollbars-none;  // Firefox
+}
+#serif::-webkit-scrollbar { 
+    display: none;  // Safari and Chrome
 }
 
 #premium

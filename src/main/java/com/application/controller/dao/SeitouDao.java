@@ -9,6 +9,7 @@ import java.util.List;
 import com.application.model.dao.SeitouModel;
 import com.common.Constant;
 import com.common.Log;
+import com.common.StopWatch;
 import com.common.StringBuilderPlus;
 import com.dao.SQliteDAO;
 
@@ -422,6 +423,61 @@ public class SeitouDao {
 		return seitou_list;
 	}
 	
+	/**
+	 * 
+	 * @param db_name
+	 * @param s_id
+	 * @return
+	 */
+	public int is_seikai(String db_name, String s_id)
+	{
+		int is_seikai = 0;
+		
+		SQliteDAO dao = new SQliteDAO();
+		
+		StringBuilderPlus sql = new StringBuilderPlus();
+		sql.appendLine("select seikai_flg from seitou where s_id = '" + s_id + "' limit 1;");
+		dao.loadDriver();
+		
+		//System.out.println(db_name);
+
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+	    try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+	      ResultSet rs = stmt.executeQuery(sql.toString());
+	      while (rs.next()) 
+	      {
+	    	  is_seikai = rs.getInt(1);
+	    	  //System.out.println("is_seikai"+is_seikai);
+	      }
+	    }
+	    catch(Exception ex)
+	    {
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+	    }	    
+		
+		return is_seikai;
+	}
+	
+	/**
+	 * 
+	 * @param db_name
+	 * @param s_id
+	 * @param seikai_flg
+	 */
 	public void update_seikai_flg(String db_name, String s_id, int seikai_flg)
 	{
 		SQliteDAO dao = new SQliteDAO();
@@ -430,6 +486,46 @@ public class SeitouDao {
 		sql.appendLine("set seikai_flg = " + seikai_flg);
 		sql.appendLine(" where s_id = '" + s_id + "'");
 		dao.update(db_name, sql);
+	}
+	
+	/**
+	 * 
+	 * @param db_name
+	 * @param tag_names
+	 */
+	public void to_huseikai_by_tag(String db_name,String tag_names)
+	{
+		StopWatch stopwatch = new StopWatch();
+
+		SQliteDAO dao = new SQliteDAO();
+		StringBuilderPlus sql = new StringBuilderPlus();
+		sql.appendLine("update seitou");
+        sql.appendLine(" set seikai_flg = 0");
+        sql.appendLine(" where seitou.del_flg = 0");
+        if (!tag_names.equals(""))
+        {
+            if (!tag_names.equals(""))
+            {
+            	sql.appendLine("and (select 0 from seitou,qa, qa_tag_relation,tag ");
+            }
+			sql.appendLine(" where qa.qa_id = qa_tag_relation.qa_id");
+			sql.appendLine(" and qa.qa_id = seitou.qa_id");
+			sql.appendLine(" and tag.tag_id = qa_tag_relation.tag_id");
+			sql.appendLine(" and (");
+			for (int i = 0; i < tag_names.split(",").length; i++)
+			{
+				sql.appendLine("tag.tag_name = '" + tag_names.split(",")[i] + "'");
+				if (i < tag_names.split(",").length - 1)
+				{
+					sql.appendLine(" or ");
+				}
+			}
+	        sql.appendLine(")");
+	        sql.appendLine(")");
+        }
+		
+		dao.update(db_name, sql);		
+		stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());		
 	}
 	
 	/**

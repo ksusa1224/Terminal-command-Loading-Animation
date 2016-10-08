@@ -148,8 +148,7 @@ public class MainPageController{
 				model.addAttribute("seitou_sum", seitou_sum);
 				
 				// 正解総数
-				KaitouDao kaitou_dao = new KaitouDao();
-				int seikai_sum = kaitou_dao.get_seikai_cnt(owner_db);
+				int seikai_sum = seitou_dao.get_seikai_cnt(owner_db);
 				model.addAttribute("seikai_sum", seikai_sum);
 				
 				// 付箋
@@ -172,6 +171,97 @@ public class MainPageController{
 		{
 			return "error";
 		}
+	}
+
+	/**
+	 * 検索中の全QAを未正解の状態に戻す
+	 * @param husen_names
+	 * @param request
+	 * @param session
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value={"/to_miseikai.html"},
+			method=RequestMethod.GET)
+	public @ResponseBody String to_miseikai(
+			@RequestParam(value="husen_names", required=false) String husen_names,
+			@RequestParam(value="now_page_left", required=false) String now_page_left,
+			HttpServletRequest request, 
+			HttpSession session) {
+
+		// TODO 認証されてるかどうかはsessionに入れると書き換えられてしまうから毎回DBに接続した方がいいかな
+		Boolean is_authenticated = (Boolean)session.getAttribute("is_authenticated");
+		String owner_id = (String)session.getAttribute("owner_id");
+		
+		/**
+		* アクセスログ記録
+		*/
+		String request_uri = request.getRequestURI();
+		String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
+		String client_ip = Log.getClientIpAddress(request);
+		String client_os = Log.getClientOS(request);
+		String client_browser = Log.getClientBrowser(request);
+		Log log = new Log();
+		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
+
+		if(is_authenticated == true)		
+		{
+			byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
+			AES aes = new AES();
+			String owner_db = aes.decrypt(encrypted_owner_db);
+
+//			int limit_mihiraki = Constant.QA_NUM_PER_PAGE * 2;
+//			int offset = Integer.parseInt(now_page_left) * Constant.QA_NUM_PER_PAGE;
+			
+			KaitouDao kaitou_dao = new KaitouDao();
+			List<KaitouModel> kaitou_list = new ArrayList<KaitouModel>();
+			kaitou_list = kaitou_dao.select_kaitou_list_by_tag(owner_db, kaitou_list, husen_names);
+			kaitou_dao.bulk_insert(owner_db, kaitou_list);
+			
+			SeitouDao seitou_dao = new SeitouDao();
+			seitou_dao.to_huseikai_by_tag(owner_db, husen_names);
+			
+			// 再検索
+			int limit = Constant.QA_NUM_PER_PAGE;
+			int offset_left = 0;
+			List<QAPlusModel> qa_list_left = new ArrayList<QAPlusModel>();
+			qa_list_left = select_qa_plus_by_tag(owner_db, husen_names, limit, offset_left);
+			String qa_html = "";
+			if (qa_list_left.size() > 0)
+			{
+				qa_html = generate_qa_html(qa_list_left,owner_db);	
+			}
+			int offset_right = limit;
+			List<QAPlusModel> qa_list_right = new ArrayList<QAPlusModel>();
+			qa_list_right = select_qa_plus_by_tag(owner_db, husen_names, limit, offset_right);
+			String qa_html_right = "";
+			if (qa_list_right.size() > 0)
+			{
+				qa_html_right = generate_qa_html(qa_list_right,owner_db);	
+			}
+											
+			// 付箋
+			String husen_html = generate_husen_html(owner_db);
+			
+			// ページング総数
+			QADao qa_dao = new QADao();
+			String total_pages = String.valueOf(qa_dao.get_pages(owner_db, husen_names));			
+
+			// 正答総数
+			String seitou_cnt = String.valueOf(seitou_dao.get_seitou_cnt(owner_db, husen_names));
+
+			// 正解総数
+			String seikai_cnt = String.valueOf(seitou_dao.get_seikai_cnt(owner_db, husen_names));
+			
+			String json = JSON.encode(
+					new String[] 
+					{qa_html,qa_html_right,seitou_cnt,seikai_cnt,total_pages});
+			return json;
+		}		
+		else
+		{
+			return "error";
+		}		
 	}
 
 	
@@ -500,7 +590,8 @@ public class MainPageController{
 		KaitouDao kaitou_dao = new KaitouDao();
 		
 		// 現在の正解状況（色）
-		int is_seikai = kaitou_dao.is_seikai(owner_db, s_id);
+		SeitouDao seitou_dao = new SeitouDao();
+		int is_seikai = seitou_dao.is_seikai(owner_db, s_id);
 
 		// 行番号・K_ID生成用
 		int k_max_no = kaitou_dao.get_kaitou_max_row_no(owner_db);
@@ -515,7 +606,6 @@ public class MainPageController{
 		// 正答ID
 		kaitou.setS_id(s_id);
 		// 正解フラグ
-		SeitouDao seitou_dao = new SeitouDao();
 		if (is_seikai == 0)
 		{
 			seitou_dao.update_seikai_flg(owner_db, s_id, 1);

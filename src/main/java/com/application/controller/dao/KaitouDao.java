@@ -12,6 +12,7 @@ import com.common.Constant;
 import com.common.Log;
 import com.common.StopWatch;
 import com.common.StringBuilderPlus;
+import com.common.Util;
 import com.dao.SQliteDAO;
 
 public class KaitouDao {
@@ -283,7 +284,141 @@ public class KaitouDao {
 	    stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());		
 		return kaitou_list;
 	}
+
+	/**
+	 * 回答を付箋で検索
+	 * @param db_name
+	 * @param kaitou_list
+	 * @return
+	 */
+	public List<KaitouModel> select_kaitou_list_by_tag(
+			String db_name, 
+			List<KaitouModel> kaitou_list,
+			String tag_names)
+	{		
+		StopWatch stopwatch = new StopWatch();
+		stopwatch.start();
+
+		SQliteDAO dao = new SQliteDAO();
 		
+		StringBuilderPlus sql = new StringBuilderPlus();
+		sql.appendLine("select ");
+	    // 行番号
+		sql.appendLine("  kaitou.row_no,");
+	    // 回答ID
+		sql.appendLine("  kaitou.k_id,");
+	    // QA ID
+		sql.appendLine("  kaitou.qa_id,");
+	    // 正答ID
+		sql.appendLine("  kaitou.s_id,");
+		// 正解フラグ
+		sql.appendLine("  kaitou.seikai_flg,");
+		// アクション・・・チェックを入れた、外した、解いて正解した、解いて不正解、等
+		sql.appendLine("  kaitou.action,");
+	    // アクション日時（H2DBのtimestampと同じフォーマットにする）
+		sql.appendLine("  kaitou.action_timestamp,");
+		// ユーザーが入力した回答
+		sql.appendLine("  kaitou.kaitou,");
+		// 言語
+		sql.appendLine("  kaitou.language,");
+		// 削除フラグ
+		sql.appendLine("  kaitou.del_flg,");
+	    // 作成者
+		sql.appendLine("  kaitou.create_owner,");
+	    // 更新者
+		sql.appendLine("  kaitou.update_owner,");
+	    // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+		sql.appendLine("  kaitou.create_timestamp,");
+	    // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+		sql.appendLine("  kaitou.update_timestamp");
+		sql.appendLine(" from kaitou");
+        if (!tag_names.equals(""))
+        {
+        	sql.appendLine(",seitou, qa, qa_tag_relation, tag");
+        }
+		sql.appendLine(" where ");
+		sql.appendLine(" kaitou.del_flg = 0");
+        if (!tag_names.equals(""))
+        {
+			sql.appendLine(" and kaitou.s_id = seitou.s_id");
+			sql.appendLine(" and seitou.qa_id = qa.qa_id");
+			sql.appendLine(" and qa.qa_id = qa_tag_relation.qa_id");
+			sql.appendLine(" and tag.tag_id = qa_tag_relation.tag_id");
+			sql.appendLine(" and (");
+			for (int i = 0; i < tag_names.split(",").length; i++)
+			{
+				sql.appendLine("tag.tag_name = '" + tag_names.split(",")[i] + "'");
+				if (i < tag_names.split(",").length - 1)
+				{
+					sql.appendLine(" or ");
+				}
+			}
+	        sql.appendLine(")");
+        }
+		sql.appendLine(" order by kaitou.qa_id,kaitou.s_id,kaitou.action_timestamp desc;");
+		
+		dao.loadDriver();
+		
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+	    try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+	      ResultSet rs = stmt.executeQuery(sql.toString());
+	      while (rs.next()) 
+	      {
+	    	  KaitouModel kaitou = new KaitouModel();
+	    	  // 行番号
+	    	  kaitou.setRow_no(rs.getInt("row_no"));
+	    	  // 回答ID
+	    	  kaitou.setK_id(rs.getString("k_id"));
+	    	  // QA ID
+	    	  kaitou.setQa_id(rs.getString("qa_id"));
+	    	  // 正答ID
+	    	  kaitou.setS_id(rs.getString("s_id"));
+	    	  // 正解フラグ
+	    	  kaitou.setSeikai_flg(rs.getInt("seikai_flg"));
+	    	  // アクション・・・チェックを入れた、外した、解いて正解した、解いて不正解、等
+	    	  kaitou.setKaitou(rs.getString("action"));
+	    	  // アクション日時（H2DBのtimestampと同じフォーマットにする）
+	    	  kaitou.setAction_timestamp(rs.getString("action_timestamp"));
+	    	  // ユーザーが入力した回答
+	    	  kaitou.setKaitou(rs.getString("kaitou"));
+	    	  // 言語
+	    	  kaitou.setLanguage(rs.getString("language"));	    	
+	    	  // 削除フラグ
+		      kaitou.setDel_flg(rs.getInt("del_flg"));
+		      // 作成者
+		      kaitou.setCreate_owner(rs.getString("create_owner"));
+		      // 更新者
+		      kaitou.setUpdate_owner(rs.getString("update_owner"));
+		      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+		      kaitou.setUpdate_timestamp(rs.getString("create_timestamp"));
+		      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+		      kaitou.setUpdate_timestamp(rs.getString("update_timestamp"));
+
+		      kaitou_list.add(kaitou);
+	      }
+	    }
+	    catch(Exception ex)
+	    {
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+	    }	    
+	    stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());		
+		return kaitou_list;
+	}
+	
 	/**
 	 * 回答テーブルに１件レコードを追加する
 	 * @param seitou
@@ -390,6 +525,121 @@ public class KaitouDao {
 		  stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());		
 	    }
 	}	
+	
+	/**
+	 * 一度に大量データを投入
+	 * @param db_name
+	 * @param kaitou_list
+	 */
+	public void bulk_insert(String db_name, List<KaitouModel> kaitou_list)
+	{
+		StopWatch stopwatch = new StopWatch();
+
+		SQliteDAO dao = new SQliteDAO();
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+		
+		StringBuilderPlus sql = new StringBuilderPlus();		
+		sql.appendLine("insert into kaitou (");
+		// 行番号
+		sql.appendLine("  row_no,");
+		// 回答ID
+		sql.appendLine("	k_id,");
+		// QA ID
+		sql.appendLine("	qa_id,");
+		// 正答ID
+		sql.appendLine("	s_id,");
+	    // 正解フラグ
+		sql.appendLine("	seikai_flg,");
+	    // アクション・・・チェックを入れた、外した、解いて正解した、解いて不正解、等
+		sql.appendLine("	action,");
+	    // アクション日時（H2DBのtimestampと同じフォーマットにする）
+		sql.appendLine("	action_timestamp,");
+	    // ユーザーが入力した回答
+		sql.appendLine("	kaitou,");
+	    // 言語
+		sql.appendLine("	language,");
+		// 削除フラグ
+		sql.appendLine("	del_flg,");
+		// 作成者
+		sql.appendLine("  create_owner,");
+		// 更新者
+		sql.appendLine("  update_owner,");
+		// レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+		sql.appendLine("	create_timestamp,");
+		// レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+		sql.appendLine("	update_timestamp");
+		sql.appendLine(") ");
+				
+		sql.appendLine("values");
+		
+		for (KaitouModel kaitou : kaitou_list)
+		{
+			sql.appendLine("(");
+		    // 行番号
+			sql.appendLine("" + kaitou.getRow_no() + ",");
+		    // 回答ID
+			sql.appendLine("'" + kaitou.getK_id() + "',");
+		    // QA ID
+			sql.appendLine("'" + kaitou.getQa_id() + "',");
+		    // 正答ID
+			sql.appendLine("'" + kaitou.getS_id() + "',");
+		    // 正解フラグ
+			sql.appendLine("0,");
+		    // アクション・・・チェックを入れた、外した、解いて正解した、解いて不正解、等
+			sql.appendLine("'" + Constant.ACTION_CHANGE_ALL_WHITE_BY_TAG + "',");
+		    // アクション日時（H2DBのtimestampと同じフォーマットにする）
+			sql.appendLine("'" + Util.getNow(Constant.DB_DATE_FORMAT) + "',");
+		    // ユーザーが入力した回答
+			sql.appendLine("'" + kaitou.getKaitou().replace("'", "''") + "',");
+		    // 言語
+			sql.appendLine("'" + kaitou.getLanguage() + "',");
+			// 削除フラグ
+			sql.appendLine("" + kaitou.getDel_flg() + ",");
+			// 作成者
+			sql.appendLine("'" + kaitou.getCreate_owner() + "',");
+			// 更新者
+			sql.appendLine("'" + kaitou.getUpdate_owner() + "',");
+			// レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+			sql.appendLine("'" + kaitou.getCreate_timestamp() + "',");
+			// レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+			sql.appendLine("'" + kaitou.getUpdate_timestamp() + "'");
+			sql.appendLine("),");
+		}
+		
+		String replacement = sql.toString().replaceAll("[,]$", ";");
+		sql = new StringBuilderPlus();
+		sql.appendLine(replacement);
+	    
+		try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+
+	      //1行ずつコミットしない
+	      stmt.getConnection().setAutoCommit(false);
+	      
+	      /**
+	       *  SQL実行
+	       */
+	      dao.transaction(stmt, sql);
+	    }
+	    catch(Exception ex)
+	    {
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+		  stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());		
+	    }		
+	}
 	
 	/**
 	 * QAテーブルを１件更新する

@@ -142,7 +142,7 @@ function slime_pulupulu()
 	$("#slime").animate({width: '150px', height:'150px', top:'440px'}, 600);
 	if (pulun == "true")
 	{
-		slime_pulupulu();
+//		slime_pulupulu();
 	}
 }
 
@@ -247,6 +247,11 @@ function body_load()
 					$("#seitou_sum").html(data[2]);
 					$("#seikai_sum").html(data[3]);
 					$(".total_pages").html(data[4]);
+
+				    $('.qa').contextmenu({
+				        target: "#qa_context-menu"
+				    });
+				    var margin_top = $(".dropdown-menu").css("margin-top");					
 				},
 				error: function(data)
 				{
@@ -525,6 +530,7 @@ function change_seitou_color(obj)
 	if (typeof attr !== typeof undefined && attr !== false) {
 	    is_seikai_now = 1;
 	}
+	
 	jQuery.ajax({
 		url: "../change_seitou_color.html?qa_id="+qa_id+"&s_id="+s_id+"&is_seikai_now="+is_seikai_now,
 		dataType: "html",
@@ -679,6 +685,11 @@ function paging(page,next_or_prev)
 			//alert(data);
 //			$("#qa_input").html(data);
 //			$("#qa_id").val(qa_id);
+		    $('.qa').contextmenu({
+		        target: "#qa_context-menu"
+		    });
+		    var margin_top = $(".dropdown-menu").css("margin-top");					
+
 		},
 		error: function(data)
 		{
@@ -928,4 +939,29 @@ function reset_red()
     		document.getElementsByClassName("a")[i].style.opacity = 0;
     	}
     }
+}
+
+// 検索中の全QAを未正解の状態に戻す
+function to_miseikai()
+{
+	var now_page_left = $("page_left").text();
+	
+	jQuery.ajax({
+		url: "../to_miseikai.html?husen_names=" + tag_search_conditions_uri + "&now_page_left="+now_page_left,
+		dataType: "json",
+		cache: false,
+		success: function(data)
+		{
+			$("#qa_area").html(data[0]);
+			$("#qa_area_right").html(data[1]);
+			$("#seitou_sum").html(data[2]);
+			$("#seikai_sum").html(data[3]);
+			$(".total_pages").html(data[4]);
+		},
+		error: function(data)
+		{
+			$("#balloon").css("opacity","1");
+			$("#serif").text(server_error);
+		}
+	});
 }

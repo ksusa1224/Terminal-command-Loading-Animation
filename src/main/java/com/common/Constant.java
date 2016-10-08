@@ -106,6 +106,7 @@ public class Constant {
 	public static final String ACTION_IMPORT_PAYED_QA = "有料の問題をインポートした";
 	public static final String ACTION_CHANGE_RED_CLICK = "覚えたのでクリックで赤くした";
 	public static final String ACTION_CHANGE_WHITE_CLICK = "忘れたのでクリックして白くした";
+	public static final String ACTION_CHANGE_ALL_WHITE_BY_TAG = "そのタグの全問を白くした";
 	public static final String ACTION_SEIKAI_INPUT = "入力して解いて正解した";
 	public static final String ACTION_HUSEIKAI_INPUT = "入力して解いて不正解した";
 	
