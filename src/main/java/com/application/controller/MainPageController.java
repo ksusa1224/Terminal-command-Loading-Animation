@@ -901,7 +901,7 @@ public class MainPageController{
 
 		StringBuffer qa_html = new StringBuffer();
 
-		//System.out.println(qa_plus_list.size());
+		System.out.println("qa_plus_list.size():"+qa_plus_list.size());
 		
 		for (QAPlusModel qa_plus : qa_plus_list)
 		{
@@ -909,7 +909,7 @@ public class MainPageController{
 			List<MondaiModel> mondai_list = new ArrayList<MondaiModel>();
 			mondai_list = qa_plus.getMondai_list();
 			
-	//		System.out.println("mondai_list:"+mondai_list.size());
+			System.out.println("mondai_list:"+mondai_list.size());
 			
 			/**
 			 * 問題HTML
@@ -922,6 +922,7 @@ public class MainPageController{
 				String html = "<span id='" + mondai_list.get(i).getQ_id() + "' class='q' onclick='edit_qa(this);'>" + mondai + "</span>";			
 				q_html.add(html);
 			}
+			System.out.println("q_html.size():"+q_html.size());
 			
 			/**
 			 * 正答HTML
@@ -929,7 +930,7 @@ public class MainPageController{
 			List<SeitouModel> seitou_list = new ArrayList<SeitouModel>();
 			seitou_list = qa_plus.getSeitou_list();
 			
-			//System.out.println("seitou_list:"+seitou_list.size());
+			System.out.println("seitou_list:"+seitou_list.size());
 
 			List<String> a_html = new ArrayList<String>();
 			for (int i = 0; i < seitou_list.size(); i++)
@@ -946,6 +947,7 @@ public class MainPageController{
 				String html = "<span id='" + seitou_list.get(i).getS_id() + "' class='a' style='opacity:" + opacity + "' onmouseover='this.style.opacity=1' " + mouseout + " onclick='change_seitou_color(this)'>" + seitou + "</span>";				
 				a_html.add(html);
 			}	
+			System.out.println("a_html.size():"+a_html.size());
 			
 			qa_html.append("<span id='" + qa_plus.getQa().getQa_id() + "' class='qa' onmouseover='qa_mouseover(this)'>");
 		//	StopWatch watch2 = new StopWatch();
@@ -955,12 +957,12 @@ public class MainPageController{
 			//	System.out.println("i:"+i);
 				if (qa_plus.getQa().getIs_start_with_q() == 1)
 				{
-					if (i < q_html.size())
+					if (i < mondai_list.size())
 					{
 //						qa_html += q_html.get(i);
 						qa_html.append(q_html.get(i));
 					}
-					if (i < a_html.size())
+					if (i < seitou_list.size())
 					{
 //						qa_html += a_html.get(i);
 						qa_html.append(a_html.get(i));
@@ -968,12 +970,12 @@ public class MainPageController{
 				}
 				else
 				{
-					if (i < a_html.size())
+					if (i < seitou_list.size())
 					{
 //						qa_html += a_html.get(i);
 						qa_html.append(a_html.get(i));
 					}
-					if (i < q_html.size())
+					if (i < mondai_list.size())
 					{
 //						qa_html += q_html.get(i);
 						qa_html.append(q_html.get(i));
@@ -1016,7 +1018,7 @@ public class MainPageController{
 
 		int is_start_with_q = 0;
 		
-		create_qa_map(qa_map, spans);
+		qa_map = create_qa_map(qa_map, spans);
 		
 		// 順番（QA内での正答も含めた順番）、問題パーツ
 		Map<Integer, String> q_map = new HashMap<Integer,String>();
@@ -1039,6 +1041,7 @@ public class MainPageController{
 			{
 				is_start_with_q = 1;
 			}
+			System.out.println("is_start_with_q:"+is_start_with_q);
 		  //  System.out.println(entry.getKey() + "/" + entry.getValue());
 		}
 		
@@ -1130,6 +1133,8 @@ public class MainPageController{
 		 */
 		List<MondaiModel> mondai_list = new ArrayList<MondaiModel>();
 		
+		System.out.println("q_map.size():"+q_map.size());
+		
 		int q_idx = 1;
 		for (Map.Entry<Integer, String> entry : q_map.entrySet())
 		{
@@ -1176,6 +1181,7 @@ public class MainPageController{
 			mondai_list.add(mondai);
 		}
 		
+		System.out.println("mondai_list.size()aaaaa:"+mondai_list.size());
 		qa_plus.setMondai_list(mondai_list);
 
 		
@@ -1300,7 +1306,7 @@ public class MainPageController{
 		qa_plus.setSeitou_list(seitou_list);
 		
 		QAPlusDao qa_plus_dao = new QAPlusDao();
-		qa_plus_dao.insert_qa_plus(owner_db, qa_plus);		
+		qa_plus_dao.insert_qa_plus(owner_db, qa_plus, false);		
 		
 		if (qa_husen != null)
 		{
@@ -1364,7 +1370,7 @@ public class MainPageController{
 
 		int is_start_with_q = 0;
 		
-		create_qa_map(qa_map, spans);
+		qa_map = create_qa_map(qa_map, spans);
 		
 		// 順番（QA内での正答も含めた順番）、問題パーツ
 		Map<Integer, String> q_map = new HashMap<Integer,String>();
@@ -1626,7 +1632,7 @@ public class MainPageController{
 		qa_plus.setSeitou_list(seitou_list);
 		
 		QAPlusDao qa_plus_dao = new QAPlusDao();
-		qa_plus_dao.insert_qa_plus(owner_db, qa_plus);		
+		qa_plus_dao.insert_qa_plus(owner_db, qa_plus, true);		
 		
 		if (qa_husen != null)
 		{
@@ -1693,13 +1699,16 @@ public class MainPageController{
 	}
 
 
-	public void create_qa_map(Map<String, String> qa_map, Elements spans) {
+	public Map<String, String> create_qa_map(Map<String, String> qa_map, Elements spans) {
 		/**
 		 * qが連続した場合はつなげる、aが連続した場合はつなげる
 		 */
 		int idx = 0;
 		int junban = 1;
+		
+		
 		for (Element span: spans) {
+			System.out.println("span.className():"+span.className());
 			String class_name = span.className();
 			String next_class_name = "";
 			String back_class_name = "";
@@ -1753,5 +1762,7 @@ public class MainPageController{
 			}
 			junban++;
 		}
+		System.out.println("qa_map.size():"+qa_map.size());
+		return qa_map;
 	}	
 }

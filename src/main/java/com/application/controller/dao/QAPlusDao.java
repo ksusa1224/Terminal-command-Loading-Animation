@@ -350,12 +350,16 @@ public class QAPlusDao extends QADao {
 					.collect(Collectors.toList());
 			qa_plus.setMondai_list(mondai_list_each);
 			
+			System.out.println("mondai_list_each:"+mondai_list_each.size());
+			
 			// 正答
 			List<SeitouModel> seitou_list_each = new ArrayList<SeitouModel>();
 			seitou_list_each = (List<SeitouModel>) seitou_list_all
 					.stream().filter(x -> x.getQa_id().equals(qa.getQa_id()))
 					.collect(Collectors.toList());;
 			qa_plus.setSeitou_list(seitou_list_each);
+			
+			System.out.println("seitou_list_each"+seitou_list_each.size());
 			
 			// QA
 			if (!mondai_list_each.isEmpty() && !seitou_list_each.isEmpty())
@@ -490,7 +494,7 @@ public class QAPlusDao extends QADao {
 	 * @param qa
 	 * @return
 	 */
-	public void insert_qa_plus(String db_name, QAPlusModel qa_plus)
+	public void insert_qa_plus(String db_name, QAPlusModel qa_plus, Boolean update)
 	{
 		StopWatch stopwatch = new StopWatch();
 		stopwatch.start();
@@ -602,13 +606,17 @@ public class QAPlusDao extends QADao {
 		sql.appendLine("'" + qa.getUpdate_timestamp() + "'");
 		sql.appendLine(");");
 		
+		System.out.println("qa_plus.getMondai_list():"+qa_plus.getMondai_list().size());
+		
 		/**
 		 * 問題
 		 */
+		if (update == true)
+		{
+			sql.appendLine("delete from mondai where qa_id = '" + qa.getQa_id() + "';");			
+		}
 		for (MondaiModel mondai : qa_plus.getMondai_list())
 		{
-			sql.appendLine("delete from mondai where qa_id = '" + mondai.getQa_id() + "';");			
-			
 			sql.appendLine("replace into mondai (");
 			// 行番号
 			sql.appendLine("  row_no,");
@@ -679,10 +687,12 @@ public class QAPlusDao extends QADao {
 		/**
 		 * 正答
 		 */
+		if (update == true)
+		{
+			sql.appendLine("delete from seitou where qa_id = '" + qa.getQa_id() + "';");						
+		}
 		for (SeitouModel seitou : qa_plus.getSeitou_list())
 		{
-			sql.appendLine("delete from seitou where qa_id = '" + seitou.getQa_id() + "';");						
-			
 			sql.appendLine("replace into seitou (");
 			// 行番号
 			sql.appendLine("  row_no,");
