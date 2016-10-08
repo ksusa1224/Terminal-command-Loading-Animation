@@ -332,6 +332,8 @@ function slime_speech()
 	        document.getElementById("play_qa").play();    	
 	    	$("#balloon").css("opacity","1");
 	    	$("#serif").text(serif);
+	    	$("#slime").animate({width: '150px', height:'145px', top:'445px'}, 600);
+	    	$("#slime").animate({width: '150px', height:'150px', top:'440px'}, 600);
 	    	speech_mode = "false";
     	}
   }, function() {
@@ -549,7 +551,10 @@ function change_seitou_color(obj)
 				$(obj).css("opacity","0");
 				$(obj).attr("onmouseout","this.style.opacity='0'");
 				$("#seikai_sum").text(Number($("#seikai_sum").text())-1);
+				$("#slime").animate({width: '150px', height:'405px', top:'185px'}, 200);
+				$("#slime").animate({width: '150px', height:'150px', top:'440px'}, 200);
 				document.getElementById("huseikai_se").play();
+				
 			}
 		},
 		error: function(data)
@@ -680,15 +685,16 @@ function paging(page,next_or_prev)
 				$("#page_left").text(page - 2);				
 				$("#page_right").text(page - 1);
 			}
+		    $('.qa').contextmenu({
+		        target: "#qa_context-menu"
+		    });
+		    var margin_top = $(".dropdown-menu").css("margin-top");					
+
 			remove_loupe();
 			loupe();
 			//alert(data);
 //			$("#qa_input").html(data);
 //			$("#qa_id").val(qa_id);
-		    $('.qa').contextmenu({
-		        target: "#qa_context-menu"
-		    });
-		    var margin_top = $(".dropdown-menu").css("margin-top");					
 
 		},
 		error: function(data)
