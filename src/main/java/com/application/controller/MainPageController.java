@@ -496,12 +496,100 @@ public class MainPageController{
 	}
 
 	/**
+	 * 作成途中
+	 */
+	@RequestMapping(value={"/register_qa.html"}, method=RequestMethod.GET)
+	public @ResponseBody String mondai_touroku_ajax
+			(HttpServletRequest request, 
+			HttpSession session,
+			@RequestParam("qa_input_hidden") String qa_input,
+			@RequestParam(value="qa_husen",required=false) String qa_husen,
+			@RequestParam(value="qa_id", required=false) String qa_id,
+			@RequestParam(value="yomudake_flg", required=false) String yomudake_flg,
+			@RequestParam(value="reversible_flg", required=false) String reversible_flg) {
+
+		String owner_id = (String)session.getAttribute("owner_id");
+		
+		/**
+		* アクセスログ記録
+		*/
+		String request_uri = request.getRequestURI();
+		String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
+		String client_ip = Log.getClientIpAddress(request);
+		String client_os = Log.getClientOS(request);
+		String client_browser = Log.getClientBrowser(request);
+		Log log = new Log();
+		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
+		
+		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
+		AES aes = new AES();
+		String owner_db = aes.decrypt(encrypted_owner_db);
+				
+		
+		if (yomudake_flg == null)
+		{
+			yomudake_flg = "off";
+		}
+		if (reversible_flg == null)
+		{
+			reversible_flg = "off";
+		}
+		if (qa_husen == null)
+		{
+			qa_husen = "";
+		}
+		
+		if (qa_id == null || qa_id.equals(""))
+		{
+			create_qa(owner_id, owner_db, qa_input, qa_husen,yomudake_flg, reversible_flg);
+		}
+		else
+		{
+			edit_qa(owner_id, owner_db, qa_input, qa_husen,yomudake_flg, reversible_flg, qa_id);
+		}
+				
+		int limit = Constant.QA_NUM_PER_PAGE;
+		int left_offset = 0;
+		List<QAPlusModel> qa_plus_list_left = new ArrayList<QAPlusModel>();
+		qa_plus_list_left = select_qa_plus(owner_db, limit, left_offset);
+		String qa_html = "";
+		if (qa_plus_list_left.size() > 0)
+		{
+			qa_html = generate_qa_html(qa_plus_list_left,owner_db);
+		}
+		
+		String qa_html_right = "";
+		int right_offset = Constant.QA_NUM_PER_PAGE;
+		List<QAPlusModel> qa_plus_list_right= new ArrayList<QAPlusModel>();
+		qa_plus_list_right = select_qa_plus(owner_db, limit, right_offset);
+		if (qa_plus_list_right.size() > 0)
+		{
+			qa_html_right = generate_qa_html(qa_plus_list_right,owner_db);
+		}
+		
+		SeitouDao seitou_dao = new SeitouDao();
+		
+		// ページング総数
+		QADao qa_dao = new QADao();
+		String total_pages = String.valueOf(qa_dao.get_pages(owner_db, qa_husen));			
+			
+		String seitou_cnt = String.valueOf(seitou_dao.get_seitou_cnt(owner_db, qa_husen));
+		String seikai_cnt = String.valueOf(seitou_dao.get_seikai_cnt(owner_db, qa_husen));
+		
+		String json = JSON.encode(
+				new String[] 
+			{qa_html,qa_html_right,seitou_cnt,seikai_cnt,total_pages});
+		return json;
+	}
+	
+	/**
 	 * AjaxでQA登録、再検索
 	 * 誤動作多い、かつ重いため現在未使用
 	 * @param a_input
 	 * @return
 	 */
 //	@RequestMapping(value={"/register_qa.html"}, method=RequestMethod.GET)
+
 //	public @ResponseBody String ajax_reload(
 //			HttpServletRequest request,
 //			HttpSession session,

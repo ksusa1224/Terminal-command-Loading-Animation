@@ -486,37 +486,41 @@ function copy_to_hidden () {
 }
 
 // 問題登録押下時、リロードせずにAjaxで登録と再検索を行う
-function ajax_reload ()
+function register_qa_ajax ()
 {
-	e.preventDefault();
 	var qa_input = $("#qa_input_hidden").html();
-	var decoded = $("#qa_input_hidden").html(qa_input).text();
-	var yomudake_flg = $("#yomudake_flg").val();
-	var reversible_flg = $("#reversible_flg").val();
-	var add_seitou_cnt = $('.qa_input_hidden').children('.a').length;
-	alert(add_seitou_cnt);
-	$("#seikai_sum").text("1");
-	/*
-	var now_seitou_cnt = Number($("#seikai_sum").text());
-	added_seitou_cnt = new_seitou_cnt + add_seitou_cnt;
-	alert(added_seitou_cnt);
-	*/
+	var decoded = encodeURIComponent($("#qa_input_hidden").html(qa_input).text());
+	var yomudake_flg = "";//$("#yomudake_flg").val();
+	var reversible_flg = "";//$("#reversible_flg").val();
+	var qa_husen = ($("#qa_husen").val());
+	var qa_id = $("#qa_id").val();
+//	alert(qa_id);
 	jQuery.ajax({
-		url: "../register_qa.html?qa_input=" + decoded + 
+		url: "../register_qa.html?qa_input_hidden=" + decoded + 
 				"&yomudake_flg=" + yomudake_flg +
-				"&reversible_flg=" + reversible_flg,
-		dataType: "html",
+				"&reversible_flg=" + reversible_flg +
+				"&qa_id=" + qa_id +
+				"&qa_husen=" + qa_husen,
+		dataType: "json",
 		cache: false,
 		success: function(data)
 		{				
-			$("#qa_area").html(data);
+			$("#qa_input_hidden").html("");
 			$("#qa_input").html("");
-			$("#qa_input").focus();
 			id = 2;
+			$("#qa_area").html(data[0]);
+			$("#qa_area_right").html(data[1]);
+			$("#seitou_sum").html(data[2]);
+			$("#seikai_sum").html(data[3]);
+			$(".total_pages").html(data[4]);
+
+		    $('.qa').contextmenu({
+		        target: "#qa_context-menu"
+		    });
+		    var margin_top = $(".dropdown-menu").css("margin-top");					
 		},
 		error: function(data)
 		{
-			location.reload();
 			$("#balloon").css("opacity","1");
 			$("#serif").text(server_error);
 		}
