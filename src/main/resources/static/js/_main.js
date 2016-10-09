@@ -254,9 +254,9 @@ function body_load()
 	 );	
 }
 
+var husen_names = [];
 function loupe_drop()
 {
-    var husen_names = [];
     $('#loupe').droppable({
         accept:'.husen',
         out: function (event, ui) {
@@ -288,8 +288,8 @@ function loupe_drop()
 					$("#seikai_sum").html(data[3]);
 					$(".total_pages").html(data[4]);
 
-					$drop_husen = $(".husen.ui-draggable.ui-draggable-handle.ui-draggable-dragging");
-					$drop_husen.hide();
+//					$drop_husen = $(".husen.ui-draggable.ui-draggable-handle.ui-draggable-dragging");
+//					$drop_husen.hide();
 
 //				    $("#loupe").remove();
 //				    $(".magnifying_glass").remove();
@@ -302,6 +302,9 @@ function loupe_drop()
 				    $(".magnifying_lens").remove();
 				    loupe();
 				    loupe_drop();
+
+				    $hide_husen = $(".magnified_content").find(".husen.ui-draggable.ui-draggable-handle.ui-draggable-dragging");
+				    $hide_husen.hide();
 					
 
 					$('.qa').contextmenu({
@@ -311,7 +314,7 @@ function loupe_drop()
 					
 //				    $body_html = $("document.body").html();
 //				    $(".magnified_content").html($body_html);
-		        	$(".husen.ui-draggable.ui-draggable-handle.ui-draggable-dragging").eq(0).show();
+//		        	$(".husen.ui-draggable.ui-draggable-handle.ui-draggable-dragging").eq(0).show();
 					
 				},
 				error: function(data)
@@ -355,7 +358,7 @@ function loupe_drop()
 //				    $(".magnifying_lens").remove();
 //				    loupe();
 					$drop_husen = $(".husen.ui-draggable.ui-draggable-handle.ui-draggable-dragging");
-					$drop_husen.hide();
+					//$drop_husen.hide();
 
 					$("#loupe").remove();
 				    $(".magnifying_glass").remove();
@@ -363,7 +366,14 @@ function loupe_drop()
 				    $(".magnifying_lens").remove();
 				    loupe();
 				    loupe_drop();
-		        	$(".husen.ui-draggable.ui-draggable-handle.ui-draggable-dragging").eq(0).show();
+				   // alert($drop_husen.length);
+
+				    $hide_husen = $(".magnified_content").find(".husen.ui-draggable.ui-draggable-handle.ui-draggable-dragging");
+				    $hide_husen.hide();
+				    //alert($hide_husen.length);
+				    
+				    
+		        	//$(".husen.ui-draggable.ui-draggable-handle.ui-draggable-dragging").eq(0).show();
 
 				    $('.qa').contextmenu({
 				        target: "#qa_context-menu"
@@ -843,11 +853,17 @@ function paging(page,next_or_prev)
 //		    var reg = new RegExp(glass,"g");
 //		    $body_html = $body_html.replace(reg, "");		    
 //		    $(".magnified_content").html($body_html);
-		    $("#loupe").remove();
+			$drop_husen = $(".husen.ui-draggable.ui-draggable-handle.ui-draggable-dragging");
+			$drop_husen.hide();
+//		    $hide_husen = $(".magnified_content").find(".husen.ui-draggable.ui-draggable-handle.ui-draggable-dragging");
+//		    $hide_husen.hide();
+
+			$("#loupe").remove();
 		    $(".magnifying_glass").remove();
 		    $(".magnified_content").remove();
 		    $(".magnifying_lens").remove();
 		    loupe();
+		    $drop_husen.show();
 		    loupe_drop();
 		},
 		error: function(data)
