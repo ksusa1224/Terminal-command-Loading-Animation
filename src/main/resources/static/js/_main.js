@@ -183,6 +183,17 @@ function body_load()
         }
     });    
 
+    $('#qa_panel').droppable({
+        accept:'#erasor',
+        drop: function(event,ui){
+        	var id = $(ui.draggable).attr("id");
+        	if (id == 'erosor')
+        	{
+        		
+        	}
+        }
+    });    
+    
     var husen_names = [];
     $('#loupe').droppable({
         accept:'.husen',
@@ -217,7 +228,7 @@ function body_load()
 				},
 				error: function(data)
 				{
-					$("#balloon").css("opacity","1");
+					$("#balloon").css("display","inline");
 					$("#serif").text(server_error);
 				}
 			});
@@ -255,7 +266,7 @@ function body_load()
 				},
 				error: function(data)
 				{
-					$("#balloon").css("opacity","1");
+					$("#balloon").css("display","inline");
 					$("#serif").text(server_error);
 				}
 			});
@@ -298,7 +309,7 @@ function body_load()
   });
     
 	$('#play_qa').on('ended', function() {
-	  	$("#balloon").css("opacity","0");
+	  	$("#balloon").css("display","none");
 		$("#serif").text("");		
 	});
 	
@@ -330,14 +341,14 @@ function slime_speech()
         	var path = "../speech/" + s_id + ".m4a";
         	$("#play_qa").attr("src",path);
 	        document.getElementById("play_qa").play();    	
-	    	$("#balloon").css("opacity","1");
+	    	$("#balloon").css("display","inline");
 	    	$("#serif").text(serif);
 	    	$("#slime").animate({width: '150px', height:'145px', top:'445px'}, 600);
 	    	$("#slime").animate({width: '150px', height:'150px', top:'440px'}, 600);
 	    	speech_mode = "false";
     	}
   }, function() {
-  	$("#balloon").css("opacity","0");
+  	$("#balloon").css("display","none");
 	$("#serif").text("");
 
   });	
@@ -381,20 +392,20 @@ function husen_touroku(obj)
 			{
 				if (data == 'deplicate')
 				{
-					$("#balloon").css("opacity","1");
+					$("#balloon").css("display","inline");
 					$("#serif").text("「" + tag_name + "」の付箋はすでにあるよ〜");					
 				}
 				else
 				{
 					$("#crystal_board").prepend('<div class="husen" contenteditable="true" onkeypress="javascript:husen_touroku(this);"></div>');
-					$("#balloon").css("opacity","1");
+					$("#balloon").css("display","inline");
 					$("#serif").text("付箋「" + tag_name + "」を作ったよ");
 					$("#qa_input").focus();
 				}
 			},
 			error: function(data)
 			{
-				$("#balloon").css("opacity","1");
+				$("#balloon").css("display","inline");
 				$("#serif").text(server_error);
 			}
 		});		
@@ -431,13 +442,13 @@ function enter (){
 				{					
 					if (last_a.trim() != '\u200B')
 					{
-						$("#balloon").css("opacity","1");
+						$("#balloon").css("display","inline");
 						$("#serif").text(data);
 					}
 				},
 				error: function(data)
 				{
-					$("#balloon").css("opacity","1");
+					$("#balloon").css("display","inline");
 					$("#serif").text(server_error);
 				}
 			});
@@ -448,7 +459,7 @@ function enter (){
 			$("#qa_input").append(q_parts);						
 			focus_last();
 			id++;
-			$("#balloon").css("opacity","0");
+			$("#balloon").css("display","none");
 			$("#serif").text("");
 		}		
 		event.preventDefault();
@@ -513,6 +524,7 @@ function register_qa_ajax ()
 			$("#seitou_sum").html(data[2]);
 			$("#seikai_sum").html(data[3]);
 			$(".total_pages").html(data[4]);
+			$("#qa_input").focus();
 
 		    $('.qa').contextmenu({
 		        target: "#qa_context-menu"
@@ -521,7 +533,7 @@ function register_qa_ajax ()
 		},
 		error: function(data)
 		{
-			$("#balloon").css("opacity","1");
+			$("#balloon").css("display","inline");
 			$("#serif").text(server_error);
 		}
 	});	
@@ -563,7 +575,7 @@ function change_seitou_color(obj)
 		},
 		error: function(data)
 		{
-			$("#balloon").css("opacity","1");
+			$("#balloon").css("display","inline");
 			$("#serif").text(server_error);
 		}
 	});
@@ -694,8 +706,74 @@ function paging(page,next_or_prev)
 		    });
 		    var margin_top = $(".dropdown-menu").css("margin-top");					
 
-			remove_loupe();
-			loupe();
+//			alert("a");
+			//alert($(document.body).html());
+
+		    $body_html = $(document.body).html();
+		    prompt("",$body_html);
+		    //alert($body_html);
+		    var qa_area_before = $("#qa_area").html();
+		    //alert(qa_area_before);
+		    var aa = $("#qa_area").live(function() {return $("this").html();});
+		    //alert(aa);
+		    var qa_area_after = data[0];
+		    //alert(qa_area_after);
+//		    $body_html.replaceWith(function(){
+//		        return $("<pre />", {html: $(this).html()});
+//		    });
+		    
+//		    $("span, p").each(function() {
+//		        var text = $(this).text();
+//		        text = text.replace("lollypops", "marshmellows");
+//		        $(this).text(text);
+//		    });
+		    
+//		    $("#qa_area").each(function () {
+//		    	alert("a");
+//		    	$body_html($(document.body).html().replace(qa_area_before,qa_area_after));
+//		    });
+		    //alert(document.getElementsByClassName("magnified_content").length);
+		    var lens2 = document.getElementsByClassName("magnified_content")[0].outerHTML;
+		    //alert(lens2);
+		    var re5 = new RegExp(lens2,"g");
+		    $body_html = $body_html.replace(re5, "");
+
+		    var re = new RegExp(qa_area_before,"g");
+		    $body_html = $body_html.replace(re, qa_area_after);
+		    
+		    var qa_area_before_right = $("#qa_area_right").html();
+		    var qa_area_after_right = data[1];
+//		    alert(qa_area_after_right);
+		    var re4 = new RegExp(qa_area_before_right,"g");
+		    $body_html = $body_html.replace(re4, qa_area_after_right);
+
+		    
+		    var loupe = document.getElementById("loupe").outerHTML;
+		    //alert(loupe);
+		    var re2 = new RegExp(loupe,"g");
+		    $body_html = $body_html.replace(re2, "");
+
+
+		    var lens = document.getElementsByClassName("magnifying_glass")[0].outerHTML;
+//		    alert(lens);
+		    var re3 = new RegExp(lens,"g");
+		    $body_html = $body_html.replace(re3, "");
+		    //$body_html.find('.magnifying_lens').first().remove();
+		    
+		    
+		    //$body_html.find('.magnified_content').first().remove();
+		    
+		    //alert($body_html);
+		    
+			$(".magnified_content").html($body_html);
+			//remove_loupe();
+			
+//			loupe();
+			
+//			var $magnifiedContent = $('<div class="magnified_content"></div>');
+
+			
+//			$magnifiedContent.html($(document.body).html());			
 			//alert(data);
 //			$("#qa_input").html(data);
 //			$("#qa_id").val(qa_id);
@@ -703,7 +781,7 @@ function paging(page,next_or_prev)
 		},
 		error: function(data)
 		{
-			$("#balloon").css("opacity","1");
+			$("#balloon").css("display","inline");
 			$("#serif").text(server_error);
 		}
 	});
@@ -880,14 +958,14 @@ function slime_speak()
 		cache: false,
 		success: function(data)
 		{					
-			$("#balloon").css("opacity","1");
+			$("#balloon").css("display","inline");
 			$("#serif").text(data);
 			//sleep(5000);
-			//$("#balloon").css("opacity","0");			
+			//$("#balloon").css("display","none");			
 		},
 		error: function(data)
 		{
-			$("#balloon").css("opacity","1");
+			$("#balloon").css("display","inline");
 			$("#serif").text(server_error);
 		}
 	});
@@ -916,7 +994,7 @@ function edit_qa(q_obj)
 		},
 		error: function(data)
 		{
-			$("#balloon").css("opacity","1");
+			$("#balloon").css("display","inline");
 			$("#serif").text(server_error);
 		}
 	});
@@ -970,7 +1048,7 @@ function to_miseikai()
 		},
 		error: function(data)
 		{
-			$("#balloon").css("opacity","1");
+			$("#balloon").css("display","inline");
 			$("#serif").text(server_error);
 		}
 	});

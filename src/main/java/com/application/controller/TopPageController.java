@@ -201,7 +201,7 @@ public class TopPageController {
 			String response_url = "/"+ login_info.getOwner_id() + "/main.html";
 			
 			String owner_db = aes.decrypt(encrypted_db_name);
-			add_is_seikai_to_seitou_tbl(owner_db);
+			//add_is_seikai_to_seitou_tbl(owner_db);
 			
 			
 			/**

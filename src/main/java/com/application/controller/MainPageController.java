@@ -989,7 +989,7 @@ public class MainPageController{
 
 		StringBuffer qa_html = new StringBuffer();
 
-		System.out.println("qa_plus_list.size():"+qa_plus_list.size());
+		//System.out.println("qa_plus_list.size():"+qa_plus_list.size());
 		
 		for (QAPlusModel qa_plus : qa_plus_list)
 		{
