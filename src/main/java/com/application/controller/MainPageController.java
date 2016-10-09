@@ -342,6 +342,8 @@ public class MainPageController{
 			String seitou_cnt = String.valueOf(seitou_dao.get_seitou_cnt(owner_db, husen_names));
 			String seikai_cnt = String.valueOf(seitou_dao.get_seikai_cnt(owner_db, husen_names));
 			
+			
+			
 			String json = JSON.encode(
 					new String[] 
 					{qa_html,qa_html_right,seitou_cnt,seikai_cnt,total_pages});
@@ -504,6 +506,7 @@ public class MainPageController{
 			HttpSession session,
 			@RequestParam("qa_input_hidden") String qa_input,
 			@RequestParam(value="qa_husen",required=false) String qa_husen,
+			@RequestParam(value="husen_str",required=false) String husen_str,
 			@RequestParam(value="qa_id", required=false) String qa_id,
 			@RequestParam(value="yomudake_flg", required=false) String yomudake_flg,
 			@RequestParam(value="reversible_flg", required=false) String reversible_flg) {
@@ -571,10 +574,10 @@ public class MainPageController{
 		
 		// ページング総数
 		QADao qa_dao = new QADao();
-		String total_pages = String.valueOf(qa_dao.get_pages(owner_db, qa_husen));			
+		String total_pages = String.valueOf(qa_dao.get_pages(owner_db, husen_str));			
 			
-		String seitou_cnt = String.valueOf(seitou_dao.get_seitou_cnt(owner_db, qa_husen));
-		String seikai_cnt = String.valueOf(seitou_dao.get_seikai_cnt(owner_db, qa_husen));
+		String seitou_cnt = String.valueOf(seitou_dao.get_seitou_cnt(owner_db, husen_str));
+		String seikai_cnt = String.valueOf(seitou_dao.get_seikai_cnt(owner_db, husen_str));
 		
 		String json = JSON.encode(
 				new String[] 
@@ -997,7 +1000,7 @@ public class MainPageController{
 			List<MondaiModel> mondai_list = new ArrayList<MondaiModel>();
 			mondai_list = qa_plus.getMondai_list();
 			
-			System.out.println("mondai_list:"+mondai_list.size());
+			//System.out.println("mondai_list:"+mondai_list.size());
 			
 			/**
 			 * 問題HTML
@@ -1010,7 +1013,7 @@ public class MainPageController{
 				String html = "<span id='" + mondai_list.get(i).getQ_id() + "' class='q' onclick='edit_qa(this);'>" + mondai + "</span>";			
 				q_html.add(html);
 			}
-			System.out.println("q_html.size():"+q_html.size());
+			//System.out.println("q_html.size():"+q_html.size());
 			
 			/**
 			 * 正答HTML
@@ -1018,7 +1021,7 @@ public class MainPageController{
 			List<SeitouModel> seitou_list = new ArrayList<SeitouModel>();
 			seitou_list = qa_plus.getSeitou_list();
 			
-			System.out.println("seitou_list:"+seitou_list.size());
+			//System.out.println("seitou_list:"+seitou_list.size());
 
 			List<String> a_html = new ArrayList<String>();
 			for (int i = 0; i < seitou_list.size(); i++)
@@ -1035,7 +1038,7 @@ public class MainPageController{
 				String html = "<span id='" + seitou_list.get(i).getS_id() + "' class='a' style='opacity:" + opacity + "' onmouseover='this.style.opacity=1' " + mouseout + " onclick='change_seitou_color(this)'>" + seitou + "</span>";				
 				a_html.add(html);
 			}	
-			System.out.println("a_html.size():"+a_html.size());
+			//System.out.println("a_html.size():"+a_html.size());
 			
 			qa_html.append("<span id='" + qa_plus.getQa().getQa_id() + "' class='qa' onmouseover='qa_mouseover(this)'>");
 		//	StopWatch watch2 = new StopWatch();
@@ -1324,10 +1327,7 @@ public class MainPageController{
 					String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + seitou.getSeitou() + "' -o " + file_name;
 					System.out.println(command);
 					Runtime.getRuntime().exec(command);
-					File file = new File(file_name);
-					Thread.sleep(seitou.getSeitou().length() * 30);
-					Boolean a = file.setExecutable(true, false);
-					System.out.println("setexec:"+a);
+					set_executable(file_name);
 					String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=18K -vn " + file_name.replace("wav", "m4a");
 					Runtime.getRuntime().exec(command2);
 				} catch (Exception e) {
@@ -1430,6 +1430,17 @@ public class MainPageController{
 			}
 		}
 		stop_watch.stop("create_qa");
+	}
+
+	public void set_executable(String file_name) throws InterruptedException {
+		File file = new File(file_name);
+		if (!file.exists())
+		{
+			Thread.sleep(10);
+			set_executable(file_name);
+		}
+		Boolean a = file.setExecutable(true, false);
+		System.out.println("setexec:"+a);
 	}
 
 	private AudioFormat getOutFormat(AudioFormat inFormat) {

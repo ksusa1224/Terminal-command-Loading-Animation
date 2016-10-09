@@ -147,6 +147,7 @@ public class SeitouDao {
 			}
 	        sql.appendLine(")");
         }
+	      System.out.println("正答数："+sql.toString());
 
 		
 		dao.loadDriver();

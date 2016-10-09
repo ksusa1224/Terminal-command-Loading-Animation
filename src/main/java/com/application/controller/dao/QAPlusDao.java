@@ -350,7 +350,7 @@ public class QAPlusDao extends QADao {
 					.collect(Collectors.toList());
 			qa_plus.setMondai_list(mondai_list_each);
 			
-			System.out.println("mondai_list_each:"+mondai_list_each.size());
+			//System.out.println("mondai_list_each:"+mondai_list_each.size());
 			
 			// 正答
 			List<SeitouModel> seitou_list_each = new ArrayList<SeitouModel>();
@@ -359,7 +359,7 @@ public class QAPlusDao extends QADao {
 					.collect(Collectors.toList());;
 			qa_plus.setSeitou_list(seitou_list_each);
 			
-			System.out.println("seitou_list_each"+seitou_list_each.size());
+			//System.out.println("seitou_list_each"+seitou_list_each.size());
 			
 			// QA
 			if (!mondai_list_each.isEmpty() && !seitou_list_each.isEmpty())

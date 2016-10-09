@@ -150,6 +150,12 @@ $draged_husen = null;
 
 function body_load()
 {	
+	$("#qa_input").on("click", function () { // click event
+//		  alert( "Handler for .focus() called." );
+		id = 2;
+		enter();
+	});	
+	
 	//$("#entire_page").center();
     $( "#crystal_board" ).draggable();
     $( "#dialog" ).draggable();
@@ -297,6 +303,7 @@ function loupe_drop()
 //				    $(".magnifying_lens").remove();
 //				    loupe();
 				    $("#loupe").remove();
+//				    $(".magnified_content").html($(document.body));
 				    $(".magnifying_glass").remove();
 				    $(".magnified_content").remove();
 				    $(".magnifying_lens").remove();
@@ -360,14 +367,32 @@ function loupe_drop()
 					$drop_husen = $(".husen.ui-draggable.ui-draggable-handle.ui-draggable-dragging");
 					//$drop_husen.hide();
 
+//					$("#loupe").remove();
+//				    $(".magnifying_glass").remove();
+//				    $(".magnified_content").remove();
+//				    $(".magnifying_lens").remove();
+//				    loupe();
+//				    loupe_drop();
+//				   // alert($drop_husen.length);
+				    //$("#loupe").remove();
+//					$body = $(document.body);
+//					$body = $body.find("#loupe").remove();
+//					$body = $body.find(".magnifying_glass").remove();
+//					$body = $body.find("magnified_content").remove();
+//					$body = $body.find("magnifying_lens").remove();
+//				    $(".magnified_content").html($(document.body).html());
+//				    $(".magnifying_glass").remove();
+//				    $(".magnified_content").remove();
+//				    $(".magnifying_lens").remove();
+//				    loupe();
+				    //loupe_drop();
 					$("#loupe").remove();
 				    $(".magnifying_glass").remove();
 				    $(".magnified_content").remove();
 				    $(".magnifying_lens").remove();
 				    loupe();
 				    loupe_drop();
-				   // alert($drop_husen.length);
-
+				    
 				    $hide_husen = $(".magnified_content").find(".husen.ui-draggable.ui-draggable-handle.ui-draggable-dragging");
 				    $hide_husen.hide();
 				    //alert($hide_husen.length);
@@ -581,7 +606,8 @@ function register_qa_ajax ()
 				"&yomudake_flg=" + yomudake_flg +
 				"&reversible_flg=" + reversible_flg +
 				"&qa_id=" + qa_id +
-				"&qa_husen=" + qa_husen,
+				"&qa_husen=" + qa_husen +
+				"&husen_str=" + tag_search_conditions_uri,
 		dataType: "json",
 		cache: false,
 		success: function(data)
@@ -1039,6 +1065,8 @@ function loupe()
 
 function slime_speak()
 {	
+	$("#slime").animate({width: '150px', height:'145px', top:'445px'}, 600);
+	$("#slime").animate({width: '150px', height:'150px', top:'440px'}, 600);
 	jQuery.ajax({
 		url: "../serif.html?args_num=0",
 		dataType: "html",
