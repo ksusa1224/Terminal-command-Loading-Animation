@@ -390,6 +390,15 @@ public class QAPlusDao extends QADao {
 		return qa_plus_list;
 	}
 	
+	/**
+	 * タグを指定してQAを検索
+	 * @param db_name
+	 * @param qa_plus_list
+	 * @param tag_names
+	 * @param limit
+	 * @param offset
+	 * @return
+	 */
 	public List<QAPlusModel> select_qa_plus_list(
 			String db_name, 
 			List<QAPlusModel> qa_plus_list, 

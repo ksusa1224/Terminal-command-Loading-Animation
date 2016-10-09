@@ -126,12 +126,37 @@ public class SeitouDao {
 		
 		StringBuilderPlus sql = new StringBuilderPlus();
 		sql.appendLine("select count(seitou) from seitou ");
-        if (!tag_names.equals(""))
+		if (!tag_names.equals(""))
         {
         	sql.appendLine(",qa, qa_tag_relation,tag");
         }
 		sql.appendLine(" where seitou.del_flg = 0 and seitou != '' and seitou is not null ");
-        if (!tag_names.equals(""))
+		if (tag_names.contains("未正解"))
+		{
+        	sql.appendLine(" and qa.qa_id = seitou.qa_id");
+        	sql.appendLine(" and (seitou.seikai_flg = 0 or seitou.seikai_flg is null)");
+        	if (tag_names.split(",").length > 1)
+        	{
+				sql.appendLine(" and qa.qa_id = qa_tag_relation.qa_id");
+				sql.appendLine(" and tag.tag_id = qa_tag_relation.tag_id");
+				sql.appendLine(" and (");
+				for (int i = 0; i < tag_names.split(",").length; i++)
+				{
+					if (tag_names.split(",")[i].equals("未正解"))
+					{
+						sql.appendLine("1 = 1");
+						continue;
+					}
+					sql.appendLine("tag.tag_name = '" + tag_names.split(",")[i] + "'");
+					if (i < tag_names.split(",").length - 1)
+					{
+						sql.appendLine(" or ");
+					}
+				}
+		        sql.appendLine(")");			
+        	}
+		}
+		else if (!tag_names.equals(""))
         {
 			sql.appendLine(" and qa.qa_id = qa_tag_relation.qa_id");
 			sql.appendLine(" and qa.qa_id = seitou.qa_id");
@@ -146,6 +171,10 @@ public class SeitouDao {
 				}
 			}
 	        sql.appendLine(")");
+        }
+        if (tag_names.contains("未正解"))
+        {
+        	sql.appendLine(" group by seitou.s_id");
         }
 	      System.out.println("正答数："+sql.toString());
 
@@ -167,8 +196,14 @@ public class SeitouDao {
 	      ResultSet rs = stmt.executeQuery(sql.toString());
 	      while (rs.next()) 
 	      {
-	    	  seitou_cnt = rs.getInt(1);
-	    	  System.out.println(seitou_cnt);
+	    	  if (tag_names.contains("未正解"))
+	    	  {
+	    		  seitou_cnt++;
+	    	  }
+	    	  else
+	    	  {
+	    		  seitou_cnt = rs.getInt(1);
+	    	  }
 	      }
 	    }
 	    catch(Exception ex)
