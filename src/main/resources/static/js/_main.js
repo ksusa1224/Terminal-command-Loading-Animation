@@ -55,14 +55,14 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
 	var voices = window.speechSynthesis.getVoices();
  	if (q_gengo_ == "日本語")
 	{
-        q_msg.default = true;
+//        q_msg.default = true;
  		q_msg.voice = voices[0]; // Otoya
 		q_msg.volume = 0.4;
 		q_msg.pitch = 0.9;
 		q_msg.lang = "ja-JP";
 	}else
 	{
-        q_msg.default = true;
+//        q_msg.default = true;
 		// q_msg.voice = voices[6];//Vicky
 		q_msg.volume = 1;
 		q_msg.lang = "en-US";
@@ -84,7 +84,7 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
 //	}
 	else
 	{
-        a_msg.default = true;
+//        a_msg.default = true;
 		a_msg.voice = voices[62];//Vicky
 		a_msg.volume = 1;
 		a_msg.lang = "en-US";
@@ -198,12 +198,60 @@ function body_load()
         accept:'#erasor',
         drop: function(event,ui){
         	var id = $(ui.draggable).attr("id");
-        	if (id == 'erosor')
+        	if (id == 'erasor')
         	{
-        		
+        		var qa_id = $("#qa_id").val();
+        		if (qa_id != "")
+        		{
+        			jQuery.ajax({
+        				url: "../qa_delete.html?qa_id=" + qa_id +"&husen_str=" + tag_search_conditions_uri,
+        				dataType: "json",
+        				cache: false,
+        				success: function(data)
+        				{
+        					$("#qa_input_hidden").html("");
+        					$("#qa_input").html("");
+        					id = 2;
+        					$("#qa_input").focus();
+        					
+        					$("#qa_area").html(data[0]);
+        					$("#qa_area_right").html(data[1]);
+        					$("#seitou_sum").html(data[2]);
+        					$("#seikai_sum").html(data[3]);
+        					$(".total_pages").html(data[4]);
+
+        				    $("#loupe").remove();
+        				    $(".magnifying_glass").remove();
+        				    $(".magnified_content").remove();
+        				    $(".magnifying_lens").remove();
+        				    loupe();
+        				    loupe_drop();
+
+//        					$('.qa').contextmenu({
+//        				        target: "#qa_context-menu"
+//        				    });
+//        				    var margin_top = $(".dropdown-menu").css("margin-top");	
+        				},
+        				error: function(data)
+        				{
+        					$("#balloon").css("display","inline");
+        					$("#serif").text(server_error);
+        				}
+        			});
+        		}
+        		else
+        		{
+					$("#balloon").css("display","inline");
+					$("#serif").text("新しいQAカードは消せないよ〜");        			
+        		}
         	}
-        }
-    });    
+        },
+    	out: function(event, ui){
+    		$("#qa_id").val("");
+			$("#balloon").css("display","none");
+			$("#serif").text("");   			    		
+    	}
+    });
     
     loupe_drop();
     

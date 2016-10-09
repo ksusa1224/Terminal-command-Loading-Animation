@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8" />
+<meta http-equiv="Cache-control" content="public" />
 <title>暗記ノート</title>
 <link rel="stylesheet" th:href="@{../css/bootstrap.min.css}" />
 <link rel="stylesheet" type="text/css" th:href="@{../css/_main.css}" />
@@ -94,9 +95,9 @@
 <img id="premium" th:src="@{../img/premium.png}" />
 
 <div id="navigation">
-<img class="black_button" th:src="@{../img/tag_top.png}" />
+<a href="../index.html"><img class="black_button" th:src="@{../img/tag_top.png}" /></a>
 <img class="black_button" th:src="@{../img/tag_usage.png}" />
-<img class="black_button" th:src="@{../img/tag_logout.png}" />
+<a href="../logout.html"><img class="black_button" th:src="@{../img/tag_logout.png}" /></a>
 <br />
 <img class="black_button" th:src="@{../img/tag_tag.png}" />
 <img class="black_button" th:src="@{../img/tag_kiyaku.png}" />

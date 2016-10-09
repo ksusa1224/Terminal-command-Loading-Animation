@@ -26,7 +26,7 @@ import com.dao.SQliteDAO;
 public class QAPlusDao extends QADao {
 		
 	/**
-	 * 
+	 * 未使用？
 	 * @param db_name
 	 * @param qa_plus_list
 	 * @return
@@ -795,5 +795,55 @@ public class QAPlusDao extends QADao {
 	      dao.close(connection);
 		  stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());
 	    }		
-	}		
+	}	
+	
+	/**
+	 * 指定したqa_idのレコードをqa,mondai,seitou,kaitouから物理削除する
+	 * @param qa_id
+	 */
+	public void delete_qa(String db_name, String qa_id)
+	{
+		StopWatch stopwatch = new StopWatch();
+		stopwatch.start();
+
+		SQliteDAO dao = new SQliteDAO();
+		
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+		
+		StringBuilderPlus sql = new StringBuilderPlus();
+		sql.appendLine("delete from qa where qa_id = '" + qa_id + "';");
+		sql.appendLine("delete from mondai where qa_id = '" + qa_id + "';");
+		sql.appendLine("delete from seitou where qa_id = '" + qa_id + "';");
+		sql.appendLine("delete from kaitou where qa_id = '" + qa_id + "';");
+
+		try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+
+	      //1行ずつコミットしない
+	      stmt.getConnection().setAutoCommit(false);
+	      
+	      /**
+	       *  SQL実行
+	       */
+	      dao.transaction(stmt, sql);
+	    }
+	    catch(Exception ex)
+	    {
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+		  stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());
+	    }		
+	}
 }
