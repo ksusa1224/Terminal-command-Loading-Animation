@@ -804,8 +804,11 @@ function key_event() {
     {
     	var now_page = Number($("#page_left").text());
     	paging(now_page, "prev");
+//    	alert(now_page);
     }
 }
+
+var is_note_open = true;
 
 function paging(page,next_or_prev)
 {
@@ -820,8 +823,51 @@ function paging(page,next_or_prev)
 	// 最初のページで⇦を押した場合
 	else if (next_or_prev == "prev" && page == 1)
 	{
+		is_note_open = false;
 		// TODO ノートを閉じる
+		$("#notebook").hide();
+		$("#qa_area").hide();
+		$("#qa_area_right").hide();
+		$("#logo").hide();
+		$("#score").hide();
+		$(".note-line").hide();
+		$(".page").hide();
+		$("#notebook_close").show();
+		$("#loupe").hide();
+	    $(".magnifying_glass").hide();
+	    $(".magnified_content").hide();
+	    $(".magnifying_lens").hide();
+	    $(".total_pages").hide();
+	    $(".page_right").hide();
+	    $("#crystal_board").css("left","-30px");
+	    $("#crystal_board").css("top","200px");
+//	    loupe();
+//	    loupe_drop();
 		return false;
+	}
+	else if (next_or_prev == "next" && page == 1)
+	{
+		if (is_note_open == false)
+		{
+			$("#notebook").show();
+			$("#qa_area").show();
+			$("#qa_area_right").show();
+			$("#logo").show();
+			$("#score").show();
+			$(".note-line").show();
+			$(".page").show();
+			$("#notebook_close").hide();
+			$("#loupe").show();
+		    $(".magnifying_glass").show();
+		    $(".magnified_content").show();
+		    $(".magnifying_lens").show();
+		    $(".total_pages").show();
+		    $(".page_right").show();
+		    $("#crystal_board").css("left","430px");
+		    $("#crystal_board").css("top","200px");
+		    is_note_open = true;
+			return false;
+		}
 	}
 	
 	//TODO 検索条件

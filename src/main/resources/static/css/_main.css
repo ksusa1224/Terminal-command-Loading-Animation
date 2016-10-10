@@ -63,6 +63,16 @@ div.page_right
 	z-index:-1;
 }
 
+#notebook_close
+{
+	display:none;
+	position:absolute;
+	top:6px;
+	left:405px;
+	width:512px;
+	z-index:-1;
+}
+
 #qa_area
 {
 	width:359px;
