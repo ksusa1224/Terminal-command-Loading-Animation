@@ -323,50 +323,7 @@ public class SeitouDao {
         }
 		sql.appendLine("WHERE seikai_flg = 1");
 		System.out.println(tag_names);
-		if (tag_names.equals("未正解") || tag_names.contains("未正解"))
-		{
-			sql.appendLine(" and qa.qa_id = qa_tag_relation.qa_id");
-			sql.appendLine(" and tag.tag_id = qa_tag_relation.tag_id");
-			sql.appendLine(" and (");
-			for (int i = 0; i < tag_names.split(",").length; i++)
-			{
-				if (tag_names.split(",")[i].equals("未正解"))
-				{
-					sql.appendLine("1 = 1");
-					continue;
-				}
-				sql.appendLine("tag.tag_name = '" + tag_names.split(",")[i] + "'");
-				if (i < tag_names.split(",").length - 1)
-				{
-					sql.appendLine(" or ");
-				}
-			}
-	        sql.appendLine(")");			
-		}
-		else if (Arrays.asList(tag_names.split(",")).contains("正解"))
-		{
-        	if (tag_names.split(",").length > 1)
-        	{
-				sql.appendLine(" and qa.qa_id = qa_tag_relation.qa_id");
-				sql.appendLine(" and tag.tag_id = qa_tag_relation.tag_id");
-				sql.appendLine(" and (");
-				for (int i = 0; i < tag_names.split(",").length; i++)
-				{
-					if (tag_names.split(",")[i].equals("正解"))
-					{
-						sql.appendLine("1 = 1");
-						continue;
-					}
-					sql.appendLine("tag.tag_name = '" + tag_names.split(",")[i] + "'");
-					if (i < tag_names.split(",").length - 1)
-					{
-						sql.appendLine(" or ");
-					}
-				}
-		        sql.appendLine(")");			
-        	}
-		}
-		else if (!tag_names.equals(""))
+		if (!tag_names.equals(""))
         {
 			sql.appendLine(" and qa.qa_id = qa_tag_relation.qa_id");
 			sql.appendLine(" and qa.qa_id = seitou.qa_id");
@@ -374,6 +331,12 @@ public class SeitouDao {
 			sql.appendLine(" and (");
 			for (int i = 0; i < tag_names.split(",").length; i++)
 			{
+				if (tag_names.split(",")[i].equals("正解"))
+				{
+					sql.appendLine("1 = 1");
+					continue;
+				}
+				
 				sql.appendLine("tag.tag_name = '" + tag_names.split(",")[i] + "'");
 				if (i < tag_names.split(",").length - 1)
 				{
@@ -382,7 +345,7 @@ public class SeitouDao {
 			}
 	        sql.appendLine(")");
         }
-        if (tag_names.contains("未正解") || tag_names.contains("正解"))
+        if (tag_names.contains("正解"))
         {
         	sql.appendLine(" group by seitou.s_id");
         }
@@ -406,7 +369,7 @@ public class SeitouDao {
 	      {
 	    	  if (tag_names.contains("未正解"))
 	    	  {
-	    		  seikai_cnt++;
+	    		  seikai_cnt = 0;
 	    	  }
 	    	  else if (tag_names.contains("正解"))
 	    	  {
