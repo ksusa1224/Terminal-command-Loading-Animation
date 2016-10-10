@@ -150,6 +150,8 @@ $draged_husen = null;
 
 function body_load()
 {	
+//	countLines("qa_area");
+	
 	$("#qa_input").on("click", function () { // click event
 //		  alert( "Handler for .focus() called." );
 		id = 2;
@@ -1221,4 +1223,15 @@ function to_miseikai()
 			$("#serif").text(server_error);
 		}
 	});
+}
+
+//動作不良
+function countLines(id) {
+	  var divHeight = document.getElementById(id).offsetHeight;
+	  alert(divHeight);
+	  var spanHeight = document.getElementsByClassName("qa")[0].offsetHeight;
+	  //alert(divHeight / spanHeight + 1);
+	  var lineHeight = parseInt(document.getElementsByClassName("qa")[0].style.lineHeight);
+	  var lines = divHeight / lineHeight;
+	  alert("Lines: " + lines);
 }

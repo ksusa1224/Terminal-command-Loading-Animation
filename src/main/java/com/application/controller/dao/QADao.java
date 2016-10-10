@@ -453,7 +453,7 @@ public class QADao {
 		// レコード更新日時（H2DBのtimestampと同じフォーマットにする）
 		sql.appendLine("	qa.update_timestamp");
 		sql.appendLine(" from qa");
-        if (tag_names.contains("未正解"))
+        if (tag_names.contains("未正解") || tag_names.contains("正解"))
         {
         	sql.appendLine(", qa_tag_relation,tag,seitou");        	
         }
@@ -466,15 +466,41 @@ public class QADao {
         {
         	sql.appendLine(" and qa.qa_id = seitou.qa_id");
         	sql.appendLine(" and (seitou.seikai_flg = 0 or seitou.seikai_flg is null)");
+			sql.appendLine(" and qa.qa_id = qa_tag_relation.qa_id");
+			sql.appendLine(" and tag.tag_id = qa_tag_relation.tag_id");
 
         	if (tag_names.split(",").length > 1)
         	{
-				sql.appendLine(" and qa.qa_id = qa_tag_relation.qa_id");
-				sql.appendLine(" and tag.tag_id = qa_tag_relation.tag_id");
 				sql.appendLine(" and (");
 				for (int i = 0; i < tag_names.split(",").length; i++)
 				{
 					if (tag_names.split(",")[i].equals("未正解"))
+					{
+						sql.appendLine("1 = 1");
+						continue;
+					}
+					sql.appendLine("tag.tag_name = '" + tag_names.split(",")[i] + "'");
+					if (i < tag_names.split(",").length - 1)
+					{
+						sql.appendLine(" or ");
+					}
+				}
+		        sql.appendLine(")");			
+        	}
+        }
+        else if (tag_names.contains("正解"))
+        {
+        	sql.appendLine(" and qa.qa_id = seitou.qa_id");
+        	sql.appendLine(" and seitou.seikai_flg = 1");
+			sql.appendLine(" and qa.qa_id = qa_tag_relation.qa_id");
+			sql.appendLine(" and tag.tag_id = qa_tag_relation.tag_id");
+
+        	if (tag_names.split(",").length > 1)
+        	{
+				sql.appendLine(" and (");
+				for (int i = 0; i < tag_names.split(",").length; i++)
+				{
+					if (tag_names.split(",")[i].equals("正解"))
 					{
 						sql.appendLine("1 = 1");
 						continue;
@@ -503,12 +529,12 @@ public class QADao {
 			}
 	        sql.appendLine(")");
         }
-        if (tag_names.contains("未正解"))
+        if (tag_names.contains("未正解") || tag_names.contains("正解"))
         {
         	sql.appendLine(" group by qa.qa_id");
         }
 		sql.appendLine(" order by qa.update_timestamp desc");
-		sql.appendLine("  limit " + limit + " offset + " + offset + ";");
+		sql.appendLine("  limit " + limit + " offset " + offset + ";");
 		
 		System.out.println("sql:"+sql.toString());
 		
@@ -579,6 +605,7 @@ public class QADao {
 	    catch(Exception ex)
 	    {
 			Log log = new Log();
+			ex.printStackTrace();
 			log.insert_error_log("ERROR", ex.getStackTrace().toString());
 		    System.err.println(ex.getMessage());
 	    }
