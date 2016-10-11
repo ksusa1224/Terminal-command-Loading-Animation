@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" th:href="@{css/_index.css}" />
+<script type="text/javascript">
+</script>
+</head>
+<body>
+<form th:action="@{/}" method="post">
+オーナーID<input type="text" name="owner_id" /><br />
+パスワード<input type="password" name="login_password" /><br />
+オーナー名<input type="text" name="owner_name" /><br />
+E-mail<input type="text" name="email" /><br />
+<button name="register" type="submit">新規ユーザー登録</button>
+</form>
+<hr />
+<form th:action="@{/}" method="post">
+オーナーID / E-mailアドレス<input type="text" name="owner_id_or_email" /><br />
+パスワード<input type="password" name="login_password" /><br />
+<button name="login" type="submit">ログイン</button>
+</form>
+<hr />
+</body>
+</html>

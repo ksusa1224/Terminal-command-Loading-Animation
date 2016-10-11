@@ -839,6 +839,7 @@ function paging(page,next_or_prev)
 	    $(".magnifying_lens").hide();
 	    $(".total_pages").hide();
 	    $(".page_right").hide();
+	    $("#notebook").focus();
 	    $("#crystal_board").css("left","-30px");
 	    $("#crystal_board").css("top","200px");
 //	    loupe();
@@ -1270,6 +1271,27 @@ function to_miseikai()
 		}
 	});
 }
+
+// ランダムなタイミングで勝手にしゃべりだす
+function doSomething() {
+	
+	if($("#balloon").css("display") == "none")
+	{
+		slime_speak();
+		setTimeout(function(){
+			$("#balloon").css("display","none");
+			$("#serif").text("");		
+		},5000);
+	}
+}
+
+(function loop() {
+    var rand = Math.round(Math.random() * (100000 - 500)) + 500;
+    setTimeout(function() {
+            doSomething();
+            loop();  
+    }, rand);
+}());
 
 //動作不良
 function countLines(id) {

@@ -4,6 +4,13 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.atilika.kuromoji.Token;
+import org.atilika.kuromoji.Tokenizer;
+import org.atilika.kuromoji.Tokenizer.Builder;
+import org.atilika.kuromoji.Tokenizer.Mode;
+
+import com.ibm.icu.text.Transliterator;
+
 import lombok.Data;
 
 public class SlimeSerif {
@@ -243,6 +250,32 @@ public class SlimeSerif {
 	}
 	
 	/**
+	 * ノートを閉じているときのメッセージ
+	 */
+	static String[] note_close_msgs = 
+	{
+		"休憩する？",
+		"遊びに行こうよ！"
+	};
+	
+	public static int note_close_minimum = 0;
+	public static int note_close_maximum = note_close_msgs.length;
+	
+	/**
+	 * ノートを閉じてるときのセリフをランダムで返す
+	 * @param param
+	 * @return
+	 */
+	public String RamdomSerifNoteClose(String param)
+	{
+		int randomNum = note_close_minimum + (int)(Math.random() * note_close_maximum);
+		String serif = MessageFormat.format(note_close_msgs[randomNum], param);
+		// TODO セッションからオーナー名取得
+		serif = serif.replace("{name}", "ほへスラ〜");
+		return serif;
+	}
+
+	/**
 	 * 引数２個
 	 */
 	static String[] arg2_msgs = 
@@ -265,4 +298,61 @@ public class SlimeSerif {
 		return MessageFormat.format(msg, param);	
 	}
 
+	public static String Japanese_to_Roman(String japanese) {
+		String roman = "";
+		Tokenizer tokenizer = Tokenizer.builder().build();
+	    for (Token token : tokenizer.tokenize(japanese)) {
+	    	String parts = token.getSurfaceForm();
+	    	// カタカナでなければ変換
+	    	if (!parts.matches("^[ァ-ヶ]+$"))
+	    	{
+	    		parts = getKatakana(parts);
+	    	}
+	    	if (parts.equals("ハ") && token.getAllFeatures().split(",")[0].equals("助詞"))
+	    	{
+	    		parts = "ワ";
+	    	}
+	    	parts = getRoman(parts);
+	    	if (parts.equals("？"))
+	    	{
+	    		parts = "?";
+	    	}
+	    	if (parts != null && !parts.equals("null"))
+	    	{
+	    		roman = roman + parts;
+	    	}
+	      System.out.println(token.getSurfaceForm() + "\t" + token.getAllFeatures());
+	    }
+	    System.out.println(roman);
+	    return roman;
+	}
+	
+	public static String getKatakana(String word) {
+        if (word == null)
+            return "";
+        Builder builder = Tokenizer.builder();
+        builder.mode(Mode.NORMAL);
+        Tokenizer tokenizer = builder.build();
+        List<Token> tokens = tokenizer.tokenize(word);
+        StringBuilder sb = new StringBuilder();
+        for (Token token : tokens)
+            sb.append(token.getReading());
+        if (sb.toString() == null)
+        {
+        	return "";
+        }
+        return sb.toString();
+    }
+	
+	public static String getRoman(String word)
+	{
+	    Transliterator transliterator = Transliterator.getInstance("Katakana-Latin");
+	    String result = transliterator.transliterate(word);
+	    System.out.println(result);
+	    if (result == null)
+	    {
+	    	return "";
+	    }
+	    return result;
+	}	
 }

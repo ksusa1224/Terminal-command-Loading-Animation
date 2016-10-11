@@ -22,6 +22,10 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.spi.AudioFileReader;
 
+import org.atilika.kuromoji.Token;
+import org.atilika.kuromoji.Tokenizer;
+import com.ibm.icu.text.Transliterator;
+
 //import org.json.simple.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -1411,6 +1415,23 @@ public class MainPageController{
 					String speaker = "Vicki";
 					String file_name = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + ".wav";
 					String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + seitou.getSeitou() + "' -o " + file_name;
+					System.out.println(command);
+					Runtime.getRuntime().exec(command);
+					set_executable(file_name);
+					String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=18K -vn " + file_name.replace("wav", "m4a");
+					Runtime.getRuntime().exec(command2);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			else
+			{
+				String roman = SlimeSerif.Japanese_to_Roman(seitou.getSeitou());
+				try {
+					String speaker = "Vicki";
+					String file_name = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + ".wav";
+					String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + roman + "' -o " + file_name;
 					System.out.println(command);
 					Runtime.getRuntime().exec(command);
 					set_executable(file_name);
