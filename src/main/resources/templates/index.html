@@ -34,7 +34,7 @@
 <div id="top"></div>
 
 <!-- /.parallax full screen background image -->
-<div class="fullscreen landing parallax" style="background-image:url('img/bg.jpg');" data-img-width="2000" data-img-height="1333" data-diff="100">
+<div class="fullscreen landing parallax" style="background-image:url('img/bg-min.jpg');" data-img-width="2000" data-img-height="1333" data-diff="100">
 	
 	<div class="overlay">
 		<div class="container">
@@ -46,13 +46,17 @@
 
 					<!-- /.main title -->
 						<h1 class="wow fadeInLeft">
-						1年で、<br />10万個の知識を。
+						1年で、<br />1万個の知識を。
 						</h1>
 
 					<!-- /.header paragraph -->
 					<div class="landing-text wow fadeInUp">
-						<p>暗記ノートとは、記憶力に関係なく、<br />1時間に100個のことが覚えられる魔法のノートです。<br />英単語をはじめとし、あらゆるジャンルのことが覚えられます。<br />
-毎日使い続けることで、誰もが生き字引になれる。<br />暗記ノートはそんな不思議なノートです。</p>
+						<p>&nbsp;<br />
+							暗記ノートとは、1時間に100個のことが覚えられる<br />
+							魔法のノートです。英単語をはじめとし、<br />
+							あらゆるジャンルのことが覚えられます。<br />
+							毎日使い続けることで、誰もが生き字引になれる。<br />
+							暗記ノートはそんな不思議なノートです。<br />&nbsp;<br />&nbsp;</p>
 					</div>				  
 
 					<!-- /.header button -->
@@ -68,13 +72,37 @@
 				<!-- /.signup form -->
 				<div class="col-md-5">
 				
-					<div class="signup-header wow fadeInUp">
-						<h3 class="form-title text-center">MY NOTE</h3>
+					<div id="register" class="signup-header wow fadeInUp">
+						<h3 class="form-title text-center">Create My Note</h3>
+						<form class="form-header" th:action="@{/}" role="form" method="POST" id="register">
+						<input type="hidden" name="u" value="503bdae81fde8612ff4944435" />
+						<input type="hidden" name="id" value="bfdba52708" />
+							<div class="form-group">
+								<input class="form-control input-lg" name="email" id="email" type="email" placeholder="Email Address" required="true" />
+							</div>
+							<div class="form-group">
+								<input id="email" class="form-control input-lg" name="owner_id" type="text" placeholder="Login Id" required="true" />
+							</div>
+							<div class="form-group">
+								<input id="owner_id" class="form-control input-lg" name="owner_name" type="text" placeholder="Owner Name" required="true" />
+							</div>
+							<div class="form-group">
+								<input class="form-control input-lg" name="login_password" id="new_password" type="password" placeholder="Password" required="true" />
+							</div>
+							<div class="form-group last">
+								<input type="submit" class="btn btn-warning btn-block btn-lg" name="register" value="REGISTER" />
+							</div>
+							<br />
+							<!-- <p class="privacy text-center">We will not share your email. Read our <a href="privacy.html">privacy policy</a>.</p>						 -->						
+						</form>
+					</div>
+					<div id="login" class="signup-header wow fadeInUp">
+						<h3 class="form-title text-center">Open My Note</h3>
 						<form class="form-header" th:action="@{/}" role="form" method="POST" id="#">
 						<input type="hidden" name="u" value="503bdae81fde8612ff4944435" />
 						<input type="hidden" name="id" value="bfdba52708" />
 							<div class="form-group">
-								<input class="form-control input-lg" name="owner_id_or_email" id="name" type="text" placeholder="Owner Id /  Email" required="true" />
+								<input class="form-control input-lg" name="owner_id_or_email" id="name" type="text" placeholder="Login Id /  Email" required="true" />
 							</div>
 							<div class="form-group">
 								<input class="form-control input-lg" name="login_password" id="email" type="password" placeholder="Email address" required="true" />
@@ -82,7 +110,7 @@
 							<div class="form-group last">
 								<input type="submit" class="btn btn-warning btn-block btn-lg" name="login" value="LOGIN" />
 							</div>
-							<p class="privacy text-center">We will not share your email. Read our <a href="privacy.html">privacy policy</a>.</p>
+							<p class="privacy text-center"><a href="privacy.html">ログイン情報を忘れた場合</a></p>						
 						</form>
 					</div>				
 				
@@ -103,7 +131,7 @@
 				  <span class="icon-bar"></span>
 				  <span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand site-name" href="#top"><img th:src="@{img/logo2.png}" alt="logo" /></a>
+				<a class="navbar-brand site-name" href="#top"><img th:src="@{img/logo5.png}" alt="logo" /></a>
 			  </div>
 	 
 			  <div id="navbar-scroll" class="collapse navbar-collapse navbar-backyard navbar-right">
@@ -127,7 +155,7 @@
 
 		<!-- /.intro image -->
 			<div class="col-md-6 intro-pic wow slideInLeft">
-				<img th:src="@{img/intro-image.jpg}" alt="image" class="img-responsive" />
+				<img th:src="@{img/intro-image2.jpg}" alt="image" class="img-responsive" />
 			</div>	
 			
 			<!-- /.intro content -->
@@ -258,7 +286,7 @@
 		<div class="text-center">
 		
 			<!-- /.pricing title -->
-			<h2 class="wow fadeInLeft">PACKAGES</h2>
+			<h2 class="wow fadeInLeft">PLANS</h2>
 			<div class="title-line wow fadeInRight"></div>
 		</div>
 		<div class="row package-option">
@@ -269,19 +297,22 @@
 			   <div class="price-heading text-center">
 			   
 			   <!-- /.package icon -->
-					<i class="pe-7s-radio pe-5x"></i>
-					
+					<!-- <i class="pe-7s-radio pe-5x"></i> -->					
 					<!-- /.package name -->
-					<h3>Basic</h3>
+					<br />
+					<h3>Regular</h3>
+					<img th:src="@{img/regular_note.png}" width="280px;" />
 			   </div>
-			   
 			   <!-- /.price -->
 				<div class="price-group text-center">
-					<span class="dollar">$</span>
-					<span class="price">9</span>
-					<span class="time">/mo</span>
+					<!-- <span class="dollar">$</span> -->
+					<span class="price">無料</span>
+					<!-- <span class="time">/月</span> -->
 				</div>
-			
+			   <!-- /.package button -->
+			   <div class="price-footer text-center">
+				 <a class="btn btn-price" href="#">BUY NOW</a>
+				</div>	
 				<!-- /.package features -->
 			   <ul class="price-feature text-center">
 				  <li><strong>100MB</strong> Disk Space</li>
@@ -290,12 +321,8 @@
 				  <li><strong>5</strong> Email Accounts</li>
 				  <li><strike>Webmail Support</strike></li>				  
 			   </ul>
-			   
-			   <!-- /.package button -->
-			   <div class="price-footer text-center">
-				 <a class="btn btn-price" href="#">BUY NOW</a>
-				</div>	
-			  </div>
+			   <br />
+			  </div>			
 			</div>
 			
 			<!-- /.package 2 -->
@@ -304,105 +331,35 @@
 			   <div class="price-heading text-center">
 
 			   <!-- /.package icon -->
-				<i class="pe-7s-joy pe-5x"></i>
 
 			   <!-- /.package name -->
-				<h3>Standard</h3>
+			   <br />
+				<h3>Premium</h3>
+					<img th:src="@{img/premium_note.png}" width="300px;" />
 			   </div>
 			   
 			   <!-- /.price -->
 				<div class="price-group text-center">
-					<span class="dollar">$</span>
-					<span class="price">19</span>
-					<span class="time">/mo</span>
+					<!-- <span class="dollar">¥</span> -->
+					<span class="price">¥500</span>
+					<span class="time">/月</span>
 				</div>
 			
-				<!-- /.package features -->
-			   <ul class="price-feature text-center">
-				  <li><strong>300MB</strong> Disk Space</li>
-				  <li><strong>400MB</strong> Bandwidth</li>
-				  <li><strong>5</strong> Subdomains</li>
-				  <li><strong>10</strong> Email Accounts</li>
-				  <li><strike>Webmail Support</strike></li>			  
-			   </ul>
-
-				<!-- /.package button -->
-			   <div class="price-footer text-center">
-				 <a class="btn btn-price" href="#">BUY NOW</a>
-				</div>
-			  </div>
-			</div>	
-			
-			<!-- /.package 3 -->
-			<div class="col-sm-3">
-			  <div class="price-box wow fadeInUp" data-wow-delay="0.4s">
-			   <div class="price-heading text-center">
-			   
-					<!-- /.package icon -->
-					<i class="pe-7s-science pe-5x"></i>
-				
-					<!-- /.package name -->
-					<h3>Advance</h3>
-			   </div>
-			   
-			   <!-- /.price -->
-				<div class="price-group text-center">
-					<span class="dollar">$</span>
-					<span class="price">29</span>
-					<span class="time">/mo</span>
-				</div>
-			
-				<!-- /.package features -->
-			   <ul class="price-feature text-center">
-				  <li><strong>1GB</strong> Disk Space</li>
-				  <li><strong>1GB</strong> Bandwidth</li>
-				  <li><strong>10</strong> Subdomains</li>
-				  <li><strong>25</strong> Email Accounts</li>
-				  <li>Webmail Support</li>					  
-			   </ul>
-			   
 			   <!-- /.package button -->
 			   <div class="price-footer text-center">
 				 <a class="btn btn-price" href="#">BUY NOW</a>
 				</div>	
-			  </div>
-			</div>
-			
-			<!-- /.package 4 -->
-			<div class="col-sm-3">
-			  <div class="price-box wow fadeInUp" data-wow-delay="0.6s">
-			   <div class="price-heading text-center">
-			   
-					<!-- /.package icon -->
-					<i class="pe-7s-tools pe-5x"></i>
-					
-					<!-- /.package name -->
-					<h3>Ultimate</h3>
-			   </div>
-			   
-			   <!-- /.price -->
-				<div class="price-group text-center">
-					<span class="dollar">$</span>
-					<span class="price">49</span>
-					<span class="time">/mo</span>
-				</div>
-			
 				<!-- /.package features -->
 			   <ul class="price-feature text-center">
-				  <li><strong>5GB</strong> Disk Space</li>
-				  <li><strong>5GB</strong> Bandwidth</li>
-				  <li><strong>50</strong> Subdomains</li>
-				  <li><strong>50</strong> Email Accounts</li>
-				  <li>Webmail Support</li>			  
+				  <li><strong>100MB</strong> Disk Space</li>
+				  <li><strong>200MB</strong> Bandwidth</li>
+				  <li><strong>2</strong> Subdomains</li>
+				  <li><strong>5</strong> Email Accounts</li>
+				  <li><strike>Webmail Support</strike></li>				  
 			   </ul>
-			   
-			   <!-- /.package button -->
-			   <div class="price-footer text-center">
-				 <a class="btn btn-price" href="#">BUY NOW</a>
-				</div>
-			  </div>
+			   <br />
+			  </div>			
 			</div>
-
 		</div>
 	</div>
 </div>
