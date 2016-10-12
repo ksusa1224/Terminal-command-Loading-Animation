@@ -2,6 +2,7 @@ package com.application.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -48,99 +49,111 @@ public class TopPageController {
 			  @RequestParam("owner_name") String owner_name,
 			  @RequestParam("email") String email) 
 	  {
-		  try
-		  {
-			SQliteDAO sqlite_dao = new SQliteDAO();
-			String db_name = sqlite_dao.createOwnerDB(owner_id);
-			
-			// 暗号化ユーティリティ
-			AES aes = new AES();
-			byte[] encrypted_password = aes.encrypt(login_password);
-			byte[] encrypted_db_name = aes.encrypt(db_name);
-
-			// SQLに渡すパラメーター（バイナリのみ対象）
-			List<byte[]> params = new ArrayList<byte[]>();
-			params.add(encrypted_password);
-
-			H2dbDao h2db_dao2 = new H2dbDao();
-			//h2db_dao2.create_common_db();
-			
-			// オーナー情報TBLに会員登録したユーザ情報を登録
-			StringBuilderPlus sql = new StringBuilderPlus();
-			sql.appendLine("insert into owner_info (");
-			sql.appendLine("  owner_id,");
-			sql.appendLine("  owner_name,");
-			sql.appendLine("  email,");
-			sql.appendLine("  password,");
-			sql.appendLine("  kakin_type,");
-			sql.appendLine("  del_flg,");
-			sql.appendLine("  insert_date,");
-			sql.appendLine("  update_date)");
-			sql.appendLine("values(");
-			sql.appendLine("  '" + owner_id + "',");
-			sql.appendLine("  '" + owner_name + "',");
-			sql.appendLine("  '" + email + "',");
-			sql.appendLine("  ?,"); // Password
-			sql.appendLine("  '" + Constant.KAKIN_TYPE_FREE_PREIMIUM + "',");
-			sql.appendLine("  0,");
-			sql.appendLine("  current_timestamp(),");
-			sql.appendLine("  current_timestamp()");
-			sql.appendLine(");");
-
-			H2dbDao h2db_dao = new H2dbDao();
-			h2db_dao.update(sql, params);
-
-			// ユーザDB情報テーブルに会員登録したユーザのDB情報を格納
-			params = new ArrayList<byte[]>();
-			params.add(encrypted_db_name);
-			
-			StringBuilderPlus sql2 = new StringBuilderPlus();
-			sql2.appendLine("insert into owner_db (");
-			sql2.appendLine("  owner_id,");
-			sql2.appendLine("  db_name,");
-			sql2.appendLine("  db_version,");
-			sql2.appendLine("  is_current_db,");
-			sql2.appendLine("  del_flg,");
-			sql2.appendLine("  insert_date,");
-			sql2.appendLine("  update_date");
-			sql2.appendLine(") ");
-			sql2.appendLine("values (");
-			sql2.appendLine("  '" + owner_id + "',");
-			sql2.appendLine("  ?,"); // db_name
-			sql2.appendLine("  '" + Constant.OWNER_DB_CURRENT_VERSION + "',");
-			sql2.appendLine("  1,");
-			sql2.appendLine("  0,");
-			sql2.appendLine("  current_timestamp(),");
-			sql2.appendLine("  current_timestamp()");
-			sql2.appendLine(");");
-			h2db_dao.update(sql2, params);
-			
-			
-		/**
-		 * アクセスログ記録
-		 */
-		String request_uri = request.getRequestURI();
-		String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
-		String client_ip = Log.getClientIpAddress(request);
-		String client_os = Log.getClientOS(request);
-		String client_browser = Log.getClientBrowser(request);
-		Log log = new Log();
-		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
-		}
-		catch(Exception ex)
-		{
-			String trace = ex.toString() + "\n";                     
-
-			for (StackTraceElement e1 : ex.getStackTrace()) {
-			    trace += "\t at " + e1.toString() + "\n";
-			} 
+			/**
+			 * アクセスログ記録
+			 */
+			String request_uri = request.getRequestURI();
+			String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
+			String client_ip = Log.getClientIpAddress(request);
+			String client_os = Log.getClientOS(request);
+			String client_browser = Log.getClientBrowser(request);
 			Log log = new Log();
-			log.insert_error_log(ex.toString(), trace);
+			log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
+
+		  // 仮登録用のワンタイムパスワード
+		  UUID uuid = UUID.randomUUID();
+		  String token = uuid.toString();
+		  MailSend mail_send = new MailSend();
+		  Boolean sended = mail_send.send_register_mail(email, owner_name, token);
+
+		  SQliteDAO sqlite_dao = new SQliteDAO();
+		  String db_name = sqlite_dao.createOwnerDB(owner_id);
+
+		  if (sended = true)
+		  {
+			  try
+			  {				
+				// 暗号化ユーティリティ
+				AES aes = new AES();
+				byte[] encrypted_password = aes.encrypt(login_password);
+				byte[] encrypted_db_name = aes.encrypt(db_name);
+	
+				// SQLに渡すパラメーター（バイナリのみ対象）
+				List<byte[]> params = new ArrayList<byte[]>();
+				params.add(encrypted_password);
+				  			
+				H2dbDao h2db_dao2 = new H2dbDao();
+				//h2db_dao2.create_common_db();
 			
-			ex.printStackTrace();
-		}
-		
-			
+				// オーナー情報TBLに会員登録したユーザ情報を登録
+				StringBuilderPlus sql = new StringBuilderPlus();
+				sql.appendLine("insert into owner_info (");
+				sql.appendLine("  owner_id,");
+				sql.appendLine("  owner_name,");
+				sql.appendLine("  email,");
+				sql.appendLine("  password,");
+				sql.appendLine("  kakin_type,");
+				sql.appendLine("  del_flg,");
+				sql.appendLine("  insert_date,");
+				sql.appendLine("  update_date)");
+				sql.appendLine("values(");
+				sql.appendLine("  '" + owner_id + "',");
+				sql.appendLine("  '" + owner_name + "',");
+				sql.appendLine("  '" + email + "',");
+				sql.appendLine("  ?,"); // Password
+				sql.appendLine("  '" + Constant.KAKIN_TYPE_FREE_PREIMIUM + "',");
+				sql.appendLine("  0,");
+				sql.appendLine("  current_timestamp(),");
+				sql.appendLine("  current_timestamp()");
+				sql.appendLine(");");
+	
+				H2dbDao h2db_dao = new H2dbDao();
+				h2db_dao.update(sql, params);
+	
+				// ユーザDB情報テーブルに会員登録したユーザのDB情報を格納
+				params = new ArrayList<byte[]>();
+				params.add(encrypted_db_name);
+				
+				StringBuilderPlus sql2 = new StringBuilderPlus();
+				sql2.appendLine("insert into owner_db (");
+				sql2.appendLine("  owner_id,");
+				sql2.appendLine("  db_name,");
+				sql2.appendLine("  db_version,");
+				sql2.appendLine("  is_current_db,");
+				sql2.appendLine("  del_flg,");
+				sql2.appendLine("  insert_date,");
+				sql2.appendLine("  update_date");
+				sql2.appendLine(") ");
+				sql2.appendLine("values (");
+				sql2.appendLine("  '" + owner_id + "',");
+				sql2.appendLine("  ?,"); // db_name
+				sql2.appendLine("  '" + Constant.OWNER_DB_CURRENT_VERSION + "',");
+				sql2.appendLine("  1,");
+				sql2.appendLine("  0,");
+				sql2.appendLine("  current_timestamp(),");
+				sql2.appendLine("  current_timestamp()");
+				sql2.appendLine(");");
+				h2db_dao.update(sql2, params);
+				  	
+			}
+			catch(Exception ex)
+			{
+				String trace = ex.toString() + "\n";                     
+	
+				for (StackTraceElement e1 : ex.getStackTrace()) {
+				    trace += "\t at " + e1.toString() + "\n";
+				} 
+				log.insert_error_log(ex.toString(), trace);
+				
+				ex.printStackTrace();
+			}
+		  }
+		  else if (sended == false)
+		  {
+			  return "error";
+		  }
+		  
+		  
 	      return "index";
 	  }
 	  
@@ -153,8 +166,6 @@ public class TopPageController {
 			  @RequestParam("owner_id_or_email") String owner_id_or_email,
 			  @RequestParam("login_password") String input_password) 
 	  {
-		    MailSend mail = new MailSend("");
-		  
 			H2dbDao h2db_dao = new H2dbDao();
 			
 			AES aes = new AES();

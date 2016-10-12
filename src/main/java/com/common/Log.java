@@ -1,5 +1,8 @@
 package com.common;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -199,5 +202,20 @@ public @Data class Log {
 	    }
 	    return browser;
 		
+	}
+	
+	/**
+	 * 
+	 * @param ex
+	 * @return
+	 */
+	public String ex_to_string (Exception ex)
+	{
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		ex.printStackTrace(pw);
+		pw.flush();
+		String str = sw.toString();
+		return str;
 	}
 }
