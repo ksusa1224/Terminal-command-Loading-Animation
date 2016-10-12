@@ -217,7 +217,7 @@ function body_load()
         	var husen_name = $(ui.draggable).text();
         	$("#qa_husen").html("<span data-junban='"+ qa_husen_junban +"'>" + husen_name +"</span>")
         	qa_husen_global = qa_husen_global + $("#qa_husen").text();
-        	alert(qa_husen_global);
+        	//alert(qa_husen_global);
         	qa_husen_junban++;
         }
     });    
@@ -1241,8 +1241,10 @@ function edit_qa(q_obj)
 		success: function(data)
 		{
 			$("#qa_input").html(data[0]);
-			alert(data[1]);
-			$("#qa_id").val(qa_id);
+			//alert(data[1]);
+			$("#husen_paste").html(data[1]);
+		    //$(".husen" ).draggable();
+		    $("#qa_id").val(qa_id);
 		},
 		error: function(data)
 		{
