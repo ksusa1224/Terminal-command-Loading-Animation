@@ -129,6 +129,7 @@ div.page_right
 	padding-left: 3px;
 	padding-right: 3px;
 	z-index:1000;
+	cursor: pointer;
 }
 
 .q

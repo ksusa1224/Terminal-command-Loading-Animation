@@ -96,7 +96,7 @@ public class SeitouDao {
 	      while (rs.next()) 
 	      {
 	    	  seitou_cnt = rs.getInt(1);
-	    	  System.out.println(seitou_cnt);
+	    	  //System.out.println(seitou_cnt);
 	      }
 	    }
 	    catch(Exception ex)
@@ -203,7 +203,7 @@ public class SeitouDao {
         {
         	sql.appendLine(" group by seitou.s_id");
         }
-	      System.out.println("正答数："+sql.toString());
+	   //   System.out.println("正答数："+sql.toString());
 
 		
 		dao.loadDriver();
@@ -322,7 +322,7 @@ public class SeitouDao {
         	sql.appendLine(",qa, qa_tag_relation,tag");
         }
 		sql.appendLine("WHERE seikai_flg = 1");
-		System.out.println(tag_names);
+		//System.out.println(tag_names);
 		if (!tag_names.equals(""))
         {
 			sql.appendLine(" and qa.qa_id = qa_tag_relation.qa_id");
@@ -352,7 +352,7 @@ public class SeitouDao {
 
 		dao.loadDriver();
 		
-		System.out.println(sql.toString());
+//		System.out.println(sql.toString());
 
 	    Connection connection = null;
 		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";

@@ -536,7 +536,7 @@ public class QADao {
 		sql.appendLine(" order by qa.update_timestamp desc");
 		sql.appendLine("  limit " + limit + " offset " + offset + ";");
 		
-		System.out.println("sql:"+sql.toString());
+//		System.out.println("sql:"+sql.toString());
 		
 		dao.loadDriver();
 		

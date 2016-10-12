@@ -812,10 +812,15 @@ var is_note_open = true;
 
 function paging(page,next_or_prev)
 {
+//	alert(page);
+//	alert(next_or_prev);
+//	alert(is_note_open);
+	
 	var total_pages = Number($("#total_pages").text());
 
 	// 最後のページで⇒を押した場合
-	if (next_or_prev == "next" && (total_pages == page || total_pages == (page + 1)))
+	if (next_or_prev == "next" && is_note_open == true &&
+		(total_pages == page || total_pages == (page + 1)))
 	{
 		// TODO ノートを閉じる
 		return false;
@@ -839,15 +844,16 @@ function paging(page,next_or_prev)
 	    $(".magnifying_lens").hide();
 	    $(".total_pages").hide();
 	    $(".page_right").hide();
-	    $("#notebook").focus();
+//	    $("#notebook").focus();
 	    $("#crystal_board").css("left","-30px");
 	    $("#crystal_board").css("top","200px");
 //	    loupe();
 //	    loupe_drop();
 		return false;
 	}
-	else if (next_or_prev == "next" && page == 1)
+	else if (next_or_prev == "next")
 	{
+//		alert("a");
 		if (is_note_open == false)
 		{
 			$("#notebook").show();

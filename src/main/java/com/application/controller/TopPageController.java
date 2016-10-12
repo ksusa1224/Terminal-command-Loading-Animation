@@ -24,6 +24,7 @@ import com.common.Log;
 import com.common.StringBuilderPlus;
 import com.dao.H2dbDao;
 import com.dao.SQliteDAO;
+import com.email.MailSend;
 
 @Controller
 public class TopPageController {
@@ -152,6 +153,8 @@ public class TopPageController {
 			  @RequestParam("owner_id_or_email") String owner_id_or_email,
 			  @RequestParam("login_password") String input_password) 
 	  {
+		    MailSend mail = new MailSend("");
+		  
 			H2dbDao h2db_dao = new H2dbDao();
 			
 			AES aes = new AES();
