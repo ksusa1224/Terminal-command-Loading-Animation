@@ -148,8 +148,30 @@ function slime_pulupulu()
 
 $draged_husen = null;
 
+var qa_id_for_contextmenu = "";
+
 function body_load()
 {	
+	$('.qa').mousedown(function(event) {
+	    switch (event.which) {
+	        case 1:
+//	            alert('Left Mouse button pressed.');
+	            break;
+	        case 2:
+//	            alert('Middle Mouse button pressed.');
+	            break;
+	        case 3:
+//	            alert('Right Mouse button pressed.');
+	    		qa_id_for_contextmenu = this.id;
+	            break;
+	        default:
+//	            alert('You have a strange Mouse!');
+	    }
+	});	
+//	$( ".qa" ).mouseover(function() {
+//		qa_id_for_contextmenu = this.id;
+////		alert(qa_id_for_contextmenu);
+//	});
 //	countLines("qa_area");
 	
 	$("#qa_input").on("click", function () { // click event
@@ -480,9 +502,11 @@ function slime_speech()
     $(".qa").hover(function() {
     	if (speech_mode == "true")
     	{
-        	var id = $(this).attr("id");
-        	var s_id = $(this).children(".a").attr("id");
-        	serif = $(this).children(".a").text();
+//        	var id = $(this).attr("id");
+    		var id = qa_id_for_contextmenu;
+        	var s_id = $("#"+id).children(".a").attr("id");
+        	//alert(s_id);
+        	serif = $("#"+id).children(".a").text();
         	var path = "../speech/" + s_id + ".m4a";
         	$("#play_qa").attr("src",path);
 	        document.getElementById("play_qa").play();    	
@@ -1201,6 +1225,11 @@ function sleep(milliseconds) {
 function edit_qa(q_obj)
 {
 	var qa_id = $(q_obj).parent().attr('id');
+	if(q_obj == null)
+	{
+		qa_id = qa_id_for_contextmenu;
+	}
+	//alert(qa_id);
 	jQuery.ajax({
 		url: "../edit_qa.html?qa_id="+qa_id,
 		dataType: "html",
