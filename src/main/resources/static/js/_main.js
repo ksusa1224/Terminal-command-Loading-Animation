@@ -224,6 +224,17 @@ function body_load()
         }
     });    
 
+    $('#slime').droppable({
+        accept:'#erasor',
+        drop: function(event,ui){
+	    	$("#slime").animate({width: '500px', height:'150px', left:'0px'}, 50);
+	    	$("#slime").animate({width: '150px', height:'150px', left:'0px'}, 300);
+	    	$("#slime").animate({width: '150px', height:'150px', left:'870px'}, 1200);
+	    	$("#erasor").css("left","1070px");
+	    	$("#erasor").css("top","420px");
+        }
+    });    
+
     $('.husen').droppable({
         accept:'#erasor',
         drop: function(event,ui){
@@ -1452,7 +1463,7 @@ function change_mode()
 		$("#qa_input").html("");
 		id = 2;
 		qa_husen_global = "";
-		$("#husen_paste").html("");
+		$("#husen_paste").html("付箋をドラッグ");
 		$("#qa_input").focus();
 	}
 }
