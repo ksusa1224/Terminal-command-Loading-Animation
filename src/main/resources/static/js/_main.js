@@ -153,7 +153,7 @@ var qa_id_for_contextmenu = "";
 var qa_husen_global = "";
 
 function body_load()
-{	
+{		
 	$('.qa').mousedown(function(event) {
 	    switch (event.which) {
 	        case 1:
@@ -1340,6 +1340,7 @@ function sleep(milliseconds) {
 
 function edit_qa(q_obj)
 {
+	$("#qa_input").removeAttr("data-ph");
 	var qa_id = $(q_obj).parent().attr('id');
 	if(q_obj == null)
 	{
@@ -1454,6 +1455,8 @@ function change_mode()
 	if ($("#edit_mode").attr("src") == "../img/register_mode.png")
 	{
 		$("#edit_mode").attr("src","../img/edit_mode2.png");
+		$("#qa_input").attr("data-ph","ここに問題と解答を入力");
+
 	}
 	// 編集モードなら登録モードにする
 	else

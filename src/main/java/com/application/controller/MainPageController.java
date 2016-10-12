@@ -1373,36 +1373,48 @@ public class MainPageController{
 			byte[] yomiage = null;
 			if (language == Constant.ENGLISH)
 			{
-				try {
-					String speaker = "Vicki";
-					String file_name = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + ".wav";
-					String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + seitou.getSeitou() + "' -o " + file_name;
-					System.out.println(command);
-					Runtime.getRuntime().exec(command);
-					set_executable(file_name);
-					String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=18K -vn " + file_name.replace("wav", "m4a");
-					Runtime.getRuntime().exec(command2);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				// 重いので非同期の別スレッドで処理
+				new Thread(new Runnable() {
+		            @Override
+		            public void run() {
+						try {
+							String speaker = "Vicki";
+							String file_name = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + ".wav";
+							String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + seitou.getSeitou() + "' -o " + file_name;
+							System.out.println(command);
+							Runtime.getRuntime().exec(command);
+							set_executable(file_name);
+							String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=18K -vn " + file_name.replace("wav", "m4a");
+							Runtime.getRuntime().exec(command2);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+		            }
+		        }).start();
 			}
 			else
 			{
-				String roman = SlimeSerif.Japanese_to_Roman(seitou.getSeitou());
-				try {
-					String speaker = "Vicki";
-					String file_name = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + ".wav";
-					String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + roman + "' -o " + file_name;
-					System.out.println(command);
-					Runtime.getRuntime().exec(command);
-					set_executable(file_name);
-					String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=18K -vn " + file_name.replace("wav", "m4a");
-					Runtime.getRuntime().exec(command2);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				// 重いので非同期の別スレッドで処理
+				new Thread(new Runnable() {
+		            @Override
+		            public void run() {
+					String roman = SlimeSerif.Japanese_to_Roman(seitou.getSeitou());
+					try {
+						String speaker = "Vicki";
+						String file_name = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + ".wav";
+						String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + roman + "' -o " + file_name;
+						System.out.println(command);
+						Runtime.getRuntime().exec(command);
+						set_executable(file_name);
+						String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=18K -vn " + file_name.replace("wav", "m4a");
+						Runtime.getRuntime().exec(command2);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		            }
+		        }).start();
 			}
 			seitou.setYomiage(yomiage);
 		    // 削除フラグ

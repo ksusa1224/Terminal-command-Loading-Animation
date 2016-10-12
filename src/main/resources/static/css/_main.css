@@ -271,6 +271,11 @@ div.page_right
     display: none;  // Safari and Chrome
 }
 
+[contentEditable=true]:not(:focus)::before{
+    content:attr(data-ph);
+	color: #54A0DC;
+}
+
 #erasor
 {
 	position:absolute;
@@ -366,6 +371,13 @@ input
 	border-top: 1px dotted #9B9EA6;
 	border-bottom: 1px dotted #9B9EA6;
 	outline: none;
+}
+
+.bootstrap-select.btn-group .dropdown-toggle .caret {
+  width: 10px;
+  height: 10px;
+  border: none;
+  background-color: green;
 }
 
 #qa_input:focus {

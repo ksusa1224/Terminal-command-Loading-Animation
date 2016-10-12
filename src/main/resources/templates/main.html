@@ -9,6 +9,7 @@
 <link rel="stylesheet" type="text/css" th:href="@{../css/jquery-ui.css}" />
 <script th:src="@{../js/jquery-3.1.0.min.js}"></script>
 <script th:src="@{../js/jquery-ui.js}"></script>
+<script th:src="@{../js/jquery.awesome-cursor.js}"></script>
 <script th:src="@{../js/_main.js}"></script>
 <script type="text/javascript" th:inline="javascript">
 /*<![CDATA[*/
@@ -121,7 +122,7 @@
 <form th:action="@{'/' + ${owner_id} + '/main.html'}" method="post" onsubmit="javascript:copy_to_hidden();">
 <!--/* QA文登録エリア start */-->
 <div id="scrollable">
-	<div id="qa_input" contenteditable="true"  
+	<div id="qa_input" contenteditable="true" data-ph="ここに問題と解答を入力"
 	 onkeypress="javascript:enter();" onfocus="javascript:qa_focus(this);" tabindex="1">
 	</div>
 	<textarea id="qa_input_hidden" name="qa_input_hidden" style="display:none;">&#8203;</textarea>
