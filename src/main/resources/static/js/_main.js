@@ -150,6 +150,8 @@ $draged_husen = null;
 
 var qa_id_for_contextmenu = "";
 
+var qa_husen_global = "";
+
 function body_load()
 {	
 	$('.qa').mousedown(function(event) {
@@ -214,6 +216,8 @@ function body_load()
         drop: function(event,ui){
         	var husen_name = $(ui.draggable).text();
         	$("#qa_husen").html("<span data-junban='"+ qa_husen_junban +"'>" + husen_name +"</span>")
+        	qa_husen_global = qa_husen_global + $("#qa_husen").text();
+        	alert(qa_husen_global);
         	qa_husen_junban++;
         }
     });    
@@ -672,7 +676,7 @@ function register_qa_ajax ()
 	var decoded = encodeURIComponent($("#qa_input_hidden").html(qa_input).text());
 	var yomudake_flg = "";//$("#yomudake_flg").val();
 	var reversible_flg = "";//$("#reversible_flg").val();
-	var qa_husen = ($("#qa_husen").val());
+	var qa_husen = qa_husen_global;
 	var qa_id = $("#qa_id").val();
 //	alert(qa_id);
 	jQuery.ajax({
@@ -1232,11 +1236,12 @@ function edit_qa(q_obj)
 	//alert(qa_id);
 	jQuery.ajax({
 		url: "../edit_qa.html?qa_id="+qa_id,
-		dataType: "html",
+		dataType: "json",
 		cache: false,
 		success: function(data)
 		{
-			$("#qa_input").html(data);
+			$("#qa_input").html(data[0]);
+			alert(data[1]);
 			$("#qa_id").val(qa_id);
 		},
 		error: function(data)

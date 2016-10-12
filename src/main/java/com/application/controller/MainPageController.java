@@ -1042,7 +1042,20 @@ public class MainPageController{
 
 		QADao qa_dao = new QADao();
 		String qa_html = qa_dao.get_qa_html(owner_db, qa_id);
-		return qa_html;
+		
+		QaTagRelationDao qa_tag_relation_dao = new QaTagRelationDao();
+		List<TagModel> tag_list = new ArrayList<TagModel>();
+		tag_list = qa_tag_relation_dao.select_tags_by_qa_id(owner_db, qa_id);
+		String husen_html = "";
+		System.out.println("タグリストサイズ："+tag_list.size());
+		for (TagModel tag : tag_list)
+		{
+			husen_html += ("<div class='husen'>" + tag.getTag_name() + "</div>");
+		}
+		String json = JSON.encode(
+				new String[] 
+				{qa_html,husen_html});
+		return json;		
 	}		
 	
 	
@@ -1507,6 +1520,7 @@ public class MainPageController{
 		{
 			if (!qa_husen.equals(""))
 			{
+				System.out.println("qa_husen:"+qa_husen);
 				QaTagRelationDao qa_tag_relation_dao = new QaTagRelationDao();
 				Document huden_doc = Jsoup.parse(qa_husen);
 				Elements husen_spans = huden_doc.getElementsByTag("span");

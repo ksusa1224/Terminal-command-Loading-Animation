@@ -4,10 +4,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.application.model.dao.QaTagRelationModel;
 import com.application.model.dao.SeitouModel;
+import com.application.model.dao.TagModel;
 import com.common.Constant;
 import com.common.Log;
 import com.common.StopWatch;
@@ -138,6 +140,131 @@ public class QaTagRelationDao {
 	    }	    
 		
 		return qa_tag_relation;
+	}
+	
+	/**
+	 * QAに紐づく付箋一覧を取得する
+	 * @param db_name
+	 * @param qa_id
+	 * @return
+	 */
+	public List<TagModel> select_tags_by_qa_id(String db_name, String qa_id)
+	{		
+		List<TagModel> tag_list = new ArrayList<TagModel>();
+		
+		SQliteDAO dao = new SQliteDAO();
+		
+		StringBuilderPlus sql = new StringBuilderPlus();
+		sql.appendLine("select ");
+		// 行番号
+		sql.appendLine("  tag.row_no,");
+	    // タグID
+		sql.appendLine("  tag.tag_id,");
+	    // タグ名
+		sql.appendLine("  tag.tag_name,");
+	    // 表示順
+		sql.appendLine("  tag.junban,");
+	    // 表示フラグ
+		sql.appendLine("  tag.display_flg,");
+	    // 重要度（５段階）
+		sql.appendLine("  tag.juyoudo,");
+	    // 難易度（５段階）
+		sql.appendLine("  tag.nanido,");
+	    // システムタグフラグ
+		sql.appendLine("  tag.system_tag_flg,");
+	    // タグ種別
+		sql.appendLine("  tag.tag_type,");
+	    // デザイン種別
+	    sql.appendLine("	tag.design_type,");
+	    // 公開範囲
+		sql.appendLine("  tag.koukai_level,");
+	    // 言語
+		sql.appendLine("  tag.language,");
+		// 削除フラグ
+		sql.appendLine("	tag.del_flg,");
+		// 作成者
+		sql.appendLine("  tag.create_owner,");
+		// 更新者
+		sql.appendLine("  tag.update_owner,");
+		// レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+		sql.appendLine("	tag.create_timestamp,");
+		// レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+		sql.appendLine("	tag.update_timestamp");
+		sql.appendLine(" from tag, qa_tag_relation");
+		sql.appendLine(" where tag.tag_id = qa_tag_relation.tag_id");
+		sql.appendLine(" and qa_tag_relation.qa_id = '" + qa_id + "'");
+		sql.appendLine(" and tag.del_flg = 0");
+		sql.appendLine(" order by tag.update_timestamp asc;");
+		
+		System.out.println(sql.toString());
+		
+		dao.loadDriver();
+		
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+		
+		try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+	      ResultSet rs = stmt.executeQuery(sql.toString());
+	      while (rs.next()) 
+	      {
+	    	  TagModel tag = new TagModel();
+		      // 行番号
+	    	  tag.setRow_no(rs.getInt("row_no"));
+	    	  // タグID
+	    	  tag.setTag_id(rs.getString("tag_id"));
+	    	  // タグ名
+	    	  tag.setTag_name(rs.getString("tag_name"));
+	    	  // 表示順
+	    	  tag.setJunban(rs.getInt("junban"));
+	    	  // 表示フラグ
+	    	  tag.setDisplay_flg(rs.getInt("display_flg"));
+	    	  // 重要度（５段階）
+	    	  tag.setJunban(rs.getInt("juyoudo"));
+	    	  // 難易度（５段階）
+	    	  tag.setNanido(rs.getInt("nanido"));
+	    	  // システムタグフラグ
+	    	  tag.setSystem_tag_flg(rs.getInt("system_tag_flg"));
+	    	  // タグ種別
+	    	  tag.setTag_type(rs.getInt("tag_type"));
+		      // デザイン種別
+	    	  tag.setDesign_type(rs.getInt("design_type"));		     
+	    	  // 公開範囲
+	    	  tag.setKoukai_level(rs.getInt("koukai_level"));
+	    	  // 言語
+	    	  tag.setLanguage(rs.getString("language"));
+	    	  // 削除フラグ
+		      tag.setDel_flg(rs.getInt("del_flg"));
+		      // 作成者
+		      tag.setCreate_owner(rs.getString("create_owner"));
+		      // 更新者
+		      tag.setUpdate_owner(rs.getString("update_owner"));
+		      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+		      tag.setUpdate_timestamp(rs.getString("create_timestamp"));
+		      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+		      tag.setUpdate_timestamp(rs.getString("update_timestamp"));
+
+		      tag_list.add(tag);
+	      }
+	    }
+	    catch(Exception ex)
+	    {
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+	    }	    
+		
+		return tag_list;
 	}
 	
 	/**
