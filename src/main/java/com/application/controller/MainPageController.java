@@ -458,7 +458,7 @@ public class MainPageController{
 		tag_list = tag_dao.select_tag_list(owner_db, tag_list);
 		for (TagModel tag : tag_list)
 		{
-			husen_html += ("<div class='husen'>" + tag.getTag_name() + "</div>");
+			husen_html += ("<div id='" + tag.getTag_id() + "' class='husen'>" + tag.getTag_name() + "</div>");
 		}
 		return husen_html;
 	}	    
@@ -676,78 +676,6 @@ public class MainPageController{
 	}
 	
 	/**
-	 * AjaxでQA登録、再検索
-	 * 誤動作多い、かつ重いため現在未使用
-	 * @param a_input
-	 * @return
-	 */
-//	@RequestMapping(value={"/register_qa.html"}, method=RequestMethod.GET)
-
-//	public @ResponseBody String ajax_reload(
-//			HttpServletRequest request,
-//			HttpSession session,
-//			Model model,
-//			@RequestParam("qa_input") String qa_input,
-//			@RequestParam(value="yomudake_flg", required=false) String yomudake_flg,
-//			@RequestParam(value="reversible_flg", required=false) String reversible_flg
-//			) {
-//
-//		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
-//		AES aes = new AES();
-//		String owner_db = aes.decrypt(encrypted_owner_db);
-//		   
-//		// TODO 認証されてるかどうかはsessionに入れると書き換えられてしまうから毎回DBに接続した方がいいかな
-//		Boolean is_authenticated = (Boolean)session.getAttribute("is_authenticated");
-//		if (is_authenticated == false)
-//		{
-//			return "index";
-//		}
-//		String owner_id = (String)session.getAttribute("owner_id");
-//		//System.out.println(owner_id);
-//		
-//		if (yomudake_flg == null)
-//		{
-//			yomudake_flg = "off";
-//		}
-//		if (reversible_flg == null)
-//		{
-//			reversible_flg = "off";
-//		}
-//		System.out.println(yomudake_flg);
-//		System.out.println(reversible_flg);
-//			
-//		create_qa(owner_id, owner_db, qa_input, yomudake_flg, reversible_flg);
-//		
-//		String qa_html = generate_qa_html(select_qa_plus(owner_db),owner_db);			
-//
-//		// 正答総数
-//		SeitouDao seitou_dao = new SeitouDao();
-//		int seitou_sum = seitou_dao.get_seitou_cnt(owner_db);
-//		model.addAttribute("seitou_sum", seitou_sum);
-//		
-//		// 正解総数
-//		int seikai_sum = seitou_dao.get_seikai_cnt(owner_db);
-//		model.addAttribute("seikai_sum", seikai_sum);
-//		
-////		JSONObject obj = new JSONObject();
-////		obj.put("qa_html", qa_html);
-////		obj.put("seitou_sum", seitou_sum);
-//		
-//		/**
-//		 * アクセスログ記録
-//		 */
-//		String request_uri = request.getRequestURI();
-//		String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
-//		String client_ip = Log.getClientIpAddress(request);
-//		String client_os = Log.getClientOS(request);
-//		String client_browser = Log.getClientBrowser(request);
-//		Log log = new Log();
-//		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
-//		
-//		return qa_html;
-//	}	
-
-	/**
 	 * 正答の色を変更する（白⇒赤、赤⇒白）
 	 * @param session
 	 * @param now_opacity
@@ -875,6 +803,28 @@ public class MainPageController{
 		return insert_tag(tag_name, owner_db, owner_id);
 	}
 
+	@RequestMapping(value={"/husen_delete.html"}, method=RequestMethod.GET)
+	public @ResponseBody String husen_delete(
+			HttpSession session,
+			@RequestParam(value = "tag_id", required=false) String tag_id) {
+
+		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
+		AES aes = new AES();
+		String owner_db = aes.decrypt(encrypted_owner_db);
+
+		String owner_id = (String)session.getAttribute("owner_id");		
+		
+		TagDao tag_dao = new TagDao();
+		tag_dao.delete_tag(owner_db, tag_id);
+		
+		// 付箋
+		String husen_html = generate_husen_html(owner_db);
+
+		String json = JSON.encode(
+				new String[] 
+				{husen_html});
+		return json;
+	}
 
 	/**
 	 * タグを新規作成
@@ -1047,10 +997,9 @@ public class MainPageController{
 		List<TagModel> tag_list = new ArrayList<TagModel>();
 		tag_list = qa_tag_relation_dao.select_tags_by_qa_id(owner_db, qa_id);
 		String husen_html = "";
-		System.out.println("タグリストサイズ："+tag_list.size());
 		for (TagModel tag : tag_list)
 		{
-			husen_html += ("<div class='husen'>" + tag.getTag_name() + "</div>");
+			husen_html += ("<div id='" + tag.getTag_id() + "' class='husen'>" + tag.getTag_name() + "</div>");
 		}
 		String json = JSON.encode(
 				new String[] 

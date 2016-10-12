@@ -165,6 +165,7 @@ function body_load()
 	        case 3:
 //	            alert('Right Mouse button pressed.');
 	    		qa_id_for_contextmenu = this.id;
+//	    		event.preventDefault();
 	            break;
 	        default:
 //	            alert('You have a strange Mouse!');
@@ -222,6 +223,91 @@ function body_load()
         }
     });    
 
+    $('.husen').droppable({
+        accept:'#erasor',
+        drop: function(event,ui){
+//        	alert(this.id);
+        	var tag_id = this.id;
+        	var ret = confirm("付箋「" + this.innerText + "」を削除しますか？")
+        	if (ret == false)
+        	{
+        		return false;
+        	}
+        	else
+        	{
+    			jQuery.ajax({
+    				url: "../husen_delete.html?tag_id=" + tag_id,
+    				dataType: "json",
+    				cache: false,
+    				success: function(data)
+    				{
+    					$("#crystal_board").html("");
+    					$("#crystal_board").prepend(data[0]);
+    				    $( ".husen" ).draggable({
+    				    	revert: 'true', 
+    				    	scroll: true,
+    				    	helper: 'clone',
+    						stop : function(e, ui){
+    					         $('.husen').draggable().data()["ui-draggable"].cancelHelperRemoval = true;
+    					         this.style.opacity=0;
+    					    },
+    						drag : function(e, ui){
+    					        this.style.opacity=0;
+    					    }    		
+    				    });    					
+    				},
+    				error: function(data)
+    				{
+    					$("#balloon").css("display","inline");
+    					$("#serif").text(server_error);
+    				}
+    			});
+        	}
+        }
+    });    
+    
+    $('#erasor').droppable({
+        accept:'.husen',
+        drop: function(event,ui){
+        	var tag_id = $(ui.draggable).attr("id");
+        	var ret = confirm("付箋「" + $(ui.draggable).text() + "」を削除しますか？")
+        	if (ret == false)
+        	{
+        		return false;
+        	}
+        	else
+        	{
+    			jQuery.ajax({
+    				url: "../husen_delete.html?tag_id=" + tag_id,
+    				dataType: "json",
+    				cache: false,
+    				success: function(data)
+    				{
+    					$("#crystal_board").html("");
+    					$("#crystal_board").prepend(data[0]);
+    				    $( ".husen" ).draggable({
+    				    	revert: 'true', 
+    				    	scroll: true,
+    				    	helper: 'clone',
+    						stop : function(e, ui){
+    					         $('.husen').draggable().data()["ui-draggable"].cancelHelperRemoval = true;
+    					         this.style.opacity=0;
+    					    },
+    						drag : function(e, ui){
+    					        this.style.opacity=0;
+    					    }    		
+    				    });    					
+    				},
+    				error: function(data)
+    				{
+    					$("#balloon").css("display","inline");
+    					$("#serif").text(server_error);
+    				}
+    			});
+        	}
+        }
+    });    
+    
     $('#qa_panel').droppable({
         accept:'#erasor',
         drop: function(event,ui){

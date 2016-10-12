@@ -491,7 +491,7 @@ input
 	height:300px;
 	background: url("../img/crystal_plate.png") no-repeat center;
 	background-size:400px 300px;
-	z-index: 10000;
+	z-index: 100;
     padding-top:90px;
     padding-left:110px;
     cursor: move;
