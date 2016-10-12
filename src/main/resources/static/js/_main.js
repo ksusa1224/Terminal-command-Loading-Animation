@@ -176,6 +176,7 @@ function body_load()
 ////		alert(qa_id_for_contextmenu);
 //	});
 //	countLines("qa_area");
+
 	
 	$("#qa_input").on("click", function () { // click event
 //		  alert( "Handler for .focus() called." );
@@ -1345,6 +1346,7 @@ function edit_qa(q_obj)
 			$("#husen_paste").html(data[1]);
 		    //$(".husen" ).draggable();
 		    $("#qa_id").val(qa_id);
+		    $("#edit_mode").attr("src", "../img/edit_mode2.png");
 		},
 		error: function(data)
 		{
@@ -1434,6 +1436,26 @@ function doSomething() {
             loop();  
     }, rand);
 }());
+
+function change_mode()
+{
+	// 登録モードなら編集モードにする
+	if ($("#edit_mode").attr("src") == "../img/register_mode.png")
+	{
+		$("#edit_mode").attr("src","../img/edit_mode2.png");
+	}
+	// 編集モードなら登録モードにする
+	else
+	{
+		$("#edit_mode").attr("src","../img/register_mode.png");
+		$("#qa_input_hidden").html("");
+		$("#qa_input").html("");
+		id = 2;
+		qa_husen_global = "";
+		$("#husen_paste").html("");
+		$("#qa_input").focus();
+	}
+}
 
 //動作不良
 function countLines(id) {

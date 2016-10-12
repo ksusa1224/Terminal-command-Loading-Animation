@@ -227,6 +227,24 @@ div.page_right
 	width:350px;
 }
 
+#edit_mode
+{
+	position:absolute;
+	top:138px;
+	left:1100px;
+	z-index:100000;	
+	width:80px;	
+}
+
+#new_card
+{
+	position:absolute;
+	top:138px;
+	left:1105px;
+	z-index:100000;	
+	width:80px;
+}
+
 #form_grandparent
 {
 	position:absolute;
@@ -353,9 +371,10 @@ input
 #qa_input:focus {
   box-shadow: 0 0 5px rgba(81, 203, 238, 1);
   border: 1px dotted rgba(81, 203, 238, 1);
-  border-left:none;
+  border-left: 1px dotted rgba(81, 203, 238, 1);
   border-right:none;
 }
+
 
 .q_input
 {
