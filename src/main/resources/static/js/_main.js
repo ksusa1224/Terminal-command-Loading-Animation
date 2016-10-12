@@ -228,41 +228,48 @@ function body_load()
         drop: function(event,ui){
 //        	alert(this.id);
         	var tag_id = this.id;
-        	var ret = confirm("付箋「" + this.innerText + "」を削除しますか？")
-        	if (ret == false)
+        	var tag_name = this.innerText;
+        	if (tag_name == "未正解" || tag_name == "正解")
         	{
-        		return false;
+				$("#balloon").css("display","inline");
+				$("#serif").text("青いふせんは特別なふせんだから、消せないよ〜");
+        		tag_id = "";
         	}
         	else
         	{
-    			jQuery.ajax({
-    				url: "../husen_delete.html?tag_id=" + tag_id,
-    				dataType: "json",
-    				cache: false,
-    				success: function(data)
-    				{
-    					$("#crystal_board").html("");
-    					$("#crystal_board").prepend(data[0]);
-    				    $( ".husen" ).draggable({
-    				    	revert: 'true', 
-    				    	scroll: true,
-    				    	helper: 'clone',
-    						stop : function(e, ui){
-    					         $('.husen').draggable().data()["ui-draggable"].cancelHelperRemoval = true;
-    					         this.style.opacity=0;
-    					    },
-    						drag : function(e, ui){
-    					        this.style.opacity=0;
-    					    }    		
-    				    });    					
-    				},
-    				error: function(data)
-    				{
-    					$("#balloon").css("display","inline");
-    					$("#serif").text(server_error);
-    				}
-    			});
+	        	var ret = confirm("付箋「" + tag_name + "」を削除しますか？")
+	        	if (ret == false)
+	        	{
+	        		tag_id = "";
+	        	}
         	}
+			jQuery.ajax({
+				url: "../husen_delete.html?tag_id=" + tag_id,
+				dataType: "json",
+				cache: false,
+				success: function(data)
+				{
+					$("#crystal_board").html("");
+					$("#crystal_board").prepend(data[0]);
+				    $( ".husen" ).draggable({
+				    	revert: 'true', 
+				    	scroll: true,
+				    	helper: 'clone',
+						stop : function(e, ui){
+					         $('.husen').draggable().data()["ui-draggable"].cancelHelperRemoval = true;
+					         this.style.opacity=0;
+					    },
+						drag : function(e, ui){
+					        this.style.opacity=0;
+					    }    		
+				    });    					
+				},
+				error: function(data)
+				{
+					$("#balloon").css("display","inline");
+					$("#serif").text(server_error);
+				}
+			});
         }
     });    
     
@@ -270,41 +277,48 @@ function body_load()
         accept:'.husen',
         drop: function(event,ui){
         	var tag_id = $(ui.draggable).attr("id");
-        	var ret = confirm("付箋「" + $(ui.draggable).text() + "」を削除しますか？")
-        	if (ret == false)
+        	var tag_name = $(ui.draggable).text();
+        	if (tag_name == "未正解" || tag_name == "正解")
         	{
-        		return false;
+				$("#balloon").css("display","inline");
+				$("#serif").text("青いふせんは特別なふせんだから、消せないよ〜");
+        		tag_id = "";
         	}
         	else
         	{
-    			jQuery.ajax({
-    				url: "../husen_delete.html?tag_id=" + tag_id,
-    				dataType: "json",
-    				cache: false,
-    				success: function(data)
-    				{
-    					$("#crystal_board").html("");
-    					$("#crystal_board").prepend(data[0]);
-    				    $( ".husen" ).draggable({
-    				    	revert: 'true', 
-    				    	scroll: true,
-    				    	helper: 'clone',
-    						stop : function(e, ui){
-    					         $('.husen').draggable().data()["ui-draggable"].cancelHelperRemoval = true;
-    					         this.style.opacity=0;
-    					    },
-    						drag : function(e, ui){
-    					        this.style.opacity=0;
-    					    }    		
-    				    });    					
-    				},
-    				error: function(data)
-    				{
-    					$("#balloon").css("display","inline");
-    					$("#serif").text(server_error);
-    				}
-    			});
+	        	var ret = confirm("付箋「" + tag_name + "」を削除しますか？")
+	        	if (ret == false)
+	        	{
+	        		tag_id = "";
+	        	}
         	}
+			jQuery.ajax({
+				url: "../husen_delete.html?tag_id=" + tag_id,
+				dataType: "json",
+				cache: false,
+				success: function(data)
+				{
+					$("#crystal_board").html("");
+					$("#crystal_board").prepend(data[0]);
+				    $( ".husen" ).draggable({
+				    	revert: 'true', 
+				    	scroll: true,
+				    	helper: 'clone',
+						stop : function(e, ui){
+					         $('.husen').draggable().data()["ui-draggable"].cancelHelperRemoval = true;
+					         this.style.opacity=0;
+					    },
+						drag : function(e, ui){
+					        this.style.opacity=0;
+					    }    		
+				    });    					
+				},
+				error: function(data)
+				{
+					$("#balloon").css("display","inline");
+					$("#serif").text(server_error);
+				}
+			});
         }
     });    
     

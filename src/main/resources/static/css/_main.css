@@ -230,22 +230,27 @@ div.page_right
 #form_grandparent
 {
 	position:absolute;
-	margin-top:50px;
+	top:90px;
 	left:890px;
 	width:350px;
 	height:180px;
-	overflow: scroll;
-    -ms-overflow-style: none;  // IE 10+
-    overflow: -moz-scrollbars-none;  // Firefox
-}
-#form_grandparent::-webkit-scrollbar { 
-    display: none;  // Safari and Chrome
 }
 
 #form_parent
 {
 	padding-left:30px;
 	padding-top:80px;
+}
+
+#scrollable
+{
+	height:100px;
+	overflow-y: scroll;
+    -ms-overflow-style: none;  // IE 10+
+    overflow: -moz-scrollbars-none;  // Firefox
+}
+#form_grandparent::-webkit-scrollbar { 
+    display: none;  // Safari and Chrome
 }
 
 #erasor
@@ -255,7 +260,7 @@ div.page_right
 	left:1070px;
 	padding:20px;
 	width:130px;
-	z-index:100;
+	z-index:100000;
 	cursor: move;
 }
 
@@ -276,7 +281,7 @@ div.page_right
 	top:440px;
 	left:1000px;
 	padding:20px;
-	z-index:101;
+	z-index:100000;
 	display:none;
 }
 
@@ -287,7 +292,7 @@ div.page_right
 	top:490px;
 	width:150px;
 	height:80px;
-	z-index:102;
+	z-index:100000;
 	overflow: scroll;
     -ms-overflow-style: none;  // IE 10+
     overflow: -moz-scrollbars-none;  // Firefox
@@ -421,6 +426,11 @@ input
 	display:none;
 }
 
+.husen[id^="tag_id"]
+{
+	z-index: 100000000 !important;	
+}
+
 .husen
 {
 	display:inline-block;
@@ -430,7 +440,7 @@ input
 	margin-bottom:10px;
 	margin-right:20px;
 	text-align:center;
-	z-index: 100000000;
+	z-index: 100000000 !important;
 	width:130px;
 	height:30px;
     font-size:13px;
@@ -491,7 +501,7 @@ input
 	height:300px;
 	background: url("../img/crystal_plate.png") no-repeat center;
 	background-size:400px 300px;
-	z-index: 100;
+	z-index: 100000;
     padding-top:90px;
     padding-left:110px;
     cursor: move;
