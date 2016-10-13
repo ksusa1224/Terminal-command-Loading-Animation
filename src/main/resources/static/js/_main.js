@@ -1,159 +1,69 @@
-﻿var server_error = "GORORON堂のサーバーが混みあってるみたい";
-
-function change_opacity (seitou) {
-	seitou.mouseout(function(){ return false});
-	if (seitou.style.opacity == 1)
-	{
-		seitou.style.opacity = 1;
-	}
-	else
-	{
-		seitou.style.opacity = 0;		
-	}
-}
-
-function mouseout (seitou) {
-	if (seitou.style.opacity == 1)
-	{
-		seitou.style.opacity = 0;
-	}
-}
-
-// QA再生制御関数　動作仕様：
-// ①１回目にクリックしたときリピート再生する
-// ②止めたいときはその問題文かどこかしらの問題文をクリックする
-// ③もう１度リピート再生するにはまた問題文をどこかしらクリックする
-var play_mode_cnt = 0;
-function control_qa_saisei(mondaibun__,kaitou__,q_gengo,a_gengo)
-{
-	play_mode_cnt ++;
-
-	// 奇数回目の問題文クリックの場合
-	if (play_mode_cnt % 2 == 1)
-	{
-		play_mode = "repeat";			
-	}
-	// 偶数回目の問題文クリックの場合
-	else
-	{
-		play_mode = "stop";
-	}
-
-	if (play_mode == "repeat")
-	{
-		qa_saisei(mondaibun__,kaitou__,q_gengo,a_gengo,play_mode);
-	}
-	else if (play_mode == "stop")
-	{
-		window.speechSynthesis.cancel();			
-	}
-}
-
-function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
-{
-	var q_msg = new SpeechSynthesisUtterance(mondaibun_);
-	var voices = window.speechSynthesis.getVoices();
- 	if (q_gengo_ == "日本語")
-	{
-//        q_msg.default = true;
- 		q_msg.voice = voices[0]; // Otoya
-		q_msg.volume = 0.4;
-		q_msg.pitch = 0.9;
-		q_msg.lang = "ja-JP";
-	}else
-	{
-//        q_msg.default = true;
-		// q_msg.voice = voices[6];//Vicky
-		q_msg.volume = 1;
-		q_msg.lang = "en-US";
-	}
-	window.speechSynthesis.speak(q_msg);
-
-	var a_msg = new SpeechSynthesisUtterance(kaitou_);
-	if (a_gengo_ == "日本語")
-	{
-		a_msg.lang = "ja-JP";
- 		//a_msg.voice = voices[46]; // Otoya
-		a_msg.volume = 0.4;
-		a_msg.pitch = 1;
-		window.speechSynthesis.speak(a_msg);
-	}
-//	else if (a_gengo == "読むだけ")
-//	{
-		// 読むだけ問題の正答は読み上げない
-//	}
-	else
-	{
-//        a_msg.default = true;
-		a_msg.voice = voices[62];//Vicky
-		a_msg.volume = 1;
-		a_msg.lang = "en-US";
-		window.speechSynthesis.speak(a_msg);		
-	}
-	
-	if (play_mode == "repeat")
-	{
-		qa_saisei(mondaibun_,kaitou_,q_gengo_,a_gengo_,play_mode);
-
-	}
-}
-
-(function($){
-    $.fn.extend({
-         center: function (options) {
-              var options =  $.extend({ // Default values
-                   inside:window, // element, center into window
-                   transition: 0, // millisecond, transition time
-                   minX:0, // pixel, minimum left element value
-                   minY:0, // pixel, minimum top element value
-                   withScrolling:false, // booleen, take care of the scrollbar (scrollTop)
-                   vertical:false, // booleen, center vertical
-                   horizontal:true // booleen, center horizontal
-              }, options);
-              return this.each(function() {
-                   var props = {position:'absolute'};
-                   if (options.vertical) {
-                        var top = ($(options.inside).height() - $(this).outerHeight()) / 2;
-                        if (options.withScrolling) top += $(options.inside).scrollTop() || 0;
-                        top = (top > options.minY ? top : options.minY);
-                        $.extend(props, {top: top+'px'});
-                   }
-                   if (options.horizontal) {
-                         var left = ($(options.inside).width() - $(this).outerWidth()) / 2;
-                         if (options.withScrolling) left += $(options.inside).scrollLeft() || 0;
-                         left = (left > options.minX ? left : options.minX);
-                         $.extend(props, {left: left+'px'});
-                   }
-                   if (options.transition > 0) $(this).animate(props, options.transition);
-                   else $(this).css(props);
-                   return $(this);
-              });
-         }
-    });
-})(jQuery);
-
+﻿// グローバル変数
+var server_error = "GORORON堂のサーバーが混みあってるみたい";
 var tag_search_conditions_uri = "";
-
 var pulun = "false";
-
-function slime_pulupulu()
-{
-	$("#slime").animate({width: '150px', height:'145px', top:'445px'}, 600);
-	$("#slime").animate({width: '150px', height:'150px', top:'440px'}, 600);
-	if (pulun == "true")
-	{
-//		slime_pulupulu();
-	}
-}
-
-$draged_husen = null;
-
 var qa_id_for_contextmenu = "";
-
 var qa_husen_global = "";
 
 function body_load()
 {		
+	var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+	if (iOS == true)
+	{
+		var $dummySeikai = $("<audio />", {
+			  id: "seikai_se",
+			  src: "../sound/seikai.mp3",
+			  preload: "none",
+			  width: "1",
+			  height: "2"
+			});
+		var $dummyHuseikai = $("<audio />", {
+			  id: "huseikai_se",
+			  src: "../sound/huseikai2.mp3",
+			  preload: "none",
+			  width: "1",
+			  height: "2"
+			});
+		$(".a").on("click", function() {
+			//alert(this.style.opacity);
+			if (this.style.opacity == 1)
+			{
+			  var url = $(this).data("stream-url");
+			  $dummyHuseikai.attr("src", url);
+			  $dummyHuseikai.get(0).load(); // required if src changed after page load
+			  $dummyHuseikai.get(0).play();
+			}
+			else
+			{
+				  var url = $(this).data("stream-url");
+				  $dummySeikai.attr("src", url);
+				  $dummySeikai.get(0).load(); // required if src changed after page load
+				  $dummySeikai.get(0).play();		
+			}
+		});
+	}
+	
+//	function initAudio() {
+//	    var audio = new Audio('../sound/huseikai2.mp3');
+//	    audio.addEventListener('play', function () {
+//	        // When the audio is ready to play, immediately pause.
+//	        audio.pause();
+//	        audio.removeEventListener('play', arguments.callee, false);
+//	    }, false);
+//	    document.addEventListener('click', function () {
+//	        // Start playing audio when the user clicks anywhere on the page,
+//	        // to force Mobile Safari to load the audio.
+//	        document.removeEventListener('click', arguments.callee, false);
+//	        audio.play();
+//	    }, false);
+//	}	
+//	document.getElementById("wood_table").ontouchmove = function(event){
+////		alert("wood");
+//	    event.preventDefault();
+//	}	
+	
+//	var w = window.innerWidth;
+//	alert(w);
 	$('.qa').mousedown(function(event) {
 	    switch (event.which) {
 	        case 1:
@@ -171,11 +81,6 @@ function body_load()
 //	            alert('You have a strange Mouse!');
 	    }
 	});	
-//	$( ".qa" ).mouseover(function() {
-//		qa_id_for_contextmenu = this.id;
-////		alert(qa_id_for_contextmenu);
-//	});
-//	countLines("qa_area");
 
 	
 	$("#qa_input").on("click", function () { // click event
@@ -395,19 +300,6 @@ function body_load()
     
     loupe_drop();
     
-    $('#crystal_board').droppable({
-        accept:'.husen',
-        drop: function(event,ui){
-        	//alert($(ui.draggable).html());
-        	//$("#husen_wrapper").append($(ui.draggable).parent().html());
-        	//$('#husen_wrapper').append($(ui.draggable).clone()).html();
-        	//        	alert($(ui.draggable).text());
-//        	alert($(this).attr('id'));
-        }
-    });    
-
-
-    
     $(".qa").hover(function() {
     	var id = $(this).attr("id");
     	var s_id = $(this).children(".a").attr("id");
@@ -435,8 +327,6 @@ function body_load()
 		$("#serif").text("");		
 	});
 	
-	var factor = 2;
-
 	$('#slime').hover(
 	    function(){
 	    	pulun = "true";
@@ -447,6 +337,151 @@ function body_load()
 	    }
 	 );	
 }
+
+
+function change_opacity (seitou) {
+	seitou.mouseout(function(){ return false});
+	if (seitou.style.opacity == 1)
+	{
+		seitou.style.opacity = 1;
+	}
+	else
+	{
+		seitou.style.opacity = 0;		
+	}
+}
+
+function mouseout (seitou) {
+	if (seitou.style.opacity == 1)
+	{
+		seitou.style.opacity = 0;
+	}
+}
+
+// QA再生制御関数　動作仕様：
+// ①１回目にクリックしたときリピート再生する
+// ②止めたいときはその問題文かどこかしらの問題文をクリックする
+// ③もう１度リピート再生するにはまた問題文をどこかしらクリックする
+var play_mode_cnt = 0;
+function control_qa_saisei(mondaibun__,kaitou__,q_gengo,a_gengo)
+{
+	play_mode_cnt ++;
+
+	// 奇数回目の問題文クリックの場合
+	if (play_mode_cnt % 2 == 1)
+	{
+		play_mode = "repeat";			
+	}
+	// 偶数回目の問題文クリックの場合
+	else
+	{
+		play_mode = "stop";
+	}
+
+	if (play_mode == "repeat")
+	{
+		qa_saisei(mondaibun__,kaitou__,q_gengo,a_gengo,play_mode);
+	}
+	else if (play_mode == "stop")
+	{
+		window.speechSynthesis.cancel();			
+	}
+}
+
+function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
+{
+	var q_msg = new SpeechSynthesisUtterance(mondaibun_);
+	var voices = window.speechSynthesis.getVoices();
+ 	if (q_gengo_ == "日本語")
+	{
+//        q_msg.default = true;
+ 		q_msg.voice = voices[0]; // Otoya
+		q_msg.volume = 0.4;
+		q_msg.pitch = 0.9;
+		q_msg.lang = "ja-JP";
+	}else
+	{
+//        q_msg.default = true;
+		// q_msg.voice = voices[6];//Vicky
+		q_msg.volume = 1;
+		q_msg.lang = "en-US";
+	}
+	window.speechSynthesis.speak(q_msg);
+
+	var a_msg = new SpeechSynthesisUtterance(kaitou_);
+	if (a_gengo_ == "日本語")
+	{
+		a_msg.lang = "ja-JP";
+ 		//a_msg.voice = voices[46]; // Otoya
+		a_msg.volume = 0.4;
+		a_msg.pitch = 1;
+		window.speechSynthesis.speak(a_msg);
+	}
+//	else if (a_gengo == "読むだけ")
+//	{
+		// 読むだけ問題の正答は読み上げない
+//	}
+	else
+	{
+//        a_msg.default = true;
+		a_msg.voice = voices[62];//Vicky
+		a_msg.volume = 1;
+		a_msg.lang = "en-US";
+		window.speechSynthesis.speak(a_msg);		
+	}
+	
+	if (play_mode == "repeat")
+	{
+		qa_saisei(mondaibun_,kaitou_,q_gengo_,a_gengo_,play_mode);
+
+	}
+}
+
+//(function($){
+//    $.fn.extend({
+//         center: function (options) {
+//              var options =  $.extend({ // Default values
+//                   inside:window, // element, center into window
+//                   transition: 0, // millisecond, transition time
+//                   minX:0, // pixel, minimum left element value
+//                   minY:0, // pixel, minimum top element value
+//                   withScrolling:false, // booleen, take care of the scrollbar (scrollTop)
+//                   vertical:false, // booleen, center vertical
+//                   horizontal:true // booleen, center horizontal
+//              }, options);
+//              return this.each(function() {
+//                   var props = {position:'absolute'};
+//                   if (options.vertical) {
+//                        var top = ($(options.inside).height() - $(this).outerHeight()) / 2;
+//                        if (options.withScrolling) top += $(options.inside).scrollTop() || 0;
+//                        top = (top > options.minY ? top : options.minY);
+//                        $.extend(props, {top: top+'px'});
+//                   }
+//                   if (options.horizontal) {
+//                         var left = ($(options.inside).width() - $(this).outerWidth()) / 2;
+//                         if (options.withScrolling) left += $(options.inside).scrollLeft() || 0;
+//                         left = (left > options.minX ? left : options.minX);
+//                         $.extend(props, {left: left+'px'});
+//                   }
+//                   if (options.transition > 0) $(this).animate(props, options.transition);
+//                   else $(this).css(props);
+//                   return $(this);
+//              });
+//         }
+//    });
+//})(jQuery);
+
+
+function slime_pulupulu()
+{
+	$("#slime").animate({width: '150px', height:'145px', top:'445px'}, 600);
+	$("#slime").animate({width: '150px', height:'150px', top:'440px'}, 600);
+	if (pulun == "true")
+	{
+//		slime_pulupulu();
+	}
+}
+
 
 var husen_names = [];
 function loupe_drop()

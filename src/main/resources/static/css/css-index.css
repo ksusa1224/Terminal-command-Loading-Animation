@@ -878,6 +878,43 @@ and (orientation : landscape) {
 
 /* smart-phone ----------- */
 @media (max-width: 767px) {
+#register.signup-header {
+	margin: 0px 0px 0px;
+	background: rgba(255,255,255,0.8);
+	border-radius: 4px;
+	padding-left: 20px;
+	padding-right: 20px;	
+	width:100%;
+}
+#login.signup-header {
+	margin: 0px 0px 20px;
+	background: rgba(255,255,255,0.8);
+	border-radius: 4px;
+	padding-left: 20px;
+	padding-right: 20px;	
+	width:100%;
+}
+.form-title
+{
+	color:black !important;
+}
+.col-sm-3
+{
+	width:100%;
+}
+.fullscreen {
+
+    width:100%;
+
+    min-height:100%;
+
+background-repeat:no-repeat;
+
+    background-position:50% 0%;
+	background-size:200% !important;
+    background-position:50% 0%\9 !important;
+
+}
 	.logo {
 		margin: 40px 0 30px 0;
 	}
@@ -946,10 +983,89 @@ and (orientation : landscape) {
 	.feature-img {
 		margin-top: 0;
 	}
+.col-sm-3
+{
+	width:100%;
+}
+#register.signup-header {
+	margin: 0px 0px 0px;
+	background: rgba(255,255,255,0.8);
+	border-radius: 4px;
+	padding-left: 20px;
+	padding-right: 20px;	
+	width:100%;
+}
+#login.signup-header {
+	margin: 0px 0px 20px;
+	background: rgba(255,255,255,0.8);
+	border-radius: 4px;
+	padding-left: 20px;
+	padding-right: 20px;	
+	width:100%;
+}
+.form-title
+{
+	color:black !important;
+}
+.col-sm-3
+{
+	width:100%;
+}
+.fullscreen {
+
+    width:100%;
+
+    min-height:100%;
+
+background-repeat:no-repeat;
+
+    background-position:50% 0%;
+	background-size:200% !important;
+    background-position:50% 0%\9 !important;
+
+}
 }
 
 /* iPhone 6 (landscape) ----------- */
 @media (max-width: 667px) {
+#register.signup-header {
+	margin: 0px 0px 0px;
+	background: rgba(255,255,255,0.8);
+	border-radius: 4px;
+	padding-left: 20px;
+	padding-right: 20px;	
+	width:100%;
+}
+#login.signup-header {
+	margin: 0px 0px 20px;
+	background: rgba(255,255,255,0.8);
+	border-radius: 4px;
+	padding-left: 20px;
+	padding-right: 20px;	
+	width:100%;
+}
+.form-title
+{
+	color:black !important;
+}
+.col-sm-3
+{
+	width:100%;
+}
+.fullscreen {
+
+    width:100%;
+
+    min-height:100%;
+
+background-repeat:no-repeat;
+
+    background-position:50% 0%;
+	background-size:200% !important;
+    background-position:50% 0%\9 !important;
+
+}
+
 	.logo {
 		margin: 30px 0 30px 0;
 	}
@@ -976,6 +1092,47 @@ and (orientation : landscape) {
 
 /* iPhone 5 (landscape) ----------- */
 @media (max-width: 568px){
+#register.signup-header {
+	margin: 0px 0px 0px;
+	background: rgba(255,255,255,0.8);
+	border-radius: 4px;
+	padding-left: 20px;
+	padding-right: 20px;	
+	width:100%;
+}
+#login.signup-header {
+	margin: 0px 0px 20px;
+	background: rgba(255,255,255,0.8);
+	border-radius: 4px;
+	padding-left: 20px;
+	padding-right: 20px;	
+	width:100%;
+}
+.form-title
+{
+	color:black !important;
+}
+.col-sm-3
+{
+	width:100%;
+}
+.fullscreen {
+
+    width:100%;
+
+    min-height:100%;
+
+background-repeat:no-repeat;
+
+    background-position:50% 0%;
+	background-size:200% !important;
+    background-position:50% 0%\9 !important;
+
+}
+.col-sm-3
+{
+	width:100%;
+}
 	.logo {
 		margin: 15px 0 15px 0;
 	}
@@ -1025,6 +1182,47 @@ and (orientation : landscape) {
 
 /* iPhone 4 (landscape) ----------- */
 @media (max-width: 480px) {
+#register.signup-header {
+	margin: 0px 0px 0px;
+	background: rgba(255,255,255,0.8);
+	border-radius: 4px;
+	padding-left: 20px;
+	padding-right: 20px;	
+	width:100%;
+}
+#login.signup-header {
+	margin: 0px 0px 20px;
+	background: rgba(255,255,255,0.8);
+	border-radius: 4px;
+	padding-left: 20px;
+	padding-right: 20px;	
+	width:100%;
+}
+.form-title
+{
+	color:black !important;
+}
+.col-sm-3
+{
+	width:100%;
+}
+.fullscreen {
+
+    width:100%;
+
+    min-height:100%;
+
+background-repeat:no-repeat;
+
+    background-position:50% 0%;
+	background-size:200% !important;
+    background-position:50% 0%\9 !important;
+
+}
+.col-sm-3
+{
+	width:100%;
+}
 	.feat-list i {
 		padding-left: 5px;
 	}
@@ -1038,6 +1236,47 @@ and (orientation : landscape) {
 
 /* smart phone width: 360px ----------- */
 @media (max-width: 360px) {
+#register.signup-header {
+	margin: 0px 0px 0px;
+	background: rgba(255,255,255,0.8);
+	border-radius: 4px;
+	padding-left: 20px;
+	padding-right: 20px;	
+	width:100%;
+}
+#login.signup-header {
+	margin: 0px 0px 20px;
+	background: rgba(255,255,255,0.8);
+	border-radius: 4px;
+	padding-left: 20px;
+	padding-right: 20px;	
+	width:100%;
+}
+.form-title
+{
+	color:black !important;
+}
+.col-sm-3
+{
+	width:100%;
+}
+.fullscreen {
+
+    width:100%;
+
+    min-height:100%;
+
+background-repeat:no-repeat;
+
+    background-position:50% 0%;
+	background-size:200% !important;
+    background-position:50% 0%\9 !important;
+
+}
+.col-sm-3
+{
+	width:100%;
+}
 	#intro h2, #feature h2, #feature-2 h2 {
 		font-size: 30px;
 	}
@@ -1054,6 +1293,47 @@ and (orientation : landscape) {
 
 /* iPhone 4/5 (portrait) ----------- */
 @media (max-width: 320px) {
+#register.signup-header {
+	margin: 0px 0px 0px;
+	background: rgba(255,255,255,0.8);
+	border-radius: 4px;
+	padding-left: 20px;
+	padding-right: 20px;	
+	width:100%;
+}
+#login.signup-header {
+	margin: 0px 0px 20px;
+	background: rgba(255,255,255,0.8);
+	border-radius: 4px;
+	padding-left: 20px;
+	padding-right: 20px;	
+	width:100%;
+}
+.form-title
+{
+	color:black !important;
+}
+.col-sm-3
+{
+	width:100%;
+}
+.fullscreen {
+
+    width:100%;
+
+    min-height:100%;
+
+background-repeat:no-repeat;
+
+    background-position:50% 0%;
+	background-size:200% !important;
+    background-position:50% 0%\9 !important;
+
+}
+.col-sm-3
+{
+	width:100%;
+}
 	.logo {
 		margin: 30px 0 20px 0;
 	}

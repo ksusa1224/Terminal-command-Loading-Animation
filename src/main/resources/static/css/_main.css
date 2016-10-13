@@ -196,6 +196,7 @@ div.page_right
 	top:330px;
 	left:875px;
 	width:360px;
+	cursor:pointer;
 }
 
 #red_pen
@@ -204,6 +205,7 @@ div.page_right
 	top:380px;
 	left:875px;
 	width:360px;
+	cursor: pointer;
 }
 
 #navigation
@@ -271,11 +273,10 @@ div.page_right
     display: none;  // Safari and Chrome
 }
 
-[contentEditable=true]:not(:focus)::before{
+/*[contentEditable=true]:not(:focus)::before{
     content:attr(data-ph);
 	color: #54A0DC;
-}
-
+}*/
 #erasor
 {
 	position:absolute;
@@ -495,7 +496,7 @@ input
 #husen_wrapper
 {
 	width:100%;
-	height:140px;
+	height:180px;
 	overflow: scroll;
     -ms-overflow-style: none;  // IE 10+
     overflow: -moz-scrollbars-none;  // Firefox
@@ -611,3 +612,31 @@ input
 }
 /* 虫眼鏡 END */
 
+@media (max-width: 667px) {
+	.qa
+	{
+		font-size:20px !important;
+	}
+	#entire_page
+	{
+		width:50%;	
+	}
+}
+
+@media screen and (device-aspect-ratio: 375/667) {
+	/*color:red !important;
+	font-weight:bold;*/
+	body{
+  		
+	}
+	.qa
+	{
+		border-top:1px solid #d9d9d9;		
+		font-size:18px;
+		line-height:24.5px;
+	}
+	.note-line
+	{
+		display: none;
+	}
+}
