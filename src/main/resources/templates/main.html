@@ -3,13 +3,15 @@
 <head>
 <meta charset="UTF-8" />
 <meta http-equiv="Cache-control" content="public" />
-<meta name="viewport" content="width=1275px, initial-scale=0.8, maximum-scale=1, user-scalable=no" />
+<meta name="viewport" content="width=1275px, initial-scale=0.8, maximum-scale=0.8,minimum-scale=0.8, user-scalable=no" />
 <title>暗記ノート</title>
 <link rel="stylesheet" th:href="@{../css/bootstrap.min.main.css}" />
 <link rel="stylesheet" type="text/css" th:href="@{../css/_main.css}" />
 <link rel="stylesheet" type="text/css" th:href="@{../css/jquery-ui.css}" />
 <script th:src="@{../js/jquery-3.1.0.min.js}"></script>
 <script th:src="@{../js/jquery-ui.js}"></script>
+<script th:src="@{../js/jquery.ui.touch-punch.js}"></script>
+<script th:src="@{../js/jquery.ui.touch-punch.min.js}"></script>
 <script th:src="@{../js/contextmenu.js}"></script> 
 <script th:src="@{../js/_main.js}"></script>
 <script type="text/javascript" th:inline="javascript">
@@ -108,10 +110,10 @@
 </div>
 
 <!--/* 青ペン */-->
-<img id="blue_pen" th:src="@{../img/blue_pen.png}" />
+<a href="#" onclick="append_blue();"><img id="blue_pen" th:src="@{../img/blue_pen.png}" /></a>
 
 <!--/* 赤ペン */-->
-<img id="red_pen" th:src="@{../img/red_pen.png}" />
+<a href="#" onclick="append_red()"><img id="red_pen" th:src="@{../img/red_pen.png}" /></a>
 
 <!--/* QAパネル */-->
 <img id="qa_panel" th:src="@{../img/qa_card.png}" />

@@ -4,43 +4,68 @@ var tag_search_conditions_uri = "";
 var pulun = "false";
 var qa_id_for_contextmenu = "";
 var qa_husen_global = "";
+var dragged_husen_left = 0;
 
 function body_load()
 {		
+	function touchHandler(event) {
+	    var touch = event.changedTouches[0];
+
+	    var simulatedEvent = document.createEvent("MouseEvent");
+	        simulatedEvent.initMouseEvent({
+	        touchstart: "mousedown",
+	        touchmove: "mousemove",
+	        touchend: "mouseup"
+	    }[event.type], true, true, window, 1,
+	        touch.screenX, touch.screenY,
+	        touch.clientX, touch.clientY, false,
+	        false, false, false, 0, null);
+
+	    touch.target.dispatchEvent(simulatedEvent);
+	    event.preventDefault();
+	}
+
+	function init() {
+	    document.addEventListener("touchstart", touchHandler, true);
+	    document.addEventListener("touchmove", touchHandler, true);
+	    document.addEventListener("touchend", touchHandler, true);
+	    document.addEventListener("touchcancel", touchHandler, true);
+	}	
+	
 	var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 	if (iOS == true)
 	{
-		var $dummySeikai = $("<audio />", {
-			  id: "seikai_se",
-			  src: "../sound/seikai.mp3",
-			  preload: "none",
-			  width: "1",
-			  height: "2"
-			});
-		var $dummyHuseikai = $("<audio />", {
-			  id: "huseikai_se",
-			  src: "../sound/huseikai2.mp3",
-			  preload: "none",
-			  width: "1",
-			  height: "2"
-			});
-		$(".a").on("click", function() {
-			//alert(this.style.opacity);
-			if (this.style.opacity == 1)
-			{
-			  var url = $(this).data("stream-url");
-			  $dummyHuseikai.attr("src", url);
-			  $dummyHuseikai.get(0).load(); // required if src changed after page load
-			  $dummyHuseikai.get(0).play();
-			}
-			else
-			{
-				  var url = $(this).data("stream-url");
-				  $dummySeikai.attr("src", url);
-				  $dummySeikai.get(0).load(); // required if src changed after page load
-				  $dummySeikai.get(0).play();		
-			}
-		});
+//		var $dummySeikai = $("<audio />", {
+//			  id: "seikai_se",
+//			  src: "../sound/seikai.mp3",
+//			  preload: "none",
+//			  width: "1",
+//			  height: "2"
+//			});
+//		var $dummyHuseikai = $("<audio />", {
+//			  id: "huseikai_se",
+//			  src: "../sound/huseikai2.mp3",
+//			  preload: "none",
+//			  width: "1",
+//			  height: "2"
+//			});
+//		$(".a").on("click", function() {
+//			//alert(this.style.opacity);
+//			if (this.style.opacity == 1)
+//			{
+//			  var url = $(this).data("stream-url");
+//			  $dummyHuseikai.attr("src", url);
+//			  $dummyHuseikai.get(0).load(); // required if src changed after page load
+//			  $dummyHuseikai.get(0).play();
+//			}
+//			else
+//			{
+//				  var url = $(this).data("stream-url");
+//				  $dummySeikai.attr("src", url);
+//				  $dummySeikai.get(0).load(); // required if src changed after page load
+//				  $dummySeikai.get(0).play();		
+//			}
+//		});
 	}
 	
 //	function initAudio() {
@@ -97,7 +122,7 @@ function body_load()
     $( "#blue_pen" ).draggable();
     $( "#red_pen" ).draggable();
     //$( "#qa_panel" ).draggable();
-    $( "#note_area" ).draggable();
+//    $( "#note_area" ).draggable();
     $( ".husen" ).draggable({
     	revert: 'true', 
     	//appendTo: 'body',
@@ -105,15 +130,31 @@ function body_load()
     	scroll: true,
     	helper: 'clone',
 		stop : function(e, ui){
+	        var scroll_left = $(document).scrollLeft();
+	        $(ui.draggable).css("position", "absolute");
+	        $(ui.draggable).css("left", "10px !important");
+	        $dragging = $(".husen.ui-draggable.ui-draggable-handle.ui-droppable.ui-draggable-dragging");
+	        var left = Number($dragging.css("left").replace(/px/g,""));
+	        left = left + scroll_left;
+	        $dragging.css("left", left);
+//	         alert("stop");
 	         $('.husen').draggable().data()["ui-draggable"].cancelHelperRemoval = true;
-	         this.style.opacity=0;
+	         //this.style.opacity=0;
 //	         alert($(ui.helper));
 //	         $draged_husen = $(ui.helper);
 //	         alert($draged_husen.attr("class"));
 	    },
 		drag : function(e, ui){
 	        this.style.opacity=0;
-	    }    		
+//	        var scroll_left = $(document).scrollLeft();
+//	        $(ui.draggable).css("position", "absolute");
+//	        $(ui.draggable).css("left", "10px !important");
+//	        $dragging = $(".husen.ui-draggable.ui-draggable-handle.ui-droppable.ui-draggable-dragging");
+//	        var left = Number($dragging.css("left").replace(/px/g,""));
+//	        left = left + scroll_left;
+//	        $dragging.css("left", left);
+	    },
+	    scroll: 'true'
     });
     $( "#loupe" ).draggable();
     
@@ -121,6 +162,13 @@ function body_load()
     $('#husen_paste').droppable({
         accept:'.husen',
         drop: function(event,ui){
+//        	var scroll_left = $(document).scrollLeft();
+//        	$(ui.draggable).css("position", "absolute");
+//        	$(ui.draggable).css("left", "10px !important");
+//        	$dragging = $(".husen.ui-draggable.ui-draggable-handle.ui-droppable.ui-draggable-dragging");
+//        	var left = Number($dragging.css("left").replace(/px/g,""));
+//        	left = left + scroll_left;
+//        	$dragging.css("left", left);
         	var husen_name = $(ui.draggable).text();
         	$("#qa_husen").html("<span data-junban='"+ qa_husen_junban +"'>" + husen_name +"</span>")
         	qa_husen_global = qa_husen_global + $("#qa_husen").text();
@@ -489,6 +537,13 @@ function loupe_drop()
     $('#loupe').droppable({
         accept:'.husen',
         out: function (event, ui) {
+//        	var scroll_left = $(document).scrollLeft();
+//        	$(ui.draggable).css("position", "absolute");
+//        	$(ui.draggable).css("left", "10px !important");
+//        	$dragging = $(".husen.ui-draggable.ui-draggable-handle.ui-droppable.ui-draggable-dragging");
+//        	var left = Number($dragging.css("left").replace(/px/g,""));
+//        	left = left + scroll_left;
+//        	$dragging.css("left", left);
         	var removeItem = $(ui.draggable).text();
         	husen_names = jQuery.grep(husen_names, function(value) {
         		  return value != removeItem;
@@ -555,7 +610,13 @@ function loupe_drop()
 			});
         },
         drop: function(event,ui){
-//		    $(ui.draggable).remove();
+//        	var scroll_left = $(document).scrollLeft();
+//        	$(ui.draggable).css("position", "absolute");
+//        	$(ui.draggable).css("left", "10px !important");
+//        	$dragging = $(".husen.ui-draggable.ui-draggable-handle.ui-droppable.ui-draggable-dragging");
+//        	var left = Number($dragging.css("left").replace(/px/g,""));
+//        	left = left + scroll_left;
+//        	$dragging.css("left", left);
 
         	husen_names.push($(ui.draggable).text());
         	var husens_str = "";
@@ -650,13 +711,13 @@ function slime_speech()
 {	
 	speech_mode = "true";
 	var serif = "";
-    $(".qa").hover(function() {
+//    $(".qa").hover(function() {
     	if (speech_mode == "true")
     	{
 //        	var id = $(this).attr("id");
     		var id = qa_id_for_contextmenu;
         	var s_id = $("#"+id).children(".a").attr("id");
-        	//alert(s_id);
+//        	alert(s_id);
         	serif = $("#"+id).children(".a").text();
         	var path = "../speech/" + s_id + ".m4a";
         	$("#play_qa").attr("src",path);
@@ -667,11 +728,11 @@ function slime_speech()
 	    	$("#slime").animate({width: '150px', height:'150px', top:'440px'}, 600);
 	    	speech_mode = "false";
     	}
-  }, function() {
-  	$("#balloon").css("display","none");
-	$("#serif").text("");
-
-  });	
+//  }, function() {
+//  	$("#balloon").css("display","none");
+//	$("#serif").text("");
+//
+//  });	
 
 
 }
@@ -784,6 +845,25 @@ function enter (){
 		}		
 		event.preventDefault();
 	}
+}
+
+// 青ペン押下
+function append_blue()
+{
+	var q_parts = "<span class='q_input' id='" + id + "'>&#8203;</span>";
+	$("#qa_input").append(q_parts);						
+	focus_last();
+	id++;
+}
+
+//赤ペン押下
+function append_red()
+{
+	var a_parts = "<span class='a_input' id='" + id + "'>&#8203;</span>";
+	$("#qa_input").append(a_parts);
+//	this.selectionStart = this.selectionEnd = this.value.length;
+	focus_last();
+	id++;
 }
 
 // 最後の要素にカーソルを移動する

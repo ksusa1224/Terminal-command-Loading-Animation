@@ -623,6 +623,7 @@ input
 	}
 }
 
+/*iphone6*/
 @media screen and (device-aspect-ratio: 375/667) {
 	/*color:red !important;
 	font-weight:bold;*/
@@ -640,3 +641,5 @@ input
 		display: none;
 	}
 }
+
+/* smart-phone ----------- */
