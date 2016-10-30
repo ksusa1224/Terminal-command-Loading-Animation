@@ -601,8 +601,8 @@ input
 #loupe
 {
 	position: absolute;
-	top:200;
-	left:500;
+	top:100px;
+	left:550px;
 	background: url("../img/loupe.png");
 	background-size:300px 150px;
 	height:150px;
