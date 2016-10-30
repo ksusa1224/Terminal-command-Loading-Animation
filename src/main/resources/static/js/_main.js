@@ -1513,9 +1513,7 @@ function edit_qa(q_obj)
 		success: function(data)
 		{
 			$("#qa_input").html(data[0]);
-			//alert(data[1]);
 			$("#husen_paste").html(data[1]);
-		    //$(".husen" ).draggable();
 		    $("#qa_id").val(qa_id);
 		    $("#edit_mode").attr("src", "../img/edit_mode2.png");
 		},
@@ -1628,6 +1626,50 @@ function change_mode()
 		$("#husen_paste").html("付箋をドラッグ");
 		$("#qa_input").focus();
 	}
+}
+
+function qa_mouseover(obj)
+{
+	var qa_id = obj.id;
+	jQuery.ajax({
+		url: "../edit_qa.html?qa_id="+qa_id,
+		dataType: "json",
+		cache: false,
+		success: function(data)
+		{
+		    //$("#google_image").html("");
+			$("#qa_input").html(data[0]);
+			$("#husen_paste").html(data[1]);
+		    $("#qa_id").val(qa_id);
+		    $("#edit_mode").attr("src", "../img/edit_mode2.png");
+		    
+			//var keyword = "mountains";
+		    var keyword = $("#"+qa_id).children(".a").text().replace(/\u200B/g,'');
+//		    alert(keyword);
+		    //keyword = "apple";
+		    //alert(typeof(keyword));
+			$.getJSON("http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?",
+			        {
+			            tags: keyword,
+			            tagmode: "any",
+			            format: "json"
+			        },
+			        function(data) {
+			            var rnd = Math.floor(Math.random() * data.items.length);
+
+			            var image_src = data.items[rnd]['media']['m'].replace("_m", "_b");
+
+//			            $('body').css('background-image', "url('" + image_src + "')");
+					    $("#google_image").html("<img height='100px' src='" + image_src +"' />");
+			        });	
+		    
+		},
+		error: function(data)
+		{
+			$("#balloon").css("display","inline");
+			$("#serif").text(server_error);
+		}
+	});	
 }
 
 //動作不良
