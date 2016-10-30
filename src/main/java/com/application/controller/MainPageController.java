@@ -1083,11 +1083,16 @@ public class MainPageController{
 //				int opacity = kaitou_dao.is_seikai(owner_db, seitou_list.get(i).getS_id());
 				int opacity = seitou_list.get(i).getSeikai_flg();
 				String mouseout = "";
+				String checked = "";
 				if (opacity == 0)
 				{
 					mouseout = "onmouseout='this.style.opacity=0'";
 				}
-				String html = "<span id='" + seitou_list.get(i).getS_id() + "' class='a' style='opacity:" + opacity + "' onmouseover='this.style.opacity=1' " + mouseout + " onclick='change_seitou_color(this)'>" + seitou + "</span>";				
+				else
+				{
+					checked = "<img src='../img/check.png' class='check' />";					
+				}
+				String html = "<span id='" + seitou_list.get(i).getS_id() + "' class='a' style='opacity:" + opacity + "' onmouseover='this.style.opacity=1' " + mouseout + " onclick='change_seitou_color(this)'>" + checked + seitou + "</span>";				
 				a_html.add(html);
 			}	
 			//System.out.println("a_html.size():"+a_html.size());

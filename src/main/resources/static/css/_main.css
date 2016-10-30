@@ -149,6 +149,7 @@ div.page_right
 	/*
 	display: inline-block;
 	*/
+	position:relative;
 	word-wrap: break-word;
 	color:#FF0000;
 	padding-left: 1px;
@@ -537,6 +538,14 @@ input
     padding-top:90px;
     padding-left:110px;
     cursor: move;
+}
+
+.check
+{
+	position: absolute;
+	top:-12px;
+	left:-8px;
+	width:20px;
 }
 
 /* 虫眼鏡 START */
