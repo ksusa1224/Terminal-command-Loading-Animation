@@ -135,7 +135,7 @@
 	<input id="reversible_flg" type="checkbox" name="reversible_flg" value="off" onclick="change_val(this)" />リバーシブル問題<br /> --><!-- 重要度：★★★☆☆　難易度：★★★☆☆<br /> -->
 	<div id="husen_paste" class="husen_draggable">付箋をドラッグ</div>
 	<button id="register" name="register" type="submit" tabindex="2" value="" style="display:none;"></button>
-		<img id="wax_stamp" onclick="javascript:copy_to_hidden();register_qa_ajax()" th:src="@{../img/wax_stamp.png}" width="65px" />
+		<img id="wax_stamp" onclick="javascript:copy_to_hidden();register_qa_ajax()" th:src="@{../img/wax_stamp.png}" width="65px" title="Q＆A登録&#013;（Shift+Enter)" />
 	<textarea id="qa_husen" name="qa_husen"></textarea>
 	<div style="height:5px;"></div>
 	<input id="qa_id" type="hidden" name="qa_id" />
@@ -160,7 +160,7 @@
   <!-- The actual menu that will be displayed-->
   <ul class="dropdown-menu">
     <li><a href="#" onclick="javascript:edit_qa(null);;">Q&amp;Aを編集</a></li>
-    <li><a href="#" onclick="javascript:slime_speech();">Q&amp;Aを削除</a></li>
+    <li><a href="#" onclick="javascript:delete_qa();">Q&amp;Aを削除</a></li>
     <li class="divider"></li>
     <li><a href="#" onclick="javascript:slime_speech();">スライムに教える</a></li>
   </ul>
