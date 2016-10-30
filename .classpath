@@ -28,5 +28,6 @@
 	<classpathentry kind="lib" path="lib/com.ibm.icu_3.4.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/java-mail-1.4.4.jar.zip"/>
 	<classpathentry kind="lib" path="lib/javax.mail.jar"/>
+	<classpathentry kind="lib" path="lib/org.json.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

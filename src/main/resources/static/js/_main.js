@@ -1657,7 +1657,7 @@ function qa_mouseover(obj)
 			        function(data) {
 			            var rnd = Math.floor(Math.random() * data.items.length);
 
-			            var image_src = data.items[rnd]['media']['m'].replace("_m", "_b");
+			            var image_src = data.items[0]['media']['m'].replace("_m", "_b");
 
 //			            $('body').css('background-image', "url('" + image_src + "')");
 					    $("#google_image").html("<img height='100px' src='" + image_src +"' />");
@@ -1670,6 +1670,51 @@ function qa_mouseover(obj)
 			$("#serif").text(server_error);
 		}
 	});	
+	
+//	$.getJSON ("http://search.yahooapis.com/WebSearchService/V1/webSearch?appid=YahooDemo& output; =json&query;=PHP& callback; =?",
+//		function (data) {
+//	}
+//				//		url: "https://yboss.yahooapis.com/ysearch/images?q=obama&format=xml&count=1",
+////		url:"https://www.google.co.jp/search?q=google+image+javascript+example&espv=2&biw=1275&bih=625&source=lnms&tbm=isch&sa=X&ved=0ahUKEwjH5I__3oLQAhWEwbwKHTQkDkwQ_AUIBigB#tbm=isch&q=オレンジ",
+////		dataType: "html",
+////		cache: false,
+////		success: function(html)
+////		{
+//////		    $(xml).find('Thumbnail').each(function(){
+//////                var Url = $(this).find("Url").text()
+//////                alert(Url);
+//////            });			
+////		},
+////		error: function ()
+////		{
+////			//alert("ajax error");
+////		}
+//	);
+	$.ajax ({
+        //AJAX-specified URL
+//       url: "http://search.yahooapis.com/WebSearchService/V1/webSearch?appid=YahooDemo& output; =json&query;=PHP& callback; =?",
+		//url: "https://yboss.yahooapis.com/ysearch/images?q=obama&format=xml&count=1",
+		url:"http://35.161.57.139:8080/gpix/v1/gpix?api_key=hLPgzwg4XU&keyword=Car&limit=2",
+       dataType: "json",
+//       username: "ksusa1224@gmail.com",
+//       password: "hLPgzwg4XU",
+//       beforeSend: function (xhr) {
+//    	    xhr.setRequestHeader ("Authorization", "Basic " + btoa(username + ":" + password));
+//    	},
+//       beforeSend: function(xhr) {
+//    	    xhr.setRequestHeader('Authorization', 'hLPgzwg4XU');
+//    	  },
+       //Handle the success event
+       success: function (data) {
+           //equal to previuos example
+           //...
+       },
+       error :function()
+       {
+    	   alert("error");
+       }
+	});
+
 }
 
 //動作不良
