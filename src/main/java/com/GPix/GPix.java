@@ -1,9 +1,13 @@
 package com.GPix;
 
+import com.common.StopWatch;
 import com.sun.istack.internal.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -14,6 +18,7 @@ import java.util.List;
 /**
  * Created by shifar on 14/10/16.
  */
+@Controller
 public class GPix {
 
     private static final String API_URL_FORMAT = "http://35.161.57.139:8080/gpix/v1/gpix?keyword=%s&limit=%d";
@@ -28,10 +33,13 @@ public class GPix {
 
     @NotNull
     public List<Image> search(String keyword, int limit) throws GPixException, IOException, JSONException {
-
+    	StopWatch stop_watch = new StopWatch();
+    	stop_watch.start();
+    	
         final String url = String.format(API_URL_FORMAT, getEncoded(keyword), limit);
 
         final String jsonData = NetworkHelper.downloadHtml(url, AUTHORIZATION);
+        stop_watch.stop("stops");
 
         if (jsonData != null) {
 
@@ -46,7 +54,6 @@ public class GPix {
             } else {
                 throw new GPixException(message);
             }
-
 
         } else {
             throw new GPixException("Empty server response");

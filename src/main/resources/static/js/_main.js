@@ -1648,20 +1648,20 @@ function qa_mouseover(obj)
 //		    alert(keyword);
 		    //keyword = "apple";
 		    //alert(typeof(keyword));
-			$.getJSON("http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?",
-			        {
-			            tags: keyword,
-			            tagmode: "any",
-			            format: "json"
-			        },
-			        function(data) {
-			            var rnd = Math.floor(Math.random() * data.items.length);
-
-			            var image_src = data.items[0]['media']['m'].replace("_m", "_b");
-
-//			            $('body').css('background-image', "url('" + image_src + "')");
-					    $("#google_image").html("<img height='100px' src='" + image_src +"' />");
-			        });	
+//			$.getJSON("http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?",
+//			        {
+//			            tags: keyword,
+//			            tagmode: "any",
+//			            format: "json"
+//			        },
+//			        function(data) {
+//			            var rnd = Math.floor(Math.random() * data.items.length);
+//
+//			            var image_src = data.items[0]['media']['m'].replace("_m", "_b");
+//
+////			            $('body').css('background-image', "url('" + image_src + "')");
+//					    $("#google_image").html("<img height='100px' src='" + image_src +"' />");
+//			        });	
 		    
 		},
 		error: function(data)
@@ -1671,49 +1671,35 @@ function qa_mouseover(obj)
 		}
 	});	
 	
-//	$.getJSON ("http://search.yahooapis.com/WebSearchService/V1/webSearch?appid=YahooDemo& output; =json&query;=PHP& callback; =?",
-//		function (data) {
-//	}
-//				//		url: "https://yboss.yahooapis.com/ysearch/images?q=obama&format=xml&count=1",
-////		url:"https://www.google.co.jp/search?q=google+image+javascript+example&espv=2&biw=1275&bih=625&source=lnms&tbm=isch&sa=X&ved=0ahUKEwjH5I__3oLQAhWEwbwKHTQkDkwQ_AUIBigB#tbm=isch&q=オレンジ",
-////		dataType: "html",
-////		cache: false,
-////		success: function(html)
-////		{
-//////		    $(xml).find('Thumbnail').each(function(){
-//////                var Url = $(this).find("Url").text()
-//////                alert(Url);
-//////            });			
-////		},
-////		error: function ()
-////		{
-////			//alert("ajax error");
-////		}
-//	);
+	var keywords = $("#"+qa_id).children(".a").text().replace(/\u200B/g,'');
 	$.ajax ({
-        //AJAX-specified URL
-//       url: "http://search.yahooapis.com/WebSearchService/V1/webSearch?appid=YahooDemo& output; =json&query;=PHP& callback; =?",
-		//url: "https://yboss.yahooapis.com/ysearch/images?q=obama&format=xml&count=1",
-		url:"http://35.161.57.139:8080/gpix/v1/gpix?api_key=hLPgzwg4XU&keyword=Car&limit=2",
+		url: "../image_search.html?keywords=" + keywords,
+		//url: "http://35.161.57.139:8080/gpix/v1/gpix?keyword=Car&limit=2",
+		type:"GET",
+//      beforeSend: function (request)
+//      {
+//          request.setRequestHeader("Authorization", "hLPgzwg4XU");
+//      },       
+//	       headers: {
+//	           "Authorization":"4cOJ50EzWB"
+//	       },
+//		processData: false,
+       cache: false,
        dataType: "json",
-//       username: "ksusa1224@gmail.com",
-//       password: "hLPgzwg4XU",
-//       beforeSend: function (xhr) {
-//    	    xhr.setRequestHeader ("Authorization", "Basic " + btoa(username + ":" + password));
-//    	},
-//       beforeSend: function(xhr) {
-//    	    xhr.setRequestHeader('Authorization', 'hLPgzwg4XU');
-//    	  },
-       //Handle the success event
        success: function (data) {
+//    	   alert(data);
+		    $("#google_image").html("<img height='100px' src='" + data +"' />");
+    	   
            //equal to previuos example
            //...
        },
-       error :function()
-       {
-    	   alert("error");
-       }
-	});
+       error: function(xhr, status, error) {
+//    	   alert(status);
+//    	   alert(error);
+//    	   var err = eval("(" + xhr.responseText + ")");
+//    	   alert(err.Message);
+    	 }
+       });
 
 }
 

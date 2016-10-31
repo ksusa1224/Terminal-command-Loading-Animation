@@ -24,6 +24,8 @@ import javax.sound.sampled.spi.AudioFileReader;
 
 import org.atilika.kuromoji.Token;
 import org.atilika.kuromoji.Tokenizer;
+import org.json.JSONException;
+
 import com.ibm.icu.text.Transliterator;
 
 //import org.json.simple.JSONObject;
@@ -43,6 +45,9 @@ import com.cybozu.labs.langdetect.Detector;
 import com.cybozu.labs.langdetect.DetectorFactory; 
 import com.cybozu.labs.langdetect.LangDetectException; 
 import com.cybozu.*;
+import com.GPix.GPix;
+import com.GPix.GPix.GPixException;
+import com.GPix.Image;
 import com.application.controller.dao.KaitouDao;
 import com.application.controller.dao.MondaiDao;
 import com.application.controller.dao.QADao;
@@ -352,6 +357,33 @@ public class MainPageController{
 		}		
 	}
 
+    @RequestMapping(value={"/image_search.html"},
+    			method=RequestMethod.GET)
+    public @ResponseBody String image_search(
+    		@RequestParam(value="keywords", required=false) String keywords)
+    {
+    	GPix gpix = GPix.getInstance();
+    	List<Image> image_list = new ArrayList<Image>();
+    	try {
+    		image_list = gpix.search(keywords.replace(" ", "+"), 1);
+    		
+		} catch (GPixException | IOException | JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	String img_url = "";
+    	if (image_list.size() > 0)
+    	{
+    		Image image = image_list.get(0);
+    		img_url = image.getThumbImageUrl();
+    	}
+    	
+//    	System.out.println("image.getImageUrl():"+image.getThumbImageUrl());
+    	String json = JSON.encode(
+				new String[] 
+				{img_url});
+		return json;
+    }
 	
 	/**
 	 * タグで検索
