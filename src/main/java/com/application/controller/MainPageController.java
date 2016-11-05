@@ -10,8 +10,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -1078,6 +1082,47 @@ public class MainPageController{
 
 		//System.out.println("qa_plus_list.size():"+qa_plus_list.size());
 		
+		List<QAModel> qa_list = new ArrayList<QAModel>();
+		for (QAPlusModel qa_plus : qa_plus_list)
+		{
+			QAModel qa = new QAModel();
+			qa.setQa_id(qa_plus.getQa().getQa_id());
+			String sakuseibi = Util.getDay(qa_plus.getQa().getCreate_timestamp());
+			qa.setCreate_timestamp(sakuseibi);
+			//System.out.println("sakuseibi:"+Util.getDay(qa_plus.getQa().getCreate_timestamp()));
+			qa_list.add(qa);
+		}
+		
+		Map<String, List<QAModel>> qa_id_per_date = 
+				qa_list
+				.stream()
+				.filter(p -> p.getCreate_timestamp() != null)
+				.collect(Collectors.groupingBy(QAModel::getCreate_timestamp));
+		
+		Map<String, String> qa_id_date = new HashMap<String, String>();
+		for (Map.Entry<String, List<QAModel>> entry : qa_id_per_date.entrySet())
+		{
+			qa_id_date.put(entry.getKey(), entry.getValue().get(0).getQa_id());
+//			System.out.println(entry.getKey());
+//			
+//			System.out.println("きゅーえー："+entry.getValue().get(0).getQa_id());
+		}
+		Set<String> qa_id_with_date = new HashSet(qa_id_date.values());
+//		for (String a : qa_id_with_date)
+//		{
+//			//System.out.println(a);
+//		}
+		
+		System.out.println("qa_list_size:" + qa_id_per_date.size());
+		
+//		List<QAModel> qa_list_create_days = new ArrayList<QAModel>();
+//		qa_plus_list
+//		.stream()
+//		.filter(x -> x.getQa().getCreate_timestamp())
+//		.collect(Collectors.groupingBy
+//				(qa_plus_list::getQA)
+//				.collect(Collectors.toList());
+		
 		for (QAPlusModel qa_plus : qa_plus_list)
 		{
 //			QAModel qa = qa_plus.getQa();
@@ -1129,7 +1174,15 @@ public class MainPageController{
 			}	
 			//System.out.println("a_html.size():"+a_html.size());
 			
-			qa_html.append("<span id='" + qa_plus.getQa().getQa_id() + "' class='qa' onmouseover='qa_mouseover(this)'>");
+			if (seitou_list.size() > 0 && mondai_list.size() > 0)
+			{
+				if (qa_id_with_date.contains(qa_plus.getQa().getQa_id()))
+				{
+					String sakuseibi = Util.getDay(qa_plus.getQa().getCreate_timestamp());				
+					qa_html.append("<span id='" + sakuseibi + "' class='qa'>" + sakuseibi + "</span>");
+				}
+				qa_html.append("<span id='" + qa_plus.getQa().getQa_id() + "' class='qa' onmouseover='qa_mouseover(this)'>");
+			}
 		//	StopWatch watch2 = new StopWatch();
 		//	System.out.println("mondai_list.size() + seitou_list.size()" + mondai_list.size() + seitou_list.size());
 			for (int i = 0; i < (mondai_list.size() + seitou_list.size()); i++)
@@ -1164,7 +1217,10 @@ public class MainPageController{
 			}
 //			watch2.stop("for文");
 //			qa_html += "</span>";
-			qa_html.append("</span>");
+			if (seitou_list.size() > 0 && mondai_list.size() > 0)
+			{
+				qa_html.append("</span>");
+			}
 			//qa_html += "<div id='bottom_border' style='width:100%'></div>";		
 		}
 	    stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());

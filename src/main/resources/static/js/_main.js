@@ -1003,6 +1003,7 @@ function change_seitou_color(obj)
 			if (data == '0')
 			{
 				$(obj).css("opacity","1");
+				$(obj).prepend("<img src='../img/check.png' class='check' />");
 				$(obj).removeAttr('onmouseout');
 				$("#seikai_sum").text(Number($("#seikai_sum").text())+1);
 				document.getElementById("seikai_se").play();
@@ -1630,76 +1631,63 @@ function change_mode()
 
 function qa_mouseover(obj)
 {
-	var qa_id = obj.id;
-	jQuery.ajax({
-		url: "../edit_qa.html?qa_id="+qa_id,
-		dataType: "json",
-		cache: false,
-		success: function(data)
-		{
-		    //$("#google_image").html("");
-			$("#qa_input").html(data[0]);
-			$("#husen_paste").html(data[1]);
-		    $("#qa_id").val(qa_id);
-		    $("#edit_mode").attr("src", "../img/edit_mode2.png");
-		    
-			//var keyword = "mountains";
-		    var keyword = $("#"+qa_id).children(".a").text().replace(/\u200B/g,'');
-//		    alert(keyword);
-		    //keyword = "apple";
-		    //alert(typeof(keyword));
-//			$.getJSON("http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?",
-//			        {
-//			            tags: keyword,
-//			            tagmode: "any",
-//			            format: "json"
-//			        },
-//			        function(data) {
-//			            var rnd = Math.floor(Math.random() * data.items.length);
-//
-//			            var image_src = data.items[0]['media']['m'].replace("_m", "_b");
-//
-////			            $('body').css('background-image', "url('" + image_src + "')");
-//					    $("#google_image").html("<img height='100px' src='" + image_src +"' />");
-//			        });	
-		    
-		},
-		error: function(data)
-		{
-			$("#balloon").css("display","inline");
-			$("#serif").text(server_error);
-		}
-	});	
+//	var qa_id = obj.id;
+//	jQuery.ajax({
+//		url: "../edit_qa.html?qa_id="+qa_id,
+//		dataType: "json",
+//		cache: false,
+//		success: function(data)
+//		{
+//		    //$("#google_image").html("");
+//			$("#qa_input").html(data[0]);
+//			$("#husen_paste").html(data[1]);
+//		    $("#qa_id").val(qa_id);
+//		    $("#edit_mode").attr("src", "../img/edit_mode2.png");
+//		    
+//			//var keyword = "mountains";
+//		    var keyword = $("#"+qa_id).children(".a").text().replace(/\u200B/g,'');
+////		    alert(keyword);
+//		    //keyword = "apple";
+//		    //alert(typeof(keyword));
+////			$.getJSON("http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?",
+////			        {
+////			            tags: keyword,
+////			            tagmode: "any",
+////			            format: "json"
+////			        },
+////			        function(data) {
+////			            var rnd = Math.floor(Math.random() * data.items.length);
+////
+////			            var image_src = data.items[0]['media']['m'].replace("_m", "_b");
+////
+//////			            $('body').css('background-image', "url('" + image_src + "')");
+////					    $("#google_image").html("<img height='100px' src='" + image_src +"' />");
+////			        });	
+//		    
+//		},
+//		error: function(data)
+//		{
+//			$("#balloon").css("display","inline");
+//			$("#serif").text(server_error);
+//		}
+//	});	
 	
-	var keywords = $("#"+qa_id).children(".a").text().replace(/\u200B/g,'');
-	$.ajax ({
-		url: "../image_search.html?keywords=" + keywords,
-		//url: "http://35.161.57.139:8080/gpix/v1/gpix?keyword=Car&limit=2",
-		type:"GET",
-//      beforeSend: function (request)
-//      {
-//          request.setRequestHeader("Authorization", "hLPgzwg4XU");
-//      },       
-//	       headers: {
-//	           "Authorization":"4cOJ50EzWB"
-//	       },
-//		processData: false,
-       cache: false,
-       dataType: "json",
-       success: function (data) {
-//    	   alert(data);
-		    $("#google_image").html("<img height='100px' src='" + data +"' />");
-    	   
-           //equal to previuos example
-           //...
-       },
-       error: function(xhr, status, error) {
-//    	   alert(status);
-//    	   alert(error);
-//    	   var err = eval("(" + xhr.responseText + ")");
-//    	   alert(err.Message);
-    	 }
-       });
+//	var keywords = $("#"+qa_id).children(".a").text().replace(/\u200B/g,'');
+//	$.ajax ({
+//		url: "../image_search.html?keywords=" + keywords,
+//		type:"GET",
+//       cache: false,
+//       dataType: "json",
+//       success: function (data) {
+//		    $("#google_image").html("<img height='100px' src='" + data +"' />");
+//       },
+//       error: function(xhr, status, error) {
+////    	   alert(status);
+////    	   alert(error);
+////    	   var err = eval("(" + xhr.responseText + ")");
+////    	   alert(err.Message);
+//    	 }
+//       });
 
 }
 

@@ -461,11 +461,13 @@ input
 
 .husen[id^="tag_id"]
 {
-	z-index: 100000000 !important;	
+	position:relative;
+	z-index: 1000002 !important;	
 }
 
 .husen
 {
+	position:relative;
 	display:inline-block;
 	background: url("../img/husen_yellow-min.png") no-repeat center;
 	background-size:120px 30px;
@@ -473,7 +475,7 @@ input
 	margin-bottom:10px;
 	margin-right:20px;
 	text-align:center;
-	z-index: 100000000 !important;
+	z-index: 1000002 !important;
 	width:130px;
 	height:30px;
     font-size:13px;
@@ -616,7 +618,7 @@ input
 	background-size:300px 150px;
 	height:150px;
 	width:300px;
-	z-index: 100;
+	z-index: 10000;
     cursor: move;
 }
 /* 虫眼鏡 END */

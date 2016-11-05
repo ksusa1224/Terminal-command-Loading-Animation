@@ -306,7 +306,7 @@ public class QADao {
 		sql.appendLine("	update_timestamp");
 		sql.appendLine(" from qa");
 		sql.appendLine(" where del_flg = 0");
-		sql.appendLine(" order by update_timestamp desc");
+		sql.appendLine(" order by create_timestamp desc");
 		sql.appendLine("  limit " + limit + " offset + " + offset + ";");
 		
 		dao.loadDriver();
@@ -366,7 +366,7 @@ public class QADao {
 		      // 更新者
 		      qa.setUpdate_owner(rs.getString("update_owner"));
 		      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
-		      qa.setUpdate_timestamp(rs.getString("create_timestamp"));
+		      qa.setCreate_timestamp(rs.getString("create_timestamp"));
 		      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
 		      qa.setUpdate_timestamp(rs.getString("update_timestamp"));
 

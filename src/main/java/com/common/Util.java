@@ -88,7 +88,22 @@ public class Util {
 	    Date now = new Date();
 	    String strDate = sdfDate.format(now);
 	    return strDate;	
-	}	
+	}
+	
+	public static String getDay(String dbdate)
+	{
+		if(dbdate == null)
+		{
+			return "";
+		}
+		String day = "";
+		if (dbdate.length() > 6)
+		{
+			String[] timestamp = dbdate.split("-");
+			day = timestamp[1] + "/" + timestamp[2].split(" ")[0];
+		}
+		return day;
+	}
 	
 	/**
 	 * 引数の文字列が日本語か日本語以外（現状英語しか対応していない）かを判定する
