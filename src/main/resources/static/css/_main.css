@@ -114,7 +114,7 @@ div.page_right
 	z-index: -1;
 }
 
-.qa
+.qa,.date
 {
 /*	
 	display: inline-block;
@@ -624,7 +624,7 @@ input
 /* 虫眼鏡 END */
 
 @media (max-width: 667px) {
-	.qa
+	.qa,.date
 	{
 		font-size:20px !important;
 	}
@@ -641,7 +641,7 @@ input
 	body{
   		
 	}
-	.qa
+	.qa,.date
 	{
 		border-top:1px solid #d9d9d9;		
 		font-size:18px;

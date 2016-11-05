@@ -9,6 +9,7 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -1080,8 +1081,8 @@ public class MainPageController{
 
 		StringBuffer qa_html = new StringBuffer();
 		
-		Set<String> qa_id_with_date = new HashSet<String>();
-		qa_id_with_date = get_qa_create_date(qa_plus_list);
+		Map<String, Integer> qa_id_with_date = new HashMap<String, Integer>();
+		qa_id_with_date = get_qa_count_per_date(qa_plus_list);
 		System.out.println("サイズ："+qa_id_with_date.size());
 		
 		for (QAPlusModel qa_plus : qa_plus_list)
@@ -1131,11 +1132,25 @@ public class MainPageController{
 			
 			if (seitou_list.size() > 0 && mondai_list.size() > 0)
 			{
-				if (qa_id_with_date.contains(qa_plus.getQa().getQa_id()))
+//				Map<String, List<QAModel>>
+//				 Collection<List<QAModel>> a = qa_id_with_date.values();
+//				int cnt = 0;
+//				List<List<QAModel>> qa_id_date_stream = qa_id_with_date.values()
+//						.stream()
+//						// x : List<List<QAModel>
+//						.filter(x -> x.stream()
+//								// y: List<QAModel>
+//								.filter(y -> y.getQa_id() == qa_plus.getQa().getQa_id()).count() > 0)
+//						.collect(Collectors.toList());
+				
+				
+				
+				if (qa_id_with_date.containsKey(qa_plus.getQa().getQa_id()))
 				{
 					Util util = new Util();
-					String sakuseibi = util.getDay(qa_plus.getQa().getCreate_timestamp());				
-					qa_html.append("<span id='" + sakuseibi + "' class='qa'>" + sakuseibi + "</span>");
+					String sakuseibi = util.getDay(qa_plus.getQa().getCreate_timestamp());
+					int qa_cnt_per_date = qa_id_with_date.get(qa_plus.getQa().getQa_id());
+					qa_html.append("<span id='" + sakuseibi + "' class='date'>" + sakuseibi + "（" + qa_cnt_per_date + "問）" + "</span>");
 				}
 				qa_html.append("<span id='" + qa_plus.getQa().getQa_id() + "' class='qa' onmouseover='qa_mouseover(this)'>");
 			}
@@ -1175,7 +1190,7 @@ public class MainPageController{
 		return qa_html.toString();
 	}
 
-	public Set<String> get_qa_create_date(List<QAPlusModel> qa_plus_list) {
+	public Map<String, Integer> get_qa_count_per_date(List<QAPlusModel> qa_plus_list) {
 		List<QAModel> qa_list = new ArrayList<QAModel>();
 		for (QAPlusModel qa_plus : qa_plus_list)
 		{
@@ -1194,13 +1209,25 @@ public class MainPageController{
 				.filter(p -> p.getCreate_timestamp() != null)
 				.collect(Collectors.groupingBy(QAModel::getCreate_timestamp));
 		
-		Map<String, String> qa_id_date = new HashMap<String, String>();
+		Map<String, Integer> qa_count_per_date = new HashMap<String, Integer>();
 		for (Map.Entry<String, List<QAModel>> entry : qa_id_per_date.entrySet())
 		{
-			qa_id_date.put(entry.getKey(), entry.getValue().get(0).getQa_id());
+			qa_count_per_date.put(entry.getValue().get(0).getQa_id(), 
+							entry.getValue().size());
 		}
-		Set<String> qa_id_with_date = new HashSet<String>(qa_id_date.values());
-		return qa_id_with_date;
+		
+//		System.out.println("サイズ"+qa_id_per_date.size());
+		
+//		Map<String, String> qa_id_date = new HashMap<String, String>();
+//		for (Map.Entry<String, List<QAModel>> entry : qa_id_per_date.entrySet())
+//		{
+//			qa_id_date.put(entry.getKey(), entry.getValue().get(0).getQa_id());
+//		}
+//		Set<String> date_set = new HashSet<String>(qa_id_date.values());
+//		Map<String, Integer> qa_count_per_date = new HashMap<String, Integer>();
+
+		
+		return qa_count_per_date;
 	}
 	
 	/**
