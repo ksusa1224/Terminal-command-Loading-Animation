@@ -1079,58 +1079,16 @@ public class MainPageController{
 		stopwatch.start();
 
 		StringBuffer qa_html = new StringBuffer();
-
-		//System.out.println("qa_plus_list.size():"+qa_plus_list.size());
 		
-		List<QAModel> qa_list = new ArrayList<QAModel>();
-		for (QAPlusModel qa_plus : qa_plus_list)
-		{
-			QAModel qa = new QAModel();
-			qa.setQa_id(qa_plus.getQa().getQa_id());
-			String sakuseibi = Util.getDay(qa_plus.getQa().getCreate_timestamp());
-			qa.setCreate_timestamp(sakuseibi);
-			//System.out.println("sakuseibi:"+Util.getDay(qa_plus.getQa().getCreate_timestamp()));
-			qa_list.add(qa);
-		}
-		
-		Map<String, List<QAModel>> qa_id_per_date = 
-				qa_list
-				.stream()
-				.filter(p -> p.getCreate_timestamp() != null)
-				.collect(Collectors.groupingBy(QAModel::getCreate_timestamp));
-		
-		Map<String, String> qa_id_date = new HashMap<String, String>();
-		for (Map.Entry<String, List<QAModel>> entry : qa_id_per_date.entrySet())
-		{
-			qa_id_date.put(entry.getKey(), entry.getValue().get(0).getQa_id());
-//			System.out.println(entry.getKey());
-//			
-//			System.out.println("きゅーえー："+entry.getValue().get(0).getQa_id());
-		}
-		Set<String> qa_id_with_date = new HashSet(qa_id_date.values());
-//		for (String a : qa_id_with_date)
-//		{
-//			//System.out.println(a);
-//		}
-		
-		System.out.println("qa_list_size:" + qa_id_per_date.size());
-		
-//		List<QAModel> qa_list_create_days = new ArrayList<QAModel>();
-//		qa_plus_list
-//		.stream()
-//		.filter(x -> x.getQa().getCreate_timestamp())
-//		.collect(Collectors.groupingBy
-//				(qa_plus_list::getQA)
-//				.collect(Collectors.toList());
+		Set<String> qa_id_with_date = new HashSet<String>();
+		qa_id_with_date = get_qa_create_date(qa_plus_list);
+		System.out.println("サイズ："+qa_id_with_date.size());
 		
 		for (QAPlusModel qa_plus : qa_plus_list)
 		{
-//			QAModel qa = qa_plus.getQa();
 			List<MondaiModel> mondai_list = new ArrayList<MondaiModel>();
 			mondai_list = qa_plus.getMondai_list();
-			
-			//System.out.println("mondai_list:"+mondai_list.size());
-			
+						
 			/**
 			 * 問題HTML
 			 */
@@ -1142,7 +1100,6 @@ public class MainPageController{
 				String html = "<span id='" + mondai_list.get(i).getQ_id() + "' class='q' onclick='edit_qa(this);'>" + mondai + "</span>";			
 				q_html.add(html);
 			}
-			//System.out.println("q_html.size():"+q_html.size());
 			
 			/**
 			 * 正答HTML
@@ -1150,8 +1107,6 @@ public class MainPageController{
 			List<SeitouModel> seitou_list = new ArrayList<SeitouModel>();
 			seitou_list = qa_plus.getSeitou_list();
 			
-			//System.out.println("seitou_list:"+seitou_list.size());
-
 			List<String> a_html = new ArrayList<String>();
 			for (int i = 0; i < seitou_list.size(); i++)
 			{
@@ -1178,26 +1133,23 @@ public class MainPageController{
 			{
 				if (qa_id_with_date.contains(qa_plus.getQa().getQa_id()))
 				{
-					String sakuseibi = Util.getDay(qa_plus.getQa().getCreate_timestamp());				
+					Util util = new Util();
+					String sakuseibi = util.getDay(qa_plus.getQa().getCreate_timestamp());				
 					qa_html.append("<span id='" + sakuseibi + "' class='qa'>" + sakuseibi + "</span>");
 				}
 				qa_html.append("<span id='" + qa_plus.getQa().getQa_id() + "' class='qa' onmouseover='qa_mouseover(this)'>");
 			}
-		//	StopWatch watch2 = new StopWatch();
-		//	System.out.println("mondai_list.size() + seitou_list.size()" + mondai_list.size() + seitou_list.size());
+
 			for (int i = 0; i < (mondai_list.size() + seitou_list.size()); i++)
 			{
-			//	System.out.println("i:"+i);
 				if (qa_plus.getQa().getIs_start_with_q() == 1)
 				{
 					if (i < mondai_list.size())
 					{
-//						qa_html += q_html.get(i);
 						qa_html.append(q_html.get(i));
 					}
 					if (i < seitou_list.size())
 					{
-//						qa_html += a_html.get(i);
 						qa_html.append(a_html.get(i));
 					}
 				}
@@ -1205,27 +1157,50 @@ public class MainPageController{
 				{
 					if (i < seitou_list.size())
 					{
-//						qa_html += a_html.get(i);
 						qa_html.append(a_html.get(i));
 					}
 					if (i < mondai_list.size())
 					{
-//						qa_html += q_html.get(i);
 						qa_html.append(q_html.get(i));
 					}
 				}
 			}
-//			watch2.stop("for文");
-//			qa_html += "</span>";
 			if (seitou_list.size() > 0 && mondai_list.size() > 0)
 			{
 				qa_html.append("</span>");
 			}
-			//qa_html += "<div id='bottom_border' style='width:100%'></div>";		
 		}
 	    stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());
 		
 		return qa_html.toString();
+	}
+
+	public Set<String> get_qa_create_date(List<QAPlusModel> qa_plus_list) {
+		List<QAModel> qa_list = new ArrayList<QAModel>();
+		for (QAPlusModel qa_plus : qa_plus_list)
+		{
+			QAModel qa = new QAModel();
+			qa.setQa_id(qa_plus.getQa().getQa_id());
+			Util util = new Util();
+			String sakuseibi = util.getDay(qa_plus.getQa().getCreate_timestamp());
+			qa.setCreate_timestamp(sakuseibi);
+			System.out.println("作成日"+sakuseibi);
+			qa_list.add(qa);
+		}
+		
+		Map<String, List<QAModel>> qa_id_per_date = 
+				qa_list
+				.stream()
+				.filter(p -> p.getCreate_timestamp() != null)
+				.collect(Collectors.groupingBy(QAModel::getCreate_timestamp));
+		
+		Map<String, String> qa_id_date = new HashMap<String, String>();
+		for (Map.Entry<String, List<QAModel>> entry : qa_id_per_date.entrySet())
+		{
+			qa_id_date.put(entry.getKey(), entry.getValue().get(0).getQa_id());
+		}
+		Set<String> qa_id_with_date = new HashSet<String>(qa_id_date.values());
+		return qa_id_with_date;
 	}
 	
 	/**

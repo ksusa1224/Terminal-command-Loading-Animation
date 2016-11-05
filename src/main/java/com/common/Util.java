@@ -90,7 +90,7 @@ public class Util {
 	    return strDate;	
 	}
 	
-	public static String getDay(String dbdate)
+	public String getDay(String dbdate)
 	{
 		if(dbdate == null)
 		{

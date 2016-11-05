@@ -595,7 +595,7 @@ public class QADao {
 		      // 更新者
 		      qa.setUpdate_owner(rs.getString("update_owner"));
 		      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
-		      qa.setUpdate_timestamp(rs.getString("create_timestamp"));
+		      qa.setCreate_timestamp(rs.getString("create_timestamp"));
 		      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
 		      qa.setUpdate_timestamp(rs.getString("update_timestamp"));
 
