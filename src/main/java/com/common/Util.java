@@ -100,7 +100,7 @@ public class Util {
 		if (dbdate.length() > 6)
 		{
 			String[] timestamp = dbdate.split("-");
-			day = timestamp[1] + "/" + timestamp[2].split(" ")[0];
+			day = timestamp[0] + "/" + timestamp[1] + "/" + timestamp[2].split(" ")[0];
 		}
 		return day;
 	}

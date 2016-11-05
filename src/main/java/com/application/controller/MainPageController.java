@@ -199,6 +199,7 @@ public class MainPageController{
 			method=RequestMethod.GET)
 	public @ResponseBody String to_miseikai(
 			@RequestParam(value="husen_names", required=false) String husen_names,
+			@RequestParam(value="refresh_by_date", required=false) String date,
 			@RequestParam(value="now_page_left", required=false) String now_page_left,
 			HttpServletRequest request, 
 			HttpSession session) {
@@ -233,7 +234,8 @@ public class MainPageController{
 			kaitou_dao.bulk_insert(owner_db, kaitou_list);
 			
 			SeitouDao seitou_dao = new SeitouDao();
-			seitou_dao.to_huseikai_by_tag(owner_db, husen_names);
+			System.out.println("ひづけ"+date);
+			seitou_dao.to_huseikai_by_tag(owner_db, husen_names, date);
 			
 			// 再検索
 			int limit = Constant.QA_NUM_PER_PAGE;
@@ -1128,29 +1130,16 @@ public class MainPageController{
 				String html = "<span id='" + seitou_list.get(i).getS_id() + "' class='a' style='opacity:" + opacity + "' onmouseover='this.style.opacity=1' " + mouseout + " onclick='change_seitou_color(this)'>" + checked + seitou + "</span>";				
 				a_html.add(html);
 			}	
-			//System.out.println("a_html.size():"+a_html.size());
 			
 			if (seitou_list.size() > 0 && mondai_list.size() > 0)
 			{
-//				Map<String, List<QAModel>>
-//				 Collection<List<QAModel>> a = qa_id_with_date.values();
-//				int cnt = 0;
-//				List<List<QAModel>> qa_id_date_stream = qa_id_with_date.values()
-//						.stream()
-//						// x : List<List<QAModel>
-//						.filter(x -> x.stream()
-//								// y: List<QAModel>
-//								.filter(y -> y.getQa_id() == qa_plus.getQa().getQa_id()).count() > 0)
-//						.collect(Collectors.toList());
-				
-				
-				
 				if (qa_id_with_date.containsKey(qa_plus.getQa().getQa_id()))
 				{
 					Util util = new Util();
-					String sakuseibi = util.getDay(qa_plus.getQa().getCreate_timestamp());
+					String sakuseibi_yyyyMMdd = util.getDay(qa_plus.getQa().getCreate_timestamp());
+					String sakuseibi_MMdd = sakuseibi_yyyyMMdd.split("/")[1] + "/" + sakuseibi_yyyyMMdd.split("/")[2];
 					int qa_cnt_per_date = qa_id_with_date.get(qa_plus.getQa().getQa_id());
-					qa_html.append("<span id='" + sakuseibi + "' class='date'>" + sakuseibi + "（" + qa_cnt_per_date + "問）" + "</span>");
+					qa_html.append("<span id='" + sakuseibi_yyyyMMdd + "' class='date'>" + sakuseibi_MMdd + "（" + qa_cnt_per_date + "問）" + "</span>");
 				}
 				qa_html.append("<span id='" + qa_plus.getQa().getQa_id() + "' class='qa' onmouseover='qa_mouseover(this)'>");
 			}
@@ -1215,18 +1204,7 @@ public class MainPageController{
 			qa_count_per_date.put(entry.getValue().get(0).getQa_id(), 
 							entry.getValue().size());
 		}
-		
-//		System.out.println("サイズ"+qa_id_per_date.size());
-		
-//		Map<String, String> qa_id_date = new HashMap<String, String>();
-//		for (Map.Entry<String, List<QAModel>> entry : qa_id_per_date.entrySet())
-//		{
-//			qa_id_date.put(entry.getKey(), entry.getValue().get(0).getQa_id());
-//		}
-//		Set<String> date_set = new HashSet<String>(qa_id_date.values());
-//		Map<String, Integer> qa_count_per_date = new HashMap<String, Integer>();
-
-		
+				
 		return qa_count_per_date;
 	}
 	

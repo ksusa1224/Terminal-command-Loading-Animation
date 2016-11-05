@@ -5,9 +5,10 @@ var pulun = "false";
 var qa_id_for_contextmenu = "";
 var qa_husen_global = "";
 var dragged_husen_left = 0;
+var refresh_by_date = "";
 
 function body_load()
-{		
+{			
 	function touchHandler(event) {
 	    var touch = event.changedTouches[0];
 
@@ -104,6 +105,12 @@ function body_load()
 	            break;
 	        default:
 //	            alert('You have a strange Mouse!');
+	    }
+	});	
+	$('.date').mousedown(function(event) {
+	    if (event.which == 3) {
+	    	refresh_by_date = this.id;
+	    	$("#refesh_by_date").text($("#refesh_by_date").text().replace(/この日/g,refresh_by_date));
 	    }
 	});	
 
@@ -1561,7 +1568,7 @@ function to_miseikai()
 	var now_page_left = $("page_left").text();
 	
 	jQuery.ajax({
-		url: "../to_miseikai.html?husen_names=" + tag_search_conditions_uri + "&now_page_left="+now_page_left,
+		url: "../to_miseikai.html?husen_names=" + tag_search_conditions_uri + "&refresh_by_date=" + refresh_by_date + "&now_page_left="+now_page_left,
 		dataType: "json",
 		cache: false,
 		success: function(data)
@@ -1570,13 +1577,7 @@ function to_miseikai()
 			$("#qa_area_right").html(data[1]);
 			$("#seitou_sum").html(data[2]);
 			$("#seikai_sum").html(data[3]);
-			$(".total_pages").html(data[4]);
-			
-//		    $("#loupe").remove();
-//		    $(".magnifying_glass").remove();
-//		    $(".magnified_content").remove();
-//		    $(".magnifying_lens").remove();
-//		    loupe();			
+			$(".total_pages").html(data[4]);			
 		},
 		error: function(data)
 		{

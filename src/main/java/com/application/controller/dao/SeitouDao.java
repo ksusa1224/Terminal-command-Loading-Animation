@@ -582,21 +582,34 @@ public class SeitouDao {
 	 * @param db_name
 	 * @param tag_names
 	 */
-	public void to_huseikai_by_tag(String db_name,String tag_names)
+	public void to_huseikai_by_tag(String db_name,String tag_names, String date)
 	{
 		StopWatch stopwatch = new StopWatch();
 
+		String start_date = "";
+		String end_date = "";
+		if (date != null && !("").equals(date))
+		{
+			start_date = date.replace("/", "-") + " 00:00:00";
+			end_date = date.replace("/", "-") + " 23:59:59";
+		}
+		
 		SQliteDAO dao = new SQliteDAO();
 		StringBuilderPlus sql = new StringBuilderPlus();
 		sql.appendLine("update seitou");
         sql.appendLine(" set seikai_flg = 0");
         sql.appendLine(" where seitou.del_flg = 0");
+        if (date != null && !("").equals(date))
+        {
+        	sql.appendLine(" and seitou.create_timestamp");
+        	sql.appendLine(" between");
+        	sql.appendLine(" '" + start_date + "'");
+        	sql.appendLine(" and");
+        	sql.appendLine(" '" + end_date + "'");
+        }
         if (!tag_names.equals(""))
         {
-            if (!tag_names.equals(""))
-            {
-            	sql.appendLine("and (select 0 from seitou,qa, qa_tag_relation,tag ");
-            }
+        	sql.appendLine("and (select 0 from seitou,qa, qa_tag_relation,tag ");
 			sql.appendLine(" where qa.qa_id = qa_tag_relation.qa_id");
 			sql.appendLine(" and qa.qa_id = seitou.qa_id");
 			sql.appendLine(" and tag.tag_id = qa_tag_relation.tag_id");
