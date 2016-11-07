@@ -198,6 +198,16 @@ div.page_right
 	left:875px;
 	width:360px;
 	cursor:pointer;
+	z-index: 100001;
+}
+
+.rotate_pen
+{
+	top:85px !important;
+	left:910px !important;
+    -ms-transform: rotate(-24deg); /* IE 9 */
+    -webkit-transform: rotate(-24deg); /* Chrome, Safari, Opera */
+    transform: rotate(-24deg);
 }
 
 #red_pen
@@ -207,6 +217,7 @@ div.page_right
 	left:875px;
 	width:360px;
 	cursor: pointer;
+	z-index: 100001;
 }
 
 #navigation
