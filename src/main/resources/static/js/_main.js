@@ -143,45 +143,18 @@ function body_load()
 //    $( "#red_pen" ).draggable();
     //$( "#qa_panel" ).draggable();
 //    $( "#note_area" ).draggable();
-    $( ".husen" ).draggable({
-    	revert: 'true', 
-    	//appendTo: 'body',
-    	//containment: 'window',
-    	scroll: true,
-    	helper: 'clone',
-		stop : function(e, ui){
-	        var scroll_left = $(document).scrollLeft();
-	        $(ui.draggable).css("position", "absolute");
-	        $(ui.draggable).css("left", "10px !important");
-	        $dragging = $(".husen.ui-draggable.ui-draggable-handle.ui-droppable.ui-draggable-dragging");
-	        var left = Number($dragging.css("left").replace(/px/g,""));
-	        left = left + scroll_left;
-	        $dragging.css("left", left);
-//	         alert("stop");
-	         $('.husen').draggable().data()["ui-draggable"].cancelHelperRemoval = true;
-	         //this.style.opacity=0;
-//	         alert($(ui.helper));
-//	         $draged_husen = $(ui.helper);
-//	         alert($draged_husen.attr("class"));
-	    },
-		drag : function(e, ui){
-	        this.style.opacity=0;
-//	        var scroll_left = $(document).scrollLeft();
-//	        $(ui.draggable).css("position", "absolute");
-//	        $(ui.draggable).css("left", "10px !important");
-//	        $dragging = $(".husen.ui-draggable.ui-draggable-handle.ui-droppable.ui-draggable-dragging");
-//	        var left = Number($dragging.css("left").replace(/px/g,""));
-//	        left = left + scroll_left;
-//	        $dragging.css("left", left);
-	    },
-	    scroll: 'true'
-    });
     $( "#loupe" ).draggable();
+    
+    husen_draggable();
     
     var qa_husen_junban = 1;
     $('#husen_paste').droppable({
         accept:'.husen',
         drop: function(event,ui){
+        	if ($(ui.draggable).hasClass("blue"))
+        	{
+        		return false;
+        	}
 //        	var scroll_left = $(document).scrollLeft();
 //        	$(ui.draggable).css("position", "absolute");
 //        	$(ui.draggable).css("left", "10px !important");
@@ -368,6 +341,10 @@ function body_load()
     			$("#balloon").css("display","inline");
     			$("#serif").text("青いふせんは特別なふせんだから、Q&Aに貼ることはできないよ〜");  
     			$(ui.draggable).attr( 'style', 'position: relative;' );
+    			$(".husen.blue.ui-draggable.ui-draggable-handle.ui-droppable.ui-draggable-dragging").remove();
+//    			$(".husen.blue.ui-draggable.ui-draggable-handle.ui-droppable.ui-draggable-dragging").css('position','relative');
+//    			$(ui.draggable).remove();
+//    			$(ui.draggable).removeAttr('style');
         	}
         },
     	out: function(event, ui){
@@ -414,6 +391,44 @@ function body_load()
 	    	pulun = "false";
 	    }
 	 );	
+}
+
+function husen_draggable()
+{
+    $( ".husen" ).draggable({
+    	revert: 'true', 
+    	//appendTo: 'body',
+    	//containment: 'window',
+    	scroll: true,
+    	helper: 'clone',
+		stop : function(e, ui){
+	        var scroll_left = $(document).scrollLeft();
+	        $(ui.draggable).css("position", "absolute");
+	        $(ui.draggable).css("left", "10px !important");
+	        $dragging = $(".husen.ui-draggable.ui-draggable-handle.ui-droppable.ui-draggable-dragging");
+	        var left = Number($dragging.css("left").replace(/px/g,""));
+	        left = left + scroll_left;
+	        $dragging.css("left", left);
+//	         alert("stop");
+	         $('.husen').draggable().data()["ui-draggable"].cancelHelperRemoval = true;
+	         //this.style.opacity=0;
+//	         alert($(ui.helper));
+//	         $draged_husen = $(ui.helper);
+//	         alert($draged_husen.attr("class"));
+	    },
+		drag : function(e, ui){
+	        this.style.opacity=0;
+//	        var scroll_left = $(document).scrollLeft();
+//	        $(ui.draggable).css("position", "absolute");
+//	        $(ui.draggable).css("left", "10px !important");
+//	        $dragging = $(".husen.ui-draggable.ui-draggable-handle.ui-droppable.ui-draggable-dragging");
+//	        var left = Number($dragging.css("left").replace(/px/g,""));
+//	        left = left + scroll_left;
+//	        $dragging.css("left", left);
+	    },
+	    scroll: 'true'
+    });
+	
 }
 
 function show_husen_modal()
@@ -582,40 +597,6 @@ function qa_saisei(mondaibun_, kaitou_,q_gengo_,a_gengo_,play_mode)
 
 	}
 }
-
-//(function($){
-//    $.fn.extend({
-//         center: function (options) {
-//              var options =  $.extend({ // Default values
-//                   inside:window, // element, center into window
-//                   transition: 0, // millisecond, transition time
-//                   minX:0, // pixel, minimum left element value
-//                   minY:0, // pixel, minimum top element value
-//                   withScrolling:false, // booleen, take care of the scrollbar (scrollTop)
-//                   vertical:false, // booleen, center vertical
-//                   horizontal:true // booleen, center horizontal
-//              }, options);
-//              return this.each(function() {
-//                   var props = {position:'absolute'};
-//                   if (options.vertical) {
-//                        var top = ($(options.inside).height() - $(this).outerHeight()) / 2;
-//                        if (options.withScrolling) top += $(options.inside).scrollTop() || 0;
-//                        top = (top > options.minY ? top : options.minY);
-//                        $.extend(props, {top: top+'px'});
-//                   }
-//                   if (options.horizontal) {
-//                         var left = ($(options.inside).width() - $(this).outerWidth()) / 2;
-//                         if (options.withScrolling) left += $(options.inside).scrollLeft() || 0;
-//                         left = (left > options.minX ? left : options.minX);
-//                         $.extend(props, {left: left+'px'});
-//                   }
-//                   if (options.transition > 0) $(this).animate(props, options.transition);
-//                   else $(this).css(props);
-//                   return $(this);
-//              });
-//         }
-//    });
-//})(jQuery);
 
 
 function slime_pulupulu()

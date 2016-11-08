@@ -27,8 +27,8 @@
 <div id="husen_wrapper" th:utext="${tags}"></div>
 <div id="husen_board_context-menu" style="display:none;"> 
   <!-- The actual menu that will be displayed-->
-  <ul class="dropdown-menu">
-    <li><a id="husen_custom" class="js-open-modal" data-modal-id="popup1" href="#">付箋をカスタマイズ</a></li>
+  <ul class="dropdown-menu" style="z-index:1000003">
+    <li><a id="husen_custom" class="js-open-modal" data-modal-id="popup1" href="#">付箋の表示順を変更</a></li>
     <li class="divider"></li>
     <li><a id="husen_help" href="#" onclick="javascript:husen_help();">付箋の使い方</a></li>
   </ul>
@@ -232,7 +232,6 @@ $(document).ready(function(){
         target: "#husen_board_context-menu"
     });
     var margin_top = $(".dropdown-menu").css("margin-top");
-//    alert(margin_top);
     $(".dropdown-menu").css("margin-top", "-15px");
     $(".dropdown-menu").css("opacity", "0.9");
 });
