@@ -1,3 +1,14 @@
+html {
+/*
+  font-family: "roboto", helvetica;
+  position: relative;
+  height: 100%;
+  font-size: 100%;
+  line-height: 1.5;
+  color: #444;
+  */
+}
+
 h2 {
   margin: 1.75em 0 0;
   font-size: 5vw;
@@ -112,3 +123,5 @@ a.close:hover {
   -moz-transition: color 1s ease;
   transition: color 1s ease;
 }
+
+  #sortable { list-style-type: none; margin: 0; padding-left: 15px; width: 100%; }

@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=1275px, initial-scale=0.8, maximum-scale=0.8,minimum-scale=0.8, user-scalable=no" />
 <title>暗記ノート</title>
 <link rel="stylesheet" th:href="@{../css/bootstrap.min.main.css}" />
+<link rel="stylesheet" type="text/css" th:href="@{../css/_husen_modal.css}" />
 <link rel="stylesheet" type="text/css" th:href="@{../css/_main.css}" />
 <link rel="stylesheet" type="text/css" th:href="@{../css/jquery-ui.css}" />
 <script th:src="@{../js/jquery-3.1.0.min.js}"></script>
@@ -24,6 +25,14 @@
 
 <div id="crystal_board" class="husen_draggable">
 <div id="husen_wrapper" th:utext="${tags}"></div>
+<div id="husen_board_context-menu" style="display:none;"> 
+  <!-- The actual menu that will be displayed-->
+  <ul class="dropdown-menu">
+    <li><a id="husen_custom" class="js-open-modal" data-modal-id="popup1" href="#">付箋をカスタマイズ</a></li>
+    <li class="divider"></li>
+    <li><a id="husen_help" href="#" onclick="javascript:husen_help();">付箋の使い方</a></li>
+  </ul>
+</div>
 </div>
 
 <audio id="play_qa" preload="auto">
@@ -206,7 +215,7 @@
     <li><a id="refesh_by_date" href="#" onclick="javascript:to_miseikai();">この日の全問題を未正解に戻す</a></li>
   </ul>
 </div>
-<div id="loupe"></div>
+<div id="loupe" title="付箋を虫眼鏡にドラッグで検索"></div>
 <script th:src="@{../js/contextmenu.js}"></script> 
 <script>
 $(document).ready(function(){
@@ -219,12 +228,24 @@ $(document).ready(function(){
     $('.date').contextmenu({
         target: "#date_context-menu"
     });
+    $('#crystal_board').contextmenu({
+        target: "#husen_board_context-menu"
+    });
     var margin_top = $(".dropdown-menu").css("margin-top");
 //    alert(margin_top);
     $(".dropdown-menu").css("margin-top", "-15px");
     $(".dropdown-menu").css("opacity", "0.9");
 });
 </script>
-
+<div id="popup1" class="modal-box" style="z-index:1000000;width:200px;height:500px;">
+  <header> <a href="#" class="js-modal-close close">×</a>
+    <h3>付箋の表示順を変更</h3>
+  </header>
+  <div class="modal-body" style="overflow:scroll;height:350px;">
+  	<p style="text-align:center;">付箋を上下にドラッグ<br />して表示順を変更</p>
+	<ul id="sortable" th:utext="${tags_sort}"></ul>
+  </div>
+  <footer> <a href="#" class="btn btn-small" onclick="javascript:husen_order();">並び替えを反映</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-small js-modal-close">Close</a> </footer>
+</div>
 </body>
 </html>

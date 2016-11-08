@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import com.application.controller.dao.TagDao;
 import com.common.*;
 
 /**
@@ -370,7 +372,7 @@ public class SQliteDAO {
 	      // タグID
 	      sql.appendLine("	tag_id text primary key unique not null,");
 	      // タグ名
-	      sql.appendLine("	tag_name text,");
+	      sql.appendLine("	tag_name text unique,");
 	      // 表示順
 	      sql.appendLine("	junban integer,");
 	      // 表示フラグ

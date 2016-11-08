@@ -8,7 +8,12 @@ var dragged_husen_left = 0;
 var refresh_by_date = "";
 
 function body_load()
-{			
+{		
+	$( "#sortable" ).sortable();
+    $( "#sortable" ).disableSelection();
+    
+	show_husen_modal();
+	
 	$("#qa_input")
 	  .focusout(function() {
 		$("#blue_pen").removeClass("rotate_pen");		
@@ -185,7 +190,7 @@ function body_load()
 //        	left = left + scroll_left;
 //        	$dragging.css("left", left);
         	var husen_name = $(ui.draggable).text();
-        	$("#qa_husen").html("<span data-junban='"+ qa_husen_junban +"'>" + husen_name +"</span>")
+        	$("#qa_husen").html("<span data-junban='"+ qa_husen_junban +"'>" + husen_name +"</span>");
         	qa_husen_global = qa_husen_global + $("#qa_husen").text();
         	//alert(qa_husen_global);
         	qa_husen_junban++;
@@ -209,7 +214,7 @@ function body_load()
 //        	alert(this.id);
         	var tag_id = this.id;
         	var tag_name = this.innerText;
-        	if (tag_name == "未正解" || tag_name == "正解")
+        	if ($(this).hasClass("blue"))
         	{
 				$("#balloon").css("display","inline");
 				$("#serif").text("青いふせんは特別なふせんだから、消せないよ〜");
@@ -217,7 +222,7 @@ function body_load()
         	}
         	else
         	{
-	        	var ret = confirm("付箋「" + tag_name + "」を削除しますか？")
+	        	var ret = confirm("付箋「" + tag_name + "」を削除しますか？");
 	        	if (ret == false)
 	        	{
 	        		tag_id = "";
@@ -229,8 +234,8 @@ function body_load()
 				cache: false,
 				success: function(data)
 				{
-					$("#crystal_board").html("");
-					$("#crystal_board").prepend(data[0]);
+					$("#husen_wrapper").html("");
+					$("#husen_wrapper").prepend(data[0]);
 				    $( ".husen" ).draggable({
 				    	revert: 'true', 
 				    	scroll: true,
@@ -258,7 +263,7 @@ function body_load()
         drop: function(event,ui){
         	var tag_id = $(ui.draggable).attr("id");
         	var tag_name = $(ui.draggable).text();
-        	if (tag_name == "未正解" || tag_name == "正解")
+        	if ($(ui.draggable).hasClass("blue"))
         	{
 				$("#balloon").css("display","inline");
 				$("#serif").text("青いふせんは特別なふせんだから、消せないよ〜");
@@ -266,7 +271,7 @@ function body_load()
         	}
         	else
         	{
-	        	var ret = confirm("付箋「" + tag_name + "」を削除しますか？")
+	        	var ret = confirm("付箋「" + tag_name + "」を削除しますか？");
 	        	if (ret == false)
 	        	{
 	        		tag_id = "";
@@ -278,8 +283,8 @@ function body_load()
 				cache: false,
 				success: function(data)
 				{
-					$("#crystal_board").html("");
-					$("#crystal_board").prepend(data[0]);
+					$("#husen_wrapper").html("");
+					$("#husen_wrapper").prepend(data[0]);
 				    $( ".husen" ).draggable({
 				    	revert: 'true', 
 				    	scroll: true,
@@ -291,7 +296,8 @@ function body_load()
 						drag : function(e, ui){
 					        this.style.opacity=0;
 					    }    		
-				    });    					
+				    });    	
+				    $("#" + tag_id).remove();
 				},
 				error: function(data)
 				{
@@ -328,17 +334,9 @@ function body_load()
         					$("#seikai_sum").html(data[3]);
         					$(".total_pages").html(data[4]);
 
-//        				    $("#loupe").remove();
-//        				    $(".magnifying_glass").remove();
-//        				    $(".magnified_content").remove();
-//        				    $(".magnifying_lens").remove();
-//        				    loupe();
-//        				    loupe_drop();
-
-//        					$('.qa').contextmenu({
-//        				        target: "#qa_context-menu"
-//        				    });
-//        				    var margin_top = $(".dropdown-menu").css("margin-top");	
+        					$('.qa').contextmenu({
+        				        target: "#qa_context-menu"
+        				    });
         				},
         				error: function(data)
         				{
@@ -356,6 +354,23 @@ function body_load()
         },
     	out: function(event, ui){
     		$("#qa_id").val("");
+			$("#balloon").css("display","none");
+			$("#serif").text("");   			    		
+    	}
+    });
+
+    $('#qa_panel').droppable({
+        accept:'.husen',
+        drop: function(event,ui){
+        	var id = $(ui.draggable).attr("id");
+        	if ($(ui.draggable).hasClass("blue"))
+        	{
+    			$("#balloon").css("display","inline");
+    			$("#serif").text("青いふせんは特別なふせんだから、Q&Aに貼ることはできないよ〜");  
+    			$(ui.draggable).attr( 'style', 'position: relative;' );
+        	}
+        },
+    	out: function(event, ui){
 			$("#balloon").css("display","none");
 			$("#serif").text("");   			    		
     	}
@@ -401,6 +416,36 @@ function body_load()
 	 );	
 }
 
+function show_husen_modal()
+{
+	var appendthis =  ("<div class='modal-overlay js-modal-close'></div>");
+	
+	$('a[data-modal-id]').click(function(e) {
+		e.preventDefault();
+    $("body").append(appendthis);
+    $(".modal-overlay").fadeTo(500, 0.7);
+    //$(".js-modalbox").fadeIn(500);
+		var modalBox = $(this).attr('data-modal-id');
+		$('#'+modalBox).fadeIn($(this).data());
+	});  	  
+  
+	$(".js-modal-close, .modal-overlay").click(function() {
+	    $(".modal-box, .modal-overlay").fadeOut(500, function() {
+	        $(".modal-overlay").remove();
+	    });
+	 
+	});
+	 
+	$(window).resize(function() {
+	    $(".modal-box").css({
+	        top: ($(window).height() - $(".modal-box").outerHeight()) / 2,
+	        left: ($(window).width() - $(".modal-box").outerWidth()) / 2
+	    });
+	});
+	 
+	$(window).resize();
+}
+
 function delete_qa()
 {
 	var qa_id = qa_id_for_contextmenu;
@@ -441,7 +486,7 @@ function delete_qa()
 }
 
 function change_opacity (seitou) {
-	seitou.mouseout(function(){ return false});
+	seitou.mouseout(function(){ return false;});
 	if (seitou.style.opacity == 1)
 	{
 		seitou.style.opacity = 1;
@@ -831,7 +876,7 @@ function husen_touroku(obj)
 				}
 				else
 				{
-					$("#crystal_board").prepend('<div class="husen" contenteditable="true" onkeypress="javascript:husen_touroku(this);"></div>');
+					$("#husen_wrapper").prepend('<div class="husen" contenteditable="true" onkeypress="javascript:husen_touroku(this);"></div>');
 					$("#balloon").css("display","inline");
 					$("#serif").text("付箋「" + tag_name + "」を作ったよ");
 					$("#qa_input").focus();
@@ -1078,7 +1123,7 @@ function change_val(chk_box)
 {
 	if($("this").val() == "off")
 	{
-		$("this").val() == "on"
+		$("this").val() == "on";
 	}
 	else
 	{
@@ -1729,6 +1774,37 @@ function qa_mouseover(obj)
 //    	 }
 //       });
 
+}
+
+function husen_order()
+{
+	var husen_ids_in_order = "";
+	var idx = 0;
+	$('#sortable').children('li').each(function () {
+		if (this.id != "" && this.id != "blank_husen")
+		{
+			idx++;
+			husen_ids_in_order = husen_ids_in_order + this.id + ":" + idx +",";
+		}
+	});
+	husen_ids_in_order = husen_ids_in_order.substring(0,husen_ids_in_order.length - 1);
+	//alert(husen_ids_in_order);
+	jQuery.ajax({
+		url: "../husen_order.html?husen_ids_in_order=" + husen_ids_in_order,
+		dataType: "json",
+		cache: false,
+		success: function(data)
+		{
+//			alert(data[0]);
+			$("#husen_wrapper").html("");
+			$("#husen_wrapper").html(data[0]);
+		},
+		error: function(data)
+		{
+			$("#balloon").css("display","inline");
+			$("#serif").text(server_error);
+		}
+	});	
 }
 
 //動作不良

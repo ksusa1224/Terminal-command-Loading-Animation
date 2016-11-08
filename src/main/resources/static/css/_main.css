@@ -497,6 +497,27 @@ input
     outline: none;
 }
 
+.husen_sort
+{
+	position:relative;
+	display:inline-block;
+	background: url("../img/husen_yellow-min.png") no-repeat center;
+	background-size:120px 30px;
+	padding-top:10px;
+	margin-bottom:0px;
+	margin-right:0px;
+	text-align:center;
+	z-index: 1000002 !important;
+	width:130px;
+	height:30px;
+    font-size:13px;
+    font-family:"ＭＳ Ｐ明朝", "MS PMincho", "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", serif;	
+    opacity: 1;
+    color:#202DA2;
+    cursor: move;
+    outline: none;
+}
+
 .blue
 {
 	background: url("../img/husen_blue.png") no-repeat center;	
@@ -510,7 +531,7 @@ input
 #husen_wrapper
 {
 	width:100%;
-	height:180px;
+	height:185px;
 	overflow: scroll;
     -ms-overflow-style: none;  // IE 10+
     overflow: -moz-scrollbars-none;  // Firefox

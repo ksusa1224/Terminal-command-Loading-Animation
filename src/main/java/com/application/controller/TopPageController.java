@@ -17,12 +17,15 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.application.controller.dao.KaitouDao;
 import com.application.controller.dao.SeitouDao;
+import com.application.controller.dao.TagDao;
 import com.application.model.LoginInfoModel;
 import com.application.model.dao.SeitouModel;
+import com.application.model.dao.TagModel;
 import com.common.AES;
 import com.common.Constant;
 import com.common.Log;
 import com.common.StringBuilderPlus;
+import com.common.Util;
 import com.dao.H2dbDao;
 import com.dao.SQliteDAO;
 import com.email.MailSend;
@@ -68,7 +71,10 @@ public class TopPageController {
 
 		  SQliteDAO sqlite_dao = new SQliteDAO();
 		  String db_name = sqlite_dao.createOwnerDB(owner_id);
+			TagDao tag_dao = new TagDao();
+			tag_dao.add_system_tags(db_name, owner_id);
 
+		  
 		  if (sended = true)
 		  {
 			  try
@@ -216,8 +222,7 @@ public class TopPageController {
 			
 			String owner_db = aes.decrypt(encrypted_db_name);
 			//add_is_seikai_to_seitou_tbl(owner_db);
-			
-			
+						
 			/**
 			 * アクセスログ記録
 			 */
@@ -229,6 +234,9 @@ public class TopPageController {
 			String client_browser = Log.getClientBrowser(request);
 			Log log = new Log();
 			log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
+			
+//			TagDao tag_dao = new TagDao();
+//			tag_dao.add_system_tags(owner_db, owner_id);
 			
 			if (input_password.equals(password_in_db))
 			{
@@ -256,9 +264,6 @@ public class TopPageController {
 		try
 		{
 			SQliteDAO sqlite_dao = new SQliteDAO();
-//			sql.appendLine("alter table seitou ");
-//			sql.appendLine("add column seikai_flg integer;");
-//			sqlite_dao.update(db_name, sql);
 			
 			List<SeitouModel> seitou_list = new ArrayList<SeitouModel>();
 			SeitouDao seitou_dao = new SeitouDao();
@@ -280,5 +285,4 @@ public class TopPageController {
 			ex.printStackTrace();
 		}
 	}
-	  
 }

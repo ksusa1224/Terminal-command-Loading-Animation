@@ -60,7 +60,6 @@ import com.application.controller.dao.QAPlusDao;
 import com.application.controller.dao.QaTagRelationDao;
 import com.application.controller.dao.SeitouDao;
 import com.application.controller.dao.TagDao;
-import com.application.model.LoginInfoModel;
 import com.application.model.dao.KaitouModel;
 import com.application.model.dao.MondaiModel;
 import com.application.model.dao.QAModel;
@@ -72,11 +71,8 @@ import com.common.AES;
 import com.common.Constant;
 import com.common.Log;
 import com.common.StopWatch;
-import com.common.StringBuilderPlus;
 import com.common.Util;
-import com.dao.SQliteDAO;
 import com.slime.SlimeSerif;
-import com.sun.medialib.mlib.Constants;
 
 import net.arnx.jsonic.JSON;
 
@@ -168,6 +164,10 @@ public class MainPageController{
 				// 付箋
 				String husen_html = generate_husen_html(owner_db);
 				model.addAttribute("tags", husen_html);
+				
+				// ソート用付箋
+				String husen_sort_html = generate_husen_sort_html(owner_db);
+				model.addAttribute("tags_sort", husen_sort_html);
 				
 				// ページング総数
 				QADao qa_dao = new QADao();
@@ -491,17 +491,42 @@ public class MainPageController{
 	public String generate_husen_html(String owner_db) {
 		TagDao tag_dao = new TagDao();
 		List<TagModel> tag_list = new ArrayList<TagModel>();
-		String husen_html = "<div id='blank_husen' class='husen' contenteditable='true' onkeypress='javascript:husen_touroku(this);'></div>"
-				+ "<div class='husen blue'>未正解</div>"
-				+ "<div class='husen blue'>正解</div>";
+		String husen_html = "<div id='blank_husen' class='husen' contenteditable='true' title='クリック+入力+Enterで&#013;新規付箋を登録' onkeypress='javascript:husen_touroku(this);'></div>";
 		tag_list = tag_dao.select_tag_list(owner_db, tag_list);
 		for (TagModel tag : tag_list)
 		{
-			husen_html += ("<div id='" + tag.getTag_id() + "' class='husen'>" + tag.getTag_name() + "</div>");
+			String system_tag = "";
+			if (tag.getSystem_tag_flg() == 1)
+			{
+				system_tag = " blue";
+			}
+
+			husen_html += ("<div id='" + tag.getTag_id() + "' class='husen" + system_tag + "'>" + tag.getTag_name() + "</div>");
 		}
 		return husen_html;
 	}	    
-	
+
+	/**
+	 * 
+	 * @param owner_db
+	 * @return
+	 */
+	public String generate_husen_sort_html(String owner_db) {
+		TagDao tag_dao = new TagDao();
+		List<TagModel> tag_list = new ArrayList<TagModel>();
+		String husen_html = "";
+		tag_list = tag_dao.select_tag_list(owner_db, tag_list);
+		for (TagModel tag : tag_list)
+		{
+			String system_tag = "";
+			if (tag.getSystem_tag_flg() == 1)
+			{
+				system_tag = " blue";
+			}
+			husen_html += ("<li id='" + tag.getTag_id() + "' class='husen_sort" + system_tag + "'>" + tag.getTag_name() + "</li>");
+		}
+		return husen_html;
+	}
 	
 	/**
 	 * 問題登録
@@ -842,6 +867,53 @@ public class MainPageController{
 		return insert_tag(tag_name, owner_db, owner_id);
 	}
 
+	@RequestMapping(value={"/husen_order.html"}, method=RequestMethod.GET)
+	public @ResponseBody String husen_order(
+			HttpSession session,
+			@RequestParam(value = "husen_ids_in_order", required=false) String husen_ids_in_order) {
+
+		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
+		AES aes = new AES();
+		String owner_db = aes.decrypt(encrypted_owner_db);
+
+		String owner_id = (String)session.getAttribute("owner_id");
+		
+		String husen_html = order_tag(husen_ids_in_order, owner_db);
+		
+		String json = JSON.encode(
+				new String[] 
+				{husen_html});
+		return json;
+	}
+	
+	/**
+	 * 
+	 * @param husen_ids_in_order
+	 * @param owner_db
+	 * @return
+	 */
+	public static String order_tag(String husen_ids_in_order, String owner_db)
+	{
+		TagDao tag_dao = new TagDao();
+		List<TagModel> tag_list = new ArrayList<TagModel>();
+		tag_list = tag_dao.order_tag(owner_db, husen_ids_in_order);
+		
+		String husen_html = "<div id='blank_husen' class='husen' contenteditable='true' title='クリック+入力+Enterで&#013;新規付箋を登録' onkeypress='javascript:husen_touroku(this);'></div>";
+//		tag_list = tag_dao.select_tag_list(owner_db, new ArrayList<TagModel>());
+		for (TagModel tag : tag_list)
+		{
+			String system_tag = "";
+			if (tag.getSystem_tag_flg() == 1)
+			{
+				system_tag = " blue";
+			}
+
+			husen_html = husen_html + "<div id='" + tag.getTag_id() + "' class='husen" + system_tag + "'>" + tag.getTag_name() + "</div>";
+		}
+		return husen_html;		
+	}
+
+	
 	@RequestMapping(value={"/husen_delete.html"}, method=RequestMethod.GET)
 	public @ResponseBody String husen_delete(
 			HttpSession session,
@@ -893,7 +965,7 @@ public class MainPageController{
 			    // タグ名
 				tag.setTag_name(tag_name);
 			    // 表示順
-//				tag.setJunban(junban);
+				tag.setJunban(0);
 			    // 表示フラグ
 				tag.setDisplay_flg(1);
 			    // 重要度（５段階）
@@ -903,7 +975,7 @@ public class MainPageController{
 			    // システムタグフラグ
 				tag.setSystem_tag_flg(0);
 			    // タグ種別
-//				tag.setTag_type(tag_type);
+				tag.setTag_type(0);
 			    // デザイン種別
 				tag.setDesign_type(0);
 			    // 公開範囲
@@ -922,6 +994,7 @@ public class MainPageController{
 				tag.setUpdate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
 				
 				tag_dao.insert_tag(owner_db, tag);
+				tag_dao.refresh_tags_junban(owner_db, tag);
 			}
 		}
 		return tag_name;
@@ -1038,7 +1111,12 @@ public class MainPageController{
 		String husen_html = "";
 		for (TagModel tag : tag_list)
 		{
-			husen_html += ("<div id='" + tag.getTag_id() + "' class='husen'>" + tag.getTag_name() + "</div>");
+			String system_tag = "";
+			if (tag.getSystem_tag_flg() == 1)
+			{
+				system_tag = " blue";
+			}
+			husen_html += ("<div id='" + tag.getTag_id() + "' class='husen" + system_tag + "'>" + tag.getTag_name() + "</div>");
 		}
 		String json = JSON.encode(
 				new String[] 
@@ -1188,7 +1266,7 @@ public class MainPageController{
 			Util util = new Util();
 			String sakuseibi = util.getDay(qa_plus.getQa().getCreate_timestamp());
 			qa.setCreate_timestamp(sakuseibi);
-			System.out.println("作成日"+sakuseibi);
+			//System.out.println("作成日"+sakuseibi);
 			qa_list.add(qa);
 		}
 		

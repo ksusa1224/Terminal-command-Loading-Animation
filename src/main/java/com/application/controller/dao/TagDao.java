@@ -4,13 +4,17 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.application.model.dao.MondaiModel;
 import com.application.model.dao.TagModel;
 import com.common.Constant;
 import com.common.Log;
 import com.common.StringBuilderPlus;
+import com.common.Util;
 import com.dao.SQliteDAO;
 
 public class TagDao {
@@ -62,6 +66,163 @@ public class TagDao {
 		
 		return max_row_no;
 	}
+
+	public int get_max_junban(String db_name)
+	{	
+		int max_junban = 0;
+		
+		SQliteDAO dao = new SQliteDAO();
+		
+		StringBuilderPlus sql = new StringBuilderPlus();
+		sql.appendLine("select max(junban) as junban from tag limit 1;");
+		dao.loadDriver();
+		
+		//System.out.println(db_name);
+
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+	    try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+	      ResultSet rs = stmt.executeQuery(sql.toString());
+	      while (rs.next()) 
+	      {
+	    	  max_junban = rs.getInt("junban");
+	    	  System.out.println(max_junban);
+	      }
+	    }
+	    catch(Exception ex)
+	    {
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+	    }	    
+		
+		return max_junban;
+	}
+
+	/**
+	 * 
+	 * @param db_name
+	 * @param tag
+	 */
+	public void refresh_tags_junban(String db_name, TagModel tag)
+	{	
+		SQliteDAO dao = new SQliteDAO();
+		
+		List<TagModel> tag_list = new ArrayList<TagModel>();
+		tag_list = select_tag_list(db_name, tag_list);
+		
+		StringBuilderPlus sql = new StringBuilderPlus();
+		int idx = 0;
+		for (TagModel tag_model : tag_list)
+		{
+			idx++;
+			sql.appendLine("update tag set junban = " + idx 
+							+ " where tag_id = '" + tag_model.getTag_id() + "';");			
+		}
+		
+		dao.loadDriver();
+		
+		//System.out.println(db_name);
+
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+		try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+
+	      //1行ずつコミットしない
+	      stmt.getConnection().setAutoCommit(false);
+	      
+	      /**
+	       *  SQL実行
+	       */
+	      dao.transaction(stmt, sql);
+	    }
+	    catch(Exception ex)
+	    {
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+	    }	    
+	}	
+
+	public List<TagModel> order_tag(String db_name, String husen_ids_in_order)
+	{	
+		System.out.println(husen_ids_in_order);
+		Map<String, Integer> id_junban = new HashMap<String, Integer>();
+		String[] husen_id_in_order = husen_ids_in_order.split(",");
+		for (String id_order : husen_id_in_order)
+		{
+			id_junban.put(id_order.split(":")[0], Integer.parseInt(id_order.split(":")[1]));
+		}
+		
+		SQliteDAO dao = new SQliteDAO();
+				
+		StringBuilderPlus sql = new StringBuilderPlus();
+		
+		for (Map.Entry<String, Integer> entry : id_junban.entrySet())
+		{
+			sql.appendLine("update tag set junban = " + entry.getValue() 
+						+ " where tag_id = '" + entry.getKey() + "';");
+		}
+		
+		dao.loadDriver();
+		
+		//System.out.println(db_name);
+
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+		try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+
+	      //1行ずつコミットしない
+	      stmt.getConnection().setAutoCommit(false);
+	      
+	      /**
+	       *  SQL実行
+	       */
+	      dao.transaction(stmt, sql);	      
+	    }
+	    catch(Exception ex)
+	    {
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+	    }	    
+		List<TagModel> tag_list = new ArrayList<TagModel>();
+		tag_list = select_tag_list(db_name, tag_list);
+		return tag_list;
+	}	
 	
 	public String select_tag_id(String db_name, String tag_name)
 	{
@@ -411,7 +572,7 @@ public class TagDao {
 	    {
 			Log log = new Log();
 			log.insert_error_log("ERROR", ex.getStackTrace().toString());
-		    System.err.println(ex.getMessage());
+		    //System.err.println(ex.getMessage());
 	    }
 	    finally
 	    {
@@ -419,4 +580,75 @@ public class TagDao {
 	    }	    
 	}
 	
+	public void add_system_tags(String owner_db, String owner_id)
+	{
+		add_system_tag(owner_db, owner_id, "復習のタイミング", 1);
+		add_system_tag(owner_db, owner_id, "未正解", 2);
+		add_system_tag(owner_db, owner_id, "正解", 3);
+		add_system_tag(owner_db, owner_id, "読むだけ問題", 4);
+		add_system_tag(owner_db, owner_id, "未分類", 5);
+		add_system_tag(owner_db, owner_id, "問題と解答を反転", 6);
+	}
+	
+	/**
+	 * 
+	 * @param db_name
+	 * @param owner_id
+	 * @param tag_name
+	 * @param junban
+	 */
+	public void add_system_tag(String db_name, String owner_id, String tag_name, int junban) {
+		/**
+		 * DBパッチ
+		 */
+		try
+		{
+			if (is_exist(db_name, tag_name))
+			{
+				return;
+			}
+			
+			TagModel tag = new TagModel();
+		    // 行番号
+			tag.setRow_no(get_max_row_no(db_name)+1);
+		    // タグID
+			tag.setTag_id(tag.generate_tag_id(get_max_row_no(db_name) + 1, owner_id));
+		    // タグ名
+			tag.setTag_name(tag_name);
+		    // 表示順
+			tag.setJunban(junban);
+		    // 表示フラグ
+			tag.setDisplay_flg(1);
+		    // 重要度（５段階）
+			tag.setJuyoudo(3);
+		    // 難易度（５段階）
+			tag.setNanido(3);
+		    // システムタグフラグ
+			tag.setSystem_tag_flg(1);
+		    // タグ種別
+			tag.setTag_type(junban);
+		    // デザイン種別
+			tag.setDesign_type(0);
+		    // 公開範囲
+			tag.setKoukai_level(Constant.KOUKAI_LEVEL_SELF_ONLY);
+		    // 言語
+			tag.setLanguage(Util.check_japanese_or_english(tag_name));
+		    // 削除フラグ
+			tag.setDel_flg(0);
+		    // 作成者
+			tag.setCreate_owner(owner_id);
+		    // 更新者
+			tag.setUpdate_owner(owner_id);
+		    // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+			tag.setCreate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+		    // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+			tag.setUpdate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+		
+			insert_tag(db_name, tag);
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+	}		
 }
