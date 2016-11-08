@@ -867,6 +867,21 @@ public class MainPageController{
 		return insert_tag(tag_name, owner_db, owner_id);
 	}
 
+	@RequestMapping(value={"/edit_husen.html"}, method=RequestMethod.GET)
+	public @ResponseBody String edit_husen(
+			HttpSession session,
+			@RequestParam(value = "tag_id", required=false) String tag_id,
+			@RequestParam(value = "tag_name", required=false) String tag_name) {
+
+		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
+		AES aes = new AES();
+		String owner_db = aes.decrypt(encrypted_owner_db);
+
+		String owner_id = (String)session.getAttribute("owner_id");
+		
+		return edit_tag(tag_id, tag_name, owner_db, owner_id);
+	}
+	
 	@RequestMapping(value={"/husen_order.html"}, method=RequestMethod.GET)
 	public @ResponseBody String husen_order(
 			HttpSession session,
@@ -1000,6 +1015,25 @@ public class MainPageController{
 		return tag_name;
 	}		
 
+	public String edit_tag(String tag_id, String tag_name, String owner_db, String owner_id) {
+		if (tag_name != null)
+		{
+			if (!tag_name.equals(""))
+			{
+				TagDao tag_dao = new TagDao();
+				
+				// すでに存在するタグ名の場合、deplicateを返却
+				if (tag_dao.is_exist(owner_db, tag_name))
+				{
+					return "deplicate";
+				}
+				
+				tag_dao.update_tag_name(owner_db, tag_id, tag_name);
+			}
+		}
+		return tag_name;
+	}		
+	
 	/**
 	 * すらスラ〜のセリフAjaxページ
 	 * @return

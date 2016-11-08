@@ -166,6 +166,52 @@ public class TagDao {
 	    }	    
 	}	
 
+	/**
+	 * タグ名を編集
+	 * @param db_name
+	 * @param tag_id
+	 * @param tag_name
+	 */
+	public void update_tag_name(String db_name, String tag_id, String tag_name)
+	{	
+		SQliteDAO dao = new SQliteDAO();
+		
+		StringBuilderPlus sql = new StringBuilderPlus();
+		sql.appendLine("update tag set tag_name = '" + tag_name + "'" 
+						+ " where tag_id = '" + tag_id + "';");			
+		
+		dao.loadDriver();
+		
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+		try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+
+	      //1行ずつコミットしない
+	      stmt.getConnection().setAutoCommit(false);
+	      
+	      /**
+	       *  SQL実行
+	       */
+	      dao.transaction(stmt, sql);
+	    }
+	    catch(Exception ex)
+	    {
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+	    }	    
+	}	
+	
 	public List<TagModel> order_tag(String db_name, String husen_ids_in_order)
 	{	
 		System.out.println(husen_ids_in_order);

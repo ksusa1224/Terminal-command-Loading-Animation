@@ -33,6 +33,12 @@
     <li><a id="husen_help" href="#" onclick="javascript:husen_help();">付箋の使い方</a></li>
   </ul>
 </div>
+<div id="husen_context-menu" style="display:none;"> 
+  <!-- The actual menu that will be displayed-->
+  <ul class="dropdown-menu">
+    <li><a id="refesh_by_date" href="#" onclick="javascript:edit_husen();">付箋名を編集</a></li>
+  </ul>
+</div>
 </div>
 
 <audio id="play_qa" preload="auto">
@@ -230,6 +236,9 @@ $(document).ready(function(){
     });
     $('#crystal_board').contextmenu({
         target: "#husen_board_context-menu"
+    });
+    $('.husen').not('.blue').contextmenu({
+        target: "#husen_context-menu"
     });
     var margin_top = $(".dropdown-menu").css("margin-top");
     $(".dropdown-menu").css("margin-top", "-15px");

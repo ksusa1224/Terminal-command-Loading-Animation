@@ -6,6 +6,7 @@ var qa_id_for_contextmenu = "";
 var qa_husen_global = "";
 var dragged_husen_left = 0;
 var refresh_by_date = "";
+var tag_id_for_contextmenu = "";
 
 function body_load()
 {		
@@ -124,6 +125,11 @@ function body_load()
 	    if (event.which == 3) {
 	    	refresh_by_date = this.id;
 	    	$("#refesh_by_date").text($("#refesh_by_date").text().replace(/この日/g,refresh_by_date));
+	    }
+	});	
+	$('.husen').not(".blue").mousedown(function(event) {
+	    if (event.which == 3) {
+	    	tag_id_for_contextmenu = this.id;
 	    }
 	});	
 
@@ -354,29 +360,7 @@ function body_load()
     });
     
     loupe_drop();
-    
-//    $(".qa").hover(function() {
-//    	var id = $(this).attr("id");
-//    	var s_id = $(this).children(".a").attr("id");
-//    	var path = "../speech/" + s_id + ".m4a";
-//    	$("#play_qa").attr("src",path);
-//
-//      $(document).keydown(function(obj) {
-//    	  // スペースキー
-//    	  if (window.event.keyCode == 32)
-//    	  {
-////    		  document.getElementById("play_qa").play();    	
-//    	  }
-//      });
-
-//  }, function() {
-//	  	$("#play_qa").attr("src","");
-//
-//       // unbind the keydown handler on mouseleave
-//     $(document).unbind("keydown");
-//		document.getElementById("play_qa").stop();
-//  });
-    
+        
 	$('#play_qa').on('ended', function() {
 	  	$("#balloon").css("display","none");
 		$("#serif").text("");		
@@ -1046,7 +1030,10 @@ function register_qa_ajax ()
 		    $('.qa').contextmenu({
 		        target: "#qa_context-menu"
 		    });
-		    var margin_top = $(".dropdown-menu").css("margin-top");					
+		    var margin_top = $(".dropdown-menu").css("margin-top");	
+			$("#blue_pen").addClass("rotate_pen");
+			$("#red_pen").removeClass("rotate_pen");
+
 		},
 		error: function(data)
 		{
@@ -1194,8 +1181,46 @@ function key_event() {
     	now_page = Number($("#page_left").text());
     	paging(now_page, "prev");
     	now_page--;
-//    	alert(now_page);
     }
+    
+    if (tag_id_for_contextmenu != "")
+    {
+    	if (window.event.keyCode == 13)
+    	{
+        	event.preventDefault();		
+    		var tag_name = $("#" + tag_id_for_contextmenu).text();
+    		jQuery.ajax({
+    			url: "../edit_husen.html?tag_name=" + tag_name + "&tag_id=" + tag_id_for_contextmenu,
+    			dataType: "html",
+    			cache: false,
+    			success: function(data)
+    			{
+    				if (data == 'deplicate')
+    				{
+    					$("#balloon").css("display","inline");
+    					$("#serif").text("「" + tag_name + "」の付箋はすでにあるよ〜");					
+    				}
+    				else
+    				{
+    					$("#balloon").css("display","inline");
+    					$("#serif").text("付箋「" + tag_name + "」を作ったよ");
+    					$("#qa_input").focus();
+    				}
+    			},
+    			error: function(data)
+    			{
+    				$("#balloon").css("display","inline");
+    				$("#serif").text(server_error);
+    			}
+    		});		
+    		$("#" + tag_id_for_contextmenu).removeAttr('contenteditable');
+    	}
+    }    
+}
+
+function edit_husen()
+{
+	$("#" + tag_id_for_contextmenu).attr('contenteditable','true');
 }
 
 var is_note_open = true;
