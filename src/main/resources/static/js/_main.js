@@ -1165,17 +1165,35 @@ function key_event() {
         }
     }
     
-    // 右矢印 次のページ
-    if (window.event.keyCode == 39)
+    // 虫眼鏡と付箋ボードを移動
+    if (window.event.keyCode == 39 && window.event.shiftKey == true)
     {
-    	var now_page = Number($("#page_left").text());
+    	$("#loupe").css("left", "550px");
+    	$("#crystal_board").css("left", "430px");
+    }
+    
+    // 虫眼鏡と付箋ボードを移動
+    if (window.event.keyCode == 37 && window.event.shiftKey == true)
+    {
+    	$("#loupe").css("left", "80px");
+    	$("#crystal_board").css("left", "-10px");
+    }
+    
+    var now_page = 0;
+    
+    // 右矢印 次のページ
+    if (window.event.keyCode == 39 && window.event.shiftKey == false)
+    {
+    	now_page = Number($("#page_left").text());
     	paging(now_page, "next");
+    	now_page++;
     }
     // 左矢印　前のページ
-    if (window.event.keyCode == 37)
+    if (window.event.keyCode == 37 && window.event.shiftKey == false)
     {
-    	var now_page = Number($("#page_left").text());
+    	now_page = Number($("#page_left").text());
     	paging(now_page, "prev");
+    	now_page--;
 //    	alert(now_page);
     }
 }
@@ -1249,7 +1267,6 @@ function paging(page,next_or_prev)
 		}
 	}
 	
-	//TODO 検索条件
 	jQuery.ajax({
 		url: "../paging.html?now_page="+page+"&next_or_prev="+next_or_prev+"&husen_str="+tag_search_conditions_uri,
 		dataType: "json",
@@ -1276,96 +1293,6 @@ function paging(page,next_or_prev)
 		        target: "#qa_context-menu"
 		    });
 		    var margin_top = $(".dropdown-menu").css("margin-top");					
-
-//			alert("a");
-			//alert($(document.body).html());
-
-//		    $body_html = $(document.body).html();
-//		    prompt("",$body_html);
-//		    //alert($body_html);
-//		    var qa_area_before = $("#qa_area").html();
-//		    //alert(qa_area_before);
-//		    var aa = $("#qa_area").live(function() {return $("this").html();});
-//		    //alert(aa);
-//		    var qa_area_after = data[0];
-//		    //alert(qa_area_after);
-////		    $body_html.replaceWith(function(){
-////		        return $("<pre />", {html: $(this).html()});
-////		    });
-//		    
-////		    $("span, p").each(function() {
-////		        var text = $(this).text();
-////		        text = text.replace("lollypops", "marshmellows");
-////		        $(this).text(text);
-////		    });
-//		    
-////		    $("#qa_area").each(function () {
-////		    	alert("a");
-////		    	$body_html($(document.body).html().replace(qa_area_before,qa_area_after));
-////		    });
-//		    //alert(document.getElementsByClassName("magnified_content").length);
-//		    var lens2 = document.getElementsByClassName("magnified_content")[0].outerHTML;
-//		    //alert(lens2);
-//		    var re5 = new RegExp(lens2,"g");
-//		    $body_html = $body_html.replace(re5, "");
-//
-//		    var re = new RegExp(qa_area_before,"g");
-//		    $body_html = $body_html.replace(re, qa_area_after);
-//		    
-//		    var qa_area_before_right = $("#qa_area_right").html();
-//		    var qa_area_after_right = data[1];
-////		    alert(qa_area_after_right);
-//		    var re4 = new RegExp(qa_area_before_right,"g");
-//		    $body_html = $body_html.replace(re4, qa_area_after_right);
-//
-//		    
-//		    var loupe = document.getElementById("loupe").outerHTML;
-//		    //alert(loupe);
-//		    var re2 = new RegExp(loupe,"g");
-//		    $body_html = $body_html.replace(re2, "");
-//
-//
-//		    var lens = document.getElementsByClassName("magnifying_glass")[0].outerHTML;
-////		    alert(lens);
-//		    var re3 = new RegExp(lens,"g");
-//		    $body_html = $body_html.replace(re3, "");
-//		    //$body_html.find('.magnifying_lens').first().remove();
-//		    
-//		    
-//		    //$body_html.find('.magnified_content').first().remove();
-//		    
-//		    //alert($body_html);
-//		    
-//			$(".magnified_content").html($body_html);
-//			//remove_loupe();
-//			
-////			loupe();
-//			
-////			var $magnifiedContent = $('<div class="magnified_content"></div>');
-//
-//			
-////			$magnifiedContent.html($(document.body).html());			
-//			//alert(data);
-////			$("#qa_input").html(data);
-////			$("#qa_id").val(qa_id);
-		   // alert($("#loupe").attr("id"));
-//		    $body_html = $(document.body).html();
-//		    var glass = document.getElementsByClassName("magnifying_glass")[0].outerHTML;
-//		    var reg = new RegExp(glass,"g");
-//		    $body_html = $body_html.replace(reg, "");		    
-//		    $(".magnified_content").html($body_html);
-			$drop_husen = $(".husen.ui-draggable.ui-draggable-handle.ui-draggable-dragging");
-			$drop_husen.hide();
-//		    $hide_husen = $(".magnified_content").find(".husen.ui-draggable.ui-draggable-handle.ui-draggable-dragging");
-//		    $hide_husen.hide();
-
-//			$("#loupe").remove();
-//		    $(".magnifying_glass").remove();
-//		    $(".magnified_content").remove();
-//		    $(".magnifying_lens").remove();
-//		    loupe();
-//		    $drop_husen.show();
-//		    loupe_drop();
 		},
 		error: function(data)
 		{
