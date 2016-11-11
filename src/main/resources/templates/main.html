@@ -204,6 +204,7 @@
     <li><a href="#" onclick="javascript:reset_red();">解いた解答だけ表示する（ALT+R / ALT+W）</a></li>
     <li class="divider"></li>
     <li><a href="#" onclick="javascript:to_miseikai();">検索中の全問題を未正解に戻す</a></li>
+    <li><a href="#" onclick="javascript:to_seikai();">検索中の全問題を正解にする</a></li>
   </ul>
 </div>
 <div id="qa_context-menu" style="display:none"> 
@@ -219,31 +220,12 @@
   <!-- The actual menu that will be displayed-->
   <ul class="dropdown-menu">
     <li><a id="refesh_by_date" href="#" onclick="javascript:to_miseikai();">この日の全問題を未正解に戻す</a></li>
+    <li><a id="refesh_by_date" href="#" onclick="javascript:to_seikai();">この日の全問題を正解にする</a></li>
   </ul>
 </div>
 <div id="loupe" title="付箋を虫眼鏡にドラッグで検索"></div>
 <script th:src="@{../js/contextmenu.js}"></script> 
 <script>
-$(document).ready(function(){
-    $('#note_area').contextmenu({
-        target: "#note_context-menu"
-    });
-    $('.qa').contextmenu({
-        target: "#qa_context-menu"
-    });
-    $('.date').contextmenu({
-        target: "#date_context-menu"
-    });
-    $('#crystal_board').contextmenu({
-        target: "#husen_board_context-menu"
-    });
-    $('.husen').not('.blue').contextmenu({
-        target: "#husen_context-menu"
-    });
-    var margin_top = $(".dropdown-menu").css("margin-top");
-    $(".dropdown-menu").css("margin-top", "-15px");
-    $(".dropdown-menu").css("opacity", "0.9");
-});
 </script>
 <div id="popup1" class="modal-box" style="z-index:1000000;width:200px;height:500px;">
   <header> <a href="#" class="js-modal-close close">×</a>

@@ -11,7 +11,7 @@ var tag_id_for_contextmenu = "";
 function body_load()
 {	
 	// IE対策
-	if (navigator.appName == 'Microsoft Internet Explorer' ||  !!(navigator.userAgent.match(/Trident/) || navigator.userAgent.match(/rv 11/)) || $.browser.msie == 1)
+	if (navigator.appName == 'Microsoft Internet Explorer' ||  !!(navigator.userAgent.match(/Trident/) || navigator.userAgent.match(/rv 11/)))
 	{
 		$(".note-line").css("height","18.5px");
 		$("#qa_area").css("height","486px");
@@ -20,6 +20,25 @@ function body_load()
 		$("#lines-right").append("<tr><td class='note-line'></td></tr>");
 		$(".husen").css("height","25px");
 	}
+	
+    $('#note_area').contextmenu({
+        target: "#note_context-menu"
+    });
+    $('.qa').contextmenu({
+        target: "#qa_context-menu"
+    });
+    $('.date').contextmenu({
+        target: "#date_context-menu"
+    });
+    $('#crystal_board').contextmenu({
+        target: "#husen_board_context-menu"
+    });
+    $('.husen').not('.blue').contextmenu({
+        target: "#husen_context-menu"
+    });
+    var margin_top = $(".dropdown-menu").css("margin-top");
+    $(".dropdown-menu").css("margin-top", "-15px");
+    $(".dropdown-menu").css("opacity", "0.9");	
 	
 	$( "#sortable" ).sortable();
     $( "#sortable" ).disableSelection();
@@ -1594,9 +1613,32 @@ function reset_red()
 function to_miseikai()
 {
 	var now_page_left = $("page_left").text();
-	
 	jQuery.ajax({
 		url: "../to_miseikai.html?husen_names=" + tag_search_conditions_uri + "&refresh_by_date=" + refresh_by_date + "&now_page_left="+now_page_left,
+		dataType: "json",
+		cache: false,
+		success: function(data)
+		{
+			$("#qa_area").html(data[0]);
+			$("#qa_area_right").html(data[1]);
+			$("#seitou_sum").html(data[2]);
+			$("#seikai_sum").html(data[3]);
+			$(".total_pages").html(data[4]);			
+		},
+		error: function(data)
+		{
+			$("#balloon").css("display","inline");
+			$("#serif").text(server_error);
+		}
+	});
+}
+
+//検索中の全QAを正解の状態にする
+function to_seikai()
+{
+	var now_page_left = $("page_left").text();
+	jQuery.ajax({
+		url: "../to_seikai.html?husen_names=" + tag_search_conditions_uri + "&refresh_by_date=" + refresh_by_date + "&now_page_left="+now_page_left,
 		dataType: "json",
 		cache: false,
 		success: function(data)

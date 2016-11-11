@@ -280,6 +280,98 @@ public class MainPageController{
 		}		
 	}
 	
+	/**
+	 * 検索中の全QAを正解の状態にする
+	 * @param husen_names
+	 * @param request
+	 * @param session
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value={"/to_seikai.html"},
+			method=RequestMethod.GET)
+	public @ResponseBody String to_seikai(
+			@RequestParam(value="husen_names", required=false) String husen_names,
+			@RequestParam(value="refresh_by_date", required=false) String date,
+			@RequestParam(value="now_page_left", required=false) String now_page_left,
+			HttpServletRequest request, 
+			HttpSession session) {
+
+		// TODO 認証されてるかどうかはsessionに入れると書き換えられてしまうから毎回DBに接続した方がいいかな
+		Boolean is_authenticated = (Boolean)session.getAttribute("is_authenticated");
+		String owner_id = (String)session.getAttribute("owner_id");
+		
+		/**
+		* アクセスログ記録
+		*/
+		String request_uri = request.getRequestURI();
+		String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
+		String client_ip = Log.getClientIpAddress(request);
+		String client_os = Log.getClientOS(request);
+		String client_browser = Log.getClientBrowser(request);
+		Log log = new Log();
+		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
+
+		if(is_authenticated == true)		
+		{
+			byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
+			AES aes = new AES();
+			String owner_db = aes.decrypt(encrypted_owner_db);
+
+//			int limit_mihiraki = Constant.QA_NUM_PER_PAGE * 2;
+//			int offset = Integer.parseInt(now_page_left) * Constant.QA_NUM_PER_PAGE;
+			
+			KaitouDao kaitou_dao = new KaitouDao();
+			List<KaitouModel> kaitou_list = new ArrayList<KaitouModel>();
+			kaitou_list = kaitou_dao.select_kaitou_list_by_tag(owner_db, kaitou_list, husen_names);
+			kaitou_dao.bulk_insert(owner_db, kaitou_list);
+			
+			SeitouDao seitou_dao = new SeitouDao();
+			//System.out.println("ひづけ"+date);
+			seitou_dao.to_seikai_by_tag(owner_db, husen_names, date);
+			
+			// 再検索
+			int limit = Constant.QA_NUM_PER_PAGE;
+			int offset_left = 0;
+			List<QAPlusModel> qa_list_left = new ArrayList<QAPlusModel>();
+			qa_list_left = select_qa_plus_by_tag(owner_db, husen_names, limit, offset_left);
+			String qa_html = "";
+			if (qa_list_left.size() > 0)
+			{
+				qa_html = generate_qa_html(qa_list_left,owner_db);	
+			}
+			int offset_right = limit;
+			List<QAPlusModel> qa_list_right = new ArrayList<QAPlusModel>();
+			qa_list_right = select_qa_plus_by_tag(owner_db, husen_names, limit, offset_right);
+			String qa_html_right = "";
+			if (qa_list_right.size() > 0)
+			{
+				qa_html_right = generate_qa_html(qa_list_right,owner_db);	
+			}
+											
+			// 付箋
+			String husen_html = generate_husen_html(owner_db);
+			
+			// ページング総数
+			QADao qa_dao = new QADao();
+			String total_pages = String.valueOf(qa_dao.get_pages(owner_db, husen_names));			
+
+			// 正答総数
+			String seitou_cnt = String.valueOf(seitou_dao.get_seitou_cnt(owner_db, husen_names));
+
+			// 正解総数
+			String seikai_cnt = String.valueOf(seitou_dao.get_seikai_cnt(owner_db, husen_names));
+			
+			String json = JSON.encode(
+					new String[] 
+					{qa_html,qa_html_right,seitou_cnt,seikai_cnt,total_pages});
+			return json;
+		}		
+		else
+		{
+			return "error";
+		}		
+	}
 	
 	/**
 	 * 選択したQAを１件削除

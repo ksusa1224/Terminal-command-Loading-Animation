@@ -582,6 +582,54 @@ public class SeitouDao {
 	 * @param db_name
 	 * @param tag_names
 	 */
+	public void to_seikai_by_tag(String db_name,String tag_names, String date)
+	{
+		StopWatch stopwatch = new StopWatch();
+
+		String start_date = "";
+		String end_date = "";
+		if (date != null && !("").equals(date))
+		{
+			start_date = date.replace("/", "-") + " 00:00:00";
+			end_date = date.replace("/", "-") + " 23:59:59";
+		}
+		
+		SQliteDAO dao = new SQliteDAO();
+		StringBuilderPlus sql = new StringBuilderPlus();
+		sql.appendLine("update seitou");
+        sql.appendLine(" set seikai_flg = 1");
+        sql.appendLine(" where seitou.del_flg = 0");
+        if (date != null && !("").equals(date))
+        {
+        	sql.appendLine(" and seitou.create_timestamp");
+        	sql.appendLine(" between");
+        	sql.appendLine(" '" + start_date + "'");
+        	sql.appendLine(" and");
+        	sql.appendLine(" '" + end_date + "'");
+        }
+        if (!tag_names.equals(""))
+        {
+        	sql.appendLine("and (select 0 from seitou,qa, qa_tag_relation,tag ");
+			sql.appendLine(" where qa.qa_id = qa_tag_relation.qa_id");
+			sql.appendLine(" and qa.qa_id = seitou.qa_id");
+			sql.appendLine(" and tag.tag_id = qa_tag_relation.tag_id");
+			sql.appendLine(" and (");
+			for (int i = 0; i < tag_names.split(",").length; i++)
+			{
+				sql.appendLine("tag.tag_name = '" + tag_names.split(",")[i] + "'");
+				if (i < tag_names.split(",").length - 1)
+				{
+					sql.appendLine(" or ");
+				}
+			}
+	        sql.appendLine(")");
+	        sql.appendLine(")");
+        }
+		System.out.println(sql.toString());
+		dao.update(db_name, sql);		
+		stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());		
+	}
+
 	public void to_huseikai_by_tag(String db_name,String tag_names, String date)
 	{
 		StopWatch stopwatch = new StopWatch();
@@ -625,10 +673,10 @@ public class SeitouDao {
 	        sql.appendLine(")");
 	        sql.appendLine(")");
         }
-		
+		System.out.println(sql.toString());
 		dao.update(db_name, sql);		
 		stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());		
-	}
+	}	
 	
 	/**
 	 * @param db_name
