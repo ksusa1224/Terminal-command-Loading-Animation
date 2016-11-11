@@ -89,7 +89,7 @@
 <!--/* ノートの右ページ */-->
  <div id="note_right">
   <div id="qa_area_right" th:utext="${qa_html_right}"></div>
-	<table style="position:absolute;top:-2px;border:none;z-index:-1" cellpadding="0" cellspacing="0">
+	<table id="lines-right" cellpadding="0" cellspacing="0">
 		<tr th:each="i : ${#numbers.sequence( 1, 25)}"><td class="note-line"></td></tr>
 	</table>
 	<div class="page_right">Page <span id="page_right" class="page">2</span>

@@ -9,7 +9,18 @@ var refresh_by_date = "";
 var tag_id_for_contextmenu = "";
 
 function body_load()
-{		
+{	
+	// IE対策
+	if (navigator.appName == 'Microsoft Internet Explorer' ||  !!(navigator.userAgent.match(/Trident/) || navigator.userAgent.match(/rv 11/)) || $.browser.msie == 1)
+	{
+		$(".note-line").css("height","18.5px");
+		$("#qa_area").css("height","486px");
+		$("#lines-left").append("<tr><td class='note-line'></td></tr>");
+		$("#qa_area_right").css("height","486px");
+		$("#lines-right").append("<tr><td class='note-line'></td></tr>");
+		$(".husen").css("height","25px");
+	}
+	
 	$( "#sortable" ).sortable();
     $( "#sortable" ).disableSelection();
     
@@ -859,13 +870,13 @@ function husen_touroku(obj)
 
 // 漢字変換後にEnterを押したときにペンの色が変わる
 function enter (){
-	var q_parts = "<span class='q_input' contenteditable='true' id='" + id + "'>&#8203;</span>";
-	var a_parts = "<span class='a_input' contenteditable='true' id='" + id + "'>&#8203;</span>";
+	var q_parts = "<span class='q_input' id='" + id + "'>&#8203;</span>";
+	var a_parts = "<span class='a_input' id='" + id + "'>&#8203;</span>";
 	var last = $("#qa_input span:last").attr('class');
 	var last_a = $("#qa_input span:nth-last-child(2)").text();
 	if (id == 2)
 	{	
-		$("#qa_input").append("<span class='q_input' contenteditable='true' id='1'>&#8203;</span>");
+		$("#qa_input").append("<span class='q_input' id='1'>&#8203;</span>");
 		$("#qa_input").append(a_parts);	
 		focus_last();
 		id++;

@@ -32,9 +32,7 @@ div.page
 
 div.page_right
 {
-	position:absolute;
-	top:485px;
-	left:140px;
+	margin-top:5px;
 	text-align:center;
 	color:gray;
     font-size:13px;
@@ -349,7 +347,18 @@ div.page_right
 
 #lines-left
 {
-	position:absolute;top:-2px;border:none;z-index:-1;
+	position:absolute;
+	top:-2px;
+	border:none;
+	z-index:-1;
+}
+
+#lines-right
+{
+	position:absolute;
+	top:-2px;
+	border:none;
+	z-index:-1
 }
 
 #score
