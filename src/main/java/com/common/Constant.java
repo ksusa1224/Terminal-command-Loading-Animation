@@ -61,6 +61,10 @@ public class Constant {
 	// TODO 本番ではパスを変える
 	public static final String SPEECH_DATA_FOLDER_PATH
 		= "/Users/ksusa/Documents/anki_note_workspace/anki_note/src/main/resources/static/speech/";
+
+//	// 本番
+//	public static final String SPEECH_DATA_FOLDER_PATH
+//	= "usr/local/anki_note/application/apache-tomcat-9.9.0.M10/webapps/ROOT/WEB-INF/classes/speech/";
 	
 	// WINDOWS
 	/* 

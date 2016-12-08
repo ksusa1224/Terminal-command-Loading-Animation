@@ -96,6 +96,13 @@
   			<version>1.16.8</version>
   			<scope>provided</scope>
 		</dependency>
+		<dependency>
+    		<groupId>org.atilika.kuromoji</groupId>
+  		  	<artifactId>kuromoji</artifactId>
+  			  <version>0.7.7</version>
+  			  <type>jar</type>
+ 		   <scope>provided</scope>
+		</dependency>
 		<!--
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -136,6 +143,10 @@
             <name>JBoss Maven Release Repository</name>
             <url>https://repository.jboss.org/nexus/content/repositories/releases</url>
         </repository>
+		<repository>
+    		<id>Atilika Open Source repository</id>
+    		<url>http://www.atilika.org/nexus/content/repositories/atilika</url>
+		</repository>
     </repositories>
 
     <pluginRepositories>
