@@ -21,6 +21,26 @@ function body_load()
 		$(".husen").css("height","25px");
 	}
 	
+	// スマホの場合
+	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+		 // クリスタルボードと付箋と虫眼鏡を表示しない
+		 $("#crystal_board").hide();
+		 $(".husen").hide();
+		 $("#loupe").hide();
+		 // テーブルを使わずに罫線を引く
+		 $(".qa").css("border-top","1px solid #d9d9d9");
+		 $(".qa").css("font-size","18px");
+		 $(".qa").css("line-height","24.5px");
+		 $(".date").css("border-top","1px solid #d9d9d9");
+		 $(".date").css("font-size","18px");
+		 $(".date").css("line-height","24.5px");
+		 $(".note-line").css("display","none");
+	}
+	else
+	{
+		 $("body").css("overflow","hidden");		
+	}
+	
     $('#note_area').contextmenu({
         target: "#note_context-menu"
     });

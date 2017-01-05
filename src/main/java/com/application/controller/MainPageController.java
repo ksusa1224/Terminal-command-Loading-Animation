@@ -1304,7 +1304,7 @@ public class MainPageController{
 			{
 				String mondai = mondai_list.get(i).getQ_parts_text();
 				String q_lang = mondai_list.get(i).getLanguage();
-				String html = "<span id='" + mondai_list.get(i).getQ_id() + "' class='q' onclick='edit_qa(this);'>" + mondai + "</span>";			
+				String html = "<span id='" + mondai_list.get(i).getQ_id() + "' class='q'>" + mondai + "</span>";			
 				q_html.add(html);
 			}
 			

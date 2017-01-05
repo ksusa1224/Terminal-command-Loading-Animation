@@ -8,7 +8,6 @@ body{
     padding: 0px;
     margin: 0;
     overflow-y:hidden;
-    overflow:hidden;
 }
 
 .dropdown-menu a
@@ -663,7 +662,7 @@ input
     cursor: move;
 }
 /* 虫眼鏡 END */
-
+/*
 @media (max-width: 667px) {
 	.qa,.date
 	{
@@ -673,15 +672,11 @@ input
 	{
 		width:50%;	
 	}
-}
+}*/
 
 /*iphone6*/
+/*
 @media screen and (device-aspect-ratio: 375/667) {
-	/*color:red !important;
-	font-weight:bold;*/
-	body{
-  		
-	}
 	.qa,.date
 	{
 		border-top:1px solid #d9d9d9;		
@@ -693,5 +688,6 @@ input
 		display: none;
 	}
 }
+*/
 
 /* smart-phone ----------- */
