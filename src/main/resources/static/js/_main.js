@@ -44,9 +44,9 @@ function body_load()
     $('#note_area').contextmenu({
         target: "#note_context-menu"
     });
-    $('.qa').contextmenu({
-        target: "#qa_context-menu"
-    });
+//    $('.qa').contextmenu({
+//        target: "#qa_context-menu"
+//    });
     $('.date').contextmenu({
         target: "#date_context-menu"
     });
@@ -56,7 +56,20 @@ function body_load()
     $('.husen').not('.blue').contextmenu({
         target: "#husen_context-menu"
     });
-    var margin_top = $(".dropdown-menu").css("margin-top");
+
+    refresh();
+    
+//	$('.qa').mousedown(function(event) {
+//	    if (event.which == 3) {
+//    		qa_id_for_contextmenu = this.id;
+//    		var question = "\"" + $("#"+qa_id_for_contextmenu).children(".q").text() + "\"の例文を表示";
+//    		var answer = "\"" + $("#"+qa_id_for_contextmenu).children(".a").text() + "\"の例文を表示";
+//			$("#q_example").text(question);
+//			$("#a_example").text(answer);
+//	    }
+//	});	
+//    
+//    var margin_top = $(".dropdown-menu").css("margin-top");
     $(".dropdown-menu").css("margin-top", "-15px");
     $(".dropdown-menu").css("opacity", "0.9");	
 	
@@ -427,6 +440,38 @@ function body_load()
 	 );	
 }
 
+// 初期表示時およびAjax通信の後に呼び出す
+function refresh()
+{
+	$('.qa').contextmenu({
+	    target: "#qa_context-menu"
+	});
+	$('.qa').mousedown(function(event) {
+	    if (event.which == 3) {
+			qa_id_for_contextmenu = this.id;
+			var question = "\"" + $("#"+qa_id_for_contextmenu).children(".q").text() + "\"の例文を表示";
+			var answer = "\"" + $("#"+qa_id_for_contextmenu).children(".a").text() + "\"の例文を表示";
+			var q_lang = $("#"+qa_id_for_contextmenu).children(".q").data("language");
+			var a_lang = $("#"+qa_id_for_contextmenu).children(".a").data("language");			
+			$("#q_example").text(question);
+			$("#a_example").text(answer);
+			if (q_lang == "日本語")
+			{
+				$("#q_example_menu").hide();
+			}
+			if (a_lang == "日本語")
+			{
+				$("#a_example_menu").hide();
+			}
+			if (q_lang == "日本語" && a_lang == "日本語")
+			{
+				$("#example_menu_devider").hide();				
+			}
+	    }
+	});	
+	var margin_top = $(".dropdown-menu").css("margin-top");					
+}
+
 function husen_draggable()
 {
     $( ".husen" ).draggable({
@@ -516,14 +561,7 @@ function delete_qa()
 				$("#seitou_sum").html(data[2]);
 				$("#seikai_sum").html(data[3]);
 				$(".total_pages").html(data[4]);
-			    $('.qa').contextmenu({
-			        target: "#qa_context-menu"
-			    });				
-				$('.qa').mousedown(function(event) {
-				    if (event.which == 3) {
-			    		qa_id_for_contextmenu = this.id;
-				    }
-				});	
+				refresh();
 			},
 			error: function(data)
 			{
@@ -684,6 +722,7 @@ function loupe_drop()
 					$("#seitou_sum").html(data[2]);
 					$("#seikai_sum").html(data[3]);
 					$(".total_pages").html(data[4]);
+				    refresh();
 
 //					$drop_husen = $(".husen.ui-draggable.ui-draggable-handle.ui-draggable-dragging");
 //					$drop_husen.hide();
@@ -701,14 +740,8 @@ function loupe_drop()
 //				    loupe();
 //				    loupe_drop();
 
-				    $hide_husen = $(".magnified_content").find(".husen.ui-draggable.ui-draggable-handle.ui-draggable-dragging");
-				    $hide_husen.hide();
-					
-
-					$('.qa').contextmenu({
-				        target: "#qa_context-menu"
-				    });
-				    var margin_top = $(".dropdown-menu").css("margin-top");	
+//				    $hide_husen = $(".magnified_content").find(".husen.ui-draggable.ui-draggable-handle.ui-draggable-dragging");
+//				    $hide_husen.hide();
 					
 //				    $body_html = $("document.body").html();
 //				    $(".magnified_content").html($body_html);
@@ -755,6 +788,7 @@ function loupe_drop()
 					$("#seitou_sum").html(data[2]);
 					$("#seikai_sum").html(data[3]);
 					$(".total_pages").html(data[4]);
+				    refresh();
 
 //				    $("#loupe").remove();
 //				    $(".magnifying_glass").remove();
@@ -896,6 +930,7 @@ function husen_touroku(obj)
 					$("#serif").text("付箋「" + tag_name + "」を作ったよ");
 					$("#qa_input").focus();
 				}
+				refresh();
 			},
 			error: function(data)
 			{
@@ -1077,10 +1112,7 @@ function register_qa_ajax ()
 			$(".total_pages").html(data[4]);
 			$("#qa_input").focus();
 
-		    $('.qa').contextmenu({
-		        target: "#qa_context-menu"
-		    });
-		    var margin_top = $(".dropdown-menu").css("margin-top");	
+			refresh();
 			$("#blue_pen").addClass("rotate_pen");
 			$("#red_pen").removeClass("rotate_pen");
 
@@ -1364,10 +1396,7 @@ function paging(page,next_or_prev)
 				$("#page_left").text(page - 2);				
 				$("#page_right").text(page - 1);
 			}
-		    $('.qa').contextmenu({
-		        target: "#qa_context-menu"
-		    });
-		    var margin_top = $(".dropdown-menu").css("margin-top");					
+			refresh();
 		},
 		error: function(data)
 		{
@@ -1591,6 +1620,7 @@ function edit_qa(q_obj)
 			$("#husen_paste").html(data[1]);
 		    $("#qa_id").val(qa_id);
 		    $("#edit_mode").attr("src", "../img/edit_mode2.png");
+		    refresh();
 		},
 		error: function(data)
 		{
@@ -1643,7 +1673,8 @@ function to_miseikai()
 			$("#qa_area_right").html(data[1]);
 			$("#seitou_sum").html(data[2]);
 			$("#seikai_sum").html(data[3]);
-			$(".total_pages").html(data[4]);			
+			$(".total_pages").html(data[4]);
+			refresh();
 		},
 		error: function(data)
 		{
@@ -1667,7 +1698,8 @@ function to_seikai()
 			$("#qa_area_right").html(data[1]);
 			$("#seitou_sum").html(data[2]);
 			$("#seikai_sum").html(data[3]);
-			$(".total_pages").html(data[4]);			
+			$(".total_pages").html(data[4]);	
+			refresh();
 		},
 		error: function(data)
 		{
@@ -1811,6 +1843,24 @@ function husen_order()
 			$("#serif").text(server_error);
 		}
 	});	
+}
+
+//問題の例文を表示
+function show_q_example()
+{
+	var id = qa_id_for_contextmenu;
+	var question = $("#"+id).children(".q").text();
+	question = question.replace(/ /g,"+");
+	window.open("http://ejje.weblio.jp/sentence/content/" + question);
+}
+
+// 解答の例文を表示
+function show_a_example()
+{
+	var id = qa_id_for_contextmenu;
+	var answer = $("#"+id).children(".a").text();
+	answer = answer.replace(/ /g,"+");
+	window.open("http://ejje.weblio.jp/sentence/content/" + answer);
 }
 
 //動作不良

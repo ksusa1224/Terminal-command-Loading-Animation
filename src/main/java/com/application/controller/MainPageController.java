@@ -1304,7 +1304,7 @@ public class MainPageController{
 			{
 				String mondai = mondai_list.get(i).getQ_parts_text();
 				String q_lang = mondai_list.get(i).getLanguage();
-				String html = "<span id='" + mondai_list.get(i).getQ_id() + "' class='q'>" + mondai + "</span>";			
+				String html = "<span id='" + mondai_list.get(i).getQ_id() + "' class='q' data-language='" + q_lang + "'>" + mondai + "</span>";			
 				q_html.add(html);
 			}
 			
@@ -1323,6 +1323,7 @@ public class MainPageController{
 				int opacity = seitou_list.get(i).getSeikai_flg();
 				String mouseout = "";
 				String checked = "";
+				String a_lang = seitou_list.get(i).getLanguage();
 				if (opacity == 0)
 				{
 					mouseout = "onmouseout='this.style.opacity=0'";
@@ -1331,7 +1332,7 @@ public class MainPageController{
 				{
 					checked = "<img src='../img/check.png' class='check' />";					
 				}
-				String html = "<span id='" + seitou_list.get(i).getS_id() + "' class='a' style='opacity:" + opacity + "' onmouseover='this.style.opacity=1' " + mouseout + " onclick='change_seitou_color(this)'>" + checked + seitou + "</span>";				
+				String html = "<span id='" + seitou_list.get(i).getS_id() + "' class='a' style='opacity:" + opacity + "' onmouseover='this.style.opacity=1' " + mouseout + " onclick='change_seitou_color(this)' data-language='" + a_lang + "'>" + checked + seitou + "</span>";				
 				a_html.add(html);
 			}	
 			
