@@ -270,8 +270,12 @@ function body_load()
 	        		tag_id = "";
 	        	}
         	}
+        	var url = window.location.href;
+            owner_id = url.split('/')[3];        	
+        	var url = window.location.href;
+            owner_id = url.split('/')[3];        			
 			jQuery.ajax({
-				url: "../husen_delete.html?tag_id=" + tag_id,
+				url: "../husen_delete.html?tag_id=" + tag_id + "&owner_id=" + owner_id,
 				dataType: "json",
 				cache: false,
 				success: function(data)
@@ -319,8 +323,10 @@ function body_load()
 	        		tag_id = "";
 	        	}
         	}
+        	var url = window.location.href;
+            owner_id = url.split('/')[3];        	
 			jQuery.ajax({
-				url: "../husen_delete.html?tag_id=" + tag_id,
+				url: "../husen_delete.html?tag_id=" + tag_id + "&owner_id=" + owner_id,
 				dataType: "json",
 				cache: false,
 				success: function(data)
@@ -359,8 +365,10 @@ function body_load()
         		var qa_id = $("#qa_id").val();
         		if (qa_id != "")
         		{
+                	var url = window.location.href;
+                    owner_id = url.split('/')[3];        			
         			jQuery.ajax({
-        				url: "../qa_delete.html?qa_id=" + qa_id +"&husen_str=" + tag_search_conditions_uri,
+        				url: "../qa_delete.html?qa_id=" + qa_id +"&husen_str=" + tag_search_conditions_uri + "&owner_id=" + owner_id,
         				dataType: "json",
         				cache: false,
         				success: function(data)
@@ -545,8 +553,10 @@ function delete_qa()
 	var qa_id = qa_id_for_contextmenu;
 	if (qa_id != "")
 	{
+    	var url = window.location.href;
+        owner_id = url.split('/')[3];        			
 		jQuery.ajax({
-			url: "../qa_delete.html?qa_id=" + qa_id +"&husen_str=" + tag_search_conditions_uri,
+			url: "../qa_delete.html?qa_id=" + qa_id +"&husen_str=" + tag_search_conditions_uri + "&owner_id=" + owner_id,
 			dataType: "json",
 			cache: false,
 			success: function(data)
@@ -710,9 +720,11 @@ function loupe_drop()
         		}
         	}
         	husens_str = encodeURIComponent(husens_str);
+        	var url = window.location.href;
+        	owner_id = url.split('/')[3];
         	tag_search_conditions_uri = husens_str;
 			jQuery.ajax({
-				url: "../tag_search.html?husen_names=" + husens_str,
+				url: "../tag_search.html?husen_names=" + husens_str + "&owner_id=" + owner_id,
 				dataType: "json",
 				cache: false,
 				success: function(data)
@@ -777,8 +789,10 @@ function loupe_drop()
         	}
         	husens_str = encodeURIComponent(husens_str);
         	tag_search_conditions_uri = husens_str;
+        	var url = window.location.href;
+        	owner_id = url.split('/')[3];
 			jQuery.ajax({
-				url: "../tag_search.html?husen_names=" + husens_str,
+				url: "../tag_search.html?husen_names=" + husens_str + "&owner_id=" + owner_id,
 				dataType: "json",
 				cache: false,
 				success: function(data)
@@ -912,8 +926,10 @@ function husen_touroku(obj)
 	if (window.event.keyCode == 13)
 	{
 		var tag_name = obj.innerHTML;
+    	var url = window.location.href;
+        owner_id = url.split('/')[3];        			
 		jQuery.ajax({
-			url: "../tag_touroku.html?tag_name=" + tag_name,
+			url: "../tag_touroku.html?tag_name=" + tag_name + "&owner_id=" + owner_id,
 			dataType: "html",
 			cache: false,
 			success: function(data)
@@ -974,8 +990,10 @@ function enter (){
 			$("#red_pen").removeClass("rotate_pen");		
 			$("#blue_pen").addClass("rotate_pen");		
 						
+        	var url = window.location.href;
+            owner_id = url.split('/')[3];        			
 			jQuery.ajax({
-				url: "../serif.html?a=" + last_a,
+				url: "../serif.html?a=" + last_a + "&owner_id=" + owner_id,
 				dataType: "html",
 				cache: false,
 				success: function(data)
@@ -1090,14 +1108,16 @@ function register_qa_ajax ()
 	var reversible_flg = "";//$("#reversible_flg").val();
 	var qa_husen = qa_husen_global;
 	var qa_id = $("#qa_id").val();
-//	alert(qa_id);
+	var url = window.location.href;
+    owner_id = url.split('/')[3];        			
 	jQuery.ajax({
 		url: "../register_qa.html?qa_input_hidden=" + decoded + 
 				"&yomudake_flg=" + yomudake_flg +
 				"&reversible_flg=" + reversible_flg +
 				"&qa_id=" + qa_id +
 				"&qa_husen=" + qa_husen +
-				"&husen_str=" + tag_search_conditions_uri,
+				"&husen_str=" + tag_search_conditions_uri +
+				"&owner_id=" + owner_id,
 		dataType: "json",
 		cache: false,
 		success: function(data)
@@ -1135,8 +1155,10 @@ function change_seitou_color(obj)
 	    is_seikai_now = 1;
 	}
 	
+	var url = window.location.href;
+    owner_id = url.split('/')[3];        			
 	jQuery.ajax({
-		url: "../change_seitou_color.html?qa_id="+qa_id+"&s_id="+s_id+"&is_seikai_now="+is_seikai_now,
+		url: "../change_seitou_color.html?qa_id="+qa_id+"&s_id="+s_id+"&is_seikai_now="+is_seikai_now + "&owner_id=" + owner_id,
 		dataType: "html",
 		cache: false,
 		success: function(data)
@@ -1271,8 +1293,10 @@ function key_event() {
     	{
         	event.preventDefault();		
     		var tag_name = $("#" + tag_id_for_contextmenu).text();
+        	var url = window.location.href;
+            owner_id = url.split('/')[3];        			
     		jQuery.ajax({
-    			url: "../edit_husen.html?tag_name=" + tag_name + "&tag_id=" + tag_id_for_contextmenu,
+    			url: "../edit_husen.html?tag_name=" + tag_name + "&tag_id=" + tag_id_for_contextmenu + "&owner_id=" + owner_id,
     			dataType: "html",
     			cache: false,
     			success: function(data)
@@ -1374,8 +1398,10 @@ function paging(page,next_or_prev)
 		}
 	}
 	
+	var url = window.location.href;
+    owner_id = url.split('/')[3];        			
 	jQuery.ajax({
-		url: "../paging.html?now_page="+page+"&next_or_prev="+next_or_prev+"&husen_str="+tag_search_conditions_uri,
+		url: "../paging.html?now_page="+page+"&next_or_prev="+next_or_prev+"&husen_str="+tag_search_conditions_uri + "&owner_id=" + owner_id,
 		dataType: "json",
 		cache: false,
 		success: function(data)
@@ -1573,8 +1599,10 @@ function slime_speak()
 {	
 	$("#slime").animate({width: '150px', height:'145px', top:'445px'}, 600);
 	$("#slime").animate({width: '150px', height:'150px', top:'440px'}, 600);
+	var url = window.location.href;
+    owner_id = url.split('/')[3];        			
 	jQuery.ajax({
-		url: "../serif.html?args_num=0",
+		url: "../serif.html?args_num=0" + "&owner_id=" + owner_id,
 		dataType: "html",
 		cache: false,
 		success: function(data)
@@ -1609,9 +1637,10 @@ function edit_qa(q_obj)
 	{
 		qa_id = qa_id_for_contextmenu;
 	}
-	//alert(qa_id);
+	var url = window.location.href;
+    owner_id = url.split('/')[3];        			
 	jQuery.ajax({
-		url: "../edit_qa.html?qa_id="+qa_id,
+		url: "../edit_qa.html?qa_id="+qa_id + "&owner_id=" + owner_id,
 		dataType: "json",
 		cache: false,
 		success: function(data)
@@ -1663,8 +1692,10 @@ function reset_red()
 function to_miseikai()
 {
 	var now_page_left = $("page_left").text();
+	var url = window.location.href;
+    owner_id = url.split('/')[3];        			
 	jQuery.ajax({
-		url: "../to_miseikai.html?husen_names=" + tag_search_conditions_uri + "&refresh_by_date=" + refresh_by_date + "&now_page_left="+now_page_left,
+		url: "../to_miseikai.html?husen_names=" + tag_search_conditions_uri + "&refresh_by_date=" + refresh_by_date + "&now_page_left="+now_page_left + "&owner_id=" + owner_id,
 		dataType: "json",
 		cache: false,
 		success: function(data)
@@ -1688,8 +1719,10 @@ function to_miseikai()
 function to_seikai()
 {
 	var now_page_left = $("page_left").text();
+	var url = window.location.href;
+    owner_id = url.split('/')[3];        			
 	jQuery.ajax({
-		url: "../to_seikai.html?husen_names=" + tag_search_conditions_uri + "&refresh_by_date=" + refresh_by_date + "&now_page_left="+now_page_left,
+		url: "../to_seikai.html?husen_names=" + tag_search_conditions_uri + "&refresh_by_date=" + refresh_by_date + "&now_page_left="+now_page_left + "&owner_id=" + owner_id,
 		dataType: "json",
 		cache: false,
 		success: function(data)
@@ -1826,9 +1859,10 @@ function husen_order()
 		}
 	});
 	husen_ids_in_order = husen_ids_in_order.substring(0,husen_ids_in_order.length - 1);
-	//alert(husen_ids_in_order);
+	var url = window.location.href;
+    owner_id = url.split('/')[3];        			
 	jQuery.ajax({
-		url: "../husen_order.html?husen_ids_in_order=" + husen_ids_in_order,
+		url: "../husen_order.html?husen_ids_in_order=" + husen_ids_in_order + "&owner_id=" + owner_id,
 		dataType: "json",
 		cache: false,
 		success: function(data)

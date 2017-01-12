@@ -1,10 +1,17 @@
 package com.application.controller;
 
+import java.security.SecureRandom;
+
+import static org.mockito.Matchers.byteThat;
+
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -170,7 +177,8 @@ public class TopPageController {
 			  HttpServletRequest request,
 			  // 同じフォームにowner_id入れてもemail入れてもログインできるようにするため
 			  @RequestParam("owner_id_or_email") String owner_id_or_email,
-			  @RequestParam("login_password") String input_password) 
+			  @RequestParam("login_password") String input_password,
+			  HttpServletResponse response) 
 	  {
 			H2dbDao h2db_dao = new H2dbDao();
 			
@@ -178,32 +186,13 @@ public class TopPageController {
 			byte[] encrypted_input_password = aes.encrypt(input_password);
 			byte[] encrypted_db_name = null;
 			
-			// ログイン情報を取得
-			StringBuilderPlus sql = new StringBuilderPlus();
-			sql.appendLine("select");
-			sql.appendLine("  owner.owner_id as owner_id,");
-			sql.appendLine("  owner.owner_name as owner_name,");
-			sql.appendLine("  owner.email as email,");
-			sql.appendLine("  owner.password as password,");
-			sql.appendLine("  owner.kakin_type as kakin_type, ");
-			sql.appendLine("  db.db_name as db_name,");
-			sql.appendLine("  db.db_version as db_version ");
-			sql.appendLine("from owner_info as owner "); 
-			sql.appendLine("inner join ");
-			sql.appendLine("  owner_db as db ");
-			sql.appendLine("  on owner.owner_id = db.owner_id ");
-			sql.appendLine("  and is_current_db = 1");
-			sql.appendLine("where "); 
-			sql.appendLine("  (owner.owner_id = '" + owner_id_or_email + "'");
-			sql.appendLine("   or");
-			sql.appendLine("  owner.email = '" + owner_id_or_email + "')");
-			sql.appendLine("  and owner.del_flg = 0");
-			sql.appendLine("  and db.del_flg = 0;");
-			
 			LoginInfoModel login_info = new LoginInfoModel();
 			
 			H2dbDao dao = new H2dbDao();
-			login_info = dao.select_login_info(sql);
+			login_info = dao.select_login_info(owner_id_or_email);
+			
+			// DBパッチ　後でコメントアウト
+			dao.alter_common_db_add_token();
 			
 //			System.out.println(login_info.getEncrypted_db_name());
 //			System.out.println(aes.decrypt(login_info.getEncrypted_db_name()));
@@ -243,11 +232,14 @@ public class TopPageController {
 //				// ログインしているかどうか TODO セッションの値を書き換えられてしまわないように対策要
 				session.setAttribute("is_authenticated", true);
 				session.setAttribute("owner_id", login_info.getOwner_id());
-				session.setAttribute("password", login_info.getEncrypted_password());
+//				session.setAttribute("password", login_info.getEncrypted_password());
 				
 				// セッションに暗号化されたオーナー専用DB名を格納
 				session.setAttribute("owner_db", login_info.getEncrypted_db_name());
 
+				// Cookieから自動ログインするためのトークンをCookieおよびH2に保存
+				setAutoLoginToken(owner_id_or_email, session, request, response);
+				
 				return "redirect:" + response_url;
 			}
 			else
@@ -256,11 +248,91 @@ public class TopPageController {
 			    return "index";
 			}	
 	  }
+	  
+	/**
+	 * Cookieから自動ログインするためのトークンをCookieおよびH2に保存
+	 */
+	public boolean setAutoLoginToken(
+			String owner_id_or_email, 
+			HttpSession session,
+			HttpServletRequest request,
+			HttpServletResponse response)
+	{
+		try{
+			H2dbDao dao = new H2dbDao();
+			Cookie[] cookies = request.getCookies();
+			String last_token_cookie = null;
+	
+			// 前回トークンを取得
+			if (cookies != null) {
+			 for (Cookie cookie : cookies) {
+			   if (cookie.getName().equals("ankinote")) {
+				   last_token_cookie = cookie.getValue();
+//				   System.out.println("**********"+last_token_cookie);
+			    }
+			  }
+			}
+			String last_token_db = dao.get_last_token(last_token_cookie);
+//				System.out.println(last_encrypted_token_db);
+//			}
+			System.out.println(last_token_cookie);
+			System.out.println(last_token_db);
+			if (owner_id_or_email == null && last_token_cookie != last_token_db)
+			{
+				System.out.println("=======================COOKIE=============");
+				return false;
+			}
+			
+			String new_token = getToken();
+		    final String cookieName = "ankinote";
+		    final String cookieValue = new_token;  // you could assign it some encoded value
+		    final Boolean useSecureCookie = new Boolean(false);
+			// TODO Cookieの有効期限を無期限にする
+		    final int expiryTime = 10 * 365 * 24 * 60 * 60 ;  // 10年
+		    final String cookiePath = "/";
+	
+		    Cookie new_cookie = new Cookie(cookieName, cookieValue);
+			// CookieのHttpOnly 属性を有効にする
+		    new_cookie.isHttpOnly();	    
+			// TODO Cookieのsecure 属性を有効にする（HTTPSに対応するまでは不可能）
+		    new_cookie.setSecure(useSecureCookie.booleanValue());  // determines whether the cookie should only be sent using a secure protocol, such as HTTPS or SSL
+		    // A negative value means that the cookie is not stored persistently and will be deleted when the Web browser exits. A zero value causes the cookie to be deleted.
+		    new_cookie.setMaxAge(expiryTime);  
+		    // The cookie is visible to all the pages in the directory you specify, and all the pages in that directory's subdirectories
+		    new_cookie.setPath(cookiePath);  
+			// tokenをCookieに書き込む
+		    response.addCookie(new_cookie);
+	
+		    // tokenを公開鍵暗号方式で暗号化
+//		    byte[] new_encrypted_token = aes.encrypt(new_token);
+//			// 暗号化したtokenをH2に入れる
+		    dao.update_token(owner_id_or_email, last_token_cookie, new_token);
+		    LoginInfoModel login_info = dao.select_login_info(owner_id_or_email);
+		    session.setAttribute("owner_db", login_info.getEncrypted_db_name());
+		    session.setAttribute("owner_id", login_info.getOwner_id());
+		    session.setAttribute("owner_name", login_info.getOwner_name());
+		    session.setAttribute("is_authenticated", true);
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		return true;
+	}
+	
+	/**
+	 * トークンを作成する
+	 * @return
+	 */
+	private String getToken() {
+		SecureRandom secure_random = new SecureRandom();
+		return new BigInteger(130, secure_random).toString(32);
+	}
 
+	/**
+	 * DBパッチ
+	 */
 	public void add_is_seikai_to_seitou_tbl(String db_name) {
-		/**
-		 * DBパッチ
-		 */
 		try
 		{
 			SQliteDAO sqlite_dao = new SQliteDAO();

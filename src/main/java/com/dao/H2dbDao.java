@@ -135,7 +135,7 @@ public class H2dbDao
 	 * @param sql
 	 * @return ログイン情報クラス
 	 */
-	public LoginInfoModel select_login_info(StringBuilderPlus sql)
+	public LoginInfoModel select_login_info(String owner_id_or_email)
 	{
 		LoginInfoModel login_info = new LoginInfoModel();
 		
@@ -143,6 +143,29 @@ public class H2dbDao
 		try
 		{
 			Statement stmt = conn.createStatement();
+			
+			// ログイン情報を取得
+			StringBuilderPlus sql = new StringBuilderPlus();
+			sql.appendLine("select");
+			sql.appendLine("  owner.owner_id as owner_id,");
+			sql.appendLine("  owner.owner_name as owner_name,");
+			sql.appendLine("  owner.email as email,");
+			sql.appendLine("  owner.password as password,");
+			sql.appendLine("  owner.kakin_type as kakin_type, ");
+			sql.appendLine("  db.db_name as db_name,");
+			sql.appendLine("  db.db_version as db_version ");
+			sql.appendLine("from owner_info as owner "); 
+			sql.appendLine("inner join ");
+			sql.appendLine("  owner_db as db ");
+			sql.appendLine("  on owner.owner_id = db.owner_id ");
+			sql.appendLine("  and is_current_db = 1");
+			sql.appendLine("where "); 
+			sql.appendLine("  (owner.owner_id = '" + owner_id_or_email + "'");
+			sql.appendLine("   or");
+			sql.appendLine("  owner.email = '" + owner_id_or_email + "')");
+			sql.appendLine("  and owner.del_flg = 0");
+			sql.appendLine("  and db.del_flg = 0;");
+			
 			ResultSet rs = stmt.executeQuery(sql.toString());
 			while (rs.next()) {
 				login_info.setOwner_id(rs.getString("owner_id"));
@@ -152,7 +175,7 @@ public class H2dbDao
 				login_info.setEncrypted_db_name(rs.getBytes("db_name"));
 				login_info.setDb_version(rs.getString("db_version"));
 				login_info.setKakin_type(rs.getInt("kakin_type"));
-				login_info.setDecryptedDbName(login_info.getEncrypted_db_name());
+				login_info.setDecryptedDbName(rs.getBytes("db_name"));
 			}
 		}
 		catch(Exception ex)
@@ -247,5 +270,102 @@ public class H2dbDao
 	      {
 	    	  stmt.getConnection().commit();
 	      }
+	}
+
+	/**
+	 * 前回トークンを取得する
+	 * @param last_encrypted_token
+	 * @return
+	 */
+	public String get_last_token(String last_token_cookie)
+	{
+		Connection conn = connect();
+		String last_token_db = null;
+		try
+		{
+			String sql = "select token from owner_info where token=?";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, last_token_cookie);
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				last_token_db = rs.getString(1);
+			}
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		finally
+		{
+			disconnect(conn);
+		}
+		
+		return last_token_db;
+	}	
+	
+	/**
+	 * オートログイン用のトークンを更新する
+	 */
+	public void update_token(String owner_id_or_email, String last_token, String new_token)
+	{
+		Connection conn = connect();
+		try
+		{
+			String sql = null;
+			Statement stmt = conn.createStatement();
+
+			// SQLに渡すパラメーター（バイナリのみ対象）
+//			List<String> params = new ArrayList<byte[]>();
+
+			
+			// オーナー情報テーブルにトークンを追加
+			if (owner_id_or_email == null)
+			{
+				sql="update owner_info set token = '" + new_token +"' where token = '" + last_token + "';";
+			}
+			// 初回ログイン時はtokenが入っていないため、owner_idでレコードを識別
+			else
+			{
+				sql="update owner_info set token = '" + new_token + "' where (owner_id = '" + owner_id_or_email + "' or email = '" + owner_id_or_email + "');";				
+			}
+			
+			stmt.executeUpdate(sql);	
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			disconnect(conn);
+		}
+	}
+	
+	
+	/**
+	 * Cookieオートログイン用のトークンカラムを追加
+	 */
+	public void alter_common_db_add_token()
+	{
+		Connection conn = connect();
+		try
+		{
+			Statement stmt = conn.createStatement();
+			
+			StringBuilderPlus sql = new StringBuilderPlus();
+						
+			// オーナー情報テーブルにトークンを追加
+			sql.appendLine("alter table owner_info add column token clob;");
+			
+			transaction(stmt, sql);			
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			disconnect(conn);
+		}
 	}
 }

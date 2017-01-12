@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
@@ -78,7 +79,7 @@ import net.arnx.jsonic.JSON;
 
 @Controller
 public class MainPageController{
-
+	
 	/**
 	 * メインページ（暗記ノート本体）
 	 * 
@@ -95,10 +96,14 @@ public class MainPageController{
 							method=RequestMethod.GET)
 	public String main(@PathVariable("owner_id") String owner_id,
 						HttpServletRequest request, 
+						HttpServletResponse response, 
 						HttpSession session,
 						Model model) {
 		Log log = new Log();
 		log.insert_error_log("INFO", "main method start.");
+		
+		TopPageController top = new TopPageController();
+		top.setAutoLoginToken(owner_id,session,request,response);
 		
 		String request_url = request.getRequestURI();
 		String response_url = "/"+ owner_id + "/main.html";
@@ -201,12 +206,17 @@ public class MainPageController{
 			@RequestParam(value="husen_names", required=false) String husen_names,
 			@RequestParam(value="refresh_by_date", required=false) String date,
 			@RequestParam(value="now_page_left", required=false) String now_page_left,
+			@RequestParam("owner_id") String owner_id,
 			HttpServletRequest request, 
+			HttpServletResponse response, 
 			HttpSession session) {
+		// オートログイン
+		TopPageController top = new TopPageController();
+		top.setAutoLoginToken(owner_id,session,request,response);
 
 		// TODO 認証されてるかどうかはsessionに入れると書き換えられてしまうから毎回DBに接続した方がいいかな
 		Boolean is_authenticated = (Boolean)session.getAttribute("is_authenticated");
-		String owner_id = (String)session.getAttribute("owner_id");
+		owner_id = (String)session.getAttribute("owner_id");
 		
 		/**
 		* アクセスログ記録
@@ -294,12 +304,18 @@ public class MainPageController{
 			@RequestParam(value="husen_names", required=false) String husen_names,
 			@RequestParam(value="refresh_by_date", required=false) String date,
 			@RequestParam(value="now_page_left", required=false) String now_page_left,
+			@RequestParam("owner_id") String owner_id,
 			HttpServletRequest request, 
+			HttpServletResponse response, 
 			HttpSession session) {
 
+		// オートログイン
+		TopPageController top = new TopPageController();
+		top.setAutoLoginToken(owner_id,session,request,response);
+		
 		// TODO 認証されてるかどうかはsessionに入れると書き換えられてしまうから毎回DBに接続した方がいいかな
 		Boolean is_authenticated = (Boolean)session.getAttribute("is_authenticated");
-		String owner_id = (String)session.getAttribute("owner_id");
+		owner_id = (String)session.getAttribute("owner_id");
 		
 		/**
 		* アクセスログ記録
@@ -386,12 +402,18 @@ public class MainPageController{
 	public @ResponseBody String qa_delete(
 			@RequestParam(value="qa_id", required=false) String qa_id,
 			@RequestParam(value="husen_str", required=false) String husen_names,
+			@RequestParam("owner_id") String owner_id,
 			HttpServletRequest request, 
+			HttpServletResponse response, 
 			HttpSession session) {
+
+		// オートログイン
+		TopPageController top = new TopPageController();
+		top.setAutoLoginToken(owner_id,session,request,response);
 
 		// TODO 認証されてるかどうかはsessionに入れると書き換えられてしまうから毎回DBに接続した方がいいかな
 		Boolean is_authenticated = (Boolean)session.getAttribute("is_authenticated");
-		String owner_id = (String)session.getAttribute("owner_id");
+		owner_id = (String)session.getAttribute("owner_id");
 		
 		/**
 		* アクセスログ記録
@@ -459,9 +481,17 @@ public class MainPageController{
     @RequestMapping(value={"/image_search.html"},
     			method=RequestMethod.GET)
     public @ResponseBody String image_search(
-    		@RequestParam(value="keywords", required=false) String keywords)
+    		@RequestParam(value="keywords", required=false) String keywords,
+			@RequestParam("owner_id") String owner_id,
+    		HttpServletRequest request, 
+    		HttpServletResponse response, 
+    		HttpSession session)
     {
-    	GPix gpix = GPix.getInstance();
+		// オートログイン
+		TopPageController top = new TopPageController();
+		top.setAutoLoginToken(owner_id,session,request,response);
+
+		GPix gpix = GPix.getInstance();
     	List<Image> image_list = new ArrayList<Image>();
     	try {
     		image_list = gpix.search(keywords.replace(" ", "+"), 1);
@@ -494,16 +524,22 @@ public class MainPageController{
 	 */
 	@RequestMapping(value={"/tag_search.html"},
 				method=RequestMethod.GET)
-	public @ResponseBody String tag_search(@RequestParam("husen_names") String husen_names,
+	public @ResponseBody String tag_search(
+				@RequestParam("husen_names") String husen_names,
+				@RequestParam("owner_id") String owner_id,
 				HttpServletRequest request, 
+				HttpServletResponse response, 
 				HttpSession session,
 				Model model) {
 		
+		// オートログイン
+		TopPageController top = new TopPageController();
+		top.setAutoLoginToken(owner_id,session,request,response);
+
 		// TODO 認証されてるかどうかはsessionに入れると書き換えられてしまうから毎回DBに接続した方がいいかな
 		Boolean is_authenticated = (Boolean)session.getAttribute("is_authenticated");
-		String owner_id = (String)session.getAttribute("owner_id");
-		
-		
+		owner_id = (String)session.getAttribute("owner_id");
+				
 		/**
 		* アクセスログ記録
 		*/
@@ -637,6 +673,7 @@ public class MainPageController{
 	public String mondai_touroku(@PathVariable("owner_id") String owner_id,
 						HttpServletRequest request, 
 						HttpSession session,
+						HttpServletResponse response, 
 						Model model,
 						@RequestParam("qa_input_hidden") String qa_input,
 						@RequestParam(value="qa_husen",required=false) String qa_husen,
@@ -644,6 +681,10 @@ public class MainPageController{
 						@RequestParam(value="yomudake_flg", required=false) String yomudake_flg,
 						@RequestParam(value="reversible_flg", required=false) String reversible_flg) {
 		
+		// オートログイン
+		TopPageController top = new TopPageController();
+		top.setAutoLoginToken(owner_id,session,request,response);
+
 		/**
 		 * アクセスログ記録
 		 */
@@ -653,8 +694,8 @@ public class MainPageController{
 		String client_os = Log.getClientOS(request);
 		String client_browser = Log.getClientBrowser(request);
 		Log log = new Log();
-		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
-
+		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);		
+		
 		String request_url = request.getRequestURI();
 		String response_url = "/"+ owner_id + "/main.html";
 		model.addAttribute("owner_id", owner_id);
@@ -749,7 +790,9 @@ public class MainPageController{
 	@RequestMapping(value={"/register_qa.html"}, method=RequestMethod.GET)
 	public @ResponseBody String mondai_touroku_ajax
 			(HttpServletRequest request, 
+			HttpServletResponse response, 
 			HttpSession session,
+			@RequestParam("owner_id") String owner_id,
 			@RequestParam("qa_input_hidden") String qa_input,
 			@RequestParam(value="qa_husen",required=false) String qa_husen,
 			@RequestParam(value="husen_str",required=false) String husen_str,
@@ -757,7 +800,11 @@ public class MainPageController{
 			@RequestParam(value="yomudake_flg", required=false) String yomudake_flg,
 			@RequestParam(value="reversible_flg", required=false) String reversible_flg) {
 
-		String owner_id = (String)session.getAttribute("owner_id");
+		// オートログイン
+		TopPageController top = new TopPageController();
+		top.setAutoLoginToken(owner_id,session,request,response);
+
+		owner_id = (String)session.getAttribute("owner_id");
 		
 		/**
 		* アクセスログ記録
@@ -839,16 +886,23 @@ public class MainPageController{
 	 */
 	@RequestMapping(value={"/change_seitou_color.html"}, method=RequestMethod.GET)
 	public @ResponseBody String ajax_change_seitou_color(
+			HttpServletRequest request, 
+			HttpServletResponse response, 
 			HttpSession session,
+			@RequestParam("owner_id") String owner_id,
 			@RequestParam("qa_id") String qa_id,
 			@RequestParam("s_id") String s_id,
 			@RequestParam("is_seikai_now") int is_seikai_now) {
+
+		// オートログイン
+		TopPageController top = new TopPageController();
+		top.setAutoLoginToken(owner_id,session,request,response);
 
 		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 		AES aes = new AES();
 		String owner_db = aes.decrypt(encrypted_owner_db);
 
-		String owner_id = (String)session.getAttribute("owner_id");
+		owner_id = (String)session.getAttribute("owner_id");
 		
 		KaitouModel kaitou = new KaitouModel();
 
@@ -927,7 +981,15 @@ public class MainPageController{
 	 * @return
 	 */
 	@RequestMapping(value={"/seitou_sum.html"}, method=RequestMethod.GET)
-	public @ResponseBody int ajax_get_seitou_sum(HttpSession session) {
+	public @ResponseBody int ajax_get_seitou_sum(
+			@RequestParam("owner_id") String owner_id,
+			HttpServletRequest request, 
+			HttpServletResponse response, 
+			HttpSession session) {
+
+		// オートログイン
+		TopPageController top = new TopPageController();
+		top.setAutoLoginToken(owner_id,session,request,response);
 
 		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 		AES aes = new AES();
@@ -947,43 +1009,64 @@ public class MainPageController{
 	 */
 	@RequestMapping(value={"/tag_touroku.html"}, method=RequestMethod.GET)
 	public @ResponseBody String tag_touroku(
+			@RequestParam("owner_id") String owner_id,
+			HttpServletRequest request, 
+			HttpServletResponse response, 
 			HttpSession session,
 			@RequestParam(value = "tag_name", required=false) String tag_name) {
 
+		// オートログイン
+		TopPageController top = new TopPageController();
+		top.setAutoLoginToken(owner_id,session,request,response);
+		
 		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 		AES aes = new AES();
 		String owner_db = aes.decrypt(encrypted_owner_db);
 
-		String owner_id = (String)session.getAttribute("owner_id");
+		owner_id = (String)session.getAttribute("owner_id");
 		
 		return insert_tag(tag_name, owner_db, owner_id);
 	}
 
 	@RequestMapping(value={"/edit_husen.html"}, method=RequestMethod.GET)
 	public @ResponseBody String edit_husen(
+			@RequestParam("owner_id") String owner_id,
+			HttpServletRequest request, 
+			HttpServletResponse response, 
 			HttpSession session,
 			@RequestParam(value = "tag_id", required=false) String tag_id,
 			@RequestParam(value = "tag_name", required=false) String tag_name) {
+
+		// オートログイン
+		TopPageController top = new TopPageController();
+		top.setAutoLoginToken(owner_id,session,request,response);
 
 		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 		AES aes = new AES();
 		String owner_db = aes.decrypt(encrypted_owner_db);
 
-		String owner_id = (String)session.getAttribute("owner_id");
+		owner_id = (String)session.getAttribute("owner_id");
 		
 		return edit_tag(tag_id, tag_name, owner_db, owner_id);
 	}
 	
 	@RequestMapping(value={"/husen_order.html"}, method=RequestMethod.GET)
 	public @ResponseBody String husen_order(
+			@RequestParam("owner_id") String owner_id,
 			HttpSession session,
+			HttpServletRequest request, 
+			HttpServletResponse response, 
 			@RequestParam(value = "husen_ids_in_order", required=false) String husen_ids_in_order) {
+
+		// オートログイン
+		TopPageController top = new TopPageController();
+		top.setAutoLoginToken(owner_id,session,request,response);
 
 		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 		AES aes = new AES();
 		String owner_db = aes.decrypt(encrypted_owner_db);
 
-		String owner_id = (String)session.getAttribute("owner_id");
+		owner_id = (String)session.getAttribute("owner_id");
 		
 		String husen_html = order_tag(husen_ids_in_order, owner_db);
 		
@@ -1023,14 +1106,21 @@ public class MainPageController{
 	
 	@RequestMapping(value={"/husen_delete.html"}, method=RequestMethod.GET)
 	public @ResponseBody String husen_delete(
+			@RequestParam("owner_id") String owner_id,
+			HttpServletRequest request, 
+			HttpServletResponse response, 
 			HttpSession session,
 			@RequestParam(value = "tag_id", required=false) String tag_id) {
 
+		// オートログイン
+		TopPageController top = new TopPageController();
+		top.setAutoLoginToken(owner_id,session,request,response);
+		
 		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 		AES aes = new AES();
 		String owner_db = aes.decrypt(encrypted_owner_db);
 
-		String owner_id = (String)session.getAttribute("owner_id");		
+		owner_id = (String)session.getAttribute("owner_id");		
 		
 		TagDao tag_dao = new TagDao();
 		tag_dao.delete_tag(owner_db, tag_id);
@@ -1132,8 +1222,16 @@ public class MainPageController{
 	 */
 	@RequestMapping(value={"/serif.html"}, method=RequestMethod.GET)
 	public @ResponseBody String serif(
+			@RequestParam("owner_id") String owner_id,
+			HttpServletRequest request, 
+			HttpServletResponse response, 
+			HttpSession session,
 			@RequestParam(value="args_num", required=false) String args_num,
 			@RequestParam(value = "a", required=false) String a_input) {
+		// オートログイン
+		TopPageController top = new TopPageController();
+		top.setAutoLoginToken(owner_id,session,request,response);
+
 		SlimeSerif slime_serif = new SlimeSerif();
 		String serif = "";
 		if (args_num != null)
@@ -1157,10 +1255,16 @@ public class MainPageController{
 	@RequestMapping(value={"/paging.html"}, method=RequestMethod.GET)
 	public @ResponseBody String paging(
 			HttpSession session,
+			HttpServletRequest request, 
+			HttpServletResponse response, 
 			Model model,
+			@RequestParam("owner_id") String owner_id,
 			@RequestParam(value="now_page") int now_page,
 			@RequestParam(value = "next_or_prev") String next_or_prev,
 			@RequestParam(value = "husen_str", required=false) String husen_str) {
+		// オートログイン
+		TopPageController top = new TopPageController();
+		top.setAutoLoginToken(owner_id,session,request,response);
 
 		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 		AES aes = new AES();
@@ -1222,8 +1326,16 @@ public class MainPageController{
 	 * @return
 	 */
 	@RequestMapping(value={"/edit_qa.html"}, method=RequestMethod.GET)
-	public @ResponseBody String edit_qa(HttpSession session,
+	public @ResponseBody String edit_qa(
+			HttpServletRequest request, 
+			HttpServletResponse response, 
+			HttpSession session,
+			@RequestParam("owner_id") String owner_id,
 			@RequestParam(value="qa_id", required=false) String qa_id) {
+		// オートログイン
+		TopPageController top = new TopPageController();
+		top.setAutoLoginToken(owner_id,session,request,response);
+
 		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 		AES aes = new AES();
 		String owner_db = aes.decrypt(encrypted_owner_db);
@@ -2225,3 +2337,4 @@ public class MainPageController{
 		return qa_map;
 	}	
 }
+
