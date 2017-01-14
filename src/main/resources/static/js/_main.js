@@ -1881,6 +1881,63 @@ function husen_order()
 	});	
 }
 
+// 問題をリピート再生
+function play_q()
+{
+	var id = qa_id_for_contextmenu;
+	var q_id = $("#"+id).children(".q").attr("id");
+	var path = "../speech/" + q_id + "_q.m4a";
+    $("#play_qa").attr("src",path);
+    $("#play_qa").attr("loop");
+    document.getElementById("play_qa").loop = true;
+    document.getElementById("play_qa").play();
+}
+
+//解答をリピート再生
+function play_a()
+{
+	var id = qa_id_for_contextmenu;
+	var a_id = $("#"+id).children(".a").attr("id");
+	var path = "../speech/" + a_id + "_a.m4a";
+    $("#play_qa").attr("src",path);
+    $("#play_qa").attr("loop");
+    document.getElementById("play_qa").loop = true;
+    document.getElementById("play_qa").play();
+}
+
+//問題と解答をリピート再生
+function play_qa()
+{
+	var id = qa_id_for_contextmenu;
+	var q_id = $("#"+id).children(".q").attr("id");
+	var q_path = "../speech/" + q_id + "_q.m4a";
+	myAudio = new Audio(q_path);
+	myAudio.setAttribute("src",q_path);
+	myAudio.play();
+	myAudio.addEventListener('ended', function() {
+		play_qa2();
+	});
+}
+
+function play_qa2()
+{
+	var id = qa_id_for_contextmenu;
+	var a_id = $("#"+id).children(".a").attr("id");
+	var a_path = "../speech/" + a_id + "_a.m4a";
+	myAudio = new Audio(a_path);
+	myAudio.setAttribute("src",a_path);
+	myAudio.play();
+	myAudio.addEventListener('ended', function() {
+		play_qa();
+	});
+}
+
+// 再生を停止
+function stop_audio()
+{
+    document.getElementById("play_qa").loop = false;
+}
+
 // 問題を画像検索
 function search_q_image()
 {

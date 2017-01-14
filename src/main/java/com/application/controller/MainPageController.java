@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.SequenceInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -1743,11 +1744,85 @@ public class MainPageController{
 			mondai.setQ_parts_text(entry.getValue());
 		    // QAの中に出てくる音声や画像などのバイナリファイル
 			mondai.setQ_parts_binary(null);
+			String language = Util.check_japanese_or_english(entry.getValue());
 		    // 言語
 			mondai.setLanguage(Util.check_japanese_or_english(entry.getValue()));
 	//		mondai.setLanguage(Util.langDetect(mondai_input));
 		    // テキスト読み上げデータ
 			mondai.setYomiage(null);
+			if (language == Constant.ENGLISH)
+			{
+				// 重いので非同期の別スレッドで処理
+				new Thread(new Runnable() {
+		            @Override
+		            public void run() {
+						try {
+							String speaker = "Vicki";
+							String file_name = Constant.SPEECH_DATA_FOLDER_PATH + mondai.getQ_id() + ".wav";
+							String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + mondai.getQ_parts_text() + "' -o " + file_name;
+							System.out.println(command);
+							Runtime.getRuntime().exec(command);
+							set_executable(file_name);
+							String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=18K -vn " + file_name.replace("wav", "m4a");
+							Runtime.getRuntime().exec(command2);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+		            }
+		        }).start();
+				// 重いので非同期の別スレッドで処理
+				new Thread(new Runnable() {
+		            @Override
+		            public void run() {
+						try {
+							String speaker = "Alex";
+							String file_name = Constant.SPEECH_DATA_FOLDER_PATH + mondai.getQ_id() + "_q.m4a";
+							String command = "say -v " + speaker + " '" + mondai.getQ_parts_text() + "' -o " + file_name;
+							Runtime.getRuntime().exec(command);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+		            }
+		        }).start();
+			}
+			else
+			{
+				// 重いので非同期の別スレッドで処理
+				new Thread(new Runnable() {
+		            @Override
+		            public void run() {
+					String roman = SlimeSerif.Japanese_to_Roman(mondai.getQ_parts_text());
+					try {
+						String speaker = "Vicki";
+						String file_name = Constant.SPEECH_DATA_FOLDER_PATH + mondai.getQ_id() + ".wav";
+						String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + roman + "' -o " + file_name;
+						System.out.println(command);
+						Runtime.getRuntime().exec(command);
+						set_executable(file_name);
+						String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=18K -vn " + file_name.replace("wav", "m4a");
+						Runtime.getRuntime().exec(command2);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		            }
+		        }).start();
+				new Thread(new Runnable() {
+		            @Override
+		            public void run() {
+						try {
+							String speaker = "Kyoko";
+							String file_name = Constant.SPEECH_DATA_FOLDER_PATH + mondai.getQ_id() + "_q.m4a";
+							String command = "say -v " + speaker + " '" + mondai.getQ_parts_text() + "' -o " + file_name;
+							Runtime.getRuntime().exec(command);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+		            }
+		        }).start();
+			}
 		    // 削除フラグ
 			mondai.setDel_flg(0);
 		    // 作成者
@@ -1836,18 +1911,36 @@ public class MainPageController{
 		            public void run() {
 						try {
 							String speaker = "Alex";
-							String file_name = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + "_original.m4a";
+							String file_name = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + "_a.m4a";
 							String command = "say -v " + speaker + " '" + seitou.getSeitou() + "' -o " + file_name;
 							System.out.println(command);
 							Runtime.getRuntime().exec(command);
-							set_executable(file_name);
-							String silence_file = Constant.SPEECH_DATA_FOLDER_PATH + "silence.m4a";
-							String command2 = "/usr/local/bin/ffmpeg -i concat:'" + file_name + "|" + silence_file + "' -c copy " + Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + "_alex.m4a";
-							System.out.println(command2);
-							Thread.sleep(1000);
-							Process p = Runtime.getRuntime().exec(command2);
-							p.waitFor();
-							Thread.sleep(2000);
+//							set_executable(file_name);
+//							String silence_file = Constant.SPEECH_DATA_FOLDER_PATH + "silence.aif";
+//							String output_english = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + "_a.aif";
+//							
+//					        try {
+//					            AudioInputStream clip1 = AudioSystem.getAudioInputStream(new File(file_name));
+//					            AudioInputStream clip2 = AudioSystem.getAudioInputStream(new File(silence_file));
+//
+//					            AudioInputStream appendedFiles = 
+//					                            new AudioInputStream(
+//					                                new SequenceInputStream(clip1, clip2),     
+//					                                clip1.getFormat(), 
+//					                                clip1.getFrameLength() + clip2.getFrameLength());
+//
+//					            AudioSystem.write(appendedFiles, 
+//					                            AudioFileFormat.Type.AIFF, 
+//					                            new File(output_english));
+//					        } catch (Exception e) {
+//					            e.printStackTrace();
+//					        }							
+//							String command2 = "/usr/local/bin/ffmpeg -i concat:'" + file_name + "|" + silence_file + "' -c copy " + Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + "_alex.wav";
+//							System.out.println(command2);
+//							Thread.sleep(1000);
+//							Process p = Runtime.getRuntime().exec(command2);
+//							p.waitFor();
+//							Thread.sleep(2000);
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -1875,6 +1968,20 @@ public class MainPageController{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+		            }
+		        }).start();
+				new Thread(new Runnable() {
+		            @Override
+		            public void run() {
+						try {
+							String speaker = "Kyoko";
+							String file_name = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + "_a.m4a";
+							String command = "say -v " + speaker + " '" + seitou.getSeitou() + "' -o " + file_name;
+							Runtime.getRuntime().exec(command);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 		            }
 		        }).start();
 			}
@@ -1984,9 +2091,9 @@ public class MainPageController{
 			set_executable(file_name);
 		}
 		Boolean a = file.setExecutable(true, false);
-		file.setExecutable(true, false);
-		file.setWritable(true, false);
-		file.setReadable(true,false);
+//		file.setExecutable(true, false);
+//		file.setWritable(true, false);
+//		file.setReadable(true,false);
 		System.out.println("setexec:"+a);
 	}
 
