@@ -211,8 +211,11 @@ public class MainPageController{
 			HttpServletResponse response, 
 			HttpSession session) {
 		// オートログイン
-		TopPageController top = new TopPageController();
-		top.setAutoLoginToken(owner_id,session,request,response);
+		if (session.getAttribute("owner_id") == null)
+		{
+			TopPageController top = new TopPageController();
+			top.setAutoLoginToken(owner_id,session,request,response);
+		}
 
 		// TODO 認証されてるかどうかはsessionに入れると書き換えられてしまうから毎回DBに接続した方がいいかな
 		Boolean is_authenticated = (Boolean)session.getAttribute("is_authenticated");
@@ -310,8 +313,11 @@ public class MainPageController{
 			HttpSession session) {
 
 		// オートログイン
-		TopPageController top = new TopPageController();
-		top.setAutoLoginToken(owner_id,session,request,response);
+		if (session.getAttribute("owner_id") == null)
+		{
+			TopPageController top = new TopPageController();
+			top.setAutoLoginToken(owner_id,session,request,response);
+		}
 		
 		// TODO 認証されてるかどうかはsessionに入れると書き換えられてしまうから毎回DBに接続した方がいいかな
 		Boolean is_authenticated = (Boolean)session.getAttribute("is_authenticated");
@@ -408,8 +414,11 @@ public class MainPageController{
 			HttpSession session) {
 
 		// オートログイン
-		TopPageController top = new TopPageController();
-		top.setAutoLoginToken(owner_id,session,request,response);
+		if (session.getAttribute("owner_id") == null)
+		{
+			TopPageController top = new TopPageController();
+			top.setAutoLoginToken(owner_id,session,request,response);
+		}
 
 		// TODO 認証されてるかどうかはsessionに入れると書き換えられてしまうから毎回DBに接続した方がいいかな
 		Boolean is_authenticated = (Boolean)session.getAttribute("is_authenticated");
@@ -488,8 +497,11 @@ public class MainPageController{
     		HttpSession session)
     {
 		// オートログイン
-		TopPageController top = new TopPageController();
-		top.setAutoLoginToken(owner_id,session,request,response);
+		if (session.getAttribute("owner_id") == null)
+		{
+			TopPageController top = new TopPageController();
+			top.setAutoLoginToken(owner_id,session,request,response);
+		}
 
 		GPix gpix = GPix.getInstance();
     	List<Image> image_list = new ArrayList<Image>();
@@ -533,8 +545,11 @@ public class MainPageController{
 				Model model) {
 		
 		// オートログイン
-		TopPageController top = new TopPageController();
-		top.setAutoLoginToken(owner_id,session,request,response);
+		if (session.getAttribute("owner_id") == null)
+		{
+			TopPageController top = new TopPageController();
+			top.setAutoLoginToken(owner_id,session,request,response);
+		}
 
 		// TODO 認証されてるかどうかはsessionに入れると書き換えられてしまうから毎回DBに接続した方がいいかな
 		Boolean is_authenticated = (Boolean)session.getAttribute("is_authenticated");
@@ -682,8 +697,11 @@ public class MainPageController{
 						@RequestParam(value="reversible_flg", required=false) String reversible_flg) {
 		
 		// オートログイン
-		TopPageController top = new TopPageController();
-		top.setAutoLoginToken(owner_id,session,request,response);
+		if (session.getAttribute("owner_id") == null)
+		{
+			TopPageController top = new TopPageController();
+			top.setAutoLoginToken(owner_id,session,request,response);
+		}
 
 		/**
 		 * アクセスログ記録
@@ -801,8 +819,11 @@ public class MainPageController{
 			@RequestParam(value="reversible_flg", required=false) String reversible_flg) {
 
 		// オートログイン
-		TopPageController top = new TopPageController();
-		top.setAutoLoginToken(owner_id,session,request,response);
+		if (session.getAttribute("owner_id") == null)
+		{
+			TopPageController top = new TopPageController();
+			top.setAutoLoginToken(owner_id,session,request,response);
+		}
 
 		owner_id = (String)session.getAttribute("owner_id");
 		
@@ -895,8 +916,11 @@ public class MainPageController{
 			@RequestParam("is_seikai_now") int is_seikai_now) {
 
 		// オートログイン
-		TopPageController top = new TopPageController();
-		top.setAutoLoginToken(owner_id,session,request,response);
+		if (session.getAttribute("owner_id") == null)
+		{
+			TopPageController top = new TopPageController();
+			top.setAutoLoginToken(owner_id,session,request,response);
+		}
 
 		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 		AES aes = new AES();
@@ -988,8 +1012,11 @@ public class MainPageController{
 			HttpSession session) {
 
 		// オートログイン
-		TopPageController top = new TopPageController();
-		top.setAutoLoginToken(owner_id,session,request,response);
+		if (session.getAttribute("owner_id") == null)
+		{
+			TopPageController top = new TopPageController();
+			top.setAutoLoginToken(owner_id,session,request,response);
+		}
 
 		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 		AES aes = new AES();
@@ -1016,8 +1043,11 @@ public class MainPageController{
 			@RequestParam(value = "tag_name", required=false) String tag_name) {
 
 		// オートログイン
-		TopPageController top = new TopPageController();
-		top.setAutoLoginToken(owner_id,session,request,response);
+		if (session.getAttribute("owner_id") == null)
+		{
+			TopPageController top = new TopPageController();
+			top.setAutoLoginToken(owner_id,session,request,response);
+		}
 		
 		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 		AES aes = new AES();
@@ -1038,8 +1068,11 @@ public class MainPageController{
 			@RequestParam(value = "tag_name", required=false) String tag_name) {
 
 		// オートログイン
-		TopPageController top = new TopPageController();
-		top.setAutoLoginToken(owner_id,session,request,response);
+		if (session.getAttribute("owner_id") == null)
+		{
+			TopPageController top = new TopPageController();
+			top.setAutoLoginToken(owner_id,session,request,response);
+		}
 
 		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 		AES aes = new AES();
@@ -1059,8 +1092,11 @@ public class MainPageController{
 			@RequestParam(value = "husen_ids_in_order", required=false) String husen_ids_in_order) {
 
 		// オートログイン
-		TopPageController top = new TopPageController();
-		top.setAutoLoginToken(owner_id,session,request,response);
+		if (session.getAttribute("owner_id") == null)
+		{
+			TopPageController top = new TopPageController();
+			top.setAutoLoginToken(owner_id,session,request,response);
+		}
 
 		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 		AES aes = new AES();
@@ -1113,8 +1149,11 @@ public class MainPageController{
 			@RequestParam(value = "tag_id", required=false) String tag_id) {
 
 		// オートログイン
-		TopPageController top = new TopPageController();
-		top.setAutoLoginToken(owner_id,session,request,response);
+		if (session.getAttribute("owner_id") == null)
+		{
+			TopPageController top = new TopPageController();
+			top.setAutoLoginToken(owner_id,session,request,response);
+		}
 		
 		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 		AES aes = new AES();
@@ -1229,8 +1268,11 @@ public class MainPageController{
 			@RequestParam(value="args_num", required=false) String args_num,
 			@RequestParam(value = "a", required=false) String a_input) {
 		// オートログイン
-		TopPageController top = new TopPageController();
-		top.setAutoLoginToken(owner_id,session,request,response);
+		if (session.getAttribute("owner_id") == null)
+		{
+			TopPageController top = new TopPageController();
+			top.setAutoLoginToken(owner_id,session,request,response);
+		}
 
 		SlimeSerif slime_serif = new SlimeSerif();
 		String serif = "";
@@ -1263,8 +1305,11 @@ public class MainPageController{
 			@RequestParam(value = "next_or_prev") String next_or_prev,
 			@RequestParam(value = "husen_str", required=false) String husen_str) {
 		// オートログイン
-		TopPageController top = new TopPageController();
-		top.setAutoLoginToken(owner_id,session,request,response);
+		if (session.getAttribute("owner_id") == null)
+		{
+			TopPageController top = new TopPageController();
+			top.setAutoLoginToken(owner_id,session,request,response);
+		}
 
 		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 		AES aes = new AES();
@@ -1333,8 +1378,11 @@ public class MainPageController{
 			@RequestParam("owner_id") String owner_id,
 			@RequestParam(value="qa_id", required=false) String qa_id) {
 		// オートログイン
-		TopPageController top = new TopPageController();
-		top.setAutoLoginToken(owner_id,session,request,response);
+		if (session.getAttribute("owner_id") == null)
+		{
+			TopPageController top = new TopPageController();
+			top.setAutoLoginToken(owner_id,session,request,response);
+		}
 
 		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 		AES aes = new AES();
@@ -1782,6 +1830,30 @@ public class MainPageController{
 						}
 		            }
 		        }).start();
+				// 重いので非同期の別スレッドで処理
+				new Thread(new Runnable() {
+		            @Override
+		            public void run() {
+						try {
+							String speaker = "Alex";
+							String file_name = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + "_original.m4a";
+							String command = "say -v " + speaker + " '" + seitou.getSeitou() + "' -o " + file_name;
+							System.out.println(command);
+							Runtime.getRuntime().exec(command);
+							set_executable(file_name);
+							String silence_file = Constant.SPEECH_DATA_FOLDER_PATH + "silence.m4a";
+							String command2 = "/usr/local/bin/ffmpeg -i concat:'" + file_name + "|" + silence_file + "' -c copy " + Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + "_alex.m4a";
+							System.out.println(command2);
+							Thread.sleep(1000);
+							Process p = Runtime.getRuntime().exec(command2);
+							p.waitFor();
+							Thread.sleep(2000);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+		            }
+		        }).start();
 			}
 			else
 			{
@@ -1908,10 +1980,13 @@ public class MainPageController{
 		File file = new File(file_name);
 		if (!file.exists())
 		{
-			Thread.sleep(10);
+			Thread.sleep(100);
 			set_executable(file_name);
 		}
 		Boolean a = file.setExecutable(true, false);
+		file.setExecutable(true, false);
+		file.setWritable(true, false);
+		file.setReadable(true,false);
 		System.out.println("setexec:"+a);
 	}
 

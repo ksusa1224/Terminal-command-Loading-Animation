@@ -463,6 +463,8 @@ function refresh()
 			var a_lang = $("#"+qa_id_for_contextmenu).children(".a").data("language");			
 			$("#q_example").text(question);
 			$("#a_example").text(answer);
+			$("#q_image_search").text(question.replace(/の例文を表示/g, "の画像を検索"));
+			$("#a_image_search").text(answer.replace(/の例文を表示/g, "の画像を検索"));
 			if (q_lang == "日本語")
 			{
 				$("#q_example_menu").hide();
@@ -1879,7 +1881,33 @@ function husen_order()
 	});	
 }
 
-//問題の例文を表示
+// 問題を画像検索
+function search_q_image()
+{
+	var id = qa_id_for_contextmenu;
+	var question = $("#"+id).children(".q").text();
+	var language = $("#"+id).children(".q").data("language");
+	if (language == "日本語")
+	{
+		question = encodeURIComponent(question);
+	}
+	window.open("http://www.google.com/search?q=" + question + "&tbm=isch");
+}
+
+// 解答を画像検索
+function search_a_image()
+{
+	var id = qa_id_for_contextmenu;
+	var answer = $("#"+id).children(".a").text();
+	var language = $("#"+id).children(".a").data("language");
+	if (language == "日本語")
+	{
+		answer = encodeURIComponent(question);
+	}
+	window.open("http://www.google.com/search?q=" + answer + "&tbm=isch");
+}
+
+// 問題の例文を表示
 function show_q_example()
 {
 	var id = qa_id_for_contextmenu;
@@ -1895,15 +1923,4 @@ function show_a_example()
 	var answer = $("#"+id).children(".a").text();
 	answer = answer.replace(/ /g,"+");
 	window.open("http://ejje.weblio.jp/sentence/content/" + answer);
-}
-
-//動作不良
-function countLines(id) {
-	  var divHeight = document.getElementById(id).offsetHeight;
-	  alert(divHeight);
-	  var spanHeight = document.getElementsByClassName("qa")[0].offsetHeight;
-	  //alert(divHeight / spanHeight + 1);
-	  var lineHeight = parseInt(document.getElementsByClassName("qa")[0].style.lineHeight);
-	  var lines = divHeight / lineHeight;
-	  alert("Lines: " + lines);
 }

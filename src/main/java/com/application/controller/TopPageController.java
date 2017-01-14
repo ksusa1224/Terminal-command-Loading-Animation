@@ -191,8 +191,8 @@ public class TopPageController {
 			H2dbDao dao = new H2dbDao();
 			login_info = dao.select_login_info(owner_id_or_email);
 			
-			// DBパッチ　後でコメントアウト
-			dao.alter_common_db_add_token();
+			// DBパッチ　サーバに入れたのでコメントアウト
+			//dao.alter_common_db_add_token();
 			
 //			System.out.println(login_info.getEncrypted_db_name());
 //			System.out.println(aes.decrypt(login_info.getEncrypted_db_name()));
@@ -268,18 +268,12 @@ public class TopPageController {
 			 for (Cookie cookie : cookies) {
 			   if (cookie.getName().equals("ankinote")) {
 				   last_token_cookie = cookie.getValue();
-//				   System.out.println("**********"+last_token_cookie);
 			    }
 			  }
 			}
 			String last_token_db = dao.get_last_token(last_token_cookie);
-//				System.out.println(last_encrypted_token_db);
-//			}
-			System.out.println(last_token_cookie);
-			System.out.println(last_token_db);
 			if (owner_id_or_email == null && last_token_cookie != last_token_db)
 			{
-				System.out.println("=======================COOKIE=============");
 				return false;
 			}
 			
@@ -303,9 +297,7 @@ public class TopPageController {
 			// tokenをCookieに書き込む
 		    response.addCookie(new_cookie);
 	
-		    // tokenを公開鍵暗号方式で暗号化
-//		    byte[] new_encrypted_token = aes.encrypt(new_token);
-//			// 暗号化したtokenをH2に入れる
+			// tokenをH2に入れる
 		    dao.update_token(owner_id_or_email, last_token_cookie, new_token);
 		    LoginInfoModel login_info = dao.select_login_info(owner_id_or_email);
 		    session.setAttribute("owner_db", login_info.getEncrypted_db_name());
