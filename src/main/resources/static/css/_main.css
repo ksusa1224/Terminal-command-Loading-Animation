@@ -8,6 +8,9 @@ body{
     padding: 0px;
     margin: 0;
     overflow-y:hidden;
+    /*長押し禁止*/
+    /*-webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;*/
 }
 
 .dropdown-menu a

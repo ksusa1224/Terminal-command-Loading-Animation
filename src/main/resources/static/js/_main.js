@@ -35,6 +35,30 @@ function body_load()
 		 $(".date").css("font-size","18px");
 		 $(".date").css("line-height","24.5px");
 		 $(".note-line").css("display","none");
+		 
+		 var device_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+
+		 // iPhone6 Plus
+		 if (device_width == 414)
+		 {
+			 document.querySelector("meta[name=viewport]").setAttribute(
+			          'content', 
+			          'width=1275px, initial-scale=0.9, maximum-scale=0.9, minimum-scale=0.9, user-scalable=no');	 
+		 }
+		 // iPad(縦)
+		 if (device_width == 768)
+	     {
+			 document.querySelector("meta[name=viewport]").setAttribute(
+			          'content', 
+			          'width=1275px, initial-scale=1.6, maximum-scale=1.6, minimum-scale=1.6, user-scalable=no');	 
+	     }
+		 // iPad(横)
+		 if (device_width == 1024)
+	     {
+			 document.querySelector("meta[name=viewport]").setAttribute(
+			          'content', 
+			          'width=1275px, initial-scale=0.5, maximum-scale=0.5, minimum-scale=1.15, user-scalable=no');	 
+	     }		 
 	}
 	else
 	{

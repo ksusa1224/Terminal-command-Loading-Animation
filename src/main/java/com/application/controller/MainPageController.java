@@ -2064,7 +2064,7 @@ public class MainPageController{
 				    // タグID
 					qa_tag_relation.setTag_id(tag_dao.select_tag_id(owner_db, husen_span.text()));
 				    // タグ内でのQAの順番
-					qa_tag_relation.setJunban(0);
+					qa_tag_relation.setJunban(qa_tag_relation_dao.get_max_junban(owner_db, qa_tag_relation.getTag_id())+1);
 				    // 公開範囲
 					qa_tag_relation.setKoukai_level(Constant.KOUKAI_LEVEL_SELF_ONLY);
 				    // 作成者

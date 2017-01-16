@@ -64,6 +64,52 @@ public class QaTagRelationDao {
 		return max_row_no;
 	}
 	
+	/**
+	 * タグ内でのQAの順番の最大値を得る
+	 * @param db_name
+	 * @return
+	 */
+	public int get_max_junban(String db_name, String tag_id)
+	{	
+		int max_junban = 0;
+		
+		SQliteDAO dao = new SQliteDAO();
+		
+		StringBuilderPlus sql = new StringBuilderPlus();
+		sql.appendLine("select max(junban) as junban from qa_tag_relation where tag_id = '" + tag_id + "' limit 1;");
+		dao.loadDriver();
+		
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+	    try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+	      ResultSet rs = stmt.executeQuery(sql.toString());
+	      while (rs.next()) 
+	      {
+	    	  max_junban = rs.getInt("junban");
+	    	  System.out.println(max_junban);
+	      }
+	    }
+	    catch(Exception ex)
+	    {
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+	    }	    
+		
+		return max_junban;
+	}
+
 	public QaTagRelationModel select_qa_tag_relation(String db_name, String qa_id)
 	{		
 		SQliteDAO dao = new SQliteDAO();
