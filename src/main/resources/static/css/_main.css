@@ -25,8 +25,34 @@ body{
 
 div.page
 {
-	margin-top:5px;
+	margin-top:-20px;
 	text-align:center;
+	color:gray;
+    font-size:13px;
+    font-family:"ＭＳ Ｐ明朝", "MS PMincho", "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", serif;
+}
+
+div.prev_page
+{
+	margin-top:5px;
+}
+div.prev_page a
+{
+	text-align:left;
+	border-bottom:gray dotted 1px;
+	color:gray;
+    font-size:13px;
+    font-family:"ＭＳ Ｐ明朝", "MS PMincho", "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", serif;
+}
+
+div.next_page
+{
+	margin-top:-20px;
+	text-align:right;
+}
+div.next_page a
+{
+	border-bottom:gray dotted 1px;
 	color:gray;
     font-size:13px;
     font-family:"ＭＳ Ｐ明朝", "MS PMincho", "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", serif;

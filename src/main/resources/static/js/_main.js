@@ -1362,6 +1362,10 @@ function paging(page,next_or_prev)
 //	alert(page);
 //	alert(next_or_prev);
 //	alert(is_note_open);
+	if (page == null)
+	{
+		page = Number($("#page_left").text());
+	}
 	
 	var total_pages = Number($("#total_pages").text());
 

@@ -87,6 +87,7 @@
 	<table id="lines-left" cellpadding="0" cellspacing="0">
 		<tr th:each="i : ${#numbers.sequence( 1, 25)}"><td class="note-line"></td></tr>
 	</table>
+	<div class="prev_page"><a onclick="javascript:paging(null, 'prev')">← Last Page</a></div>
 	<div class="page">Page <span id="page_left" class="page">1</span>
 	/
 	<span class="total_pages" th:text="${total_pages}"></span></div>
@@ -101,6 +102,7 @@
 	<div class="page_right">Page <span id="page_right" class="page">2</span>
 	/
 	<span class="total_pages" id="total_pages" th:text="${total_pages}"></span></div>
+<div class="next_page"><a onclick="javascript:paging(null, 'next')">Next Page →</a></div>
  </div>
  <br />
 <!--/* ノートエリア END */-->
