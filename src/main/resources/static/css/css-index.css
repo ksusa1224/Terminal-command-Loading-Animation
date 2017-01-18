@@ -35,7 +35,7 @@ html, body {
 }
 body {
 	height:100%;
-	font-family: "Lato", "Serif";
+	font-family:"‚l‚r ‚o–¾’©", "MS PMincho", "ƒqƒ‰ƒMƒm–¾’© Pro W3", "Hiragino Mincho Pro", serif;		
 	font-weight: 300;
 	padding:0;
 	margin:0;
@@ -168,8 +168,11 @@ a:hover {
 	/*color: #3eb0f7;*/
 	color:#FFFFFF;
 }
+.form-group input{
+	font-family: 'Hiragino Kaku Gothic ProN', 'ƒqƒ‰ƒMƒmŠpƒS ProN W3', Meiryo, ƒƒCƒŠƒI, Osaka, 'MS PGothic', arial, helvetica, sans-serif;	font-size: 20px;
+}
 .btn-secondary {
-	font-size: 20px;
+	font-family: 'Hiragino Kaku Gothic ProN', 'ƒqƒ‰ƒMƒmŠpƒS ProN W3', Meiryo, ƒƒCƒŠƒI, Osaka, 'MS PGothic', arial, helvetica, sans-serif;	font-size: 20px;
 	font-weight: 300;
 	line-height: 20px;
 	padding: 20px 50px;
