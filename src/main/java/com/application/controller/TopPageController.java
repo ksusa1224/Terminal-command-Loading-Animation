@@ -20,6 +20,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.application.controller.dao.KaitouDao;
@@ -70,6 +71,20 @@ public class TopPageController {
 			Log log = new Log();
 			log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
 
+		  // メールアドレス重複チェック
+		  H2dbDao h2dao = new H2dbDao();
+		  Boolean is_email_deplicate = h2dao.is_email_deplicate(email);
+		  if (is_email_deplicate == true)
+		  {
+			  return "redirect:index.html";
+		  }
+		  // オーナーID重複チェック
+		  Boolean is_owner_id_deplicate = h2dao.is_owner_id_deplicate(owner_id);
+		  if (is_owner_id_deplicate == true)
+		  {
+			  return "redirect:index.html";
+		  }				  
+			
 		  // 仮登録用のワンタイムパスワード
 		  UUID uuid = UUID.randomUUID();
 		  String token = uuid.toString();
@@ -349,4 +364,40 @@ public class TopPageController {
 			ex.printStackTrace();
 		}
 	}
+	
+	/**
+	 * メールアドレス重複登録チェック
+	 * @param email
+	 * @return
+	 */
+	@RequestMapping(value={"/is_email_deplicate.html"}, method=RequestMethod.GET)
+	public @ResponseBody String check_email_deplicate(
+			@RequestParam(value = "email", required=false) String email) {
+		String is_deplicate = "not_deplicate";
+		H2dbDao dao = new H2dbDao();
+		if (dao.is_email_deplicate(email))
+		{
+			is_deplicate = "deplicate";
+		}
+		
+		return is_deplicate;
+	}
+
+	/**
+	 * オーナーID重複チェック
+	 * @param owner_id
+	 * @return
+	 */
+	@RequestMapping(value={"/is_owner_id_deplicate.html"}, method=RequestMethod.GET)
+	public @ResponseBody String check_owner_id_deplicate(
+			@RequestParam(value = "owner_id", required=false) String owner_id) {
+		String is_deplicate = "not_deplicate";
+		H2dbDao dao = new H2dbDao();
+		if (dao.is_owner_id_deplicate(owner_id))
+		{
+			is_deplicate = "deplicate";
+		}
+		
+		return is_deplicate;
+	}		
 }

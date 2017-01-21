@@ -14,6 +14,8 @@
 <link th:href="@{css/animate.css}" rel="stylesheet" media="screen" />
 <link th:href="@{css/owl.theme.css}" rel="stylesheet" />
 <link th:href="@{css/owl.carousel.css}" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" th:href="@{css/jquery-ui.css}" />
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
 
 <!-- Colors -->
 <link th:href="@{css/css-index.css}" rel="stylesheet" media="screen" />
@@ -79,13 +81,13 @@
 						<input type="hidden" name="u" value="503bdae81fde8612ff4944435" />
 						<input type="hidden" name="id" value="bfdba52708" />
 							<div class="form-group">
-								<input class="form-control input-lg" name="email" id="email" type="email" placeholder="Email Address" required="true" />
+								<input class="form-control input-lg" onblur="is_email_deplicate()" name="email" id="email" type="email" placeholder="Email Address" required="true" />
 							</div>
 							<div class="form-group">
-								<input id="email" class="form-control input-lg" name="owner_id" type="text" placeholder="Login Id" required="true" />
+								<input id="owner_id" class="form-control input-lg" onblur="is_owner_id_deplicate()" name="owner_id" type="text" placeholder="Login Id" required="true" />
 							</div>
 							<div class="form-group">
-								<input id="owner_id" class="form-control input-lg" name="owner_name" type="text" placeholder="Owner Name" required="true" />
+								<input id="owner_name" class="form-control input-lg" name="owner_name" type="text" placeholder="Owner Name" required="true" />
 							</div>
 							<div class="form-group">
 								<input class="form-control input-lg" name="login_password" id="new_password" type="password" placeholder="Password" required="true" />
@@ -103,10 +105,10 @@
 						<input type="hidden" name="u" value="503bdae81fde8612ff4944435" />
 						<input type="hidden" name="id" value="bfdba52708" />
 							<div class="form-group">
-								<input class="form-control input-lg" name="owner_id_or_email" id="name" type="text" placeholder="Login Id /  Email" required="true" />
+								<input class="form-control input-lg" name="owner_id_or_email" id="owner_id_or_email" type="text" placeholder="Login Id /  Email" required="true" />
 							</div>
 							<div class="form-group">
-								<input class="form-control input-lg" name="login_password" id="email" type="password" placeholder="Password" required="true" />
+								<input class="form-control input-lg" name="login_password" id="login_password" type="password" placeholder="Password" required="true" />
 							</div>
 							<div class="form-group last">
 								<input type="submit" class="btn btn-warning btn-block btn-lg" name="login" value="ログイン" />
@@ -525,12 +527,73 @@
 	<!-- /.javascript files -->
     <script th:src="@{js/jquery.js}"></script>
     <script th:src="@{js/bootstrap.min.js}"></script>
+	<script th:src="@{js/jquery-ui.js}"></script>
     <script th:src="@{js/custom.js}"></script>
     <script th:src="@{js/jquery.sticky.js}"></script>
 	<script th:src="@{js/wow.min.js}"></script>
 	<script th:src="@{js/owl.carousel.min.js}"></script>
 	<script>
 		new WOW().init();
+		
+		var validated = false;
+		function is_email_deplicate()
+		{
+			var email = $("#email").val();
+			jQuery.ajax({
+				url: "./is_email_deplicate.html?email=" + email,
+				dataType: "html",
+				cache: false,
+				success: function(data)
+				{
+					if (data == 'deplicate')
+					{
+					    $( "#dialog_email" ).dialog();
+					    validated = false;
+					    return false;
+					}
+				},
+				error: function(data)
+				{
+					validated = true;
+				}
+			});
+		}
+		
+		function is_owner_id_deplicate()
+		{
+			var owner_id = $("#owner_id").val();
+			jQuery.ajax({
+				url: "./is_owner_id_deplicate.html?owner_id=" + owner_id,
+				dataType: "html",
+				cache: false,
+				success: function(data)
+				{
+					if (data == 'deplicate')
+					{
+					    $( "#dialog_owner_id" ).dialog();
+					    validated = false;
+					    return false;
+					}
+				},
+				error: function(data)
+				{
+					validated = true;
+				}
+			});
+		}
+		
+	    $("#register").on('submit', function(e){
+	        if(validated == false)
+	        {
+	            e.preventDefault();
+	        }
+	    });
 	</script>
   </body>
+<div id="dialog_email" title="会員登録情報エラー" style="display:none">
+  <p>そのメールアドレスはすでに登録されています。別のメールアドレスを入力してください。</p>
+</div>
+<div id="dialog_owner_id" title="会員登録情報エラー" style="display:none">
+  <p>そのログインIDはすでに使用されています。別のログインIDを入力してください。</p>
+</div>
 </html>

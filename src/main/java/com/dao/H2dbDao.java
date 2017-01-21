@@ -341,6 +341,87 @@ public class H2dbDao
 		}
 	}
 	
+	/**
+	 * 会員登録時にE-mailがすでに登録されているものでないかをチェックする
+	 * @param email_input
+	 * @return
+	 */
+	public Boolean is_email_deplicate(String email_input)
+	{
+		Boolean is_deplicate = false;
+		Connection conn = connect();
+		try
+		{
+			Statement stmt = conn.createStatement();
+			
+			// ログイン情報を取得
+			StringBuilderPlus sql = new StringBuilderPlus();
+			sql.appendLine("select");
+			sql.appendLine("  count(email) as count ");
+			sql.appendLine("from owner_info "); 
+			sql.appendLine("where "); 
+			sql.appendLine("  email = '" + email_input + "'");
+			sql.appendLine("  and del_flg = 0");
+			
+			ResultSet rs = stmt.executeQuery(sql.toString());
+			if (rs.next()) {
+				if (rs.getInt("count") > 0)
+				{
+					is_deplicate = true;
+				}
+			}
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		finally
+		{
+			disconnect(conn);
+		}
+		return is_deplicate;
+	}
+
+	/**
+	 * 会員登録時にオーナーIDがすでに登録されているものでないかをチェックする
+	 * @param owner_id_input
+	 * @return
+	 */
+	public Boolean is_owner_id_deplicate(String owner_id_input)
+	{
+		Boolean is_deplicate = false;
+		Connection conn = connect();
+		try
+		{
+			Statement stmt = conn.createStatement();
+			
+			// ログイン情報を取得
+			StringBuilderPlus sql = new StringBuilderPlus();
+			sql.appendLine("select");
+			sql.appendLine("  count(owner_id) as count ");
+			sql.appendLine("from owner_info "); 
+			sql.appendLine("where "); 
+			sql.appendLine("  owner_id = '" + owner_id_input + "'");
+			sql.appendLine("  and del_flg = 0");
+			
+			ResultSet rs = stmt.executeQuery(sql.toString());
+			if (rs.next()) {
+				if (rs.getInt("count") > 0)
+				{
+					is_deplicate = true;
+				}
+			}
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		finally
+		{
+			disconnect(conn);
+		}
+		return is_deplicate;
+	}	
 	
 	/**
 	 * Cookieオートログイン用のトークンカラムを追加
