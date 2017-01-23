@@ -1509,19 +1509,27 @@ public class MainPageController{
 				}
 				String html = "<span id='" + seitou_list.get(i).getS_id() + "' class='a' style='opacity:" + opacity + "' onmouseover='this.style.opacity=1' " + mouseout + " onclick='change_seitou_color(this)' data-language='" + a_lang + "'>" + checked + seitou + "</span>";				
 				a_html.add(html);
-			}	
+			}			
 			
 			if (seitou_list.size() > 0 && mondai_list.size() > 0)
 			{
+				String yomudake = "";
+				for (SeitouModel seitou : seitou_list)
+				{
+					if (seitou.getSeitou().equals("読んだ"))
+					{
+						yomudake = " data-yomudake='true'";
+					}
+				}
 				if (qa_id_with_date.containsKey(qa_plus.getQa().getQa_id()))
 				{
 					Util util = new Util();
 					String sakuseibi_yyyyMMdd = util.getDay(qa_plus.getQa().getCreate_timestamp());
 					String sakuseibi_MMdd = sakuseibi_yyyyMMdd.split("/")[1] + "/" + sakuseibi_yyyyMMdd.split("/")[2];
 					int qa_cnt_per_date = qa_id_with_date.get(qa_plus.getQa().getQa_id());
-					qa_html.append("<span id='" + sakuseibi_yyyyMMdd + "' class='date'>" + sakuseibi_MMdd + "（" + qa_cnt_per_date + "問）" + "</span>");
+					qa_html.append("<span id='" + sakuseibi_yyyyMMdd + "' class='date'>" + sakuseibi_MMdd + "（" + qa_cnt_per_date + "問）" + "</span>");					
 				}
-				qa_html.append("<span id='" + qa_plus.getQa().getQa_id() + "' class='qa' onmouseover='qa_mouseover(this)'>");
+				qa_html.append("<span id='" + qa_plus.getQa().getQa_id() + "' class='qa' onmouseover='qa_mouseover(this)'" + yomudake + ">");
 			}
 
 			for (int i = 0; i < (mondai_list.size() + seitou_list.size()); i++)
@@ -1654,6 +1662,13 @@ public class MainPageController{
 		if (a_map.size() == 0 && yomudake_flg.equals("off"))
 		{
 			return;
+		}
+		
+		// 正答がないと強制的に読むだけ問題として扱う
+		if (a_map.size() == 0)
+		{
+			a_map.put(2, "読んだ");
+			yomudake_flg = "on";
 		}
 		
 		/**
@@ -2060,6 +2075,34 @@ public class MainPageController{
 		QAPlusDao qa_plus_dao = new QAPlusDao();
 		qa_plus_dao.insert_qa_plus(owner_db, qa_plus, false);		
 		
+		if (yomudake_flg.equals("on"))
+		{
+			QaTagRelationDao qa_tag_relation_dao = new QaTagRelationDao();
+			Document huden_doc = Jsoup.parse(qa_husen);
+			QaTagRelationModel qa_tag_relation = new QaTagRelationModel();
+			TagDao tag_dao = new TagDao();
+		    // 行番号
+			qa_tag_relation.setRow_no(qa_tag_relation_dao.get_max_row_no(owner_db)+1);
+		    // QA ID
+			qa_tag_relation.setQa_id(qa_id);
+		    // タグID
+			qa_tag_relation.setTag_id(tag_dao.select_tag_id(owner_db, "読むだけ問題"));
+		    // タグ内でのQAの順番
+			qa_tag_relation.setJunban(qa_tag_relation_dao.get_max_junban(owner_db, qa_tag_relation.getTag_id())+1);
+		    // 公開範囲
+			qa_tag_relation.setKoukai_level(Constant.KOUKAI_LEVEL_SELF_ONLY);
+		    // 作成者
+			qa_tag_relation.setCreate_owner(owner_id);
+		    // 更新者
+			qa_tag_relation.setUpdate_owner(owner_id);
+		    // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+			qa_tag_relation.setCreate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+		    // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+			qa_tag_relation.setUpdate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+			
+			qa_tag_relation_dao.insert_qa_tag_relation(owner_db, qa_tag_relation);
+		}
+		
 		if (qa_husen != null)
 		{
 			if (!qa_husen.equals(""))
@@ -2069,6 +2112,11 @@ public class MainPageController{
 				Document huden_doc = Jsoup.parse(qa_husen);
 				Elements husen_spans = huden_doc.getElementsByTag("span");
 				for (Element husen_span: husen_spans) {
+					// 読むだけ問題のタグは上で登録しているため、二重登録を防ぐ
+					if (husen_span.text().equals("読むだけ問題"))
+					{
+						continue;
+					}
 					QaTagRelationModel qa_tag_relation = new QaTagRelationModel();
 					TagDao tag_dao = new TagDao();
 				    // 行番号
@@ -2176,6 +2224,13 @@ public class MainPageController{
 		if (a_map.size() == 0 && yomudake_flg.equals("off"))
 		{
 			return;
+		}
+
+		// 正答がないと強制的に読むだけ問題として扱う
+		if (a_map.size() == 0)
+		{
+			a_map.put(2, "読んだ");
+			yomudake_flg = "on";
 		}
 		
 		/**
@@ -2401,6 +2456,34 @@ public class MainPageController{
 		QAPlusDao qa_plus_dao = new QAPlusDao();
 		qa_plus_dao.insert_qa_plus(owner_db, qa_plus, true);		
 		
+		if (yomudake_flg.equals("on"))
+		{
+			QaTagRelationDao qa_tag_relation_dao = new QaTagRelationDao();
+			Document huden_doc = Jsoup.parse(qa_husen);
+			QaTagRelationModel qa_tag_relation = new QaTagRelationModel();
+			TagDao tag_dao = new TagDao();
+		    // 行番号
+			qa_tag_relation.setRow_no(qa_tag_relation_dao.get_max_row_no(owner_db)+1);
+		    // QA ID
+			qa_tag_relation.setQa_id(qa_id);
+		    // タグID
+			qa_tag_relation.setTag_id(tag_dao.select_tag_id(owner_db, "読むだけ問題"));
+		    // タグ内でのQAの順番
+			qa_tag_relation.setJunban(qa_tag_relation_dao.get_max_junban(owner_db, qa_tag_relation.getTag_id())+1);
+		    // 公開範囲
+			qa_tag_relation.setKoukai_level(Constant.KOUKAI_LEVEL_SELF_ONLY);
+		    // 作成者
+			qa_tag_relation.setCreate_owner(owner_id);
+		    // 更新者
+			qa_tag_relation.setUpdate_owner(owner_id);
+		    // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+			qa_tag_relation.setCreate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+		    // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+			qa_tag_relation.setUpdate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+			
+			qa_tag_relation_dao.insert_qa_tag_relation(owner_db, qa_tag_relation);
+		}
+
 		if (qa_husen != null)
 		{
 			if (!qa_husen.equals(""))
@@ -2409,6 +2492,11 @@ public class MainPageController{
 				Document huden_doc = Jsoup.parse(qa_husen);
 				Elements husen_spans = huden_doc.getElementsByTag("span");
 				for (Element husen_span: husen_spans) {
+					// 読むだけ問題のタグは上で登録しているため、二重登録を防ぐ
+					if (husen_span.text().equals("読むだけ問題"))
+					{
+						continue;
+					}					
 					QaTagRelationModel qa_tag_relation = new QaTagRelationModel();
 					TagDao tag_dao = new TagDao();
 				    // 行番号

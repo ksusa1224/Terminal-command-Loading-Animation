@@ -158,6 +158,11 @@ div.page_right
 	cursor: pointer;
 }
 
+.qa[data-yomudake="true"]
+{
+	background-color:rgba(54, 176, 247, 0.1);
+}
+
 .q
 {
 	/*

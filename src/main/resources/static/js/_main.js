@@ -437,7 +437,7 @@ function body_load()
         accept:'.husen',
         drop: function(event,ui){
         	var id = $(ui.draggable).attr("id");
-        	if ($(ui.draggable).hasClass("blue"))
+        	if ($(ui.draggable).hasClass("blue") && $(ui.draggable).text() != '読むだけ問題')
         	{
     			$("#balloon").css("display","inline");
     			$("#serif").text("青いふせんは特別なふせんだから、Q&Aに貼ることはできないよ〜");  
