@@ -52,9 +52,6 @@ import com.cybozu.labs.langdetect.Detector;
 import com.cybozu.labs.langdetect.DetectorFactory; 
 import com.cybozu.labs.langdetect.LangDetectException; 
 import com.cybozu.*;
-import com.GPix.GPix;
-import com.GPix.GPix.GPixException;
-import com.GPix.Image;
 import com.application.controller.dao.KaitouDao;
 import com.application.controller.dao.MondaiDao;
 import com.application.controller.dao.QADao;
@@ -111,16 +108,16 @@ public class MainPageController{
 
 		if (owner_id.equals("sample"))
 		{
-			SamplePageController sample = new SamplePageController();
-			sample.sample(owner_id, request, response, session, model);
-			if (request_url.equals(response_url))
-			{
-				return "main";
-			}
-			else
-			{
-				return "redirect:" + response_url;				
-			}
+//			SamplePageController sample = new SamplePageController();
+//			sample.sample(owner_id, request, response, session, model);
+//			if (request_url.equals(response_url))
+//			{
+//				return "main";
+//			}
+//			else
+//			{
+//				return "redirect:" + response_url;				
+//			}
 		}
 		
 		// TODO 認証されてるかどうかはsessionに入れると書き換えられてしまうから毎回DBに接続した方がいいかな
@@ -502,44 +499,44 @@ public class MainPageController{
 		}		
 	}
 
-    @RequestMapping(value={"/image_search.html"},
-    			method=RequestMethod.GET)
-    public @ResponseBody String image_search(
-    		@RequestParam(value="keywords", required=false) String keywords,
-			@RequestParam("owner_id") String owner_id,
-    		HttpServletRequest request, 
-    		HttpServletResponse response, 
-    		HttpSession session)
-    {
-		// オートログイン
-		if (session.getAttribute("owner_id") == null)
-		{
-			TopPageController top = new TopPageController();
-			top.setAutoLoginToken(owner_id,session,request,response);
-		}
-
-		GPix gpix = GPix.getInstance();
-    	List<Image> image_list = new ArrayList<Image>();
-    	try {
-    		image_list = gpix.search(keywords.replace(" ", "+"), 1);
-    		
-		} catch (GPixException | IOException | JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	String img_url = "";
-    	if (image_list.size() > 0)
-    	{
-    		Image image = image_list.get(0);
-    		img_url = image.getThumbImageUrl();
-    	}
-    	
-//    	System.out.println("image.getImageUrl():"+image.getThumbImageUrl());
-    	String json = JSON.encode(
-				new String[] 
-				{img_url});
-		return json;
-    }
+//    @RequestMapping(value={"/image_search.html"},
+//    			method=RequestMethod.GET)
+//    public @ResponseBody String image_search(
+//    		@RequestParam(value="keywords", required=false) String keywords,
+//			@RequestParam("owner_id") String owner_id,
+//    		HttpServletRequest request, 
+//    		HttpServletResponse response, 
+//    		HttpSession session)
+//    {
+//		// オートログイン
+//		if (session.getAttribute("owner_id") == null)
+//		{
+//			TopPageController top = new TopPageController();
+//			top.setAutoLoginToken(owner_id,session,request,response);
+//		}
+//
+////		GPix gpix = GPix.getInstance();
+////    	List<Image> image_list = new ArrayList<Image>();
+////    	try {
+////    		image_list = gpix.search(keywords.replace(" ", "+"), 1);
+////    		
+////		} catch (GPixException | IOException | JSONException e) {
+////			// TODO Auto-generated catch block
+////			e.printStackTrace();
+////		}
+////    	String img_url = "";
+////    	if (image_list.size() > 0)
+////    	{
+////    		Image image = image_list.get(0);
+////    		img_url = image.getThumbImageUrl();
+////    	}
+////    	
+//////    	System.out.println("image.getImageUrl():"+image.getThumbImageUrl());
+//    	String json = JSON.encode(
+//				new String[] 
+//				{img_url});
+//		return json;
+//    }
 	
 	/**
 	 * タグで検索
