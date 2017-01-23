@@ -102,13 +102,27 @@ public class MainPageController{
 						Model model) {
 		Log log = new Log();
 		log.insert_error_log("INFO", "main method start.");
-		
+				
 		TopPageController top = new TopPageController();
 		top.setAutoLoginToken(owner_id,session,request,response);
 		
 		String request_url = request.getRequestURI();
 		String response_url = "/"+ owner_id + "/main.html";
-		   
+
+		if (owner_id.equals("sample"))
+		{
+			SamplePageController sample = new SamplePageController();
+			sample.sample(owner_id, request, response, session, model);
+			if (request_url.equals(response_url))
+			{
+				return "main";
+			}
+			else
+			{
+				return "redirect:" + response_url;				
+			}
+		}
+		
 		// TODO 認証されてるかどうかはsessionに入れると書き換えられてしまうから毎回DBに接続した方がいいかな
 		Boolean is_authenticated = (Boolean)session.getAttribute("is_authenticated");
 		String session_owner_id = (String)session.getAttribute("owner_id");

@@ -551,10 +551,13 @@
 					    validated = false;
 					    return false;
 					}
+					else
+					{
+						validated = true;						
+					}
 				},
 				error: function(data)
 				{
-					validated = true;
 				}
 			});
 		}
@@ -574,10 +577,13 @@
 					    validated = false;
 					    return false;
 					}
+					else
+					{
+						validated = true;
+					}
 				},
 				error: function(data)
 				{
-					validated = true;
 				}
 			});
 		}
