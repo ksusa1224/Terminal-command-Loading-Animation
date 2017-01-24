@@ -340,6 +340,32 @@ public class H2dbDao
 			disconnect(conn);
 		}
 	}
+
+	/**
+	 * ログアウト用に、オートログイン用のトークンを空文字にする
+	 * @param owner_id
+	 */
+	public void update_token_for_logout(String owner_id)
+	{
+		Connection conn = connect();
+		try
+		{
+			String sql = null;
+			Statement stmt = conn.createStatement();
+			
+			sql="update owner_info set token = '' where owner_id = '" + owner_id + "';";				
+			
+			stmt.executeUpdate(sql);	
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			disconnect(conn);
+		}
+	}	
 	
 	/**
 	 * 会員登録時にE-mailがすでに登録されているものでないかをチェックする

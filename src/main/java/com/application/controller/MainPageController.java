@@ -101,6 +101,10 @@ public class MainPageController{
 		log.insert_error_log("INFO", "main method start.");
 				
 		TopPageController top = new TopPageController();
+		if (top.isLogin(request) == false)
+		{
+			return "redirect:/";
+		}
 		top.setAutoLoginToken(owner_id,session,request,response);
 		
 		String request_url = request.getRequestURI();

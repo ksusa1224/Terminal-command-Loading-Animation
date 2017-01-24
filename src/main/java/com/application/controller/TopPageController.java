@@ -261,6 +261,47 @@ public class TopPageController {
 	  }
 	  
 	/**
+	 * ログインしている状態かチェックする
+	 * @return
+	 */
+    public boolean isLogin (HttpServletRequest request)
+    {
+		String last_token_cookie = null;
+		String last_token_db = null;
+		try{
+			H2dbDao dao = new H2dbDao();
+			Cookie[] cookies = request.getCookies();
+	
+			// 前回トークンを取得
+			if (cookies != null) {
+			 for (Cookie cookie : cookies) {
+			   if (cookie.getName().equals("ankinote")) {
+				   last_token_cookie = cookie.getValue();
+			    }
+			  }
+			}
+			last_token_db = dao.get_last_token(last_token_cookie);
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		
+		System.out.println("last_token_cookie:"+last_token_cookie);
+		System.out.println("last_token_db"+last_token_db);
+		
+		if (last_token_cookie != null && last_token_db != null &&
+			last_token_cookie.equals(last_token_db))
+		{
+			return true;
+		}
+		else
+		{
+	    	return false;			
+		}
+    }
+	  
+	/**
 	 * Cookieから自動ログインするためのトークンをCookieおよびH2に保存
 	 */
 	public boolean setAutoLoginToken(
