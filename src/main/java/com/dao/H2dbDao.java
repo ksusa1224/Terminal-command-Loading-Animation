@@ -28,7 +28,7 @@ public class H2dbDao
 	 * ドライバに接続し、コネクションを張る
 	 * @return Common DBに接続済のConnectionオブジェクトを返却
 	 */
-	private Connection connect() {
+	public Connection connect() {
 		try 
 		{
 			Class.forName("org.h2.Driver");
@@ -57,7 +57,7 @@ public class H2dbDao
 	 * コネクションをクローズする
 	 * @param conn
 	 */
-	private void disconnect(Connection conn) {
+	public void disconnect(Connection conn) {
 		if (conn != null)
 		{
 			try {
@@ -255,7 +255,7 @@ public class H2dbDao
 	 * @param sql
 	 * @throws SQLException
 	 */
-	private void transaction(Statement stmt, StringBuilderPlus sql) throws SQLException 
+	public void transaction(Statement stmt, StringBuilderPlus sql) throws SQLException 
 	{
 		try
 	      {

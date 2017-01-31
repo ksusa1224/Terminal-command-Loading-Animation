@@ -21,6 +21,7 @@ import com.common.Constant;
 import com.common.Log;
 import com.common.StopWatch;
 import com.common.StringBuilderPlus;
+import com.dao.H2dbDao;
 import com.dao.SQliteDAO;
 
 public class QAPlusDao extends QADao {
@@ -516,12 +517,15 @@ public class QAPlusDao extends QADao {
 		String connection_str = "jdbc:sqlite:" 
 				  				+ db_save_path
 				  				+ db_name;
+
+		H2dbDao h2dao = new H2dbDao();
+	    Connection conn = null;
 		
 		StringBuilderPlus sql = new StringBuilderPlus();
 		
 		sql.appendLine("delete from qa where qa_id = '" + qa.getQa_id() + "';");
 		
-		sql.appendLine("replace into qa (");
+		sql.appendLine("insert into qa (");
 		// 行番号
 		sql.appendLine("  row_no,");
 		// QA ID
@@ -626,7 +630,7 @@ public class QAPlusDao extends QADao {
 		}
 		for (MondaiModel mondai : qa_plus.getMondai_list())
 		{
-			sql.appendLine("replace into mondai (");
+			sql.appendLine("insert into mondai (");
 			// 行番号
 			sql.appendLine("  row_no,");
 			// 問題ID
@@ -702,7 +706,7 @@ public class QAPlusDao extends QADao {
 		}
 		for (SeitouModel seitou : qa_plus.getSeitou_list())
 		{
-			sql.appendLine("replace into seitou (");
+			sql.appendLine("insert into seitou (");
 			// 行番号
 			sql.appendLine("  row_no,");
 			// 正答ID
@@ -792,6 +796,16 @@ public class QAPlusDao extends QADao {
 	       *  SQL実行
 	       */
 	      dao.transaction(stmt, sql);
+	      
+	      /**
+	       * h2dbにもinsert
+	       */
+	      conn = h2dao.connect();
+	      Statement h2stmt = conn.createStatement();
+
+	      //1行ずつコミットしない
+	      h2stmt.getConnection().setAutoCommit(false);
+	      h2dao.transaction(h2stmt, sql);	      
 	    }
 	    catch(Exception ex)
 	    {
@@ -802,6 +816,7 @@ public class QAPlusDao extends QADao {
 	    finally
 	    {
 	      dao.close(connection);
+	      h2dao.disconnect(conn);
 		  stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());
 	    }		
 	}	

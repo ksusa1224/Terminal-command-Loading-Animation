@@ -12,6 +12,7 @@ import com.common.Constant;
 import com.common.Log;
 import com.common.StopWatch;
 import com.common.StringBuilderPlus;
+import com.dao.H2dbDao;
 import com.dao.SQliteDAO;
 
 public class SeitouDao {
@@ -814,8 +815,11 @@ public class SeitouDao {
 				  				+ db_save_path
 				  				+ db_name;
 		
+		H2dbDao h2dao = new H2dbDao();
+	    Connection conn = null;		
+		
 		StringBuilderPlus sql = new StringBuilderPlus();
-		sql.appendLine("replace into seitou (");
+		sql.appendLine("insert into seitou (");
 		// 行番号
 		sql.appendLine("  row_no,");
 		// 正答ID
@@ -906,6 +910,16 @@ public class SeitouDao {
 	       *  SQL実行
 	       */
 	      dao.transaction(stmt, sql);
+
+	      /**
+	       * h2dbにもinsert
+	       */
+	      conn = h2dao.connect();
+	      Statement h2stmt = conn.createStatement();
+
+	      //1行ずつコミットしない
+	      h2stmt.getConnection().setAutoCommit(false);
+	      h2dao.transaction(h2stmt, sql);
 	    }
 	    catch(Exception ex)
 	    {
@@ -916,6 +930,7 @@ public class SeitouDao {
 	    finally
 	    {
 	      dao.close(connection);
+		  h2dao.disconnect(conn);
 	    }	    
 		
 	}	
