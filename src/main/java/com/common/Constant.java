@@ -37,6 +37,19 @@ public class Constant {
 	public static final String KAKIN_TYPE_FREE_PREIMIUM = "03";
 	
 	/**
+	 * オーナータイプ
+	 */
+	
+	// ジェネラル
+	public static final String OWNER_TYPE_GENERAL = "General Owner ( ¥0 )";
+	
+	// プレミアム
+	public static final String OWNER_TYPE_PREMIUM = "Premium Owner ( ¥500 / 月 )";
+	
+	// フリープレミアム
+	public static final String OWNER_TYPE_FREE_PREMIUM = "Premium Owner ( ¥0 )";
+	
+	/**
 	 * 暗記ノート関連のディレクトリのパス
 	 */
 	// MAC

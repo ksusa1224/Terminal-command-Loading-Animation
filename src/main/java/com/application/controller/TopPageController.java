@@ -193,6 +193,8 @@ public class TopPageController {
 	  {
 			H2dbDao h2db_dao = new H2dbDao();
 			
+			h2db_dao.createTablesforOwnerDB();
+			
 			AES aes = new AES();
 			byte[] encrypted_input_password = aes.encrypt(input_password);
 			byte[] encrypted_db_name = null;
