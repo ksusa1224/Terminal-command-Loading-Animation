@@ -518,9 +518,6 @@ public class QAPlusDao extends QADao {
 				  				+ db_save_path
 				  				+ db_name;
 
-		H2dbDao h2dao = new H2dbDao();
-	    Connection conn = null;
-		
 		StringBuilderPlus sql = new StringBuilderPlus();
 		
 		sql.appendLine("delete from qa where qa_id = '" + qa.getQa_id() + "';");
@@ -796,16 +793,34 @@ public class QAPlusDao extends QADao {
 	       *  SQL実行
 	       */
 	      dao.transaction(stmt, sql);
-	      
+
 	      /**
 	       * h2dbにもinsert
 	       */
-	      conn = h2dao.connect();
-	      Statement h2stmt = conn.createStatement();
+			// 重いので非同期の別スレッドで処理
+			new Thread(new Runnable() {
+	            @Override
+	            public void run() {
+					Connection conn = null;
+					H2dbDao h2dao = new H2dbDao();
+					try {
+						conn = h2dao.connect();
+						Statement h2stmt = conn.createStatement();
 
-	      //1行ずつコミットしない
-	      h2stmt.getConnection().setAutoCommit(false);
-	      h2dao.transaction(h2stmt, sql);	      
+						//1行ずつコミットしない
+						h2stmt.getConnection().setAutoCommit(false);
+						h2dao.transaction(h2stmt, sql);
+					} catch (Exception e) {
+						e.printStackTrace();
+						Log log = new Log();
+						log.insert_error_log("ERROR", e.getStackTrace().toString());
+					}
+					finally
+					{
+						h2dao.disconnect(conn);						
+					}
+	            }
+	        }).start();	      
 	    }
 	    catch(Exception ex)
 	    {
@@ -816,7 +831,6 @@ public class QAPlusDao extends QADao {
 	    finally
 	    {
 	      dao.close(connection);
-	      h2dao.disconnect(conn);
 		  stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());
 	    }		
 	}	

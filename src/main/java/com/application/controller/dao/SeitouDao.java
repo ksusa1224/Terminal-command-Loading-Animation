@@ -815,9 +815,6 @@ public class SeitouDao {
 				  				+ db_save_path
 				  				+ db_name;
 		
-		H2dbDao h2dao = new H2dbDao();
-	    Connection conn = null;		
-		
 		StringBuilderPlus sql = new StringBuilderPlus();
 		sql.appendLine("insert into seitou (");
 		// 行番号
@@ -914,12 +911,30 @@ public class SeitouDao {
 	      /**
 	       * h2dbにもinsert
 	       */
-	      conn = h2dao.connect();
-	      Statement h2stmt = conn.createStatement();
+			// 重いので非同期の別スレッドで処理
+			new Thread(new Runnable() {
+	            @Override
+	            public void run() {
+					Connection conn = null;
+					H2dbDao h2dao = new H2dbDao();
+					try {
+						conn = h2dao.connect();
+						Statement h2stmt = conn.createStatement();
 
-	      //1行ずつコミットしない
-	      h2stmt.getConnection().setAutoCommit(false);
-	      h2dao.transaction(h2stmt, sql);
+						//1行ずつコミットしない
+						h2stmt.getConnection().setAutoCommit(false);
+						h2dao.transaction(h2stmt, sql);
+					} catch (Exception e) {
+						e.printStackTrace();
+						Log log = new Log();
+						log.insert_error_log("ERROR", e.getStackTrace().toString());
+					}
+					finally
+					{
+						h2dao.disconnect(conn);						
+					}
+	            }
+	        }).start();
 	    }
 	    catch(Exception ex)
 	    {
@@ -930,7 +945,6 @@ public class SeitouDao {
 	    finally
 	    {
 	      dao.close(connection);
-		  h2dao.disconnect(conn);
 	    }	    
 		
 	}	
