@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.application.model.LoginInfoModel;
 import com.common.AES;
@@ -24,8 +25,29 @@ public class SettingController {
 			HttpServletRequest request, 
 			HttpServletResponse response, 
 			HttpSession session,
+			@RequestParam(value="edit", required=false) String from_edit,			
+			@RequestParam(value="email", required=false) String email,			
+			@RequestParam(value="owner_name", required=false) String owner_name,			
+			@RequestParam(value="login_password_new", required=false) String new_password,			
+			@RequestParam(value="default_search_order", required=false) String default_search_order,			
 			Model model) 
 	{
+		TopPageController top = new TopPageController();
+		if(!top.isLogin(request) && session.getAttribute("owner_db") == null)
+		{
+			//return "setting_error";
+		}
+		
+		System.out.println("from_edit:"+from_edit);
+		
+		// 更新画面から戻ってきたときは、設定情報を更新する
+		if (from_edit != null && from_edit.equals("true"))
+		{
+			H2dbDao dao = new H2dbDao();
+			dao.update_settings(owner_id, email, owner_name, new_password);
+			System.out.println("PPPPPPPPPPPPP");
+		}
+		
 		if (session.getAttribute("owner_id") != null)
 		{
 			owner_id = (String)session.getAttribute("owner_id");
@@ -66,10 +88,12 @@ public class SettingController {
 		HttpSession session,
 		Model model) 
 	{	
-//		if (session.getAttribute("owner_id") != null)
-//		{
-//			owner_id = (String)session.getAttribute("owner_id");
-//		}
+		TopPageController top = new TopPageController();
+		if(!top.isLogin(request) && session.getAttribute("owner_db") == null)
+		{
+			//return "setting_error";
+		}
+		
 		model.addAttribute("owner_id", "Owner ID : " + owner_id);
 		
 		H2dbDao h2dao = new H2dbDao();
@@ -79,7 +103,7 @@ public class SettingController {
 		model.addAttribute("owner_name", login_info.getOwner_name());
 		AES aes = new AES();
 		String password = aes.decrypt(login_info.getEncrypted_password());
-		model.addAttribute("password", password);
+		model.addAttribute("password", "Password（now） : "+password);
 		String owner_type = null;
 		if (login_info.getKakin_type() == Integer.parseInt(Constant.KAKIN_TYPE_FREE))
 		{

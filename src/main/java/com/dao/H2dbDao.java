@@ -818,4 +818,41 @@ public class H2dbDao
 	    	disconnect(conn);
 	    }
 	}	
+
+	/**
+	 * 設定変更
+	 * @param owner_id
+	 */
+	public void update_settings(String owner_id, String email, String owner_name, String new_password)
+	{
+		Connection conn = connect();
+		try
+		{
+			List<byte[]> params = new ArrayList<byte[]>();
+			
+			StringBuilderPlus sql = new StringBuilderPlus();
+			sql.appendLine("update owner_info");
+			sql.appendLine(" set email = '" + email + "'");
+			sql.appendLine(" ,owner_name = '" + owner_name + "'");
+			if (new_password != null && new_password.equals("") == false)
+			{
+				AES aes = new AES();
+				// SQLに渡すパラメーター（バイナリのみ対象）
+				byte[] encrypted_password = aes.encrypt(new_password);
+				params.add(encrypted_password);
+				sql.appendLine(" ,password = ?");
+			}
+			sql.appendLine(" ,update_date = '" + Util.getNow(Constant.DB_DATE_FORMAT) + "'");
+			sql.appendLine(" where owner_id = '" + owner_id + "'");
+			update(sql, params);		
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			disconnect(conn);
+		}
+	}		
 }

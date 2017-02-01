@@ -89,6 +89,7 @@ public class MainPageController{
 	@RequestMapping(value={"/{owner_id}", 
 						   "/{owner_id}/", 
 						   "/{owner_id}/main.html", 
+						   "/{owner_id}/main.html#", 
 						   "/{owner_id}/main.htm", 
 						   "/{owner_id}/main"},
 							method=RequestMethod.GET)

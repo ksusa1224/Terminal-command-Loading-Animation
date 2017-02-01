@@ -292,8 +292,8 @@ public class TopPageController {
 		System.out.println("last_token_cookie:"+last_token_cookie);
 		System.out.println("last_token_db"+last_token_db);
 		
-		if (last_token_cookie != null && last_token_db != null &&
-			last_token_cookie.equals(last_token_db))
+		if ((last_token_cookie != null && last_token_db != null &&
+			last_token_cookie.equals(last_token_db)))
 		{
 			return true;
 		}

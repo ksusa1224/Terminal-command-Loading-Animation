@@ -55,30 +55,35 @@
 				
 					<div id="register" class="signup-header wow fadeInUp">
 						<h3 class="form-title text-center">暗記ノート 設定</h3>
-						<form class="form-header" th:action="@{edit_settings.html}" role="form" method="POST" id="register">
+						<form class="form-header" th:action="@{settings.html}" role="form" method="GET" id="register">
+							<input type="hidden" name="edit" value="true" />
 							<div class="form-group">
 								<span class="form-control input-lg">E-mail : <input name="email" style="border:none;outline:none;" id="email" placeholder="Email Address" th:value="${email_edit}" /></span>
 							</div>
 							<div class="form-group">
-								<input id="owner_id" class="form-control input-lg" name="owner_id" placeholder="Login Id" th:value="${owner_id}" readonly="true" />
+								<input id="owner_id" class="form-control input-lg" name="owner_id" placeholder="Login Id" th:value="${owner_id}" readonly="true" title="Owner IDは変更できません" />
 							</div>
 							<div class="form-group">
 								<span class="form-control input-lg">Owner Name : <input id="owner_name" style="border:none;outline:none;" name="owner_name" placeholder="Owner Name" th:value="${owner_name}" /></span>
 							</div>
 							<div class="form-group">
-								<span class="form-control input-lg">Password（now） : <input name="login_password" style="border:none;outline:none;" id="now_password" type="password" placeholder="Now Password" th:value="${password}" /></span>
+								<input class="form-control input-lg" name="login_password" style="border:none;outline:none;" id="now_password" type="text" placeholder="Now Password" th:value="${password}" readonly="true" />
 							</div>
 							<div class="form-group">
-								<span class="form-control input-lg">Password（new） : <input name="login_password_new" style="border:none;outline:none;" id="new_password" type="password" placeholder="New Password" /></span>
-							</div>
-							<div class="form-group">
-								<span class="form-control input-lg" name="owner_type" id="owner_type" placeholder="Owner Type">Owner Type : <span th:text="${owner_type}"></span></span>
+								<span class="form-control input-lg">Password（new） : <input name="login_password_new" style="border:none;outline:none;" id="login_password_new" type="password" placeholder="New Password" /></span>
 							</div>
 							<div class="form-group">
 								<span class="form-control input-lg" name="default_search_order" id="default_search_order" placeholder="default_search_order">デフォルト検索順 : </span>
 							</div>
 							<div class="form-group last">
-								<input type="submit" class="btn btn-warning btn-block btn-lg" name="register" value="設定変更" />
+								<input type="submit" class="btn btn-warning btn-block btn-lg" name="register" value="設定を更新" />
+							</div>
+							<hr />
+							<div class="form-group">
+								<span class="form-control input-lg" name="owner_type" id="owner_type" placeholder="Owner Type">Owner Type : <span th:text="${owner_type}"></span></span>
+							</div>
+							<div class="form-group last">
+								<input type="button" class="btn btn-warning btn-block btn-lg" name="change_owner_type" value="Owner Typeを変更する" />
 							</div>
 						</form>
 					</div>				
