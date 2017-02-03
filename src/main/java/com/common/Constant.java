@@ -36,6 +36,9 @@ public class Constant {
 	// 課金タイプ：無料かつプレミアム・・・友人知人等に、無料で有料会員と同じ機能を使ってもらう用
 	public static final String KAKIN_TYPE_FREE_PREIMIUM = "03";
 	
+	// 課金タイプはプレムアムだが、支払いの滞りなどで支払われていない状態
+	public static final String KAKIN_TYPE_PREMIUM_CHARGE_FAILS = "04";
+	
 	/**
 	 * オーナータイプ
 	 */
@@ -152,6 +155,13 @@ public class Constant {
 	public static final String JAPANESE = "日本語";
 	// 英語
 	public static final String ENGLISH = "英語";
+	
+	/**
+	 * ソート順
+	 */
+	public static final String SORT_NEWEST = "新着順";
+	public static final String SORT_REGIETER = "登録順";
+	public static final String SORT_RANDOM = "ランダム順";
 	
 	/**
 	 * その他

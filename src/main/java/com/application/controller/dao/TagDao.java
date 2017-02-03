@@ -649,6 +649,9 @@ public class TagDao {
 		add_system_tag(owner_db, owner_id, "読むだけ問題", 4);
 		add_system_tag(owner_db, owner_id, "未分類", 5);
 		add_system_tag(owner_db, owner_id, "問題と解答を反転", 6);
+		add_system_tag(owner_db, owner_id, "新着順", 7);
+		add_system_tag(owner_db, owner_id, "登録順", 8);
+		add_system_tag(owner_db, owner_id, "ランダム順", 9);
 	}
 	
 	/**

@@ -1,5 +1,6 @@
 package com.common;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -57,6 +58,15 @@ public @Data class Log {
 			String client_os, 
 			String client_browser)
 	{
+		String now = Util.getNow("yyyy_MM");
+		String db_name = "system_log_" + now + ".db";
+		String db_save_path = Constant.SQLITE_LOG_FOLDER_PATH;
+		File monthly_db = new File(db_save_path + db_name);
+		if(monthly_db.exists() == false) { 
+		    SQliteDAO dao = new SQliteDAO();
+		    dao.create_log_db();
+		}		
+		
 		StringBuilderPlus sql = new StringBuilderPlus();
 		sql.appendLine("insert into access_log (");
 		sql.appendLine("timestamp,");
@@ -75,10 +85,6 @@ public @Data class Log {
 		sql.appendLine("'" + client_os + "',");
 		sql.appendLine("'" + client_browser + "')");
 		
-		String now = Util.getNow("yyyy_MM");
-		String db_name = "system_log" + now + ".db";
-		String db_save_path = Constant.SQLITE_LOG_FOLDER_PATH;
-
 		SQliteDAO dao = new SQliteDAO();
 		dao.update_log_db(sql);
 	}
@@ -92,6 +98,15 @@ public @Data class Log {
 			String error_type,
 			String stack_trace)
 	{
+		String now = Util.getNow("yyyy_MM");
+		String db_name = "system_log_" + now + ".db";
+		String db_save_path = Constant.SQLITE_LOG_FOLDER_PATH;
+		File monthly_db = new File(db_save_path + db_name);
+		if(monthly_db.exists() == false) { 
+		    SQliteDAO dao = new SQliteDAO();
+		    dao.create_log_db();
+		}		
+
 		StringBuilderPlus sql = new StringBuilderPlus();
 		sql.appendLine("insert into error_log (");
 		sql.appendLine("timestamp,");
@@ -102,10 +117,6 @@ public @Data class Log {
 		sql.appendLine("'" + error_type + "',");
 		sql.appendLine("'" + stack_trace + "')");
 		
-		String now = Util.getNow("yyyy_MM");
-		String db_name = "system_log" + now + ".db";
-		String db_save_path = Constant.SQLITE_LOG_FOLDER_PATH;
-
 		SQliteDAO dao = new SQliteDAO();
 		dao.update_log_db(sql);
 	}

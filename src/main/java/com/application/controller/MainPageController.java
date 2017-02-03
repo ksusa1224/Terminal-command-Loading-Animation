@@ -149,6 +149,7 @@ public class MainPageController{
 				byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 				AES aes = new AES();
 				String owner_db = aes.decrypt(encrypted_owner_db);
+				session.setAttribute("owner_db", encrypted_owner_db);
 				int limit = Constant.QA_NUM_PER_PAGE;
 				int left_offset = 0;
 				List<QAPlusModel> qa_plus_list_left = new ArrayList<QAPlusModel>();

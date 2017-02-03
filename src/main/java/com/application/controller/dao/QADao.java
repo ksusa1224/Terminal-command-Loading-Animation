@@ -308,6 +308,7 @@ public class QADao {
 		sql.appendLine(" from qa");
 		sql.appendLine(" where del_flg = 0");
 		sql.appendLine(" order by create_timestamp desc");
+		//sql.appendLine(" order by RANDOM()");
 		sql.appendLine("  limit " + limit + " offset + " + offset + ";");
 		
 		dao.loadDriver();

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.application.controller.dao.SystemDao;
 import com.application.model.LoginInfoModel;
 import com.common.AES;
 import com.common.Constant;
@@ -37,7 +38,7 @@ public class SettingController {
 		{
 			//return "setting_error";
 		}
-		
+				
 		System.out.println("from_edit:"+from_edit);
 		
 		// 更新画面から戻ってきたときは、設定情報を更新する
@@ -46,6 +47,12 @@ public class SettingController {
 			H2dbDao dao = new H2dbDao();
 			dao.update_settings(owner_id, email, owner_name, new_password);
 			System.out.println("PPPPPPPPPPPPP");
+			SystemDao sys_dao = new SystemDao();
+			byte[] encrypted_db = dao.get_owner_db(owner_id);
+			AES aes = new AES();
+			String owner_db = aes.decrypt(encrypted_db);
+			top.insert_system_initial_data(owner_db, owner_id);
+			sys_dao.update_value(owner_db, "0001", "デフォルトソート順", default_search_order);
 		}
 		
 		if (session.getAttribute("owner_id") != null)
@@ -76,6 +83,15 @@ public class SettingController {
 			owner_type = Constant.OWNER_TYPE_FREE_PREMIUM;
 		}
 		model.addAttribute("owner_type", owner_type);
+		
+//		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
+		byte[] encrypted_owner_db = h2dao.get_owner_db(owner_id);
+		AES aes2 = new AES();
+		String owner_db = aes2.decrypt(encrypted_owner_db);
+
+		SystemDao system_dao = new SystemDao();
+		default_search_order =  system_dao.get_value(owner_db, "0001", "デフォルトソート順");
+		model.addAttribute("default_search_order", default_search_order);
 		
 		return "settings";
 	}
@@ -119,6 +135,15 @@ public class SettingController {
 		}
 		model.addAttribute("owner_type", owner_type);
 		
+//		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
+		byte[] encrypted_owner_db = h2dao.get_owner_db(owner_id);
+		AES aes2 = new AES();
+		String owner_db = aes2.decrypt(encrypted_owner_db);
+
+		SystemDao system_dao = new SystemDao();
+		String default_search_order =  system_dao.get_value(owner_db, "0001", "デフォルトソート順");
+		model.addAttribute("default_search_order", default_search_order);
+
 		return "edit_settings";
 	}
 

@@ -24,7 +24,18 @@
 <!-- <link href="css/css-index-red.css" rel="stylesheet" media="screen"> -->
 <!-- <link href="css/css-index-orange.css" rel="stylesheet" media="screen"> -->
 <!-- <link href="css/css-index-yellow.css" rel="stylesheet" media="screen"> -->
-
+  <style>
+    fieldset {
+      border: 0;
+    }
+    label {
+      display: block;
+      margin: 30px 0 0 0;
+    }
+    .overflow {
+      height: 200px;
+    }
+  </style>
 <!-- Google Fonts -->
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic" />
 
@@ -54,7 +65,7 @@
 				<div class="col-md-5">
 				
 					<div id="register" class="signup-header wow fadeInUp">
-						<h3 class="form-title text-center">暗記ノート 設定</h3>
+						<h3 class="form-title text-center">暗記ノート 設定変更</h3>
 						<form class="form-header" th:action="@{settings.html}" role="form" method="GET" id="register">
 							<input type="hidden" name="edit" value="true" />
 							<div class="form-group">
@@ -73,7 +84,15 @@
 								<span class="form-control input-lg">Password（new） : <input name="login_password_new" style="border:none;outline:none;" id="login_password_new" type="password" placeholder="New Password" /></span>
 							</div>
 							<div class="form-group">
-								<span class="form-control input-lg" name="default_search_order" id="default_search_order" placeholder="default_search_order">デフォルト検索順 : </span>
+								<span class="form-control input-lg"  id="default_search_order" placeholder="default_search_order" th:value="${default_search_order}" list="sort_type" >
+								デフォルト検索順 : 								
+								<select id="sort_type" style="border:none;background-color:#fff;outline:none" name="default_search_order">
+								  <option id="sort_new" value="新着順">新着順</option>
+								  <option id="sort_register" value="登録順">登録順</option>
+								  <option id="sort_random" value="ランダム順">ランダム順</option>
+								</select>
+								<input id="default_search_order_hidden" type="hidden" th:value="${default_search_order}" />								
+								</span>
 							</div>
 							<div class="form-group last">
 								<input type="submit" class="btn btn-warning btn-block btn-lg" name="register" value="設定を更新" />
@@ -83,7 +102,7 @@
 								<span class="form-control input-lg" name="owner_type" id="owner_type" placeholder="Owner Type">Owner Type : <span th:text="${owner_type}"></span></span>
 							</div>
 							<div class="form-group last">
-								<input type="button" class="btn btn-warning btn-block btn-lg" name="change_owner_type" value="Owner Typeを変更する" />
+								<input type="button" class="btn btn-warning btn-block btn-lg" name="change_owner_type" value="Owner Type（プラン）を変更する" />
 							</div>
 						</form>
 					</div>				
@@ -103,6 +122,21 @@
 	<script th:src="@{../js/owl.carousel.min.js}"></script>
 	<script>
 		new WOW().init();		
+	    $(function() {
+	    	var search_order = $("#default_search_order_hidden").val();
+	    	if (search_order == "新着順")
+	    	{
+	    		$("#sort_new").attr("selected","true");
+	    	}
+	    	else if (search_order == "登録順")
+	    	{
+	    		$("#sort_register").attr("selected","true");
+	    	}
+	    	else if (search_order == "ランダム順")
+	    	{
+	    		$("#sort_random").attr("selected","true");
+	    	}
+	    });
 	</script>
   </body>
 </html>

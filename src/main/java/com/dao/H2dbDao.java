@@ -855,4 +855,37 @@ public class H2dbDao
 			disconnect(conn);
 		}
 	}		
+
+	public byte[] get_owner_db(String owner_id)
+	{
+		byte[] owner_db = null;
+		Connection conn = connect();
+		try
+		{
+			Statement stmt = conn.createStatement();
+			
+			// ログイン情報を取得
+			StringBuilderPlus sql = new StringBuilderPlus();
+			sql.appendLine("select");
+			sql.appendLine("  db_name ");
+			sql.appendLine("from owner_db "); 
+			sql.appendLine("where "); 
+			sql.appendLine("  owner_id = '" + owner_id + "'");
+			sql.appendLine("  and del_flg = 0");
+			
+			ResultSet rs = stmt.executeQuery(sql.toString());
+			if (rs.next()) {
+				owner_db = rs.getBytes(1);
+			}
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		finally
+		{
+			disconnect(conn);
+		}
+		return owner_db;
+	}
 }

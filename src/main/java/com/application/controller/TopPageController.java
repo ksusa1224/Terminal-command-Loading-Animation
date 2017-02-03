@@ -21,9 +21,11 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.application.controller.dao.KaitouDao;
 import com.application.controller.dao.SeitouDao;
+import com.application.controller.dao.SystemDao;
 import com.application.controller.dao.TagDao;
 import com.application.model.LoginInfoModel;
 import com.application.model.dao.SeitouModel;
+import com.application.model.dao.SystemModel;
 import com.application.model.dao.TagModel;
 import com.common.AES;
 import com.common.Constant;
@@ -237,8 +239,11 @@ public class TopPageController {
 			Log log = new Log();
 			log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
 			
-//			TagDao tag_dao = new TagDao();
-//			tag_dao.add_system_tags(owner_db, owner_id);
+			// DBパッチ（システム付箋登録）
+			TagDao tag_dao = new TagDao();
+			tag_dao.add_system_tags(owner_db, owner_id);
+			
+			insert_system_initial_data(owner_db, owner_id);
 			
 			if (input_password.equals(password_in_db))
 			{
@@ -261,6 +266,43 @@ public class TopPageController {
 			    return "index";
 			}	
 	  }
+
+	public void insert_system_initial_data(String owner_db, String owner_id) {
+		SystemDao system_dao = new SystemDao();
+		SystemModel system = new SystemModel();
+		// 行番号
+		system.setRow_no(system_dao.get_max_row_no(owner_db)+1);
+		// 設定ID
+		String sys_id = system.generate_sys_id(system_dao.get_max_row_no(owner_db) + 1, owner_id);
+		system.setSys_id(sys_id);
+		// 項目グループID
+		system.setSys_group_id("0001");
+		// 項目グループ名
+		system.setSys_group_name("デフォルトソート順");
+		// キー
+		system.setKey("デフォルトソート順");
+		// 値
+		system.setValue(Constant.SORT_NEWEST);
+		// 削除フラグ
+		system.setDel_flg(0);
+		// 作成者
+		system.setCreate_owner(owner_id);
+		// 更新者
+		system.setUpdate_owner(owner_id);
+		// レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+		system.setCreate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+		// レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+		system.setUpdate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+//		if (system_dao.check_deplicate(
+//				owner_db, 
+//				system.getSys_group_id(), 
+//				system.getKey()
+//			) == false)
+//		{
+//			system_dao.insert_system(owner_db, system);
+//		}
+		system_dao.insert_system(owner_db, system);
+	}
 	  
 	/**
 	 * ログインしている状態かチェックする
