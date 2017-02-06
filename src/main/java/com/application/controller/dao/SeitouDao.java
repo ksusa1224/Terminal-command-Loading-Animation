@@ -911,30 +911,24 @@ public class SeitouDao {
 	      /**
 	       * h2dbにもinsert
 	       */
-			// 重いので非同期の別スレッドで処理
-			new Thread(new Runnable() {
-	            @Override
-	            public void run() {
-					Connection conn = null;
-					H2dbDao h2dao = new H2dbDao();
-					try {
-						conn = h2dao.connect();
-						Statement h2stmt = conn.createStatement();
+			Connection conn = null;
+			H2dbDao h2dao = new H2dbDao();
+			try {
+				conn = h2dao.connect();
+				Statement h2stmt = conn.createStatement();
 
-						//1行ずつコミットしない
-						h2stmt.getConnection().setAutoCommit(false);
-						h2dao.transaction(h2stmt, sql);
-					} catch (Exception e) {
-						e.printStackTrace();
-						Log log = new Log();
-						log.insert_error_log("ERROR", e.getStackTrace().toString());
-					}
-					finally
-					{
-						h2dao.disconnect(conn);						
-					}
-	            }
-	        }).start();
+				//1行ずつコミットしない
+				h2stmt.getConnection().setAutoCommit(false);
+				h2dao.transaction(h2stmt, sql);
+			} catch (Exception e) {
+				e.printStackTrace();
+				Log log = new Log();
+				log.insert_error_log("ERROR", e.getStackTrace().toString());
+			}
+			finally
+			{
+				h2dao.disconnect(conn);						
+			}
 	    }
 	    catch(Exception ex)
 	    {

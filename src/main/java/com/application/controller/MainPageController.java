@@ -9,6 +9,7 @@ import java.io.PrintWriter;
 import java.io.SequenceInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -1793,10 +1794,13 @@ public class MainPageController{
 							String file_name = Constant.SPEECH_DATA_FOLDER_PATH + mondai.getQ_id() + ".wav";
 							String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + mondai.getQ_parts_text() + "' -o " + file_name;
 							System.out.println(command);
-							Runtime.getRuntime().exec(command);
+							Process p = Runtime.getRuntime().exec(command);
+							p.waitFor();
 							set_executable(file_name);
 							String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=18K -vn " + file_name.replace("wav", "m4a");
-							Runtime.getRuntime().exec(command2);
+							Process p2 = Runtime.getRuntime().exec(command2);
+							p2.waitFor();
+							set_executable(file_name);
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -1811,7 +1815,9 @@ public class MainPageController{
 							String speaker = "Alex";
 							String file_name = Constant.SPEECH_DATA_FOLDER_PATH + mondai.getQ_id() + "_q.m4a";
 							String command = "say -v " + speaker + " '" + mondai.getQ_parts_text() + "' -o " + file_name;
-							Runtime.getRuntime().exec(command);
+							Process p = Runtime.getRuntime().exec(command);
+							p.waitFor();
+							set_executable(file_name);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -1830,10 +1836,13 @@ public class MainPageController{
 						String file_name = Constant.SPEECH_DATA_FOLDER_PATH + mondai.getQ_id() + ".wav";
 						String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + roman + "' -o " + file_name;
 						System.out.println(command);
-						Runtime.getRuntime().exec(command);
+						Process p = Runtime.getRuntime().exec(command);
+						p.waitFor();
 						set_executable(file_name);
 						String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=18K -vn " + file_name.replace("wav", "m4a");
-						Runtime.getRuntime().exec(command2);
+						Process p2 = Runtime.getRuntime().exec(command2);
+						p2.waitFor();
+						set_executable(file_name);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -1847,7 +1856,9 @@ public class MainPageController{
 							String speaker = "Kyoko";
 							String file_name = Constant.SPEECH_DATA_FOLDER_PATH + mondai.getQ_id() + "_q.m4a";
 							String command = "say -v " + speaker + " '" + mondai.getQ_parts_text() + "' -o " + file_name;
-							Runtime.getRuntime().exec(command);
+							Process p = Runtime.getRuntime().exec(command);
+							p.waitFor();
+							set_executable(file_name);
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -1927,10 +1938,13 @@ public class MainPageController{
 							String file_name = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + ".wav";
 							String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + seitou.getSeitou() + "' -o " + file_name;
 							System.out.println(command);
-							Runtime.getRuntime().exec(command);
+							Process p = Runtime.getRuntime().exec(command);
+							p.waitFor();
 							set_executable(file_name);
 							String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=18K -vn " + file_name.replace("wav", "m4a");
-							Runtime.getRuntime().exec(command2);
+							Process p2 = Runtime.getRuntime().exec(command2);
+							p2.waitFor();
+							set_executable(file_name);
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -1946,8 +1960,9 @@ public class MainPageController{
 							String file_name = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + "_a.m4a";
 							String command = "say -v " + speaker + " '" + seitou.getSeitou() + "' -o " + file_name;
 							System.out.println(command);
-							Runtime.getRuntime().exec(command);
-//							set_executable(file_name);
+							Process p = Runtime.getRuntime().exec(command);
+							p.waitFor();
+							set_executable(file_name);
 //							String silence_file = Constant.SPEECH_DATA_FOLDER_PATH + "silence.aif";
 //							String output_english = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + "_a.aif";
 //							
@@ -1995,7 +2010,9 @@ public class MainPageController{
 						Runtime.getRuntime().exec(command);
 						set_executable(file_name);
 						String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=18K -vn " + file_name.replace("wav", "m4a");
-						Runtime.getRuntime().exec(command2);
+						Process p = Runtime.getRuntime().exec(command);
+						p.waitFor();
+						set_executable(file_name);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -2009,7 +2026,9 @@ public class MainPageController{
 							String speaker = "Kyoko";
 							String file_name = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + "_a.m4a";
 							String command = "say -v " + speaker + " '" + seitou.getSeitou() + "' -o " + file_name;
-							Runtime.getRuntime().exec(command);
+							Process p = Runtime.getRuntime().exec(command);
+							p.waitFor();
+							set_executable(file_name);
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -2149,17 +2168,40 @@ public class MainPageController{
 	}
 
 	public void set_executable(String file_name) throws InterruptedException {
-		File file = new File(file_name);
-		if (!file.exists())
-		{
+//		File file = new File(file_name);
+//		if (!file.exists())
+//		{
+//			Thread.sleep(1000);
+//			set_executable(file_name);
+//			return;
+//		}
+		Path path = Paths.get(file_name);
+		if (Files.notExists(path)) {
+//			System.out.println("=============");
 			Thread.sleep(100);
-			set_executable(file_name);
+			set_executable(file_name);		  
 		}
-		Boolean a = file.setExecutable(true, false);
+		else
+		{
+			System.out.println("xxxxxxxxxxxxxxx");
+			try(Stream<Path> paths = Files.walk(Paths.get(Constant.SPEECH_DATA_FOLDER_PATH.substring(0, Constant.SPEECH_DATA_FOLDER_PATH.length()-1)))) {
+			    paths.forEach(filePath -> {
+//			        if (Files.isRegularFile(filePath)) {
+			        	File speech_file = filePath.toFile();
+			    		Boolean a = speech_file.setExecutable(true, false);
+//			        }
+			    });
+			} 
+			catch(Exception ex)
+			{
+				ex.printStackTrace();			
+			}
+		}
+//		Boolean a = file.setExecutable(true, false);
 //		file.setExecutable(true, false);
 //		file.setWritable(true, false);
 //		file.setReadable(true,false);
-		System.out.println("setexec:"+a);
+//		System.out.println("setexec:"+a);
 	}
 
 	private AudioFormat getOutFormat(AudioFormat inFormat) {
