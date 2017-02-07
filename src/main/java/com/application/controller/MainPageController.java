@@ -1785,86 +1785,11 @@ public class MainPageController{
 			mondai.setYomiage(null);
 			if (language == Constant.ENGLISH)
 			{
-				// 重いので非同期の別スレッドで処理
-				new Thread(new Runnable() {
-		            @Override
-		            public void run() {
-						try {
-							String speaker = "Vicki";
-							String file_name = Constant.SPEECH_DATA_FOLDER_PATH + mondai.getQ_id() + ".wav";
-							String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + mondai.getQ_parts_text() + "' -o " + file_name;
-							System.out.println(command);
-							Process p = Runtime.getRuntime().exec(command);
-							p.waitFor();
-							set_executable(file_name);
-							String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=18K -vn " + file_name.replace("wav", "m4a");
-							Process p2 = Runtime.getRuntime().exec(command2);
-							p2.waitFor();
-							set_executable(file_name);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-		            }
-		        }).start();
-				// 重いので非同期の別スレッドで処理
-				new Thread(new Runnable() {
-		            @Override
-		            public void run() {
-						try {
-							String speaker = "Alex";
-							String file_name = Constant.SPEECH_DATA_FOLDER_PATH + mondai.getQ_id() + "_q.m4a";
-							String command = "say -v " + speaker + " '" + mondai.getQ_parts_text() + "' -o " + file_name;
-							Process p = Runtime.getRuntime().exec(command);
-							p.waitFor();
-							set_executable(file_name);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-		            }
-		        }).start();
+				create_speach("Alex", mondai.getQ_id(), mondai.getQ_parts_text(), "q");
 			}
 			else
 			{
-				// 重いので非同期の別スレッドで処理
-				new Thread(new Runnable() {
-		            @Override
-		            public void run() {
-					String roman = SlimeSerif.Japanese_to_Roman(mondai.getQ_parts_text());
-					try {
-						String speaker = "Vicki";
-						String file_name = Constant.SPEECH_DATA_FOLDER_PATH + mondai.getQ_id() + ".wav";
-						String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + roman + "' -o " + file_name;
-						System.out.println(command);
-						Process p = Runtime.getRuntime().exec(command);
-						p.waitFor();
-						set_executable(file_name);
-						String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=18K -vn " + file_name.replace("wav", "m4a");
-						Process p2 = Runtime.getRuntime().exec(command2);
-						p2.waitFor();
-						set_executable(file_name);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-		            }
-		        }).start();
-				new Thread(new Runnable() {
-		            @Override
-		            public void run() {
-						try {
-							String speaker = "Kyoko";
-							String file_name = Constant.SPEECH_DATA_FOLDER_PATH + mondai.getQ_id() + "_q.m4a";
-							String command = "say -v " + speaker + " '" + mondai.getQ_parts_text() + "' -o " + file_name;
-							Process p = Runtime.getRuntime().exec(command);
-							p.waitFor();
-							set_executable(file_name);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-		            }
-		        }).start();
+				create_speach("Kyoko", mondai.getQ_id(), mondai.getQ_parts_text(), "q");
 			}
 		    // 削除フラグ
 			mondai.setDel_flg(0);
@@ -1929,112 +1854,14 @@ public class MainPageController{
 			byte[] yomiage = null;
 			if (language == Constant.ENGLISH)
 			{
-				// 重いので非同期の別スレッドで処理
-				new Thread(new Runnable() {
-		            @Override
-		            public void run() {
-						try {
-							String speaker = "Vicki";
-							String file_name = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + ".wav";
-							String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + seitou.getSeitou() + "' -o " + file_name;
-							System.out.println(command);
-							Process p = Runtime.getRuntime().exec(command);
-							p.waitFor();
-							set_executable(file_name);
-							String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=18K -vn " + file_name.replace("wav", "m4a");
-							Process p2 = Runtime.getRuntime().exec(command2);
-							p2.waitFor();
-							set_executable(file_name);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-		            }
-		        }).start();
-				// 重いので非同期の別スレッドで処理
-				new Thread(new Runnable() {
-		            @Override
-		            public void run() {
-						try {
-							String speaker = "Alex";
-							String file_name = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + "_a.m4a";
-							String command = "say -v " + speaker + " '" + seitou.getSeitou() + "' -o " + file_name;
-							System.out.println(command);
-							Process p = Runtime.getRuntime().exec(command);
-							p.waitFor();
-							set_executable(file_name);
-//							String silence_file = Constant.SPEECH_DATA_FOLDER_PATH + "silence.aif";
-//							String output_english = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + "_a.aif";
-//							
-//					        try {
-//					            AudioInputStream clip1 = AudioSystem.getAudioInputStream(new File(file_name));
-//					            AudioInputStream clip2 = AudioSystem.getAudioInputStream(new File(silence_file));
-//
-//					            AudioInputStream appendedFiles = 
-//					                            new AudioInputStream(
-//					                                new SequenceInputStream(clip1, clip2),     
-//					                                clip1.getFormat(), 
-//					                                clip1.getFrameLength() + clip2.getFrameLength());
-//
-//					            AudioSystem.write(appendedFiles, 
-//					                            AudioFileFormat.Type.AIFF, 
-//					                            new File(output_english));
-//					        } catch (Exception e) {
-//					            e.printStackTrace();
-//					        }							
-//							String command2 = "/usr/local/bin/ffmpeg -i concat:'" + file_name + "|" + silence_file + "' -c copy " + Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + "_alex.wav";
-//							System.out.println(command2);
-//							Thread.sleep(1000);
-//							Process p = Runtime.getRuntime().exec(command2);
-//							p.waitFor();
-//							Thread.sleep(2000);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-		            }
-		        }).start();
+				create_slime_speech(seitou.getS_id(), seitou.getSeitou());
+				create_speach("Alex", seitou.getS_id(), seitou.getSeitou(), "a");
 			}
 			else
 			{
-				// 重いので非同期の別スレッドで処理
-				new Thread(new Runnable() {
-		            @Override
-		            public void run() {
-					String roman = SlimeSerif.Japanese_to_Roman(seitou.getSeitou());
-					try {
-						String speaker = "Vicki";
-						String file_name = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + ".wav";
-						String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + roman + "' -o " + file_name;
-						System.out.println(command);
-						Runtime.getRuntime().exec(command);
-						set_executable(file_name);
-						String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=18K -vn " + file_name.replace("wav", "m4a");
-						Process p = Runtime.getRuntime().exec(command);
-						p.waitFor();
-						set_executable(file_name);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-		            }
-		        }).start();
-				new Thread(new Runnable() {
-		            @Override
-		            public void run() {
-						try {
-							String speaker = "Kyoko";
-							String file_name = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + "_a.m4a";
-							String command = "say -v " + speaker + " '" + seitou.getSeitou() + "' -o " + file_name;
-							Process p = Runtime.getRuntime().exec(command);
-							p.waitFor();
-							set_executable(file_name);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-		            }
-		        }).start();
+				String serif = SlimeSerif.Japanese_to_Roman(seitou.getSeitou());
+				create_slime_speech(seitou.getS_id(), serif);
+				create_speach("Kyoko", seitou.getS_id(), seitou.getSeitou(), "a");
 			}
 			seitou.setYomiage(yomiage);
 		    // 削除フラグ
@@ -2165,6 +1992,51 @@ public class MainPageController{
 			}
 		}
 		stop_watch.stop("create_qa");
+	}
+
+	private void create_speach(String speaker, String id, String serif, String q_or_a) {
+		// 重いので非同期の別スレッドで処理
+		new Thread(new Runnable() {
+		    @Override
+		    public void run() {
+				try {
+					String file_name = Constant.SPEECH_DATA_FOLDER_PATH + id + "_" + q_or_a + ".m4a";
+					String command = "say -v " + speaker + " '" + serif + "' -o " + file_name;
+					System.out.println(command);
+					Process p = Runtime.getRuntime().exec(command);
+					p.waitFor();
+					set_executable(file_name);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }
+		}).start();
+	}
+
+	private void create_slime_speech(String id, String serif) {
+		// 重いので非同期の別スレッドで処理
+		new Thread(new Runnable() {
+		    @Override
+		    public void run() {
+				try {
+					String speaker = "Vicki";
+					String file_name = Constant.SPEECH_DATA_FOLDER_PATH + id + ".wav";
+					String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + serif + "' -o " + file_name;
+					System.out.println(command);
+					Process p = Runtime.getRuntime().exec(command);
+					p.waitFor();
+					set_executable(file_name);
+					String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=18K -vn " + file_name.replace("wav", "m4a");
+					Process p2 = Runtime.getRuntime().exec(command2);
+					p2.waitFor();
+					set_executable(file_name);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }
+		}).start();
 	}
 
 	public void set_executable(String file_name) throws InterruptedException {
