@@ -428,6 +428,8 @@ public class SeitouDao {
 		sql.appendLine("  language,");
 	    // テキスト読み上げデータ
 		sql.appendLine("  yomiage,");
+	    // 問題と正答を入れ替えた結果生成された問題かどうか
+	    sql.appendLine("    is_reversible,");
 	    // 削除フラグ
 		sql.appendLine("  del_flg,");
 	    // 作成者
@@ -441,6 +443,7 @@ public class SeitouDao {
 		sql.appendLine(" from seitou");
 		sql.appendLine(" where ");
 		sql.appendLine(" del_flg = 0");
+//		sql.appendLine(" and (is_reversible = 0 or is_reversible is null)");
 		sql.appendLine(" order by qa_id,junban asc;");
 		
 		dao.loadDriver();
@@ -485,6 +488,8 @@ public class SeitouDao {
 	    	  seitou.setLanguage(rs.getString("language"));
 	    	  // テキスト読み上げデータ
 	    	  seitou.setYomiage(rs.getBytes("yomiage"));
+	  	      // 問題と正答を入れ替えた結果生成された問題かどうか
+	  	      seitou.setIs_reversible(rs.getInt("is_reversible"));
 	    	  // 削除フラグ
 		      seitou.setDel_flg(rs.getInt("del_flg"));
 		      // 作成者
@@ -716,6 +721,8 @@ public class SeitouDao {
 		sql.appendLine("  language,");
 	    // テキスト読み上げデータ
 		sql.appendLine("  yomiage,");
+	    // 問題と正答を入れ替えた結果生成された問題かどうか
+	    sql.appendLine("    is_reversible,");
 	    // 削除フラグ
 		sql.appendLine("  del_flg,");
 	    // 作成者
@@ -729,6 +736,7 @@ public class SeitouDao {
 		sql.appendLine(" from seitou");
 		sql.appendLine(" where qa_id = '" + qa_id + "'");
 		sql.appendLine(" and del_flg = 0");
+//		sql.appendLine(" and (is_reversible = 0 or is_reversible is null)");
 		sql.appendLine(" order by junban asc;");
 		
 		dao.loadDriver();
@@ -773,6 +781,8 @@ public class SeitouDao {
 	    	  seitou.setLanguage(rs.getString("language"));
 	    	  // テキスト読み上げデータ
 	    	  seitou.setYomiage(rs.getBytes("yomiage"));
+	  	      // 問題と正答を入れ替えた結果生成された問題かどうか
+	  	      seitou.setIs_reversible(rs.getInt("is_reversible"));
 	    	  // 削除フラグ
 		      seitou.setDel_flg(rs.getInt("del_flg"));
 		      // 作成者

@@ -123,6 +123,8 @@ public class QAPlusDao extends QADao {
 		sql.appendLine(" from qa, mondai, seitou");
 		sql.appendLine(" where qa.qa_id = mondai.qa_id");
 		sql.appendLine(" and qa.qa_id = seitou.qa_id");
+		sql.appendLine(" and mondai.is_reversible = 0");
+		sql.appendLine(" and seitou.is_reversible = 0");
 		
 		dao.loadDriver();
 		
@@ -346,8 +348,10 @@ public class QAPlusDao extends QADao {
 
 			// 問題
 			List<MondaiModel> mondai_list_each = new ArrayList<MondaiModel>();
+			
 			mondai_list_each = (List<MondaiModel>) mondai_list_all.stream()
 					.filter(x -> x.getQa_id().equals(qa.getQa_id()))
+					.filter(x -> x.getIs_reversible() != 1)
 					.collect(Collectors.toList());
 			qa_plus.setMondai_list(mondai_list_each);
 			
@@ -356,7 +360,9 @@ public class QAPlusDao extends QADao {
 			// 正答
 			List<SeitouModel> seitou_list_each = new ArrayList<SeitouModel>();
 			seitou_list_each = (List<SeitouModel>) seitou_list_all
-					.stream().filter(x -> x.getQa_id().equals(qa.getQa_id()))
+					.stream()
+					.filter(x -> x.getQa_id().equals(qa.getQa_id()))
+					.filter(x -> x.getIs_reversible() != 1)
 					.collect(Collectors.toList());;
 			qa_plus.setSeitou_list(seitou_list_each);
 			
@@ -436,16 +442,40 @@ public class QAPlusDao extends QADao {
 	
 				// 問題
 				List<MondaiModel> mondai_list_each = new ArrayList<MondaiModel>();
-				mondai_list_each = (List<MondaiModel>) mondai_list_all.stream()
-						.filter(x -> x.getQa_id().equals(qa.getQa_id()))
-						.collect(Collectors.toList());
+				if (tag_names.contains("問題と解答を反転"))
+				{
+					mondai_list_each = (List<MondaiModel>) mondai_list_all.stream()
+							.filter(x -> x.getQa_id().equals(qa.getQa_id()))
+							.filter(x -> x.getIs_reversible() == 1)
+							.collect(Collectors.toList());
+				}
+				else
+				{
+					mondai_list_each = (List<MondaiModel>) mondai_list_all.stream()
+							.filter(x -> x.getQa_id().equals(qa.getQa_id()))
+							.filter(x -> x.getIs_reversible() != 1)
+							.collect(Collectors.toList());					
+				}
 				qa_plus.setMondai_list(mondai_list_each);
 				
 				// 正答
 				List<SeitouModel> seitou_list_each = new ArrayList<SeitouModel>();
-				seitou_list_each = (List<SeitouModel>) seitou_list_all
-						.stream().filter(x -> x.getQa_id().equals(qa.getQa_id()))
-						.collect(Collectors.toList());;
+				if (tag_names.contains("問題と解答を反転"))
+				{
+					seitou_list_each = (List<SeitouModel>) seitou_list_all
+							.stream()
+							.filter(x -> x.getQa_id().equals(qa.getQa_id()))
+							.filter(x -> x.getIs_reversible() == 1)
+							.collect(Collectors.toList());;					
+				}
+				else
+				{
+					seitou_list_each = (List<SeitouModel>) seitou_list_all
+							.stream()
+							.filter(x -> x.getQa_id().equals(qa.getQa_id()))
+							.filter(x -> x.getIs_reversible() != 1)
+							.collect(Collectors.toList());
+				}
 				qa_plus.setSeitou_list(seitou_list_each);
 	
 				
@@ -648,6 +678,8 @@ public class QAPlusDao extends QADao {
 			sql.appendLine("  language,");
 			// テキスト読み上げデータ
 			sql.appendLine("  yomiage,");		
+			// 問題と正答を入れ替えた結果生成された問題かどうか
+			sql.appendLine("  is_reversible,");
 			// 削除フラグ
 			sql.appendLine("	del_flg,");
 			// 作成者
@@ -681,6 +713,8 @@ public class QAPlusDao extends QADao {
 			sql.appendLine("'" + mondai.getLanguage() + "',");
 			// テキスト読み上げデータ
 			sql.appendLine("" + mondai.getYomiage() + ",");
+			// 問題と正答を入れ替えた結果生成された問題かどうか
+			sql.appendLine("" + mondai.getIs_reversible() + ",");
 			// 削除フラグ
 			sql.appendLine("" + mondai.getDel_flg() + ",");
 			// 作成者
@@ -728,6 +762,8 @@ public class QAPlusDao extends QADao {
 			sql.appendLine("  language,");
 			// テキスト読み上げデータ
 			sql.appendLine("  yomiage,");
+			// 問題と正答を入れ替えた結果生成された問題かどうか
+			sql.appendLine("  is_reversible,");
 			// 削除フラグ
 			sql.appendLine("	del_flg,");
 			// 作成者
@@ -765,6 +801,8 @@ public class QAPlusDao extends QADao {
 			sql.appendLine("'" + seitou.getLanguage() + "',");
 			// テキスト読み上げデータ
 			sql.appendLine("" + seitou.getYomiage() + ",");
+			// 問題と正答を入れ替えた結果生成された問題かどうか
+			sql.appendLine("" + seitou.getIs_reversible() + ",");
 			// 削除フラグ
 			sql.appendLine("" + seitou.getDel_flg() + ",");
 			// 作成者

@@ -36,6 +36,8 @@ public @Data class SeitouModel {
     private String language;
     // テキスト読み上げデータ
     private byte[] yomiage;
+    // リバーシブル問題かどうか
+    private int is_reversible;
     // 削除フラグ
     private int del_flg;
     // 作成者

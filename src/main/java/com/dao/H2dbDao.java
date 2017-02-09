@@ -567,6 +567,8 @@ public class H2dbDao
 	      sql.appendLine("  language text,");
 	      // テキスト読み上げデータ
 	      sql.appendLine("  yomiage blob default null,");
+	      // 問題と正答を入れ替えた結果生成された問題かどうか
+	      sql.appendLine("  is_reversible integer default 0,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
 	      // 作成者
@@ -617,6 +619,8 @@ public class H2dbDao
 	      sql.appendLine("  language text,");
 	      // テキスト読み上げデータ
 	      sql.appendLine("  yomiage blob default null,");
+	      // 問題と正答を入れ替えた結果生成された問題かどうか
+	      sql.appendLine("  is_reversible integer default 0,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
 	      // 作成者
@@ -855,6 +859,36 @@ public class H2dbDao
 			disconnect(conn);
 		}
 	}		
+	
+	/**
+	 * 問題TBLと正答TBLにリバーシブルフラグを追加するパッチ
+	 * @param db_name
+	 */
+	public void is_reversible_patch()
+	{
+		Connection conn = connect();
+		
+		StringBuilderPlus sql = new StringBuilderPlus();
+		sql.appendLine("alter table mondai add column if not exists is_reversible integer;");
+		sql.appendLine("alter table seitou add column if not exists is_reversible integer;");
+		
+		try
+	    {	      
+		  Statement stmt = conn.createStatement();
+	      /**
+	       *  SQL実行
+	       */
+	      transaction(stmt, sql);
+	    }
+	    catch(Exception ex)
+	    {
+			ex.printStackTrace();
+	    }
+	    finally
+	    {
+			disconnect(conn);
+	    }		
+	}
 
 	public byte[] get_owner_db(String owner_id)
 	{
