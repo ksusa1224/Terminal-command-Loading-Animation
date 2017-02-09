@@ -218,6 +218,8 @@ public class SQliteDAO {
 	      sql.appendLine("  language text,");
 	      // テキスト読み上げデータ
 	      sql.appendLine("  yomiage blob default null,");
+	      // 問題と正答を入れ替えた結果生成された問題かどうか
+	      sql.appendLine("  is_reversible integer default 0,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
 	      // 作成者
@@ -268,6 +270,8 @@ public class SQliteDAO {
 	      sql.appendLine("  language text,");
 	      // テキスト読み上げデータ
 	      sql.appendLine("  yomiage blob default null,");
+	      // 問題と正答を入れ替えた結果生成された問題かどうか
+	      sql.appendLine("  is_reversible integer default 0,");
 	      // 削除フラグ
 	      sql.appendLine("	del_flg integer default 0,");
 	      // 作成者
@@ -657,6 +661,49 @@ public class SQliteDAO {
 	      close(connection);
 	    }		
 	}	
+	
+	/**
+	 * 問題TBLと正答TBLにリバーシブルフラグを追加するパッチ
+	 * @param db_name
+	 */
+	public void is_reversible_patch(String db_name)
+	{
+		SQliteDAO dao = new SQliteDAO();
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+		
+		StringBuilderPlus sql = new StringBuilderPlus();
+		sql.appendLine("alter table mondai add column is_reversible integer;");
+		sql.appendLine("alter table seitou add column is_reversible integer;");
+		
+		try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+
+	      //1行ずつコミットしない
+	      stmt.getConnection().setAutoCommit(false);
+	      
+	      /**
+	       *  SQL実行
+	       */
+	      //dao.transaction(stmt, sql);
+	    }
+	    catch(Exception ex)
+	    {
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+	    }		
+	}
 
 	/**
 	 * コネクションをクローズする

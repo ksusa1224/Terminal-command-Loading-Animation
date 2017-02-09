@@ -95,6 +95,8 @@ public class MondaiDao {
 		sql.appendLine("  language,");
 		// テキスト読み上げデータ
 		sql.appendLine("  yomiage,");
+	    // 問題と正答を入れ替えた結果生成された問題かどうか
+	    sql.appendLine("    is_reversible,");
 		// 削除フラグ
 		sql.appendLine("	del_flg,");
 		// 作成者
@@ -108,6 +110,7 @@ public class MondaiDao {
 		sql.appendLine(" from mondai");
 		sql.appendLine(" where ");
 		sql.appendLine(" del_flg = 0");
+//		sql.appendLine(" and (is_reversible = 0 or is_reversible is null)");
 		sql.appendLine(" order by qa_id, junban asc;");
 		
 		dao.loadDriver();
@@ -146,6 +149,8 @@ public class MondaiDao {
 	    	  mondai.setLanguage(rs.getString("language"));
 	    	  // テキスト読み上げデータ
 	    	  mondai.setYomiage(rs.getBytes("yomiage"));
+	  	      // 問題と正答を入れ替えた結果生成された問題かどうか
+	  	      mondai.setIs_reversible(rs.getInt("is_reversible"));
 	    	  // 削除フラグ
 		      mondai.setDel_flg(rs.getInt("del_flg"));
 		      // 作成者
@@ -205,6 +210,8 @@ public class MondaiDao {
 		sql.appendLine("  language,");
 		// テキスト読み上げデータ
 		sql.appendLine("  yomiage,");
+	    // 問題と正答を入れ替えた結果生成された問題かどうか
+	    sql.appendLine("    is_reversible,");
 		// 削除フラグ
 		sql.appendLine("	del_flg,");
 		// 作成者
@@ -218,6 +225,7 @@ public class MondaiDao {
 		sql.appendLine(" from mondai");
 		sql.appendLine(" where qa_id = '" + qa_id + "'");
 		sql.appendLine(" and del_flg = 0");
+//		sql.appendLine(" and (is_reversible = 0 or is_reversible is null)");
 		sql.appendLine(" order by junban asc;");
 		
 		dao.loadDriver();
@@ -256,6 +264,8 @@ public class MondaiDao {
 	    	  mondai.setLanguage(rs.getString("language"));
 	    	  // テキスト読み上げデータ
 	    	  mondai.setYomiage(rs.getBytes("yomiage"));
+	  	      // 問題と正答を入れ替えた結果生成された問題かどうか
+	  	      mondai.setIs_reversible(rs.getInt("is_reversible"));
 	    	  // 削除フラグ
 		      mondai.setDel_flg(rs.getInt("del_flg"));
 		      // 作成者
@@ -320,6 +330,8 @@ public class MondaiDao {
 		sql.appendLine("  language,");
 		// テキスト読み上げデータ
 		sql.appendLine("  yomiage,");		
+		// 問題と正答を入れ替えた結果生成された問題かどうか
+		sql.appendLine("    is_reversible,");
 		// 削除フラグ
 		sql.appendLine("	del_flg,");
 		// 作成者
@@ -353,6 +365,8 @@ public class MondaiDao {
 		sql.appendLine("'" + mondai.getLanguage() + "',");
 		// テキスト読み上げデータ
 		sql.appendLine("" + mondai.getYomiage() + ",");
+		// 問題と正答を入れ替えた結果生成された問題かどうか
+		sql.appendLine("" + mondai.getIs_reversible() +",");
 		// 削除フラグ
 		sql.appendLine("" + mondai.getDel_flg() + ",");
 		// 作成者
@@ -382,30 +396,24 @@ public class MondaiDao {
 	      /**
 	       * h2dbにもinsert
 	       */
-			// 重いので非同期の別スレッドで処理
-			new Thread(new Runnable() {
-	            @Override
-	            public void run() {
-					Connection conn = null;
-					H2dbDao h2dao = new H2dbDao();
-					try {
-						conn = h2dao.connect();
-						Statement h2stmt = conn.createStatement();
+			Connection conn = null;
+			H2dbDao h2dao = new H2dbDao();
+			try {
+				conn = h2dao.connect();
+				Statement h2stmt = conn.createStatement();
 
-						//1行ずつコミットしない
-						h2stmt.getConnection().setAutoCommit(false);
-						h2dao.transaction(h2stmt, sql);
-					} catch (Exception e) {
-						e.printStackTrace();
-						Log log = new Log();
-						log.insert_error_log("ERROR", e.getStackTrace().toString());
-					}
-					finally
-					{
-						h2dao.disconnect(conn);						
-					}
-	            }
-	        }).start();
+				//1行ずつコミットしない
+				h2stmt.getConnection().setAutoCommit(false);
+				h2dao.transaction(h2stmt, sql);
+			} catch (Exception e) {
+				e.printStackTrace();
+				Log log = new Log();
+				log.insert_error_log("ERROR", e.getStackTrace().toString());
+			}
+			finally
+			{
+				h2dao.disconnect(conn);						
+			}
 	    }
 	    catch(Exception ex)
 	    {

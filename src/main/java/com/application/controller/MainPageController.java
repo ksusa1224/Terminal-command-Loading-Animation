@@ -9,6 +9,7 @@ import java.io.PrintWriter;
 import java.io.SequenceInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -50,7 +51,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cybozu.labs.langdetect.Detector; 
 import com.cybozu.labs.langdetect.DetectorFactory; 
-import com.cybozu.labs.langdetect.LangDetectException; 
+import com.cybozu.labs.langdetect.LangDetectException;
+import com.dao.H2dbDao;
+import com.dao.SQliteDAO;
 import com.cybozu.*;
 import com.application.controller.dao.KaitouDao;
 import com.application.controller.dao.MondaiDao;
@@ -196,6 +199,19 @@ public class MainPageController{
 				QADao qa_dao = new QADao();
 				int total_pages = qa_dao.get_pages(owner_db, "");
 				model.addAttribute("total_pages", total_pages);
+				
+				try
+				{
+					// 問題と正答へのリバーシブルフラグ追加パッチ
+					SQliteDAO dao = new SQliteDAO();
+					dao.is_reversible_patch(owner_db);
+					H2dbDao h2dao = new H2dbDao();
+					h2dao.is_reversible_patch();
+				}
+				catch(Exception ex)
+				{
+					ex.printStackTrace();
+				}
 				
 				return "main";
 			}
@@ -1706,7 +1722,14 @@ public class MainPageController{
 		}
 		qa.setYomudake_flg(yomudake);
 	    // 問題と正答を入れ替えた結果生成された問題かどうか
-		qa.setIs_reversible(0);
+		if (qa_type == Constant.QA_TYPE_1_ON_1)
+		{
+			qa.setIs_reversible(1);
+		}
+		else
+		{
+			qa.setIs_reversible(0);			
+		}
 	    // 広告問題フラグ
 		qa.setKoukoku_flg(0);
 		// 重要度（５段階）
@@ -1741,6 +1764,76 @@ public class MainPageController{
 		qa.setUpdate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
 		qa_plus.setQa(qa);
 		
+		/**
+		 * 1:1問題の場合、リバーシブル問題を作る
+		 */
+		if (qa_type == Constant.QA_TYPE_1_ON_1 && yomudake == 0)
+		{
+			QAModel qa_reversible = new QAModel();
+
+			// 行番号・QA_ID生成用
+			qa_max_no++;
+			// 行番号
+			qa_reversible.setRow_no(qa_max_no + 1); 
+			// QA ID
+			qa_id = qa_reversible.generate_qa_id(qa_max_no + 1, owner_id);
+			qa_reversible.setQa_id(qa_id);
+			// QAタイプ
+			qa_reversible.setQa_type(qa_type);
+		    // QA入力エリアのHTML
+			qa_reversible.setQa_html(qa_input);
+			// 読むだけ問題フラグ
+			qa_reversible.setYomudake_flg(0);
+		    // 問題と正答を入れ替えた結果生成された問題かどうか
+			qa_reversible.setIs_reversible(1);
+		    // 広告問題フラグ
+			qa_reversible.setKoukoku_flg(0);
+			// 重要度（５段階）
+			qa_reversible.setJuyoudo(3);
+			// 難易度（５段階）
+			qa_reversible.setNanido(3);
+			// 問題文と正答のうち問題から始まるかのフラグ
+			qa_reversible.setIs_start_with_q(is_start_with_q);
+			// 正答がたくさんある場合の問題文を分割した時の個数
+			qa_reversible.setQ_split_cnt(q_map.size());
+			// 問題に紐づく正答の個数
+			qa_reversible.setSeitou_cnt(a_map.size());
+			// 公開範囲
+			qa_reversible.setKoukai_level(Constant.KOUKAI_LEVEL_SELF_ONLY);
+			// 無料販売フラグ
+			qa_reversible.setFree_flg(0);
+			// 無料配布した数
+			qa_reversible.setFree_sold_num(0);
+			// 有料販売フラグ
+			qa_reversible.setCharge_flg(0);
+			// 有料で売った数
+			qa_reversible.setCharge_sold_num(0);
+			// 削除フラグ
+			qa_reversible.setDel_flg(0);
+			// 作成者
+			qa_reversible.setCreate_owner(owner_id);
+			// 更新者
+			qa_reversible.setUpdate_owner(owner_id);
+			// レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+			qa_reversible.setCreate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+			// レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+			qa_reversible.setUpdate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+			qa_plus.setQa(qa_reversible);
+		}
+
+		String reversed_mondai = "";
+		String reversed_seitou = "";
+		if (qa_type == Constant.QA_TYPE_1_ON_1 && yomudake == 0)
+		{
+			for (Map.Entry<Integer, String> entry : a_map.entrySet())
+			{
+				reversed_mondai = entry.getValue();
+			}
+			for (Map.Entry<Integer, String> entry : q_map.entrySet())
+			{
+				reversed_seitou = entry.getValue();
+			}
+		}
 		
 		/**
 		 * 問題
@@ -1748,7 +1841,7 @@ public class MainPageController{
 		List<MondaiModel> mondai_list = new ArrayList<MondaiModel>();
 		
 		System.out.println("q_map.size():"+q_map.size());
-		
+				
 		int q_idx = 1;
 		for (Map.Entry<Integer, String> entry : q_map.entrySet())
 		{
@@ -1784,77 +1877,14 @@ public class MainPageController{
 			mondai.setYomiage(null);
 			if (language == Constant.ENGLISH)
 			{
-				// 重いので非同期の別スレッドで処理
-				new Thread(new Runnable() {
-		            @Override
-		            public void run() {
-						try {
-							String speaker = "Vicki";
-							String file_name = Constant.SPEECH_DATA_FOLDER_PATH + mondai.getQ_id() + ".wav";
-							String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + mondai.getQ_parts_text() + "' -o " + file_name;
-							System.out.println(command);
-							Runtime.getRuntime().exec(command);
-							set_executable(file_name);
-							String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=18K -vn " + file_name.replace("wav", "m4a");
-							Runtime.getRuntime().exec(command2);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-		            }
-		        }).start();
-				// 重いので非同期の別スレッドで処理
-				new Thread(new Runnable() {
-		            @Override
-		            public void run() {
-						try {
-							String speaker = "Alex";
-							String file_name = Constant.SPEECH_DATA_FOLDER_PATH + mondai.getQ_id() + "_q.m4a";
-							String command = "say -v " + speaker + " '" + mondai.getQ_parts_text() + "' -o " + file_name;
-							Runtime.getRuntime().exec(command);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-		            }
-		        }).start();
+				create_speach("Alex", mondai.getQ_id(), mondai.getQ_parts_text(), "q");
 			}
 			else
 			{
-				// 重いので非同期の別スレッドで処理
-				new Thread(new Runnable() {
-		            @Override
-		            public void run() {
-					String roman = SlimeSerif.Japanese_to_Roman(mondai.getQ_parts_text());
-					try {
-						String speaker = "Vicki";
-						String file_name = Constant.SPEECH_DATA_FOLDER_PATH + mondai.getQ_id() + ".wav";
-						String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + roman + "' -o " + file_name;
-						System.out.println(command);
-						Runtime.getRuntime().exec(command);
-						set_executable(file_name);
-						String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=18K -vn " + file_name.replace("wav", "m4a");
-						Runtime.getRuntime().exec(command2);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-		            }
-		        }).start();
-				new Thread(new Runnable() {
-		            @Override
-		            public void run() {
-						try {
-							String speaker = "Kyoko";
-							String file_name = Constant.SPEECH_DATA_FOLDER_PATH + mondai.getQ_id() + "_q.m4a";
-							String command = "say -v " + speaker + " '" + mondai.getQ_parts_text() + "' -o " + file_name;
-							Runtime.getRuntime().exec(command);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-		            }
-		        }).start();
+				create_speach("Kyoko", mondai.getQ_id(), mondai.getQ_parts_text(), "q");
 			}
+		    // リバーシブル問題かどうか
+		    mondai.setIs_reversible(0);
 		    // 削除フラグ
 			mondai.setDel_flg(0);
 		    // 作成者
@@ -1866,7 +1896,62 @@ public class MainPageController{
 		    // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
 			mondai.setUpdate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
 			
-			mondai_list.add(mondai);
+			mondai_list.add(mondai);	
+			
+			if (qa_type == Constant.QA_TYPE_1_ON_1 && yomudake == 0)
+			{
+				MondaiModel mondai_reversed = new MondaiModel();
+				
+				// 行番号・Q_ID生成用
+				q_max_no++;
+		
+			    // 行番号
+				mondai_reversed.setRow_no(q_max_no + q_idx);
+			    // 問題ID
+				q_id = mondai_reversed.generate_q_id(q_max_no + q_idx, owner_id);
+				q_idx++;
+				mondai_reversed.setQ_id(q_id);
+			    // QA ID
+				mondai_reversed.setQa_id(qa_id);
+			    // QA内での問題パーツの順番
+				mondai_reversed.setJunban(entry.getKey());
+			    // 問題パーツが文字であるかのフラグ
+				mondai_reversed.setIs_text_flg(1);
+			    // 問題パーツがバイナリであるかのフラグ
+				mondai_reversed.setIs_binary_flg(0);
+			    // 分割された問題文
+				mondai_reversed.setQ_parts_text(reversed_mondai);
+			    // QAの中に出てくる音声や画像などのバイナリファイル
+				mondai_reversed.setQ_parts_binary(null);
+				language = Util.check_japanese_or_english(reversed_mondai);
+			    // 言語
+				mondai_reversed.setLanguage(Util.check_japanese_or_english(reversed_mondai));
+		//		mondai.setLanguage(Util.langDetect(mondai_input));
+			    // テキスト読み上げデータ
+				mondai_reversed.setYomiage(null);
+				if (language == Constant.ENGLISH)
+				{
+					create_speach("Alex", mondai_reversed.getQ_id(), mondai_reversed.getQ_parts_text(), "q");
+				}
+				else
+				{
+					create_speach("Kyoko", mondai_reversed.getQ_id(), mondai_reversed.getQ_parts_text(), "q");
+				}
+			    // リバーシブル問題かどうか
+			    mondai_reversed.setIs_reversible(1);
+			    // 削除フラグ
+				mondai_reversed.setDel_flg(0);
+			    // 作成者
+				mondai_reversed.setCreate_owner(owner_id);
+			    // 更新者
+				mondai_reversed.setUpdate_owner(owner_id);
+			    // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+				mondai_reversed.setCreate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+			    // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+				mondai_reversed.setUpdate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+				
+				mondai_list.add(mondai_reversed);	
+			}
 		}
 		
 		System.out.println("mondai_list.size()aaaaa:"+mondai_list.size());
@@ -1882,7 +1967,6 @@ public class MainPageController{
 		
 		for (Map.Entry<Integer, String> entry : a_map.entrySet())
 		{
-
 			SeitouModel seitou = new SeitouModel();
 			
 			// 行番号・S_ID生成用
@@ -1918,106 +2002,18 @@ public class MainPageController{
 			byte[] yomiage = null;
 			if (language == Constant.ENGLISH)
 			{
-				// 重いので非同期の別スレッドで処理
-				new Thread(new Runnable() {
-		            @Override
-		            public void run() {
-						try {
-							String speaker = "Vicki";
-							String file_name = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + ".wav";
-							String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + seitou.getSeitou() + "' -o " + file_name;
-							System.out.println(command);
-							Runtime.getRuntime().exec(command);
-							set_executable(file_name);
-							String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=18K -vn " + file_name.replace("wav", "m4a");
-							Runtime.getRuntime().exec(command2);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-		            }
-		        }).start();
-				// 重いので非同期の別スレッドで処理
-				new Thread(new Runnable() {
-		            @Override
-		            public void run() {
-						try {
-							String speaker = "Alex";
-							String file_name = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + "_a.m4a";
-							String command = "say -v " + speaker + " '" + seitou.getSeitou() + "' -o " + file_name;
-							System.out.println(command);
-							Runtime.getRuntime().exec(command);
-//							set_executable(file_name);
-//							String silence_file = Constant.SPEECH_DATA_FOLDER_PATH + "silence.aif";
-//							String output_english = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + "_a.aif";
-//							
-//					        try {
-//					            AudioInputStream clip1 = AudioSystem.getAudioInputStream(new File(file_name));
-//					            AudioInputStream clip2 = AudioSystem.getAudioInputStream(new File(silence_file));
-//
-//					            AudioInputStream appendedFiles = 
-//					                            new AudioInputStream(
-//					                                new SequenceInputStream(clip1, clip2),     
-//					                                clip1.getFormat(), 
-//					                                clip1.getFrameLength() + clip2.getFrameLength());
-//
-//					            AudioSystem.write(appendedFiles, 
-//					                            AudioFileFormat.Type.AIFF, 
-//					                            new File(output_english));
-//					        } catch (Exception e) {
-//					            e.printStackTrace();
-//					        }							
-//							String command2 = "/usr/local/bin/ffmpeg -i concat:'" + file_name + "|" + silence_file + "' -c copy " + Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + "_alex.wav";
-//							System.out.println(command2);
-//							Thread.sleep(1000);
-//							Process p = Runtime.getRuntime().exec(command2);
-//							p.waitFor();
-//							Thread.sleep(2000);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-		            }
-		        }).start();
+				create_slime_speech(seitou.getS_id(), seitou.getSeitou());
+				create_speach("Alex", seitou.getS_id(), seitou.getSeitou(), "a");
 			}
 			else
 			{
-				// 重いので非同期の別スレッドで処理
-				new Thread(new Runnable() {
-		            @Override
-		            public void run() {
-					String roman = SlimeSerif.Japanese_to_Roman(seitou.getSeitou());
-					try {
-						String speaker = "Vicki";
-						String file_name = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + ".wav";
-						String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + roman + "' -o " + file_name;
-						System.out.println(command);
-						Runtime.getRuntime().exec(command);
-						set_executable(file_name);
-						String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=18K -vn " + file_name.replace("wav", "m4a");
-						Runtime.getRuntime().exec(command2);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-		            }
-		        }).start();
-				new Thread(new Runnable() {
-		            @Override
-		            public void run() {
-						try {
-							String speaker = "Kyoko";
-							String file_name = Constant.SPEECH_DATA_FOLDER_PATH + seitou.getS_id() + "_a.m4a";
-							String command = "say -v " + speaker + " '" + seitou.getSeitou() + "' -o " + file_name;
-							Runtime.getRuntime().exec(command);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-		            }
-		        }).start();
+				String serif = SlimeSerif.Japanese_to_Roman(seitou.getSeitou());
+				create_slime_speech(seitou.getS_id(), serif);
+				create_speach("Kyoko", seitou.getS_id(), seitou.getSeitou(), "a");
 			}
 			seitou.setYomiage(yomiage);
+		    // リバーシブル問題かどうか
+			seitou.setIs_reversible(0);
 		    // 削除フラグ
 			seitou.setDel_flg(0);
 		    // 作成者
@@ -2071,6 +2067,108 @@ public class MainPageController{
 			kaitou.setUpdate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
 			
 			kaitou_dao.insert_kaitou(owner_db, kaitou);
+			
+			if (qa_type == Constant.QA_TYPE_1_ON_1 && yomudake == 0)
+			{
+				SeitouModel seitou_reversed = new SeitouModel();
+				
+				// 行番号・S_ID生成用
+				s_max_no++;
+				
+			    // 行番号
+				seitou_reversed.setRow_no(s_max_no + a_idx);
+			    // 正答ID
+				s_id = seitou_reversed.generate_s_id(s_max_no + a_idx, owner_id);
+				seitou_reversed.setS_id(s_id);
+			    // QA ID
+				seitou_reversed.setQa_id(qa_id);
+			    // QA内での正答の順番
+				seitou_reversed.setJunban(entry.getKey());
+			    // 正答が文字であるかのフラグ
+				seitou_reversed.setIs_text_flg(1);
+			    // 正答がバイナリであるかのフラグ
+				seitou_reversed.setIs_binary_flg(0);
+			    // 正答
+				seitou_reversed.setSeitou(reversed_seitou);
+			    // 正答が画像などのバイナリである場合に格納する
+				seitou_reversed.setSeitou_binary(null);
+			    // 重要度（５段階）
+				seitou_reversed.setJuyoudo(3);
+			    // 難易度（５段階）
+				seitou_reversed.setNanido(3);
+			    // 言語
+		//		seitou.setLanguage(Util.langDetect(seitou_input));
+				language = Util.check_japanese_or_english(reversed_seitou);
+				seitou_reversed.setLanguage(language);
+			    // テキスト読み上げデータ
+				yomiage = null;
+				if (language == Constant.ENGLISH)
+				{
+					create_slime_speech(seitou_reversed.getS_id(), seitou_reversed.getSeitou());
+					create_speach("Alex", seitou_reversed.getS_id(), seitou_reversed.getSeitou(), "a");
+				}
+				else
+				{
+					String serif = SlimeSerif.Japanese_to_Roman(seitou_reversed.getSeitou());
+					create_slime_speech(seitou_reversed.getS_id(), serif);
+					create_speach("Kyoko", seitou_reversed.getS_id(), seitou_reversed.getSeitou(), "a");
+				}
+				seitou_reversed.setYomiage(yomiage);
+			    // リバーシブル問題かどうか
+				seitou_reversed.setIs_reversible(1);
+			    // 削除フラグ
+				seitou_reversed.setDel_flg(0);
+			    // 作成者
+				seitou_reversed.setCreate_owner(owner_id);
+			    // 更新者
+				seitou_reversed.setUpdate_owner(owner_id);
+			    // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+				seitou_reversed.setCreate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+			    // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+				seitou_reversed.setUpdate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+		
+				seitou_list.add(seitou_reversed);
+				
+				/**
+				 * 回答の新規登録を追加
+				 */
+				KaitouModel kaitou_for_reversed = new KaitouModel();
+
+				// 行番号・K_ID生成用
+				k_max_no++;
+			    // 行番号
+				kaitou_for_reversed.setRow_no(k_max_no + a_idx);
+				// 回答ID
+				k_id = kaitou_for_reversed.generate_k_id(k_max_no + a_idx, owner_id);
+				a_idx++;
+				kaitou_for_reversed.setK_id(k_id);
+				// QA ID
+				kaitou_for_reversed.setQa_id(qa_id);
+				// 正答ID
+				kaitou_for_reversed.setS_id(s_id);
+				// 正解フラグ
+				kaitou_for_reversed.setSeikai_flg(0);
+				// アクション・・・チェックを入れた、外した、解いて正解した、解いて不正解、等
+				kaitou_for_reversed.setAction(Constant.ACTION_QA_TOUROKU);
+				// アクション日時（H2DBのtimestampと同じフォーマットにする）
+				kaitou_for_reversed.setAction_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+				// ユーザーが入力した回答
+				kaitou_for_reversed.setKaitou("");
+				// 言語
+				kaitou_for_reversed.setLanguage("");
+				// 削除フラグ
+				kaitou_for_reversed.setDel_flg(0);
+			    // 作成者
+				kaitou_for_reversed.setCreate_owner(owner_id);
+			    // 更新者
+				kaitou_for_reversed.setUpdate_owner(owner_id);
+			    // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+				kaitou_for_reversed.setCreate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+			    // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+				kaitou_for_reversed.setUpdate_timestamp(Util.getNow(Constant.DB_DATE_FORMAT));
+				
+				kaitou_dao.insert_kaitou(owner_db, kaitou_for_reversed);
+			}
 		}
 		
 		qa_plus.setSeitou_list(seitou_list);
@@ -2148,18 +2246,86 @@ public class MainPageController{
 		stop_watch.stop("create_qa");
 	}
 
+	private void create_speach(String speaker, String id, String serif, String q_or_a) {
+		// 重いので非同期の別スレッドで処理
+		new Thread(new Runnable() {
+		    @Override
+		    public void run() {
+				try {
+					String file_name = Constant.SPEECH_DATA_FOLDER_PATH + id + "_" + q_or_a + ".m4a";
+					String command = "say -v " + speaker + " '" + serif + "' -o " + file_name;
+					System.out.println(command);
+					Process p = Runtime.getRuntime().exec(command);
+					p.waitFor();
+					set_executable(file_name);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }
+		}).start();
+	}
+
+	private void create_slime_speech(String id, String serif) {
+		// 重いので非同期の別スレッドで処理
+		new Thread(new Runnable() {
+		    @Override
+		    public void run() {
+				try {
+					String speaker = "Vicki";
+					String file_name = Constant.SPEECH_DATA_FOLDER_PATH + id + ".wav";
+					String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + serif + "' -o " + file_name;
+					System.out.println(command);
+					Process p = Runtime.getRuntime().exec(command);
+					p.waitFor();
+					set_executable(file_name);
+					String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=18K -vn " + file_name.replace("wav", "m4a");
+					Process p2 = Runtime.getRuntime().exec(command2);
+					p2.waitFor();
+					set_executable(file_name);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }
+		}).start();
+	}
+
 	public void set_executable(String file_name) throws InterruptedException {
-		File file = new File(file_name);
-		if (!file.exists())
-		{
+//		File file = new File(file_name);
+//		if (!file.exists())
+//		{
+//			Thread.sleep(1000);
+//			set_executable(file_name);
+//			return;
+//		}
+		Path path = Paths.get(file_name);
+		if (Files.notExists(path)) {
+//			System.out.println("=============");
 			Thread.sleep(100);
-			set_executable(file_name);
+			set_executable(file_name);		  
 		}
-		Boolean a = file.setExecutable(true, false);
+		else
+		{
+			System.out.println("xxxxxxxxxxxxxxx");
+			try(Stream<Path> paths = Files.walk(Paths.get(Constant.SPEECH_DATA_FOLDER_PATH.substring(0, Constant.SPEECH_DATA_FOLDER_PATH.length()-1)))) {
+			    paths.forEach(filePath -> {
+//			        if (Files.isRegularFile(filePath)) {
+			        	File speech_file = filePath.toFile();
+			    		Boolean a = speech_file.setExecutable(true, false);
+//			        }
+			    });
+			} 
+			catch(Exception ex)
+			{
+				ex.printStackTrace();			
+			}
+		}
+//		Boolean a = file.setExecutable(true, false);
 //		file.setExecutable(true, false);
 //		file.setWritable(true, false);
 //		file.setReadable(true,false);
-		System.out.println("setexec:"+a);
+//		System.out.println("setexec:"+a);
 	}
 
 	private AudioFormat getOutFormat(AudioFormat inFormat) {

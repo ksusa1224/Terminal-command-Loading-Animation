@@ -19,51 +19,7 @@ function body_load()
 		$("#qa_area_right").css("height","486px");
 		$("#lines-right").append("<tr><td class='note-line'></td></tr>");
 		$(".husen").css("height","25px");
-	}
-	
-	// スマホの場合
-	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
-		 // クリスタルボードと付箋と虫眼鏡を表示しない
-		 $("#crystal_board").hide();
-		 $(".husen").hide();
-		 $("#loupe").hide();
-		 // テーブルを使わずに罫線を引く
-		 $(".qa").css("border-top","1px solid #d9d9d9");
-		 $(".qa").css("font-size","18px");
-		 $(".qa").css("line-height","24.5px");
-		 $(".date").css("border-top","1px solid #d9d9d9");
-		 $(".date").css("font-size","18px");
-		 $(".date").css("line-height","24.5px");
-		 $(".note-line").css("display","none");
-		 
-		 var device_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
-
-		 // iPhone6 Plus
-		 if (device_width == 414)
-		 {
-			 document.querySelector("meta[name=viewport]").setAttribute(
-			          'content', 
-			          'width=1275px, initial-scale=0.9, maximum-scale=0.9, minimum-scale=0.9, user-scalable=no');	 
-		 }
-		 // iPad(縦)
-		 if (device_width == 768)
-	     {
-			 document.querySelector("meta[name=viewport]").setAttribute(
-			          'content', 
-			          'width=1275px, initial-scale=1.6, maximum-scale=1.6, minimum-scale=1.6, user-scalable=no');	 
-	     }
-		 // iPad(横)
-		 if (device_width == 1024)
-	     {
-			 document.querySelector("meta[name=viewport]").setAttribute(
-			          'content', 
-			          'width=1275px, initial-scale=0.5, maximum-scale=0.5, minimum-scale=1.15, user-scalable=no');	 
-	     }		 
-	}
-	else
-	{
-		 $("body").css("overflow","hidden");		
-	}
+	}	
 	
     $('#note_area').contextmenu({
         target: "#note_context-menu"
@@ -475,6 +431,50 @@ function body_load()
 // 初期表示時およびAjax通信の後に呼び出す
 function refresh()
 {
+	// スマホの場合
+	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+		 // クリスタルボードと付箋と虫眼鏡を表示しない
+		 $("#crystal_board").hide();
+		 $(".husen").hide();
+		 $("#loupe").hide();
+		 // テーブルを使わずに罫線を引く
+		 $(".qa").css("border-top","1px solid #d9d9d9");
+		 $(".qa").css("font-size","18px");
+		 $(".qa").css("line-height","24.5px");
+		 $(".date").css("border-top","1px solid #d9d9d9");
+		 $(".date").css("font-size","18px");
+		 $(".date").css("line-height","24.5px");
+		 $(".note-line").css("display","none");
+		 
+		 var device_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+
+		 // iPhone6 Plus
+		 if (device_width == 414)
+		 {
+			 document.querySelector("meta[name=viewport]").setAttribute(
+			          'content', 
+			          'width=1275px, initial-scale=0.9, maximum-scale=0.9, minimum-scale=0.9, user-scalable=no');	 
+		 }
+		 // iPad(縦)
+		 if (device_width == 768)
+	     {
+			 document.querySelector("meta[name=viewport]").setAttribute(
+			          'content', 
+			          'width=1275px, initial-scale=1.6, maximum-scale=1.6, minimum-scale=1.6, user-scalable=no');	 
+	     }
+		 // iPad(横)
+		 if (device_width == 1024)
+	     {
+			 document.querySelector("meta[name=viewport]").setAttribute(
+			          'content', 
+			          'width=1275px, initial-scale=0.5, maximum-scale=0.5, minimum-scale=1.15, user-scalable=no');	 
+	     }		 
+	}
+	else
+	{
+		 $("body").css("overflow","hidden");		
+	}
+
 	$('.qa').contextmenu({
 	    target: "#qa_context-menu"
 	});
