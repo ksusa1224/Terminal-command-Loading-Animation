@@ -1,1 +1,0 @@
-find /Users/ksusa/Documents/anki_note_workspace/anki_note/src/main/resources/static/speech/ -type f -exec chmod +x {} \;

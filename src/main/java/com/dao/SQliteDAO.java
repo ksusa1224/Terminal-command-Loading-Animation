@@ -691,7 +691,7 @@ public class SQliteDAO {
 	      /**
 	       *  SQL実行
 	       */
-	      //dao.transaction(stmt, sql);
+	      dao.transaction(stmt, sql);
 	    }
 	    catch(Exception ex)
 	    {

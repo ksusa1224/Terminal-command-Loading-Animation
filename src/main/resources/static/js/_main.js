@@ -901,12 +901,24 @@ function slime_speech()
 //    $(".qa").hover(function() {
     	if (speech_mode == "true")
     	{
-//        	var id = $(this).attr("id");
     		var id = qa_id_for_contextmenu;
         	var s_id = $("#"+id).children(".a").attr("id");
-//        	alert(s_id);
         	serif = $("#"+id).children(".a").text();
-        	var path = "../speech/" + s_id + ".m4a";
+        	var path = "../speech/" + id + "/" + s_id + ".m4a";
+	        path = "../speech/" + s_id + ".m4a";
+        	$.ajax({
+        	    url:path,
+        	    type:'HEAD',
+        	    error: function()
+        	    {
+        	        path = "../speech/" + s_id + ".m4a";
+        	    },
+        	    success: function()
+        	    {
+        	        //file exists
+        	    }
+        	});      	
+//        	alert(path);
         	$("#play_qa").attr("src",path);
 	        document.getElementById("play_qa").play();    	
 	    	$("#balloon").css("display","inline");
@@ -1914,7 +1926,21 @@ function play_q()
 {
 	var id = qa_id_for_contextmenu;
 	var q_id = $("#"+id).children(".q").attr("id");
-	var path = "../speech/" + q_id + "_q.m4a";
+	var path = "../speech/" + id + "/" + q_id + "_q.m4a";
+    path = "../speech/" + q_id + "_q.m4a";
+	$.ajax({
+	    url:path,
+	    type:'HEAD',
+	    error: function()
+	    {
+	        path = "../speech/" + q_id + "_q.m4a";
+	    },
+	    success: function()
+	    {
+	        //file exists
+	    }
+	});      	
+//	alert(path);
     $("#play_qa").attr("src",path);
     $("#play_qa").attr("loop");
     document.getElementById("play_qa").loop = true;
@@ -1926,8 +1952,22 @@ function play_a()
 {
 	var id = qa_id_for_contextmenu;
 	var a_id = $("#"+id).children(".a").attr("id");
-	var path = "../speech/" + a_id + "_a.m4a";
-    $("#play_qa").attr("src",path);
+	var path = "../speech/" + id + "/" + a_id + "_a.m4a";
+    path = "../speech/" + a_id + "_a.m4a";
+	$.ajax({
+	    url:path,
+	    type:'HEAD',
+	    error: function()
+	    {
+	        path = "../speech/" + a_id + "_a.m4a";
+	    },
+	    success: function()
+	    {
+	        //file exists
+	    }
+	});      	
+//	alert(path);
+	$("#play_qa").attr("src",path);
     $("#play_qa").attr("loop");
     document.getElementById("play_qa").loop = true;
     document.getElementById("play_qa").play();

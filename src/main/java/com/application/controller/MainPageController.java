@@ -30,6 +30,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.spi.AudioFileReader;
 
+import org.apache.commons.io.FileUtils;
 import org.atilika.kuromoji.Token;
 import org.atilika.kuromoji.Tokenizer;
 import org.json.JSONException;
@@ -200,18 +201,77 @@ public class MainPageController{
 				int total_pages = qa_dao.get_pages(owner_db, "");
 				model.addAttribute("total_pages", total_pages);
 				
-				try
-				{
-					// 問題と正答へのリバーシブルフラグ追加パッチ
-					SQliteDAO dao = new SQliteDAO();
-					dao.is_reversible_patch(owner_db);
-					H2dbDao h2dao = new H2dbDao();
-					h2dao.is_reversible_patch();
-				}
-				catch(Exception ex)
-				{
-					ex.printStackTrace();
-				}
+//				try
+//				{
+//					// 問題と正答へのリバーシブルフラグ追加パッチ
+//					SQliteDAO dao = new SQliteDAO();
+//					dao.is_reversible_patch(owner_db);
+//					H2dbDao h2dao = new H2dbDao();
+//					h2dao.is_reversible_patch();
+//				}
+//				catch(Exception ex)
+//				{
+//					ex.printStackTrace();
+//				}
+//				// patch
+//				try(Stream<Path> paths = Files.walk(Paths.get(Constant.SPEECH_DATA_FOLDER_PATH.substring(0,Constant.SPEECH_DATA_FOLDER_PATH.length()-1)))) {
+//				    paths.forEach(filePath -> {
+//				    	System.out.println("filepath:"+filePath.toFile());
+//				    	try
+//				    	{
+//					    	if (Files.isRegularFile(filePath)) {
+//					        	File speech_file = filePath.toFile();
+//					        	String file_name = speech_file.getName();
+//					        	//String now_path = speech_file.getAbsolutePath();
+//					        	System.out.println("file_name:"+file_name);
+//				        		String id = "";
+//					        	String qa_id = "";
+//				        		if (file_name.split("\\.").length > 0)
+//				        		{
+//				        			id = file_name.split("\\.")[0].replace("_q", "");
+//				        			id = file_name.split("\\.")[0].replace("_a", "");
+//				        		}
+//			        			System.out.println("id:"+id);
+//					        	if (id.startsWith("s"))
+//					        	{
+//					        		System.out.println("this is s.");
+//						        	SeitouDao sdao = new SeitouDao();
+//						        	qa_id = sdao.get_qa_id(owner_db, id);
+//					        	}
+//					        	else if (id.startsWith("q"))
+//					        	{
+//					        		System.out.println("this is q.");
+//						        	MondaiDao qdao = new MondaiDao();
+//						        	qa_id = qdao.get_qa_id(owner_db, id);			        		
+//					        	}
+//					        	String new_path = Constant.SPEECH_DATA_FOLDER_PATH + qa_id;
+//					        	System.out.println("qa_id:"+qa_id);
+//					        	System.out.println(new_path);
+//								File theDir = new File(new_path);
+//								// if the directory does not exist, create it
+//								if (!theDir.exists()) {
+//								    boolean result = false;
+//								    try{
+//								        theDir.mkdir();
+//								        result = true;
+//								    } 
+//								    catch(SecurityException se){
+//								        //handle it
+//								    }        
+//								}
+//								speech_file.renameTo(new File(new_path + "/" + file_name));
+//					    	}
+//				    	}
+//				    	catch(Exception ex)
+//				    	{
+//				    		ex.printStackTrace();
+//				    	}
+//				    });
+//				} 
+//				catch(Exception ex)
+//				{
+//					ex.printStackTrace();			
+//				}
 				
 				return "main";
 			}
@@ -1877,11 +1937,11 @@ public class MainPageController{
 			mondai.setYomiage(null);
 			if (language == Constant.ENGLISH)
 			{
-				create_speach("Alex", mondai.getQ_id(), mondai.getQ_parts_text(), "q");
+				create_speach("Alex", qa_id, mondai.getQ_id(), mondai.getQ_parts_text(), "q");
 			}
 			else
 			{
-				create_speach("Kyoko", mondai.getQ_id(), mondai.getQ_parts_text(), "q");
+				create_speach("Kyoko", qa_id, mondai.getQ_id(), mondai.getQ_parts_text(), "q");
 			}
 		    // リバーシブル問題かどうか
 		    mondai.setIs_reversible(0);
@@ -1931,11 +1991,11 @@ public class MainPageController{
 				mondai_reversed.setYomiage(null);
 				if (language == Constant.ENGLISH)
 				{
-					create_speach("Alex", mondai_reversed.getQ_id(), mondai_reversed.getQ_parts_text(), "q");
+					create_speach("Alex", qa_id, mondai_reversed.getQ_id(), mondai_reversed.getQ_parts_text(), "q");
 				}
 				else
 				{
-					create_speach("Kyoko", mondai_reversed.getQ_id(), mondai_reversed.getQ_parts_text(), "q");
+					create_speach("Kyoko", qa_id, mondai_reversed.getQ_id(), mondai_reversed.getQ_parts_text(), "q");
 				}
 			    // リバーシブル問題かどうか
 			    mondai_reversed.setIs_reversible(1);
@@ -2002,14 +2062,14 @@ public class MainPageController{
 			byte[] yomiage = null;
 			if (language == Constant.ENGLISH)
 			{
-				create_slime_speech(seitou.getS_id(), seitou.getSeitou());
-				create_speach("Alex", seitou.getS_id(), seitou.getSeitou(), "a");
+				create_slime_speech(qa_id, seitou.getS_id(), seitou.getSeitou());
+				create_speach("Alex", qa_id, seitou.getS_id(), seitou.getSeitou(), "a");
 			}
 			else
 			{
 				String serif = SlimeSerif.Japanese_to_Roman(seitou.getSeitou());
-				create_slime_speech(seitou.getS_id(), serif);
-				create_speach("Kyoko", seitou.getS_id(), seitou.getSeitou(), "a");
+				create_slime_speech(qa_id, seitou.getS_id(), serif);
+				create_speach("Kyoko", qa_id, seitou.getS_id(), seitou.getSeitou(), "a");
 			}
 			seitou.setYomiage(yomiage);
 		    // リバーシブル問題かどうか
@@ -2104,14 +2164,14 @@ public class MainPageController{
 				yomiage = null;
 				if (language == Constant.ENGLISH)
 				{
-					create_slime_speech(seitou_reversed.getS_id(), seitou_reversed.getSeitou());
-					create_speach("Alex", seitou_reversed.getS_id(), seitou_reversed.getSeitou(), "a");
+					create_slime_speech(qa_id, seitou_reversed.getS_id(), seitou_reversed.getSeitou());
+					create_speach("Alex", qa_id, seitou_reversed.getS_id(), seitou_reversed.getSeitou(), "a");
 				}
 				else
 				{
 					String serif = SlimeSerif.Japanese_to_Roman(seitou_reversed.getSeitou());
-					create_slime_speech(seitou_reversed.getS_id(), serif);
-					create_speach("Kyoko", seitou_reversed.getS_id(), seitou_reversed.getSeitou(), "a");
+					create_slime_speech(qa_id, seitou_reversed.getS_id(), serif);
+					create_speach("Kyoko", qa_id, seitou_reversed.getS_id(), seitou_reversed.getSeitou(), "a");
 				}
 				seitou_reversed.setYomiage(yomiage);
 			    // リバーシブル問題かどうか
@@ -2243,21 +2303,34 @@ public class MainPageController{
 				}
 			}
 		}
+		
+		for (Thread thread : thread_list)
+		{
+//			try {
+//				//thread.join();
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+		}
+		
 		stop_watch.stop("create_qa");
 	}
+	
+	private List<Thread> thread_list = new ArrayList<Thread>();
 
-	private void create_speach(String speaker, String id, String serif, String q_or_a) {
+	private void create_speach(String speaker, String qa_id, String id, String serif, String q_or_a) {
 		// 重いので非同期の別スレッドで処理
 		new Thread(new Runnable() {
 		    @Override
 		    public void run() {
-				try {
+				try {					
 					String file_name = Constant.SPEECH_DATA_FOLDER_PATH + id + "_" + q_or_a + ".m4a";
 					String command = "say -v " + speaker + " '" + serif + "' -o " + file_name;
-					System.out.println(command);
 					Process p = Runtime.getRuntime().exec(command);
 					p.waitFor();
-					set_executable(file_name);
+					set_executable(file_name, qa_id);					
+					
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -2266,23 +2339,33 @@ public class MainPageController{
 		}).start();
 	}
 
-	private void create_slime_speech(String id, String serif) {
+	private void create_slime_speech(String qa_id, String id, String serif) {
 		// 重いので非同期の別スレッドで処理
 		new Thread(new Runnable() {
 		    @Override
 		    public void run() {
-				try {
+				try {				
 					String speaker = "Vicki";
 					String file_name = Constant.SPEECH_DATA_FOLDER_PATH + id + ".wav";
 					String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + serif + "' -o " + file_name;
 					System.out.println(command);
 					Process p = Runtime.getRuntime().exec(command);
 					p.waitFor();
-					set_executable(file_name);
+					set_executable(file_name, qa_id);
 					String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=18K -vn " + file_name.replace("wav", "m4a");
 					Process p2 = Runtime.getRuntime().exec(command2);
 					p2.waitFor();
-					set_executable(file_name);
+					set_executable(file_name, qa_id);
+
+//					String speech = Constant.SPEECH_DATA_FOLDER_PATH
+//							.substring(0, Constant.SPEECH_DATA_FOLDER_PATH.length()-1);
+//					String speech_tmp = speech + "tmp";
+//					File speech_folder = new File(speech);
+//					File speech_tmp_folder = new File(speech_tmp);
+//					FileUtils.copyDirectory(speech_folder,speech_tmp_folder);
+//					FileUtils.deleteDirectory(new File(speech));
+//					File speech_folder2 = new File(speech);
+//					FileUtils.copyDirectory(speech_tmp_folder,speech_folder2);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -2291,29 +2374,23 @@ public class MainPageController{
 		}).start();
 	}
 
-	public void set_executable(String file_name) throws InterruptedException {
-//		File file = new File(file_name);
-//		if (!file.exists())
-//		{
-//			Thread.sleep(1000);
-//			set_executable(file_name);
-//			return;
-//		}
+	public void set_executable(String file_name, String qa_id) throws InterruptedException {
 		Path path = Paths.get(file_name);
 		if (Files.notExists(path)) {
-//			System.out.println("=============");
 			Thread.sleep(100);
-			set_executable(file_name);		  
+			set_executable(file_name, qa_id);		  
 		}
-		else
+		String folder = Constant.SPEECH_DATA_FOLDER_PATH
+				.substring(Constant.SPEECH_DATA_FOLDER_PATH.length()-1);
+		File speech_folder = new File(folder);
+		if (speech_folder.exists())
 		{
-			System.out.println("xxxxxxxxxxxxxxx");
-			try(Stream<Path> paths = Files.walk(Paths.get(Constant.SPEECH_DATA_FOLDER_PATH.substring(0, Constant.SPEECH_DATA_FOLDER_PATH.length()-1)))) {
+			try(Stream<Path> paths = Files.walk(Paths.get(folder))) {
 			    paths.forEach(filePath -> {
-//			        if (Files.isRegularFile(filePath)) {
+			        if (Files.isRegularFile(filePath)) {
 			        	File speech_file = filePath.toFile();
 			    		Boolean a = speech_file.setExecutable(true, false);
-//			        }
+			        }
 			    });
 			} 
 			catch(Exception ex)
@@ -2321,18 +2398,10 @@ public class MainPageController{
 				ex.printStackTrace();			
 			}
 		}
-//		Boolean a = file.setExecutable(true, false);
-//		file.setExecutable(true, false);
-//		file.setWritable(true, false);
-//		file.setReadable(true,false);
-//		System.out.println("setexec:"+a);
-	}
-
-	private AudioFormat getOutFormat(AudioFormat inFormat) {
-		int ch = inFormat.getChannels();
-		float rate = inFormat.getSampleRate();	
-		return new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 72000, 16, ch, ch * 2, rate,
-				inFormat.isBigEndian());
+		else
+		{
+			set_executable(file_name, qa_id);
+		}
 	}
 	
 	public void edit_qa(

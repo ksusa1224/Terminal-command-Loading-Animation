@@ -18,6 +18,54 @@ import com.dao.SQliteDAO;
 public class SeitouDao {
 
 	/**
+	 * 正答IDからQAIDを取得
+	 * @param db_name
+	 * @param s_id
+	 * @return
+	 */
+	public String get_qa_id(String db_name, String s_id)
+	{	
+		String qa_id = "";
+		
+		SQliteDAO dao = new SQliteDAO();
+		
+		StringBuilderPlus sql = new StringBuilderPlus();
+		sql.appendLine("select qa_id from seitou where s_id = '" + s_id + "'");
+		dao.loadDriver();
+		
+		//System.out.println(db_name);
+
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+	    try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+	      ResultSet rs = stmt.executeQuery(sql.toString());
+	      while (rs.next()) 
+	      {
+	    	  qa_id = rs.getString("qa_id");
+	      }
+	    }
+	    catch(Exception ex)
+	    {
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+	    }	    
+		
+		return qa_id;
+	}
+	
+	/**
 	 * 最大行を得る
 	 * @param db_name
 	 * @return

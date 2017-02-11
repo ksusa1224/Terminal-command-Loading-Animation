@@ -75,15 +75,19 @@ public class Constant {
 		= SQLITE_FOLDER_PATH + "owner_db" + "/" + OWNER_DB_CURRENT_VERSION;
 	
 //	// TODO 本番ではパスを変える
-//	public static final String SPEECH_DATA_FOLDER_PATH
-//		= "/Users/ksusa/Documents/anki_note_workspace/anki_note/src/main/resources/static/speech/";
 	public static final String SPEECH_DATA_FOLDER_PATH
-	= "/Users/slimebook/Documents/workspace/anki_note/src/main/resources/static/speech/";
+		= "/Users/ksusa/Documents/anki_note_workspace/anki_note/src/main/resources/static/speech/";
+//	public static final String SPEECH_DATA_FOLDER_PATH
+//	= "/Users/slimebook/Documents/workspace/anki_note/src/main/resources/static/speech/";
 
-	// 本番
+//	// 本番
 //	public static final String SPEECH_DATA_FOLDER_PATH
 //	= "/usr/local/anki_note/application/apache-tomcat-8.0/webapps/ROOT/WEB-INF/classes/static/speech/";
 	
+//	// 本番
+//	public static final String SPEECH_DATA_FOLDER_PATH
+//	= "/usr/local/anki_note/application/speech/";
+
 	// WINDOWS
 	/* 
 	public static final String ANKI_NOTE_ROOT_PATH 
