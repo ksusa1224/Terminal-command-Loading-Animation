@@ -1902,6 +1902,9 @@ public class MainPageController{
 		
 		System.out.println("q_map.size():"+q_map.size());
 				
+		List<String> q_id_list = new ArrayList<String>();
+		List<String> serif_q_list = new ArrayList<String>();
+		
 		int q_idx = 1;
 		for (Map.Entry<Integer, String> entry : q_map.entrySet())
 		{
@@ -1915,6 +1918,7 @@ public class MainPageController{
 			mondai.setRow_no(q_max_no + q_idx);
 		    // 問題ID
 			String q_id = mondai.generate_q_id(q_max_no + q_idx, owner_id);
+			q_id_list.add(q_id);
 			q_idx++;
 			mondai.setQ_id(q_id);
 		    // QA ID
@@ -1927,6 +1931,7 @@ public class MainPageController{
 			mondai.setIs_binary_flg(0);
 		    // 分割された問題文
 			mondai.setQ_parts_text(entry.getValue());
+			serif_q_list.add(entry.getValue());
 		    // QAの中に出てくる音声や画像などのバイナリファイル
 			mondai.setQ_parts_binary(null);
 			String language = Util.check_japanese_or_english(entry.getValue());
@@ -1935,14 +1940,6 @@ public class MainPageController{
 	//		mondai.setLanguage(Util.langDetect(mondai_input));
 		    // テキスト読み上げデータ
 			mondai.setYomiage(null);
-			if (language == Constant.ENGLISH)
-			{
-				create_speach("Alex", qa_id, mondai.getQ_id(), mondai.getQ_parts_text(), "q");
-			}
-			else
-			{
-				create_speach("Kyoko", qa_id, mondai.getQ_id(), mondai.getQ_parts_text(), "q");
-			}
 		    // リバーシブル問題かどうか
 		    mondai.setIs_reversible(0);
 		    // 削除フラグ
@@ -1969,6 +1966,7 @@ public class MainPageController{
 				mondai_reversed.setRow_no(q_max_no + q_idx);
 			    // 問題ID
 				q_id = mondai_reversed.generate_q_id(q_max_no + q_idx, owner_id);
+				q_id_list.add(q_id);
 				q_idx++;
 				mondai_reversed.setQ_id(q_id);
 			    // QA ID
@@ -1981,6 +1979,7 @@ public class MainPageController{
 				mondai_reversed.setIs_binary_flg(0);
 			    // 分割された問題文
 				mondai_reversed.setQ_parts_text(reversed_mondai);
+				serif_q_list.add(reversed_mondai);
 			    // QAの中に出てくる音声や画像などのバイナリファイル
 				mondai_reversed.setQ_parts_binary(null);
 				language = Util.check_japanese_or_english(reversed_mondai);
@@ -1989,14 +1988,6 @@ public class MainPageController{
 		//		mondai.setLanguage(Util.langDetect(mondai_input));
 			    // テキスト読み上げデータ
 				mondai_reversed.setYomiage(null);
-				if (language == Constant.ENGLISH)
-				{
-					create_speach("Alex", qa_id, mondai_reversed.getQ_id(), mondai_reversed.getQ_parts_text(), "q");
-				}
-				else
-				{
-					create_speach("Kyoko", qa_id, mondai_reversed.getQ_id(), mondai_reversed.getQ_parts_text(), "q");
-				}
 			    // リバーシブル問題かどうか
 			    mondai_reversed.setIs_reversible(1);
 			    // 削除フラグ
@@ -2022,6 +2013,8 @@ public class MainPageController{
 		 * 正答
 		 */
 		List<SeitouModel> seitou_list = new ArrayList<SeitouModel>();
+		List<String> s_id_list = new ArrayList<String>();
+		List<String> serif_a_list = new ArrayList<String>();
 
 		int a_idx = 1;
 		
@@ -2038,6 +2031,7 @@ public class MainPageController{
 		    // 正答ID
 			String s_id = seitou.generate_s_id(s_max_no + a_idx, owner_id);
 			seitou.setS_id(s_id);
+			s_id_list.add(s_id);
 		    // QA ID
 			seitou.setQa_id(qa_id);
 		    // QA内での正答の順番
@@ -2048,6 +2042,7 @@ public class MainPageController{
 			seitou.setIs_binary_flg(0);
 		    // 正答
 			seitou.setSeitou(entry.getValue());
+			serif_a_list.add(entry.getValue());
 		    // 正答が画像などのバイナリである場合に格納する
 			seitou.setSeitou_binary(null);
 		    // 重要度（５段階）
@@ -2060,17 +2055,6 @@ public class MainPageController{
 			seitou.setLanguage(language);
 		    // テキスト読み上げデータ
 			byte[] yomiage = null;
-			if (language == Constant.ENGLISH)
-			{
-				create_slime_speech(qa_id, seitou.getS_id(), seitou.getSeitou());
-				create_speach("Alex", qa_id, seitou.getS_id(), seitou.getSeitou(), "a");
-			}
-			else
-			{
-				String serif = SlimeSerif.Japanese_to_Roman(seitou.getSeitou());
-				create_slime_speech(qa_id, seitou.getS_id(), serif);
-				create_speach("Kyoko", qa_id, seitou.getS_id(), seitou.getSeitou(), "a");
-			}
 			seitou.setYomiage(yomiage);
 		    // リバーシブル問題かどうか
 			seitou.setIs_reversible(0);
@@ -2140,6 +2124,7 @@ public class MainPageController{
 			    // 正答ID
 				s_id = seitou_reversed.generate_s_id(s_max_no + a_idx, owner_id);
 				seitou_reversed.setS_id(s_id);
+				s_id_list.add(s_id);
 			    // QA ID
 				seitou_reversed.setQa_id(qa_id);
 			    // QA内での正答の順番
@@ -2150,6 +2135,7 @@ public class MainPageController{
 				seitou_reversed.setIs_binary_flg(0);
 			    // 正答
 				seitou_reversed.setSeitou(reversed_seitou);
+				serif_a_list.add(reversed_seitou);
 			    // 正答が画像などのバイナリである場合に格納する
 				seitou_reversed.setSeitou_binary(null);
 			    // 重要度（５段階）
@@ -2162,17 +2148,6 @@ public class MainPageController{
 				seitou_reversed.setLanguage(language);
 			    // テキスト読み上げデータ
 				yomiage = null;
-				if (language == Constant.ENGLISH)
-				{
-					create_slime_speech(qa_id, seitou_reversed.getS_id(), seitou_reversed.getSeitou());
-					create_speach("Alex", qa_id, seitou_reversed.getS_id(), seitou_reversed.getSeitou(), "a");
-				}
-				else
-				{
-					String serif = SlimeSerif.Japanese_to_Roman(seitou_reversed.getSeitou());
-					create_slime_speech(qa_id, seitou_reversed.getS_id(), serif);
-					create_speach("Kyoko", qa_id, seitou_reversed.getS_id(), seitou_reversed.getSeitou(), "a");
-				}
 				seitou_reversed.setYomiage(yomiage);
 			    // リバーシブル問題かどうか
 				seitou_reversed.setIs_reversible(1);
@@ -2304,33 +2279,106 @@ public class MainPageController{
 			}
 		}
 		
-		for (Thread thread : thread_list)
-		{
-//			try {
-//				//thread.join();
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-		}
+		create_speach(
+				qa_id, 
+				q_id_list, 
+				s_id_list, 
+				serif_q_list,
+				serif_a_list);
 		
 		stop_watch.stop("create_qa");
 	}
 	
 	private List<Thread> thread_list = new ArrayList<Thread>();
 
-	private void create_speach(String speaker, String qa_id, String id, String serif, String q_or_a) {
+	private void create_speach(
+			String qa_id, 
+			List<String> q_id_list, 
+			List<String> s_id_list, 
+			List<String> serif_q_list,
+			List<String> serif_a_list) {
 		// 重いので非同期の別スレッドで処理
 		new Thread(new Runnable() {
 		    @Override
 		    public void run() {
-				try {					
-					String file_name = Constant.SPEECH_DATA_FOLDER_PATH + id + "_" + q_or_a + ".m4a";
-					String command = "say -v " + speaker + " '" + serif + "' -o " + file_name;
-					Process p = Runtime.getRuntime().exec(command);
-					p.waitFor();
-					set_executable(file_name, qa_id);					
+				try {		
+					// q
+					int idx = 0;
+					for (String q_id : q_id_list)
+					{
+						String serif_q = serif_q_list.get(idx);
+						String q_file_name = Constant.SPEECH_DATA_FOLDER_PATH + q_id + "_q.m4a";
+						String q_language = Util.check_japanese_or_english(serif_q);
+						String q_speaker = "";
+						if (q_language.equals(Constant.ENGLISH))
+						{
+							q_speaker = "Alex";
+						}
+						else
+						{
+							q_speaker = "Kyoko";
+						}
+						String q_command = "say -v " + q_speaker + " '" + serif_q + "' -o " + q_file_name;
+						Process p = Runtime.getRuntime().exec(q_command);
+						p.waitFor();
+						set_executable(q_file_name, qa_id);		
+						String q_tmp_file = Constant.SPEECH_DATA_TEMP_FOLDER_PATH + "/" + q_id + "_q.m4a";
+						FileUtils.copyFile(new File(q_file_name), new File(q_tmp_file));
+						FileUtils.copyFile(new File(q_tmp_file), new File(q_file_name));						
+						idx++;
+					}
 					
+					// a
+					idx = 0;
+					for (String s_id : s_id_list)
+					{
+						String serif_a = serif_a_list.get(idx);
+						String a_file_name = Constant.SPEECH_DATA_FOLDER_PATH + s_id + "_a.m4a";
+						String s_language = Util.check_japanese_or_english(serif_a);
+						String s_speaker = "";
+						if (s_language.equals(Constant.ENGLISH))
+						{
+							s_speaker = "Alex";
+						}
+						else
+						{
+							s_speaker = "Kyoko";
+						}
+						String a_command = "say -v " + s_speaker + " '" + serif_a + "' -o " + a_file_name;
+						Process p2 = Runtime.getRuntime().exec(a_command);
+						p2.waitFor();
+						set_executable(a_file_name, qa_id);	
+						String a_tmp_file = Constant.SPEECH_DATA_TEMP_FOLDER_PATH + "/" + s_id + "_a.m4a";
+						FileUtils.copyFile(new File(a_file_name), new File(a_tmp_file));
+						FileUtils.copyFile(new File(a_tmp_file), new File(a_file_name));						
+					
+						// slime
+						String speaker = "Vicki";
+						String file_name = Constant.SPEECH_DATA_FOLDER_PATH + s_id + ".wav";
+						String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + serif_a + "' -o " + file_name;
+						System.out.println(command);
+						Process p3 = Runtime.getRuntime().exec(command);
+						p3.waitFor();
+						set_executable(file_name, qa_id);
+						String command2 = "/usr/local/bin/ffmpeg -i " + file_name + " -filter:a asetrate=r=18K -vn " + file_name.replace("wav", "m4a");
+						Process p4 = Runtime.getRuntime().exec(command2);
+						p4.waitFor();
+						set_executable(file_name, qa_id);
+						String slime_file = Constant.SPEECH_DATA_FOLDER_PATH + s_id + ".m4a";
+						String slime_tmp_file = Constant.SPEECH_DATA_TEMP_FOLDER_PATH + "/" + s_id + ".m4a";
+						FileUtils.copyFile(new File(slime_file), new File(slime_tmp_file));
+						FileUtils.copyFile(new File(slime_tmp_file), new File(slime_file));						
+						idx++;
+					}
+//					String speech = Constant.SPEECH_DATA_FOLDER_PATH
+//					.substring(0, Constant.SPEECH_DATA_FOLDER_PATH.length()-1);
+//					String speech_tmp = speech + "tmp";
+//					File speech_folder = new File(speech);
+//					File speech_tmp_folder = new File(speech_tmp);
+//					FileUtils.copyDirectory(speech_folder,speech_tmp_folder);
+//					FileUtils.deleteDirectory(new File(speech));
+//					File speech_folder2 = new File(speech);
+//					FileUtils.copyDirectory(speech_tmp_folder,speech_folder2);					
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -2380,28 +2428,34 @@ public class MainPageController{
 			Thread.sleep(100);
 			set_executable(file_name, qa_id);		  
 		}
-		String folder = Constant.SPEECH_DATA_FOLDER_PATH
-				.substring(Constant.SPEECH_DATA_FOLDER_PATH.length()-1);
-		File speech_folder = new File(folder);
-		if (speech_folder.exists())
-		{
-			try(Stream<Path> paths = Files.walk(Paths.get(folder))) {
-			    paths.forEach(filePath -> {
-			        if (Files.isRegularFile(filePath)) {
-			        	File speech_file = filePath.toFile();
-			    		Boolean a = speech_file.setExecutable(true, false);
-			        }
-			    });
-			} 
-			catch(Exception ex)
-			{
-				ex.printStackTrace();			
-			}
-		}
 		else
 		{
-			set_executable(file_name, qa_id);
+			Boolean a = path.toFile().setExecutable(true, false);
 		}
+//		String folder = Constant.SPEECH_DATA_FOLDER_PATH
+//				.substring(Constant.SPEECH_DATA_FOLDER_PATH.length()-1);
+//		File speech_folder = new File(folder);
+//		if (speech_folder.exists())
+//		{
+//			try(Stream<Path> paths = Files.walk(Paths.get(folder))) {
+//			    paths.forEach(filePath -> {
+//			        if (Files.isRegularFile(filePath)) {
+//			        	File speech_file = filePath.toFile();
+//			    		Boolean a = speech_file.setExecutable(true, false);
+//			        }
+//			    });
+//			} 
+//			catch(Exception ex)
+//			{
+//				ex.printStackTrace();			
+//			}
+//			return;
+//		}
+//		else
+//		{
+//			set_executable(file_name, qa_id);
+//			return;
+//		}
 	}
 	
 	public void edit_qa(
