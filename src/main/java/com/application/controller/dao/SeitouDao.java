@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -174,31 +175,66 @@ public class SeitouDao {
 		
 		SQliteDAO dao = new SQliteDAO();
 		
+		List<String> tags_list = new ArrayList<String>();
+		Boolean is_reversible = false;
+		String order_by = "";
+		for (int i = 0; i < tag_names.split(",").length; i++)
+		{
+			if (tag_names.split(",")[i].equals(""))
+			{
+				continue;
+			}
+			else if (tag_names.split(",")[i].equals("問題と解答を反転"))
+			{
+				is_reversible = true;
+				continue;
+			}
+			else if (tag_names.split(",")[i].equals("ランダム順"))
+			{
+				order_by = "ランダム順";
+				continue;
+			}
+			else if (tag_names.split(",")[i].equals("登録順"))
+			{
+				order_by = "登録順";
+				continue;
+			}
+			else if (tag_names.split(",")[i].equals("新着順"))
+			{
+				order_by = "新着順";
+				continue;
+			}
+			else
+			{
+				tags_list.add(tag_names.split(",")[i]);
+			}
+		}
+
 		StringBuilderPlus sql = new StringBuilderPlus();
 		sql.appendLine("select count(seitou) from seitou ");
-		if (!tag_names.equals(""))
+		if (tags_list.size() > 0)
         {
         	sql.appendLine(",qa, qa_tag_relation,tag");
         }
 		sql.appendLine(" where seitou.del_flg = 0 and seitou != '' and seitou is not null ");
-		if (Arrays.asList(tag_names.split(",")).contains("未正解"))
+		if (tags_list.contains("未正解"))
 		{
         	sql.appendLine(" and qa.qa_id = seitou.qa_id");
         	sql.appendLine(" and (seitou.seikai_flg = 0 or seitou.seikai_flg is null)");
 			sql.appendLine(" and qa.qa_id = qa_tag_relation.qa_id");
 			sql.appendLine(" and tag.tag_id = qa_tag_relation.tag_id");
-        	if (tag_names.split(",").length > 1)
+        	if (tags_list.size() > 0)
         	{
 				sql.appendLine(" and (");
-				for (int i = 0; i < tag_names.split(",").length; i++)
+				for (int i = 0; i < tags_list.size(); i++)
 				{
-					if (tag_names.split(",")[i].equals("未正解"))
+					if (tags_list.get(i).equals("未正解"))
 					{
 						sql.appendLine("1 = 1");
 						continue;
 					}
 					sql.appendLine("tag.tag_name = '" + tag_names.split(",")[i] + "'");
-					if (i < tag_names.split(",").length - 1)
+					if (i < tags_list.size() - 1)
 					{
 						sql.appendLine(" or ");
 					}
@@ -206,24 +242,24 @@ public class SeitouDao {
 		        sql.appendLine(")");			
         	}
 		}
-		else if (Arrays.asList(tag_names.split(",")).contains("正解"))
+		else if (tags_list.contains("正解"))
 		{
         	sql.appendLine(" and qa.qa_id = seitou.qa_id");
         	sql.appendLine(" and seitou.seikai_flg = 1");
 			sql.appendLine(" and qa.qa_id = qa_tag_relation.qa_id");
 			sql.appendLine(" and tag.tag_id = qa_tag_relation.tag_id");
-        	if (tag_names.split(",").length > 1)
+        	if (tags_list.size() > 0)
         	{
 				sql.appendLine(" and (");
 				for (int i = 0; i < tag_names.split(",").length; i++)
 				{
-					if (tag_names.split(",")[i].equals("正解"))
+					if (tags_list.get(i).equals("正解"))
 					{
 						sql.appendLine("1 = 1");
 						continue;
 					}
 					sql.appendLine("tag.tag_name = '" + tag_names.split(",")[i] + "'");
-					if (i < tag_names.split(",").length - 1)
+					if (i < tags_list.size() - 1)
 					{
 						sql.appendLine(" or ");
 					}
@@ -231,35 +267,30 @@ public class SeitouDao {
 		        sql.appendLine(")");			
         	}
 		}
-		else if (!tag_names.equals(""))
+		else if (tags_list.size() > 0)
         {
 			sql.appendLine(" and qa.qa_id = qa_tag_relation.qa_id");
 			sql.appendLine(" and qa.qa_id = seitou.qa_id");
 			sql.appendLine(" and tag.tag_id = qa_tag_relation.tag_id");
 			sql.appendLine(" and (");
-			for (int i = 0; i < tag_names.split(",").length; i++)
+			for (int i = 0; i < tags_list.size(); i++)
 			{
-				sql.appendLine("tag.tag_name = '" + tag_names.split(",")[i] + "'");
-				if (i < tag_names.split(",").length - 1)
+				sql.appendLine("tag.tag_name = '" + tags_list.get(i) + "'");
+				if (i < tags_list.size() - 1)
 				{
 					sql.appendLine(" or ");
 				}
 			}
 	        sql.appendLine(")");
         }
-        if (Arrays.asList(tag_names.split(",")).contains("未正解") ||
-        	Arrays.asList(tag_names.split(",")).contains("正解"))
+        if (tags_list.contains("未正解") || tags_list.contains("正解"))
         {
         	sql.appendLine(" group by seitou.s_id");
         }
-	   //   System.out.println("正答数："+sql.toString());
-
 		
 		dao.loadDriver();
-		
-		//System.out.println(db_name);
 
-	    Connection connection = null;
+		Connection connection = null;
 		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
 		String connection_str = "jdbc:sqlite:" 
 				  				+ db_save_path
@@ -363,46 +394,78 @@ public class SeitouDao {
 		
 		SQliteDAO dao = new SQliteDAO();
 		
+		List<String> tags_list = new ArrayList<String>();
+		Boolean is_reversible = false;
+		String order_by = "";
+		for (int i = 0; i < tag_names.split(",").length; i++)
+		{
+			if (tag_names.split(",")[i].equals(""))
+			{
+				continue;
+			}
+			else if (tag_names.split(",")[i].equals("問題と解答を反転"))
+			{
+				is_reversible = true;
+				continue;
+			}
+			else if (tag_names.split(",")[i].equals("ランダム順"))
+			{
+				order_by = "ランダム順";
+				continue;
+			}
+			else if (tag_names.split(",")[i].equals("登録順"))
+			{
+				order_by = "登録順";
+				continue;
+			}
+			else if (tag_names.split(",")[i].equals("新着順"))
+			{
+				order_by = "新着順";
+				continue;
+			}
+			else
+			{
+				tags_list.add(tag_names.split(",")[i]);
+			}
+		}
+
 		StringBuilderPlus sql = new StringBuilderPlus();
 		sql.appendLine("SELECT  count(seikai_flg) ");
 		sql.appendLine("FROM    seitou ");
-        if (!tag_names.equals(""))
+        if (tags_list.size() > 0)
         {
         	sql.appendLine(",qa, qa_tag_relation,tag");
         }
 		sql.appendLine("WHERE seikai_flg = 1");
-		//System.out.println(tag_names);
-		if (!tag_names.equals(""))
+		if (tags_list.size() > 0)
         {
 			sql.appendLine(" and qa.qa_id = qa_tag_relation.qa_id");
 			sql.appendLine(" and qa.qa_id = seitou.qa_id");
 			sql.appendLine(" and tag.tag_id = qa_tag_relation.tag_id");
 			sql.appendLine(" and (");
-			for (int i = 0; i < tag_names.split(",").length; i++)
+			for (int i = 0; i < tags_list.size(); i++)
 			{
-				if (tag_names.split(",")[i].equals("正解"))
+				if (tags_list.get(i).equals("正解"))
 				{
 					sql.appendLine("1 = 1");
 					continue;
 				}
 				
-				sql.appendLine("tag.tag_name = '" + tag_names.split(",")[i] + "'");
-				if (i < tag_names.split(",").length - 1)
+				sql.appendLine("tag.tag_name = '" + tags_list.get(i) + "'");
+				if (i < tags_list.size() - 1)
 				{
 					sql.appendLine(" or ");
 				}
 			}
 	        sql.appendLine(")");
         }
-        if (tag_names.contains("正解"))
+        if (tags_list.contains("正解"))
         {
         	sql.appendLine(" group by seitou.s_id");
         }
 
 		dao.loadDriver();
 		
-//		System.out.println(sql.toString());
-
 	    Connection connection = null;
 		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
 		String connection_str = "jdbc:sqlite:" 
@@ -416,11 +479,11 @@ public class SeitouDao {
 	      ResultSet rs = stmt.executeQuery(sql.toString());
 	      while (rs.next()) 
 	      {
-	    	  if (tag_names.contains("未正解"))
+	    	  if (tags_list.contains("未正解"))
 	    	  {
 	    		  seikai_cnt = 0;
 	    	  }
-	    	  else if (tag_names.contains("正解"))
+	    	  else if (tags_list.contains("正解"))
 	    	  {
 	    		  seikai_cnt++;
 	    	  }

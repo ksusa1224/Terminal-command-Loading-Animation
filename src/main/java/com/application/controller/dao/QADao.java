@@ -411,8 +411,8 @@ public class QADao {
 		SQliteDAO dao = new SQliteDAO();
 		
 		List<String> tags_list = new ArrayList<String>();
-		//Arrays.asList(tag_names.split(","));
 		Boolean is_reversible = false;
+		String order_by = "";
 		for (int i = 0; i < tag_names.split(",").length; i++)
 		{
 			if (tag_names.split(",")[i].equals(""))
@@ -424,14 +424,26 @@ public class QADao {
 				is_reversible = true;
 				continue;
 			}
+			else if (tag_names.split(",")[i].equals("ランダム順"))
+			{
+				order_by = "ランダム順";
+				continue;
+			}
+			else if (tag_names.split(",")[i].equals("登録順"))
+			{
+				order_by = "登録順";
+				continue;
+			}
+			else if (tag_names.split(",")[i].equals("新着順"))
+			{
+				order_by = "新着順";
+				continue;
+			}
 			else
 			{
 				tags_list.add(tag_names.split(",")[i]);
-				//System.out.println("たぐ："+tags_list.get(i));
 			}
 		}
-
-		System.out.println("たぐさいず："+tags_list.size());
 		
 		StringBuilderPlus sql = new StringBuilderPlus();
 		sql.appendLine("select ");
@@ -543,7 +555,6 @@ public class QADao {
         }
         else if (tags_list.size() > 0)
         {
-        	System.out.println("aaaaaaaa");
 			sql.appendLine(" and qa.qa_id = qa_tag_relation.qa_id");
 			sql.appendLine(" and tag.tag_id = qa_tag_relation.tag_id");
 			sql.appendLine(" and (");
@@ -561,7 +572,22 @@ public class QADao {
         {
         	sql.appendLine(" group by qa.qa_id");
         }
-		sql.appendLine(" order by qa.update_timestamp desc");
+        if (order_by.equals(""))
+        {
+        	sql.appendLine(" order by qa.update_timestamp desc");
+        }
+        else if (order_by.equals("ランダム順"))
+        {
+        	sql.appendLine(" order by random()");        	
+        }
+        else if (order_by.equals("登録順"))
+        {
+        	sql.appendLine(" order by qa.create_timestamp");        	
+        }
+        else if (order_by.equals("新着順"))
+        {
+        	sql.appendLine(" order by qa.create_timestamp desc");        	
+        }
 		sql.appendLine("  limit " + limit + " offset " + offset + ";");
 		
 		System.out.println("sql:"+sql.toString());
