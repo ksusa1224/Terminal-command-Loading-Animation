@@ -2354,6 +2354,10 @@ public class MainPageController{
 					
 						// slime
 						String speaker = "Vicki";
+						if (s_language.equals(Constant.JAPANESE))
+						{
+							serif_a = SlimeSerif.Japanese_to_Roman(serif_a).replace("'", "");
+						}
 						String file_name = Constant.SPEECH_DATA_FOLDER_PATH + s_id + ".wav";
 						String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + serif_a + "' -o " + file_name;
 						System.out.println(command);

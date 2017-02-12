@@ -129,9 +129,7 @@
 		<dependency>
     		<groupId>org.atilika.kuromoji</groupId>
   		  	<artifactId>kuromoji</artifactId>
-  			  <version>0.7.7</version>
-  			  <type>jar</type>
- 		   <scope>provided</scope>
+  			<version>0.7.7</version>
 		</dependency>
 		<!--
         <dependency>
