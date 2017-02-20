@@ -63,6 +63,7 @@ import com.application.controller.dao.QAPlusDao;
 import com.application.controller.dao.QaTagRelationDao;
 import com.application.controller.dao.SeitouDao;
 import com.application.controller.dao.TagDao;
+import com.application.model.LoginInfoModel;
 import com.application.model.dao.KaitouModel;
 import com.application.model.dao.MondaiModel;
 import com.application.model.dao.QAModel;
@@ -106,7 +107,8 @@ public class MainPageController{
 		log.insert_error_log("INFO", "main method start.");
 				
 		TopPageController top = new TopPageController();
-		if (top.isLogin(request) == false)
+		if (top.isLogin(request) == false && 
+			owner_id.equals("sample") == false)
 		{
 			return "redirect:/";
 		}
@@ -115,26 +117,6 @@ public class MainPageController{
 		String request_url = request.getRequestURI();
 		String response_url = "/"+ owner_id + "/main.html";
 
-		if (owner_id.equals("sample"))
-		{
-//			SamplePageController sample = new SamplePageController();
-//			sample.sample(owner_id, request, response, session, model);
-//			if (request_url.equals(response_url))
-//			{
-//				return "main";
-//			}
-//			else
-//			{
-//				return "redirect:" + response_url;				
-//			}
-		}
-		
-		// TODO 認証されてるかどうかはsessionに入れると書き換えられてしまうから毎回DBに接続した方がいいかな
-		Boolean is_authenticated = (Boolean)session.getAttribute("is_authenticated");
-		String session_owner_id = (String)session.getAttribute("owner_id");
-		
-		log.insert_error_log("INFO", "session_owner_id:" + session_owner_id);
-		
 		/**
 		 * アクセスログ記録
 		 */
@@ -146,17 +128,66 @@ public class MainPageController{
 
 		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
 		
-		if(owner_id.equals(session_owner_id) && is_authenticated == true)		
+		LoginInfoModel login_info = new LoginInfoModel();
+		
+		H2dbDao dao = new H2dbDao();
+		login_info = dao.select_login_info(owner_id);
+		session.setAttribute("owner_name", login_info.getOwner_name());
+		
+		String original_db = "";
+		String copy_db = "";
+		
+		if (owner_id.equals("sample"))
+		{
+			client_ip = client_ip.replaceAll(":",".");
+			original_db = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/" + Constant.SAMPLE_DB;
+			copy_db = 
+					Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/" + 
+					Constant.SAMPLE_DB + "." +
+					Util.getNow("yyyy_MM_dd_HH_mm_ss") + "." +
+					client_ip + "." + 
+					client_os + "." +
+					client_browser + ".db"
+					//.replaceAll("/", ".")
+					.replaceAll(" ", "");
+			File sample_original = new File(original_db);
+			File sample_copy = new File(copy_db);
+			try {
+				FileUtils.copyFile(sample_original, sample_copy);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		// TODO 認証されてるかどうかはsessionに入れると書き換えられてしまうから毎回DBに接続した方がいいかな
+		Boolean is_authenticated = (Boolean)session.getAttribute("is_authenticated");
+		String session_owner_id = (String)session.getAttribute("owner_id");
+		
+		log.insert_error_log("INFO", "session_owner_id:" + session_owner_id);
+				
+		if(1==1)		
 		{
 			if (request_url.equals(response_url))
 			{
 				byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 				AES aes = new AES();
 				String owner_db = aes.decrypt(encrypted_owner_db);
-				session.setAttribute("owner_db", encrypted_owner_db);
+				System.out.println(owner_id+"おーなー");
+				if (owner_id.equals("sample"))
+				{
+					copy_db = copy_db.replace(Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/", "");
+					owner_db = copy_db;
+					session.setAttribute("owner_db", aes.encrypt(copy_db));
+				}
+				else
+				{
+					session.setAttribute("owner_db", encrypted_owner_db);
+				}
 				int limit = Constant.QA_NUM_PER_PAGE;
 				int left_offset = 0;
 				List<QAPlusModel> qa_plus_list_left = new ArrayList<QAPlusModel>();
+				System.out.println(owner_db);
 				qa_plus_list_left = select_qa_plus(owner_db, limit, left_offset);
 				String qa_html = "";
 				if (qa_plus_list_left.size() > 0)
@@ -199,79 +230,7 @@ public class MainPageController{
 				// ページング総数
 				QADao qa_dao = new QADao();
 				int total_pages = qa_dao.get_pages(owner_db, "");
-				model.addAttribute("total_pages", total_pages);
-				
-//				try
-//				{
-//					// 問題と正答へのリバーシブルフラグ追加パッチ
-//					SQliteDAO dao = new SQliteDAO();
-//					dao.is_reversible_patch(owner_db);
-//					H2dbDao h2dao = new H2dbDao();
-//					h2dao.is_reversible_patch();
-//				}
-//				catch(Exception ex)
-//				{
-//					ex.printStackTrace();
-//				}
-//				// patch
-//				try(Stream<Path> paths = Files.walk(Paths.get(Constant.SPEECH_DATA_FOLDER_PATH.substring(0,Constant.SPEECH_DATA_FOLDER_PATH.length()-1)))) {
-//				    paths.forEach(filePath -> {
-//				    	System.out.println("filepath:"+filePath.toFile());
-//				    	try
-//				    	{
-//					    	if (Files.isRegularFile(filePath)) {
-//					        	File speech_file = filePath.toFile();
-//					        	String file_name = speech_file.getName();
-//					        	//String now_path = speech_file.getAbsolutePath();
-//					        	System.out.println("file_name:"+file_name);
-//				        		String id = "";
-//					        	String qa_id = "";
-//				        		if (file_name.split("\\.").length > 0)
-//				        		{
-//				        			id = file_name.split("\\.")[0].replace("_q", "");
-//				        			id = file_name.split("\\.")[0].replace("_a", "");
-//				        		}
-//			        			System.out.println("id:"+id);
-//					        	if (id.startsWith("s"))
-//					        	{
-//					        		System.out.println("this is s.");
-//						        	SeitouDao sdao = new SeitouDao();
-//						        	qa_id = sdao.get_qa_id(owner_db, id);
-//					        	}
-//					        	else if (id.startsWith("q"))
-//					        	{
-//					        		System.out.println("this is q.");
-//						        	MondaiDao qdao = new MondaiDao();
-//						        	qa_id = qdao.get_qa_id(owner_db, id);			        		
-//					        	}
-//					        	String new_path = Constant.SPEECH_DATA_FOLDER_PATH + qa_id;
-//					        	System.out.println("qa_id:"+qa_id);
-//					        	System.out.println(new_path);
-//								File theDir = new File(new_path);
-//								// if the directory does not exist, create it
-//								if (!theDir.exists()) {
-//								    boolean result = false;
-//								    try{
-//								        theDir.mkdir();
-//								        result = true;
-//								    } 
-//								    catch(SecurityException se){
-//								        //handle it
-//								    }        
-//								}
-//								speech_file.renameTo(new File(new_path + "/" + file_name));
-//					    	}
-//				    	}
-//				    	catch(Exception ex)
-//				    	{
-//				    		ex.printStackTrace();
-//				    	}
-//				    });
-//				} 
-//				catch(Exception ex)
-//				{
-//					ex.printStackTrace();			
-//				}
+				model.addAttribute("total_pages", total_pages);				
 				
 				return "main";
 			}
@@ -580,45 +539,6 @@ public class MainPageController{
 			return "error";
 		}		
 	}
-
-//    @RequestMapping(value={"/image_search.html"},
-//    			method=RequestMethod.GET)
-//    public @ResponseBody String image_search(
-//    		@RequestParam(value="keywords", required=false) String keywords,
-//			@RequestParam("owner_id") String owner_id,
-//    		HttpServletRequest request, 
-//    		HttpServletResponse response, 
-//    		HttpSession session)
-//    {
-//		// オートログイン
-//		if (session.getAttribute("owner_id") == null)
-//		{
-//			TopPageController top = new TopPageController();
-//			top.setAutoLoginToken(owner_id,session,request,response);
-//		}
-//
-////		GPix gpix = GPix.getInstance();
-////    	List<Image> image_list = new ArrayList<Image>();
-////    	try {
-////    		image_list = gpix.search(keywords.replace(" ", "+"), 1);
-////    		
-////		} catch (GPixException | IOException | JSONException e) {
-////			// TODO Auto-generated catch block
-////			e.printStackTrace();
-////		}
-////    	String img_url = "";
-////    	if (image_list.size() > 0)
-////    	{
-////    		Image image = image_list.get(0);
-////    		img_url = image.getThumbImageUrl();
-////    	}
-////    	
-//////    	System.out.println("image.getImageUrl():"+image.getThumbImageUrl());
-//    	String json = JSON.encode(
-//				new String[] 
-//				{img_url});
-//		return json;
-//    }
 	
 	/**
 	 * タグで検索
@@ -1367,16 +1287,22 @@ public class MainPageController{
 			TopPageController top = new TopPageController();
 			top.setAutoLoginToken(owner_id,session,request,response);
 		}
+		
+		String owner_name = "";
 
+		if (session.getAttribute("owner_name") != null)
+		{
+			owner_name = (String)session.getAttribute("owner_name");
+		}
 		SlimeSerif slime_serif = new SlimeSerif();
 		String serif = "";
 		if (args_num != null)
 		{
-			serif = slime_serif.RamdomSerifArg0();
+			serif = slime_serif.RamdomSerifArg0(owner_name);
 		}
 		else
 		{
-			serif = slime_serif.RamdomSerifArg1(a_input);
+			serif = slime_serif.RamdomSerifArg1(a_input,owner_name);
 		}
 		return serif;
 	}		

@@ -124,12 +124,12 @@ public class SlimeSerif {
 	 * @param param
 	 * @return
 	 */
-	public String RamdomSerifArg0()
+	public String RamdomSerifArg0(String owner_name)
 	{
 		int randomNum = arg0_minimum + (int)(Math.random() * arg0_maximum);
 		String serif = arg0_msgs[randomNum];
 		// TODO セッションからオーナー名取得
-		serif = serif.replace("{name}", "ほへスラ〜");
+		serif = serif.replace("{name}", owner_name);
 		return serif;
 	}
 	
@@ -294,12 +294,12 @@ public class SlimeSerif {
 	 * @param param
 	 * @return
 	 */
-	public String RamdomSerifArg1(String param)
+	public String RamdomSerifArg1(String param, String owner_name)
 	{
 		int randomNum = arg1_minimum + (int)(Math.random() * arg1_maximum);
 		String serif = MessageFormat.format(arg1_msgs[randomNum], param);
 		// TODO セッションからオーナー名取得
-		serif = serif.replace("{name}", "ほへスラ〜");
+		serif = serif.replace("{name}", owner_name);
 		return serif;
 	}
 	
@@ -320,12 +320,12 @@ public class SlimeSerif {
 	 * @param param
 	 * @return
 	 */
-	public String RamdomSerifNoteClose(String param)
+	public String RamdomSerifNoteClose(String param, String owner_name)
 	{
 		int randomNum = note_close_minimum + (int)(Math.random() * note_close_maximum);
 		String serif = MessageFormat.format(note_close_msgs[randomNum], param);
 		// TODO セッションからオーナー名取得
-		serif = serif.replace("{name}", "ほへスラ〜");
+		serif = serif.replace("{name}", owner_name);
 		return serif;
 	}
 
@@ -347,7 +347,7 @@ public class SlimeSerif {
 	 * @param param
 	 * @return
 	 */
-	public static String Serif (String msg, String param)
+	public static String Serif (String msg, String param, String owner_name)
 	{
 		return MessageFormat.format(msg, param);	
 	}

@@ -475,6 +475,24 @@ function refresh()
 		 $("body").css("overflow","hidden");		
 	}
 
+	if(Number($("#page_left").text()) == 1)
+	{
+		$("#prev_link").hide();
+	}
+	else
+	{
+		$("#prev_link").show();		
+	}
+
+	if(Number($("#page_right").text()) >= Number($("#total_pages").text()))
+	{
+		$("#next_link").hide();
+	}
+	else
+	{
+		$("#next_link").show();		
+	}
+	
 	$('.qa').contextmenu({
 	    target: "#qa_context-menu"
 	});
@@ -995,7 +1013,7 @@ function husen_touroku(obj)
 		event.preventDefault();
 	}
 }
-
+	
 // 漢字変換後にEnterを押したときにペンの色が変わる
 function enter (){
 	var q_parts = "<span class='q_input' id='" + id + "'>&#8203;</span>";
@@ -1013,6 +1031,12 @@ function enter (){
 	// QA登録ショートカット
 	if (window.event.keyCode == 13 && window.event.shiftKey == true)
 	{
+		var qa_mojisu = $.trim($("#qa_input").text()).length;
+		if (qa_mojisu > 100)
+		{
+			alert("QAの文字数は100文字までにしてください。");
+			return false;
+		}
 		copy_to_hidden();
 		register_qa_ajax();
 		event.preventDefault();
@@ -1140,6 +1164,13 @@ function copy_to_hidden () {
 // 問題登録押下時、リロードせずにAjaxで登録と再検索を行う
 function register_qa_ajax ()
 {
+	var qa_mojisu = $.trim($("#qa_input").text()).length;
+	if (qa_mojisu > 100)
+	{
+		alert("QAの文字数は100文字までにしてください。");
+		return false;
+	}
+
 	var qa_input = $("#qa_input_hidden").html();
 	var decoded = encodeURIComponent($("#qa_input_hidden").html(qa_input).text());
 	var yomudake_flg = "";//$("#yomudake_flg").val();

@@ -1,1 +1,0 @@
-ffmpeg -i /Users/ksusa/Documents/anki_note_workspace/anki_note/src/main/resources/static/speech/s_id_000000128_audio.wav -filter:a asetrate=r=18K -vn /Users/ksusa/Documents/anki_note_workspace/anki_note/src/main/resources/static/speech/s_id_000000128_audio.m4a

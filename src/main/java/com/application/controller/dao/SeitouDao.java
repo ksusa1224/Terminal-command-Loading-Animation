@@ -127,7 +127,7 @@ public class SeitouDao {
 		
 		StringBuilderPlus sql = new StringBuilderPlus();
 		sql.appendLine("select count(seitou) from seitou ");
-		sql.appendLine(" where del_flg = 0 and seitou != '' and seitou is not null limit 1;");
+		sql.appendLine(" where del_flg = 0 and seitou != '' and seitou is not null and is_reversible != 1 limit 1;");
 		dao.loadDriver();
 		
 		//System.out.println(db_name);
@@ -217,6 +217,14 @@ public class SeitouDao {
         	sql.appendLine(",qa, qa_tag_relation,tag");
         }
 		sql.appendLine(" where seitou.del_flg = 0 and seitou != '' and seitou is not null ");
+		if (is_reversible == false)
+		{
+			sql.appendLine(" and seitou.is_reversible != 1 ");
+		}
+		else
+		{
+			sql.appendLine(" and (seitou.is_reversible == 0 or seitou.is_reversible is null)");			
+		}
 		if (tags_list.contains("未正解"))
 		{
         	sql.appendLine(" and qa.qa_id = seitou.qa_id");
@@ -346,7 +354,7 @@ public class SeitouDao {
 		StringBuilderPlus sql = new StringBuilderPlus();
 		sql.appendLine("SELECT  count(seikai_flg) ");
 		sql.appendLine("FROM    seitou ");
-		sql.appendLine("WHERE seikai_flg = 1");
+		sql.appendLine("WHERE seikai_flg = 1 and is_reversible != 1");
 
 		dao.loadDriver();
 		
@@ -437,6 +445,14 @@ public class SeitouDao {
         	sql.appendLine(",qa, qa_tag_relation,tag");
         }
 		sql.appendLine("WHERE seikai_flg = 1");
+		if (is_reversible == false)
+		{
+			sql.appendLine(" and seitou.is_reversible != 1 ");
+		}
+		else
+		{
+			sql.appendLine(" and (seitou.is_reversible == 0 or seitou.is_reversible is null)");			
+		}
 		if (tags_list.size() > 0)
         {
 			sql.appendLine(" and qa.qa_id = qa_tag_relation.qa_id");

@@ -74,15 +74,17 @@ public class Constant {
 	public static final String SQLITE_OWNER_DB_FOLDEDR_PATH 
 		= SQLITE_FOLDER_PATH + "owner_db" + "/" + OWNER_DB_CURRENT_VERSION;
 	
+	public static final String SAMPLE_DB = "2017_02_14_18_57_26_sample.db";
+	
 //	// TODO 本番ではパスを変える
 //	public static final String SPEECH_DATA_FOLDER_PATH
 //		= "/Users/ksusa/Documents/anki_note_workspace/anki_note/src/main/resources/static/speech/";
-//	public static final String SPEECH_DATA_FOLDER_PATH
-//	= "/Users/slimebook/Documents/workspace/anki_note/src/main/resources/static/speech/";
+	public static final String SPEECH_DATA_FOLDER_PATH
+	= "/Users/slimebook/Documents/workspace/anki_note/src/main/resources/static/speech/";
 
 	// 本番
-	public static final String SPEECH_DATA_FOLDER_PATH
-	= "/usr/local/anki_note/application/apache-tomcat-8.0/webapps/ROOT/WEB-INF/classes/static/speech/";
+//	public static final String SPEECH_DATA_FOLDER_PATH
+//	= "/usr/local/anki_note/application/apache-tomcat-8.0/webapps/ROOT/WEB-INF/classes/static/speech/";
 	
 	// 本番 一時フォルダ
 	public static final String SPEECH_DATA_TEMP_FOLDER_PATH
