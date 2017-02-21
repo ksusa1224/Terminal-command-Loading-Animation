@@ -396,7 +396,10 @@ public class TopPageController {
 			// tokenをH2に入れる
 		    dao.update_token(owner_id_or_email, last_token_cookie, new_token);
 		    LoginInfoModel login_info = dao.select_login_info(owner_id_or_email);
-		    session.setAttribute("owner_db", login_info.getEncrypted_db_name());
+		    if (login_info.getOwner_id().equals("sample") == false)
+		    {
+		    	session.setAttribute("owner_db", login_info.getEncrypted_db_name());
+		    }
 		    session.setAttribute("owner_id", login_info.getOwner_id());
 		    session.setAttribute("owner_name", login_info.getOwner_name());
 		    session.setAttribute("is_authenticated", true);

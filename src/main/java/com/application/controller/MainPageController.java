@@ -137,7 +137,7 @@ public class MainPageController{
 		String original_db = "";
 		String copy_db = "";
 		
-		if (owner_id.equals("sample"))
+		if (owner_id.equals("sample") && session.getAttribute("owner_db") == null)
 		{
 			client_ip = client_ip.replaceAll(":",".");
 			original_db = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/" + Constant.SAMPLE_DB;
@@ -174,7 +174,7 @@ public class MainPageController{
 				AES aes = new AES();
 				String owner_db = aes.decrypt(encrypted_owner_db);
 				System.out.println(owner_id+"おーなー");
-				if (owner_id.equals("sample"))
+				if (owner_id.equals("sample") && session.getAttribute("owner_db") == null)
 				{
 					copy_db = copy_db.replace(Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/", "");
 					owner_db = copy_db;
@@ -182,12 +182,14 @@ public class MainPageController{
 				}
 				else
 				{
-					session.setAttribute("owner_db", encrypted_owner_db);
+					int a =0;
+					//session.setAttribute("owner_db", encrypted_owner_db);
 				}
 				int limit = Constant.QA_NUM_PER_PAGE;
 				int left_offset = 0;
 				List<QAPlusModel> qa_plus_list_left = new ArrayList<QAPlusModel>();
-				System.out.println(owner_db);
+				System.out.println("owner_db:"+owner_db);
+				System.out.println("session db:" + aes.decrypt((byte[])session.getAttribute("owner_db")));
 				qa_plus_list_left = select_qa_plus(owner_db, limit, left_offset);
 				String qa_html = "";
 				if (qa_plus_list_left.size() > 0)
@@ -232,6 +234,7 @@ public class MainPageController{
 				int total_pages = qa_dao.get_pages(owner_db, "");
 				model.addAttribute("total_pages", total_pages);				
 				
+				System.out.println("session db2:" + aes.decrypt((byte[])session.getAttribute("owner_db")));
 				return "main";
 			}
 			else
@@ -939,6 +942,8 @@ public class MainPageController{
 		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 		AES aes = new AES();
 		String owner_db = aes.decrypt(encrypted_owner_db);
+		
+		System.out.println("おおなあでえびい："+owner_db);
 
 		owner_id = (String)session.getAttribute("owner_id");
 		
