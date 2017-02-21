@@ -412,6 +412,7 @@ public class QADao {
 		
 		List<String> tags_list = new ArrayList<String>();
 		Boolean is_reversible = false;
+		Boolean is_hukushu = false;
 		String order_by = "";
 		for (int i = 0; i < tag_names.split(",").length; i++)
 		{
@@ -422,6 +423,11 @@ public class QADao {
 			else if (tag_names.split(",")[i].equals("問題と解答を反転"))
 			{
 				is_reversible = true;
+				continue;
+			}
+			else if (tag_names.split(",")[i].equals("復習のタイミング"))
+			{
+				is_hukushu = true;
 				continue;
 			}
 			else if (tag_names.split(",")[i].equals("ランダム順"))
@@ -501,7 +507,18 @@ public class QADao {
         	sql.appendLine(", qa_tag_relation,tag");
         }
 		sql.appendLine(" where qa.del_flg = 0");
-        if (tags_list.contains("未正解"))
+		if (is_hukushu == true)
+		{
+			sql.appendLine(" and ");
+			sql.appendLine(" strftime('%s',DATETIME(qa.create_timestamp))");
+			sql.appendLine(" < ");
+			sql.appendLine(" strftime('%s', DATETIME(DATETIME('now', 'localtime'), '-60 minutes'))");
+			sql.appendLine(" and");
+			sql.appendLine(" strftime('%s',DATETIME(qa.create_timestamp))");
+			sql.appendLine(" >");
+			sql.appendLine(" strftime('%s', DATETIME(DATETIME('now', 'localtime'), '-4320 minutes'))");
+		}
+		if (tags_list.contains("未正解"))
         {
         	sql.appendLine(" and qa.qa_id = seitou.qa_id");
         	sql.appendLine(" and (seitou.seikai_flg = 0 or seitou.seikai_flg is null)");
