@@ -112,6 +112,8 @@ public class MainPageController{
 		{
 			return "redirect:/";
 		}
+		//owner_id = (String)session.getAttribute("owner_id");
+		System.out.println(owner_id+"ooooooo");
 		top.setAutoLoginToken(owner_id,session,request,response);
 		
 		String request_url = request.getRequestURI();
@@ -137,7 +139,7 @@ public class MainPageController{
 		String original_db = "";
 		String copy_db = "";
 		
-		if (owner_id.equals("sample") && session.getAttribute("owner_db") == null)
+		if (owner_id.equals("sample"))
 		{
 			client_ip = client_ip.replaceAll(":",".");
 			original_db = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/" + Constant.SAMPLE_DB;
@@ -166,23 +168,28 @@ public class MainPageController{
 		
 		log.insert_error_log("INFO", "session_owner_id:" + session_owner_id);
 				
-		if(1==1)		
-		{
 			if (request_url.equals(response_url))
 			{
 				byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 				AES aes = new AES();
 				String owner_db = aes.decrypt(encrypted_owner_db);
 				System.out.println(owner_id+"おーなー");
-				if (owner_id.equals("sample") && session.getAttribute("owner_db") == null)
+				String session_id = (String)session.getAttribute("session_id");
+				System.out.println(session_id+"せっしょん");
+				System.out.println(session.getId());
+				
+				if ((owner_id.equals("sample") && session.getId().equals(session_id)) == false ||
+				    (owner_id.equals("sample") && session_id == null))
 				{
+					System.out.println("ppsdfasdpfasfgj-----");
 					copy_db = copy_db.replace(Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/", "");
 					owner_db = copy_db;
 					session.setAttribute("owner_db", aes.encrypt(copy_db));
+					session.setAttribute("session_id", session.getId());
+					System.out.println("owner_db:"+owner_db);
 				}
 				else
 				{
-					int a =0;
 					//session.setAttribute("owner_db", encrypted_owner_db);
 				}
 				int limit = Constant.QA_NUM_PER_PAGE;
@@ -241,11 +248,6 @@ public class MainPageController{
 			{
 				return "redirect:" + response_url;
 			}
-		}		
-		else
-		{
-			return "error";
-		}
 	}
 
 	/**

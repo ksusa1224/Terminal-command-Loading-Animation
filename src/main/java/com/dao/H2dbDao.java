@@ -165,7 +165,7 @@ public class H2dbDao
 			sql.appendLine("  owner.email = '" + owner_id_or_email + "')");
 			sql.appendLine("  and owner.del_flg = 0");
 			sql.appendLine("  and db.del_flg = 0;");
-			
+			System.out.println(sql.toString());
 			ResultSet rs = stmt.executeQuery(sql.toString());
 			while (rs.next()) {
 				login_info.setOwner_id(rs.getString("owner_id"));

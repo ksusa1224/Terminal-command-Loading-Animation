@@ -195,7 +195,7 @@ public class TopPageController {
 	  {
 			H2dbDao h2db_dao = new H2dbDao();
 			
-			h2db_dao.createTablesforOwnerDB();
+			//h2db_dao.createTablesforOwnerDB();
 			
 			AES aes = new AES();
 			byte[] encrypted_input_password = aes.encrypt(input_password);
@@ -215,7 +215,7 @@ public class TopPageController {
 //			System.out.println(aes.decrypt(login_info.getEncrypted_password()));
 //			System.out.println(encrypted_input_password);
 //			System.out.println(aes.decrypt(encrypted_input_password));
-//			System.out.println(login_info.getOwner_id());
+			System.out.println(login_info.getOwner_id());
 			
 			input_password = aes.decrypt(encrypted_input_password);
 			String password_in_db = aes.decrypt(login_info.getEncrypted_password());
@@ -354,6 +354,11 @@ public class TopPageController {
 			HttpServletRequest request,
 			HttpServletResponse response)
 	{
+		if (owner_id_or_email.equals("sample"))
+		{
+		    session.setAttribute("is_authenticated", true);
+			return true;
+		}
 		try{
 			H2dbDao dao = new H2dbDao();
 			Cookie[] cookies = request.getCookies();
@@ -395,13 +400,20 @@ public class TopPageController {
 	
 			// tokenをH2に入れる
 		    dao.update_token(owner_id_or_email, last_token_cookie, new_token);
-		    LoginInfoModel login_info = dao.select_login_info(owner_id_or_email);
-		    if (login_info.getOwner_id().equals("sample") == false)
+		    String owner_id = null;
+//		    if (owner_id.equals("sample") == false)		    	
+//		    {
+		    	owner_id = (String)session.getAttribute("owner_id");
+//		    }
+		    LoginInfoModel login_info = dao.select_login_info(owner_id);
+		    System.out.println(login_info.getOwner_id()+"login_info.getOwner_id()");
+		    if (owner_id.equals("sample") == false)
 		    {
 		    	session.setAttribute("owner_db", login_info.getEncrypted_db_name());
 		    }
 		    session.setAttribute("owner_id", login_info.getOwner_id());
 		    session.setAttribute("owner_name", login_info.getOwner_name());
+		    System.out.println(login_info.getOwner_name()+"login_info.getOwner_name()");
 		    session.setAttribute("is_authenticated", true);
 		}
 		catch(Exception ex)

@@ -413,6 +413,7 @@ public class QADao {
 		List<String> tags_list = new ArrayList<String>();
 		Boolean is_reversible = false;
 		Boolean is_hukushu = false;
+		Boolean mibunrui = false;
 		String order_by = "";
 		for (int i = 0; i < tag_names.split(",").length; i++)
 		{
@@ -428,6 +429,11 @@ public class QADao {
 			else if (tag_names.split(",")[i].equals("復習のタイミング"))
 			{
 				is_hukushu = true;
+				continue;
+			}
+			else if (tag_names.split(",")[i].equals("未分類"))
+			{
+				mibunrui = true;
 				continue;
 			}
 			else if (tag_names.split(",")[i].equals("ランダム順"))
@@ -507,6 +513,11 @@ public class QADao {
         	sql.appendLine(", qa_tag_relation,tag");
         }
 		sql.appendLine(" where qa.del_flg = 0");
+		if (mibunrui == true)
+		{
+			sql.appendLine(" and qa_id not in ");
+			sql.appendLine(" (select qa_id from qa_tag_relation)");
+		}
 		if (is_hukushu == true)
 		{
 			sql.appendLine(" and ");

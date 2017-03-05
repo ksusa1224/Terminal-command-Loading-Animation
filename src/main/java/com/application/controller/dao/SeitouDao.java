@@ -127,7 +127,7 @@ public class SeitouDao {
 		
 		StringBuilderPlus sql = new StringBuilderPlus();
 		sql.appendLine("select count(seitou) from seitou ");
-		sql.appendLine(" where del_flg = 0 and seitou != '' and seitou is not null and is_reversible != 1 limit 1;");
+		sql.appendLine(" where del_flg = 0 and seitou != '' and seitou is not null and (is_reversible == 0 or is_reversible is null) limit 1;");
 		dao.loadDriver();
 		
 		//System.out.println(db_name);
@@ -177,6 +177,8 @@ public class SeitouDao {
 		
 		List<String> tags_list = new ArrayList<String>();
 		Boolean is_reversible = false;
+		Boolean is_hukushu = false;
+		Boolean mibunrui = false;
 		String order_by = "";
 		for (int i = 0; i < tag_names.split(",").length; i++)
 		{
@@ -187,6 +189,16 @@ public class SeitouDao {
 			else if (tag_names.split(",")[i].equals("問題と解答を反転"))
 			{
 				is_reversible = true;
+				continue;
+			}
+			else if (tag_names.split(",")[i].equals("復習のタイミング"))
+			{
+				is_hukushu = true;
+				continue;
+			}
+			else if (tag_names.split(",")[i].equals("未分類"))
+			{
+				mibunrui = true;
 				continue;
 			}
 			else if (tag_names.split(",")[i].equals("ランダム順"))
@@ -217,13 +229,29 @@ public class SeitouDao {
         	sql.appendLine(",qa, qa_tag_relation,tag");
         }
 		sql.appendLine(" where seitou.del_flg = 0 and seitou != '' and seitou is not null ");
-		if (is_reversible == false)
+		if (is_reversible == true)
 		{
-			sql.appendLine(" and seitou.is_reversible != 1 ");
+			sql.appendLine(" and seitou.is_reversible == 1 ");
 		}
 		else
 		{
 			sql.appendLine(" and (seitou.is_reversible == 0 or seitou.is_reversible is null)");			
+		}
+		if (mibunrui == true)
+		{
+			sql.appendLine(" and qa_id not in ");
+			sql.appendLine(" (select qa_id from qa_tag_relation)");
+		}
+		if (is_hukushu == true)
+		{
+			sql.appendLine(" and ");
+			sql.appendLine(" strftime('%s',DATETIME(qa.create_timestamp))");
+			sql.appendLine(" < ");
+			sql.appendLine(" strftime('%s', DATETIME(DATETIME('now', 'localtime'), '-60 minutes'))");
+			sql.appendLine(" and");
+			sql.appendLine(" strftime('%s',DATETIME(qa.create_timestamp))");
+			sql.appendLine(" >");
+			sql.appendLine(" strftime('%s', DATETIME(DATETIME('now', 'localtime'), '-4320 minutes'))");
 		}
 		if (tags_list.contains("未正解"))
 		{
@@ -354,11 +382,11 @@ public class SeitouDao {
 		StringBuilderPlus sql = new StringBuilderPlus();
 		sql.appendLine("SELECT  count(seikai_flg) ");
 		sql.appendLine("FROM    seitou ");
-		sql.appendLine("WHERE seikai_flg = 1 and is_reversible != 1");
+		sql.appendLine("WHERE seikai_flg = 1 and (is_reversible == 0 or is_reversible is null)");
 
 		dao.loadDriver();
 		
-		//System.out.println(db_name);
+		System.out.println(sql.toString());
 
 	    Connection connection = null;
 		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
@@ -404,6 +432,8 @@ public class SeitouDao {
 		
 		List<String> tags_list = new ArrayList<String>();
 		Boolean is_reversible = false;
+		Boolean is_hukushu = false;
+		Boolean mibunrui = false;
 		String order_by = "";
 		for (int i = 0; i < tag_names.split(",").length; i++)
 		{
@@ -414,6 +444,16 @@ public class SeitouDao {
 			else if (tag_names.split(",")[i].equals("問題と解答を反転"))
 			{
 				is_reversible = true;
+				continue;
+			}
+			else if (tag_names.split(",")[i].equals("復習のタイミング"))
+			{
+				is_hukushu = true;
+				continue;
+			}
+			else if (tag_names.split(",")[i].equals("未分類"))
+			{
+				mibunrui = true;
 				continue;
 			}
 			else if (tag_names.split(",")[i].equals("ランダム順"))
@@ -445,13 +485,29 @@ public class SeitouDao {
         	sql.appendLine(",qa, qa_tag_relation,tag");
         }
 		sql.appendLine("WHERE seikai_flg = 1");
-		if (is_reversible == false)
+		if (is_reversible == true)
 		{
-			sql.appendLine(" and seitou.is_reversible != 1 ");
+			sql.appendLine(" and seitou.is_reversible == 1 ");
 		}
 		else
 		{
 			sql.appendLine(" and (seitou.is_reversible == 0 or seitou.is_reversible is null)");			
+		}
+		if (mibunrui == true)
+		{
+			sql.appendLine(" and qa_id not in ");
+			sql.appendLine(" (select qa_id from qa_tag_relation)");
+		}
+		if (is_hukushu == true)
+		{
+			sql.appendLine(" and ");
+			sql.appendLine(" strftime('%s',DATETIME(qa.create_timestamp))");
+			sql.appendLine(" < ");
+			sql.appendLine(" strftime('%s', DATETIME(DATETIME('now', 'localtime'), '-60 minutes'))");
+			sql.appendLine(" and");
+			sql.appendLine(" strftime('%s',DATETIME(qa.create_timestamp))");
+			sql.appendLine(" >");
+			sql.appendLine(" strftime('%s', DATETIME(DATETIME('now', 'localtime'), '-4320 minutes'))");
 		}
 		if (tags_list.size() > 0)
         {
