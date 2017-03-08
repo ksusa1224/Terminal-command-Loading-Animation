@@ -39,17 +39,14 @@ function body_load()
 
     refresh();
     
-//	$('.qa').mousedown(function(event) {
-//	    if (event.which == 3) {
-//    		qa_id_for_contextmenu = this.id;
-//    		var question = "\"" + $("#"+qa_id_for_contextmenu).children(".q").text() + "\"の例文を表示";
-//    		var answer = "\"" + $("#"+qa_id_for_contextmenu).children(".a").text() + "\"の例文を表示";
-//			$("#q_example").text(question);
-//			$("#a_example").text(answer);
-//	    }
-//	});	
-//    
-//    var margin_top = $(".dropdown-menu").css("margin-top");
+    var account = window.location.href.split("/")[3];
+    if (account == 'sample')
+    {
+	    show_tutorial_modal();
+	    $("#tutorial_link").click();
+	    $("#popup2").draggable();
+    }
+    
     $(".dropdown-menu").css("margin-top", "-15px");
     $(".dropdown-menu").css("opacity", "0.9");	
 	
@@ -563,6 +560,36 @@ function husen_draggable()
 }
 
 function show_husen_modal()
+{
+	var appendthis =  ("<div class='modal-overlay js-modal-close'></div>");
+	
+	$('a[data-modal-id]').click(function(e) {
+		e.preventDefault();
+    $("body").append(appendthis);
+    $(".modal-overlay").fadeTo(500, 0.7);
+    //$(".js-modalbox").fadeIn(500);
+		var modalBox = $(this).attr('data-modal-id');
+		$('#'+modalBox).fadeIn($(this).data());
+	});  	  
+  
+	$(".js-modal-close, .modal-overlay").click(function() {
+	    $(".modal-box, .modal-overlay").fadeOut(500, function() {
+	        $(".modal-overlay").remove();
+	    });
+	 
+	});
+	 
+	$(window).resize(function() {
+	    $(".modal-box").css({
+	        top: ($(window).height() - $(".modal-box").outerHeight()) / 2,
+	        left: ($(window).width() - $(".modal-box").outerWidth()) / 2
+	    });
+	});
+	 
+	$(window).resize();
+}
+
+function show_tutorial_modal()
 {
 	var appendthis =  ("<div class='modal-overlay js-modal-close'></div>");
 	
