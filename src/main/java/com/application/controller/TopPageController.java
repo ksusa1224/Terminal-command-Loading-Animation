@@ -267,6 +267,17 @@ public class TopPageController {
 			}	
 	  }
 
+	@RequestMapping(value = "/AC228EEA2E1AED85FDE07AF3F3DF3BB7.txt",method = RequestMethod.GET)
+	@ResponseBody
+	public String plaintext(HttpServletResponse response) {
+	  response.setContentType("text/plain");
+	  response.setCharacterEncoding("UTF-8");
+	  StringBuilderPlus sb = new StringBuilderPlus();
+	  sb.appendLine("35DEDB577526F01F69616B8AF55127DF7B904671");
+	  sb.appendLine("comodoca.com");
+	  return sb.toString();
+	}	  
+	  
 	public void insert_system_initial_data(String owner_db, String owner_id) {
 		SystemDao system_dao = new SystemDao();
 		SystemModel system = new SystemModel();

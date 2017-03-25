@@ -218,7 +218,7 @@
 <div id="qa_context-menu" style="display:none"> 
   <!-- The actual menu that will be displayed-->
   <ul class="dropdown-menu">
-    <li><a href="#" onclick="javascript:edit_qa(null);;">Q&amp;Aを編集</a></li>
+    <li><a href="#" onclick="javascript:edit_qa(null);">Q&amp;Aを編集</a></li>
     <li><a href="#" onclick="javascript:delete_qa();">Q&amp;Aを削除</a></li>
     <li class="divider"></li>
     <li><a id="q_play" href="javascript:play_q();" onclick="javascript:play_q();">問題をリピート再生</a></li>
@@ -256,13 +256,13 @@
   </div>
   <footer> <a href="#" class="btn btn-small" onclick="javascript:husen_order();">並び替えを反映</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-small js-modal-close">Close</a> </footer>
 </div>
-<div id="popup2" class="modal-box" style="z-index:1000000;width:600px;height:450px;">
+<div id="popup2" class="modal-box" style="z-index:1000000;width:600px;height:450px;margin-left: auto !important;margin-right: auto !important;">
   <header> <a href="#" class="js-modal-close close">×</a>
     <h3>暗記ノートの使い方</h3>
   </header>
-  <div class="modal-body" style="overflow:scroll;height:450px;">
+  <div class="modal-body" style="overflow:scroll;height:550px;">
   	問題を検索して、解いてみましょう。
-	<video width="550" height="330" controls="true" autoplay="true" style="margin-top:-50px;padding:0;">
+	<video width="550" height="330" controls="true" style="margin-top:-20px;padding:0;">
 	  <source src="../video/howto/tag_search_mouse_over_click_to_red.mp4" type="video/mp4"></source>
 	</video>  	
   </div>

@@ -7,6 +7,7 @@ var qa_husen_global = "";
 var dragged_husen_left = 0;
 var refresh_by_date = "";
 var tag_id_for_contextmenu = "";
+var firstTime = localStorage.getItem("first_time");
 
 function body_load()
 {	
@@ -42,6 +43,10 @@ function body_load()
     var account = window.location.href.split("/")[3];
     if (account == 'sample')
     {
+    	if(!firstTime) {
+    		alert("SAMPLEアカウントは、セッションが切れると最初の状態に戻ります。");
+    	    localStorage.setItem("first_time","1");
+    	}
 	    show_tutorial_modal();
 	    $("#tutorial_link").click();
 	    $("#popup2").draggable();
