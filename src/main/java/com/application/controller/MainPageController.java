@@ -171,6 +171,7 @@ public class MainPageController{
 			if (request_url.equals(response_url))
 			{
 				byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
+//				byte[] encrypted_owner_db = login_info.getEncrypted_db_name();
 				AES aes = new AES();
 				String owner_db = aes.decrypt(encrypted_owner_db);
 				System.out.println(owner_id+"おーなー");
@@ -178,8 +179,10 @@ public class MainPageController{
 				System.out.println(session_id+"せっしょん");
 				System.out.println(session.getId());
 				
-				if ((owner_id.equals("sample") && session.getId().equals(session_id)) == false ||
-				    (owner_id.equals("sample") && session_id == null))
+				System.out.println(request.getHeader("Referer"));
+//				if ((owner_id.equals("sample") && session.getId().equals(session_id) == false) ||
+//				    (owner_id.equals("sample") && session_id == null))
+				if (owner_id.equals("sample"))
 				{
 					System.out.println("ppsdfasdpfasfgj-----");
 					copy_db = copy_db.replace(Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/", "");
@@ -190,7 +193,9 @@ public class MainPageController{
 				}
 				else
 				{
-					//session.setAttribute("owner_db", encrypted_owner_db);
+					
+//					session.setAttribute("owner_db", login_info.getEncrypted_db_name());
+//					session.setAttribute("owner_db", encrypted_owner_db);
 				}
 				int limit = Constant.QA_NUM_PER_PAGE;
 				int left_offset = 0;
