@@ -1232,6 +1232,11 @@ function register_qa_ajax ()
 			$("#seikai_sum").html(data[3]);
 			$(".total_pages").html(data[4]);
 			$("#qa_input").focus();
+				if (data[5] == "overlimit")
+				{
+					alert("無料会員の登録問題数制限を超えました。さらに登録するには、プレミアムユーザーにアップグレードさい。");
+				}
+			
 
 			refresh();
 			$("#blue_pen").addClass("rotate_pen");

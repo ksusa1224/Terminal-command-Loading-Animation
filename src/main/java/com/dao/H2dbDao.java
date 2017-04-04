@@ -129,6 +129,32 @@ public class H2dbDao
 			disconnect(conn);
 		}
 	}
+
+	/**
+	 * 
+	 * @param token
+	 */
+	public void temp_to_register(String token)
+	{
+		Connection conn = connect();
+		try
+		{
+			String sql = null;
+			Statement stmt = conn.createStatement();
+			
+			sql="update owner_info set kakin_type = '" + Constant.KAKIN_TYPE_FREE +"' where token = '" + token + "';";
+			
+			stmt.executeUpdate(sql);	
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			disconnect(conn);
+		}		
+	}
 	
 	/**
 	 * ログイン情報を取得する
@@ -152,6 +178,7 @@ public class H2dbDao
 			sql.appendLine("  owner.email as email,");
 			sql.appendLine("  owner.password as password,");
 			sql.appendLine("  owner.kakin_type as kakin_type, ");
+			sql.appendLine("  owner.token as token,");
 			sql.appendLine("  db.db_name as db_name,");
 			sql.appendLine("  db.db_version as db_version ");
 			sql.appendLine("from owner_info as owner "); 
@@ -176,6 +203,7 @@ public class H2dbDao
 				login_info.setDb_version(rs.getString("db_version"));
 				login_info.setKakin_type(rs.getInt("kakin_type"));
 				login_info.setDecryptedDbName(rs.getBytes("db_name"));
+				login_info.setToken(rs.getString("token"));
 			}
 		}
 		catch(Exception ex)
@@ -189,6 +217,41 @@ public class H2dbDao
 		
 		return login_info;
 	}
+
+	public Integer get_kakin_type(String owner_id)
+	{
+		Integer kakin_type = null;
+		
+		Connection conn = connect();
+		try
+		{
+			Statement stmt = conn.createStatement();
+			
+			// ログイン情報を取得
+			StringBuilderPlus sql = new StringBuilderPlus();
+			sql.appendLine("select");
+			sql.appendLine("  owner.kakin_type as kakin_type ");
+			sql.appendLine("from owner_info as owner "); 
+			sql.appendLine("where "); 
+			sql.appendLine("  owner.owner_id = '" + owner_id + "'");
+			sql.appendLine("  and owner.del_flg = 0");
+			System.out.println(sql.toString());
+			ResultSet rs = stmt.executeQuery(sql.toString());
+			while (rs.next()) {
+				kakin_type = rs.getInt("kakin_type");
+			}
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		finally
+		{
+			disconnect(conn);
+		}
+		
+		return kakin_type;
+	}	
 	
 	/**
 	 * 引数で指定した作成、更新、削除のSQLを実行する（トランザクショナル)

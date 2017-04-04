@@ -153,4 +153,75 @@ public class MailSend {
 	    	return false;
 	    }
 	}
+	
+	public Boolean send_remind_mail(
+			String owner_id, String email, String owner_name, String owner_password)
+	{	
+	    // Sender's email ID needs to be mentioned
+	    String from = "info@ankinote.com";//change accordingly
+	    String to = email;//change accordingly
+	    final String username = "info@ankinote.com";//change accordingly
+	    final String password = "rsZw#w0Z";//change accordingly
+	
+	    // Assuming you are sending email through relay.jangosmtp.net
+	    String host = "smtp.ankinote.com";
+	    
+	    Properties props = new Properties();
+	    
+	    props.put("mail.smtp.auth","true");
+	    props.put("mail.smtp.starttls.enable", "true");
+	    props.put("mail.smtp.host", host);
+	    props.put("mail.smtp.port", "587");
+	
+	    // Get the Session object.
+	    Session session = Session.getInstance(props,
+	    new javax.mail.Authenticator() {
+	       protected PasswordAuthentication getPasswordAuthentication() {
+	          return new PasswordAuthentication(username, password);
+	       }
+	    });
+	
+	    try {
+	       // Create a default MimeMessage object.
+	       Message message = new MimeMessage(session);
+	
+	       // Set From: header field of the header.
+	       message.setFrom(new InternetAddress(from));
+	
+	       // Set To: header field of the header.
+	       message.setRecipients(Message.RecipientType.TO,
+	       InternetAddress.parse(to));
+	
+	       // Set Subject: header field
+	       message.setSubject("暗記ノート【ログイン情報リマインド】" + owner_name + " さん");
+	
+	       // Now set the actual message
+	       StringBuilderPlus honbun = new StringBuilderPlus();
+	       honbun.appendLine(owner_name + " さん");
+	       honbun.appendLine("");
+	       honbun.appendLine("暗記ノートのログイン情報を");
+	       honbun.appendLine("リマインドいたします。");
+	       honbun.appendLine("");
+	       honbun.appendLine("=============================");
+	       honbun.appendLine("login id: " + owner_id);
+	       honbun.appendLine("password: " + owner_password);
+	       honbun.appendLine("=============================");
+	       honbun.appendLine("");
+	       honbun.appendLine("今後とも暗記ノートをよろしくお願いいたします。");
+	       
+	       message.setContent(honbun.toString(), "text/plain; charset=UTF-8");
+	
+	       System.out.println("*************");
+	       
+	       // Send message
+	       Transport.send(message);
+	
+	       System.out.println("Sent message successfully....");
+	       return true;
+	
+	    } catch (MessagingException e) {
+	    	e.printStackTrace();
+	    	return false;
+	    }
+	}	
 }

@@ -866,6 +866,48 @@ public class MainPageController{
 		AES aes = new AES();
 		String owner_db = aes.decrypt(encrypted_owner_db);
 				
+		H2dbDao h2dao = new H2dbDao();
+		int kakin_type = h2dao.get_kakin_type(owner_id);
+		
+		// 無料会員はQAを100文字までしか登録できない
+		if (kakin_type == 1)
+		{
+			QADao qa_dao = new QADao();
+			if (qa_dao.get_qa_cnt(owner_db) > Constant.FREE_MAX_QA_COUNT)
+			{				
+				int limit = Constant.QA_NUM_PER_PAGE;
+				int left_offset = 0;
+				List<QAPlusModel> qa_plus_list_left = new ArrayList<QAPlusModel>();
+				qa_plus_list_left = select_qa_plus(owner_db, limit, left_offset);
+				String qa_html = "";
+				if (qa_plus_list_left.size() > 0)
+				{
+					qa_html = generate_qa_html(qa_plus_list_left,owner_db);
+				}
+				
+				String qa_html_right = "";
+				int right_offset = Constant.QA_NUM_PER_PAGE;
+				List<QAPlusModel> qa_plus_list_right= new ArrayList<QAPlusModel>();
+				qa_plus_list_right = select_qa_plus(owner_db, limit, right_offset);
+				if (qa_plus_list_right.size() > 0)
+				{
+					qa_html_right = generate_qa_html(qa_plus_list_right,owner_db);
+				}
+				
+				SeitouDao seitou_dao = new SeitouDao();
+				
+				// ページング総数
+				String total_pages = String.valueOf(qa_dao.get_pages(owner_db, husen_str));			
+					
+				String seitou_cnt = String.valueOf(seitou_dao.get_seitou_cnt(owner_db, husen_str));
+				String seikai_cnt = String.valueOf(seitou_dao.get_seikai_cnt(owner_db, husen_str));
+				
+				String json = JSON.encode(
+						new String[] 
+					{qa_html,qa_html_right,seitou_cnt,seikai_cnt,total_pages, new String("overlimit")});
+				return json;			
+			}			
+		}
 		
 		if (yomudake_flg == null)
 		{

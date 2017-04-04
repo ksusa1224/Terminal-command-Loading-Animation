@@ -14,6 +14,7 @@ public @Data class LoginInfoModel {
 	private byte[] encrypted_db_name;
 	private String db_version;
 	private int kakin_type;
+	private String token;
 	
 	/**
 	 * 暗号化されたオーナーDB名から復号化されたオーナーDB名を取得する

@@ -67,6 +67,51 @@ public class QADao {
 	    stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());
 		return max_row_no;
 	}
+
+	public int get_qa_cnt(String db_name)
+	{	
+		StopWatch stopwatch = new StopWatch();
+		stopwatch.start();
+		
+		int cnt = 0;
+		
+		SQliteDAO dao = new SQliteDAO();
+		
+		StringBuilderPlus sql = new StringBuilderPlus();
+		sql.appendLine("select count(row_no) as cnt from qa where del_flg != 1");
+		dao.loadDriver();
+		
+		//System.out.println(sql.toString());
+
+	    Connection connection = null;
+		String db_save_path = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/";
+		String connection_str = "jdbc:sqlite:" 
+				  				+ db_save_path
+				  				+ db_name;
+	    try
+	    {
+	      // DBが存在していたら接続、存在していなければ作成
+	      connection = DriverManager.getConnection(connection_str);
+	      Statement stmt = connection.createStatement();
+	      ResultSet rs = stmt.executeQuery(sql.toString());
+	      while (rs.next()) 
+	      {
+	    	  cnt = rs.getInt("cnt");
+	      }
+	    }
+	    catch(Exception ex)
+	    {
+			Log log = new Log();
+			log.insert_error_log("ERROR", ex.getStackTrace().toString());
+		    System.err.println(ex.getMessage());
+	    }
+	    finally
+	    {
+	      dao.close(connection);
+	    }	    
+	    stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());
+		return cnt;
+	}
 	
 	/**
 	 * 正答数を得る

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<!-- CSS Files -->
+<link th:href="@{../css/bootstrap.min.css}" rel="stylesheet" media="screen" />
+<link th:href="@{../css/font-awesome.min.css}" rel="stylesheet" />
+<link th:href="@{../fonts/icon-7-stroke/css/pe-icon-7-stroke.css}" rel="stylesheet" />
+<link th:href="@{../css/animate.css}" rel="stylesheet" media="screen" />
+<link th:href="@{../css/owl.theme.css}" rel="stylesheet" />
+<link th:href="@{../css/owl.carousel.css}" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" th:href="@{../css/jquery-ui.css}" />
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+<!-- Colors -->
+<link th:href="@{css/css-index.css}" rel="stylesheet" media="screen" />
+<!-- <link href="css/css-index-green.css" rel="stylesheet" media="screen"> -->
+<!-- <link href="css/css-index-purple.css" rel="stylesheet" media="screen"> -->
+<!-- <link href="css/css-index-red.css" rel="stylesheet" media="screen"> -->
+<!-- <link href="css/css-index-orange.css" rel="stylesheet" media="screen"> -->
+<!-- <link href="css/css-index-yellow.css" rel="stylesheet" media="screen"> -->
+
+<!-- Google Fonts -->
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic" />
+  <style>
+    fieldset {
+      border: 0;
+    }
+    label {
+      display: block;
+      margin: 30px 0 0 0;
+    }
+    .overflow {
+      height: 200px;
+    }
+  </style>
+
+<title>暗記ノート</title>
+</head>
+<body>
+	<div class="overlay">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-7">
+				
+					<!-- /.main title -->
+<!-- 						<h1 class="wow fadeInLeft" style="font-size:36px;">
+						設定
+						</h1>
+ -->				</div> 
+				
+				<!-- /.signup form -->
+				<div class="col-md-5">
+				
+					<div id="register" class="signup-header wow fadeInUp">
+						<h3 class="form-title text-center">ログイン情報リマインド</h3>
+						<form class="form-header" th:action="@{/remind_mail.html}" role="form" method="POST" id="register">
+							<input type="hidden" name="edit" value="true" />
+							<div class="form-group">
+								<input class="form-control input-lg" name="email" id="email" type="email" placeholder="Email Address" required="true" />
+							</div>
+							<div class="form-group last">
+								<input type="submit" class="btn btn-warning btn-block btn-lg" name="register" value="リマインド情報を送信" />
+							<br />
+							</div>
+						</form>
+					</div>				
+				</div>
+			</div>
+		</div> 
+	</div> 
+
+	
+	<!-- /.javascript files -->
+	<script>
+		var url = window.location.href.split("/")[3];
+		if (url == "remind.html?sended=true")
+		{
+			alert("入力いただいたメールアドレス宛に、ログイン情報を送信しました。")
+		}
+	</script>
+</body>
+</html>

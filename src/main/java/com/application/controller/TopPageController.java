@@ -38,7 +38,50 @@ import com.email.MailSend;
 
 @Controller
 public class TopPageController {
+	  
+	  /**
+	   * 仮登録から本登録へ
+	   * @param session
+	   * @param request
+	   * @param token
+	   * @return
+	   */
+	  @RequestMapping(value="/register.html", method=RequestMethod.GET)
+	  public String register(
+			  HttpSession session,
+			  HttpServletRequest request,
+			  @RequestParam("token") String token)
+	  {
+		  H2dbDao dao = new H2dbDao();
+		  dao.temp_to_register(token);
+		  return "register";
+	  }
 
+	  @RequestMapping(value="/remind.html", method=RequestMethod.GET)
+	  public String remind(
+			  HttpSession session,
+			  HttpServletRequest request)
+	  {
+		  return "remind";
+	  }
+	  
+	  @RequestMapping(value="/remind_mail.html", method=RequestMethod.POST)
+	  public String remind_mail(
+			  HttpSession session,
+			  HttpServletRequest request,
+			  @RequestParam("email") String email)
+	  {
+		  AES aes = new AES();
+		  H2dbDao dao = new H2dbDao();
+		  LoginInfoModel login_info = dao.select_login_info(email);
+		  MailSend mail = new MailSend();
+		  mail.send_remind_mail(
+				  login_info.getOwner_id(), email, login_info.getOwner_name(), 
+				  aes.decrypt(login_info.getEncrypted_password()));
+		  
+		  return "redirect:remind.html?sended=true";
+	  }
+	  
 	/**
 	   * 新規会員登録
 	   * @param session
@@ -120,6 +163,7 @@ public class TopPageController {
 				sql.appendLine("  password,");
 				sql.appendLine("  kakin_type,");
 				sql.appendLine("  del_flg,");
+				sql.appendLine("  token,");
 				sql.appendLine("  insert_date,");
 				sql.appendLine("  update_date)");
 				sql.appendLine("values(");
@@ -127,8 +171,9 @@ public class TopPageController {
 				sql.appendLine("  '" + owner_name + "',");
 				sql.appendLine("  '" + email + "',");
 				sql.appendLine("  ?,"); // Password
-				sql.appendLine("  '" + Constant.KAKIN_TYPE_FREE_PREIMIUM + "',");
+				sql.appendLine("  '" + Constant.KAKIN_TYPE_TEMPORARY + "',");
 				sql.appendLine("  0,");
+				sql.appendLine("  '" + token + "',");
 				sql.appendLine("  current_timestamp(),");
 				sql.appendLine("  current_timestamp()");
 				sql.appendLine(");");
@@ -180,7 +225,7 @@ public class TopPageController {
 		  }
 		  
 		  
-	      return "index";
+	      return "redirect:index.html?register_mail=sended";
 	  }
 	  
 	  // loginボタン押下の場合
@@ -209,12 +254,12 @@ public class TopPageController {
 			// DBパッチ　サーバに入れたのでコメントアウト
 			//dao.alter_common_db_add_token();
 			
-//			System.out.println(login_info.getEncrypted_db_name());
-//			System.out.println(aes.decrypt(login_info.getEncrypted_db_name()));
-//			System.out.println(login_info.getEncrypted_password());
-//			System.out.println(aes.decrypt(login_info.getEncrypted_password()));
-//			System.out.println(encrypted_input_password);
-//			System.out.println(aes.decrypt(encrypted_input_password));
+			// 仮登録の場合
+			if (login_info.getKakin_type() == 0)
+			{
+				return "redirect:index.html?type=temporary";
+			}
+			
 			System.out.println(login_info.getOwner_id());
 			
 			input_password = aes.decrypt(encrypted_input_password);
@@ -289,7 +334,6 @@ public class TopPageController {
 		  mail_send.send_contact_mail(name, email, content);
 		  return "index";
 	  }
-	  
 
 	@RequestMapping(value = "/AC228EEA2E1AED85FDE07AF3F3DF3BB7.txt",method = RequestMethod.GET)
 	@ResponseBody
