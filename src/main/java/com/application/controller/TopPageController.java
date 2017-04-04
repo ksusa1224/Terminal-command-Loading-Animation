@@ -266,6 +266,30 @@ public class TopPageController {
 			    return "index";
 			}	
 	  }
+	  
+	  /**
+	   * コンタクトフォーム押下の場合
+	   * @param session
+	   * @param request
+	   * @param owner_id
+	   * @param login_password
+	   * @param owner_name
+	   * @param email
+	   * @return
+	   */
+	  @RequestMapping(value="/", method=RequestMethod.POST, params={"contact"})
+	  public String contact(
+			  HttpSession session,
+			  HttpServletRequest request,
+			  @RequestParam("name") String name,
+			  @RequestParam("email") String email,
+			  @RequestParam("content") String content)
+	  {
+		  MailSend mail_send = new MailSend();
+		  mail_send.send_contact_mail(name, email, content);
+		  return "index";
+	  }
+	  
 
 	@RequestMapping(value = "/AC228EEA2E1AED85FDE07AF3F3DF3BB7.txt",method = RequestMethod.GET)
 	@ResponseBody
