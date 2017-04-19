@@ -1,9 +1,13 @@
 package com.application.controller;
 
 import java.security.SecureRandom;
-
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,6 +41,8 @@ import com.common.Util;
 import com.dao.H2dbDao;
 import com.dao.SQliteDAO;
 import com.email.MailSend;
+
+import net.arnx.jsonic.JSON;
 
 @Controller
 public class TopPageController {
@@ -81,6 +89,249 @@ public class TopPageController {
 		  
 		  return "redirect:remind.html?sended=true";
 	  }
+
+	  /**
+	   * プレミアム会員登録前処理（fromトップページ）
+	   * @param session
+	   * @param request
+	   * @param email
+	   * @param owner_id
+	   * @param owner_name
+	   * @param password
+	   * @return
+	   */
+	  @RequestMapping(value="/regist_premium.html", method=RequestMethod.GET)
+	  public @ResponseBody String before_regist_premium(
+			  HttpSession session,
+			  HttpServletRequest request,
+			  @RequestParam(value="email", required=false) String email,
+			  @RequestParam(value="owner_id", required=false) String owner_id,
+			  @RequestParam(value="owner_name", required=false) String owner_name,
+			  @RequestParam(value="password", required=false) String password)
+	  {		  
+			/**
+			 * アクセスログ記録
+			 */
+			String request_uri = request.getRequestURI();
+			String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
+			String client_ip = Log.getClientIpAddress(request);
+			String client_os = Log.getClientOS(request);
+			String client_browser = Log.getClientBrowser(request);
+			Log log = new Log();
+			log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
+
+		  // メールアドレス重複チェック
+		  H2dbDao h2dao = new H2dbDao();
+		  Boolean is_email_deplicate = h2dao.is_email_deplicate(email);
+		  if (is_email_deplicate == true)
+		  {
+			  return "email_depricate";
+		  }
+		  // オーナーID重複チェック
+		  Boolean is_owner_id_deplicate = h2dao.is_owner_id_deplicate(owner_id);
+		  if (is_owner_id_deplicate == true)
+		  {
+			  return "owner_id_depricate";
+		  }
+		  
+		  String encoded_email = java.util.Base64.getUrlEncoder()
+				  				.encodeToString(email.getBytes());
+		  String encoded_owner_id = java.util.Base64.getUrlEncoder()
+	  				.encodeToString(owner_id.getBytes());
+		  String encoded_owner_name = java.util.Base64.getUrlEncoder()
+	  				.encodeToString(owner_name.getBytes());
+		  String encoded_password = java.util.Base64.getUrlEncoder()
+	  				.encodeToString(password.getBytes());
+		  
+	        String command = "curl -v https://api-3t.paypal.com/nvp -d "
+	        		+ "USER=ksusa1224_api1.gmail.com"
+	        		+ "&PWD=HQ7TUMJC7EYGRRPM"
+	        		+ "&SIGNATURE=AFcWxV21C7fd0v3bYYYRCpSSRl31A3.TJ.pCOcROSkBlSwBUgPQQCVbK"
+	        		+ "&METHOD=SetExpressCheckout"
+	        		+ "&VERSION=124"
+	        		+ "&PAYMENTREQUEST_0_AMT=1"
+	        		+ "&PAYMENTREQUEST_0_CURRENCYCODE=JPY"
+	        		+ "&PAYMENTREQUEST_0_PAYMENTACTION=Sale"
+	        		+ "&cancelUrl="
+	        		+ "http://localhost:8080/" + encoded_email + "/" + encoded_owner_id + "/"
+	        		+ encoded_owner_name + "/" + encoded_password + "/" + "premium_cancel.html"
+	        		+ "&returnUrl="
+	        		+ "http://localhost:8080/" + encoded_email + "/" + encoded_owner_id + "/"
+	        		+ encoded_owner_name + "/" + encoded_password + "/" + "premium_register.html"
+	        		+ "&PAYMENTREQUEST_0_SHIPTONAME=氏名"
+	        		+ "&PAYMENTREQUEST_0_SHIPTOZIP=郵便番号"
+	        		+ "&PAYMENTREQUEST_0_SHIPTOSTATE=都道府県"
+	        		+ "&PAYMENTREQUEST_0_SHIPTOCITY=市区町村"
+	        		+ "&PAYMENTREQUEST_0_SHIPTOSTREET=番地"
+	        		+ "&PAYMENTREQUEST_0_SHIPTOSTREET2=ビル名等"
+	        		+ "&PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE=国"
+	        		+ "&PAYMENTREQUEST_0_EMAIL=メールアドレス"
+	        		+ "&PAYMENTREQUEST_0_SHIPTOPHONENUM=電話番号";
+	        
+	        System.out.println(command);
+	        
+	        StringBuilderPlus sb = new StringBuilderPlus();
+			try {
+	        Process proc = Runtime.getRuntime().exec(command);
+
+
+			// Read the output
+	        BufferedReader reader =  
+	              new BufferedReader(new InputStreamReader(proc.getInputStream()));
+
+	        String line = "";
+	        while((line = reader.readLine()) != null) {
+//	            System.out.print(line + "\n");
+	        	sb.appendLine(line);
+	        }
+	        
+	        proc.waitFor();  
+			
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		  
+			  String ret = null;
+			  try {
+				ret = java.net.URLDecoder.decode(sb.toString(), "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+			  ret = "https://www.paypal.com/cgi-bin/webscr?cmd=_express-checkout&useraction=commit"
+			  		+ "&token=" + ret;
+
+		  return ret;
+	  }
+	  
+	  @RequestMapping(value="/{email}/{owner_id}/{owner_name}/{owner_password}/premium_register.html{query}",
+			  method=RequestMethod.GET)
+		public String premium_regist(
+				@PathVariable("email") String email,
+				@PathVariable("owner_id") String owner_id,
+				@PathVariable("owner_name") String owner_name,
+				@PathVariable("owner_password") String owner_password,
+				HttpServletRequest request, 
+				HttpServletResponse response, 
+				HttpSession session,
+				Model model) 
+		{
+			System.out.println("rrrrrrrrrrrrrrr");
+			
+			email = new String(Base64.getUrlDecoder().decode(email));
+			owner_id = new String(Base64.getUrlDecoder().decode(owner_id));
+			owner_name = new String(Base64.getUrlDecoder().decode(owner_name));
+			owner_password = new String(Base64.getUrlDecoder().decode(owner_password));
+			
+			/**
+			 * アクセスログ記録
+			 */
+			String request_uri = request.getRequestURI();
+			String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
+			String client_ip = Log.getClientIpAddress(request);
+			String client_os = Log.getClientOS(request);
+			String client_browser = Log.getClientBrowser(request);
+			Log log = new Log();
+			log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
+
+			// 仮登録用のワンタイムパスワード
+		  UUID uuid = UUID.randomUUID();
+		  String token = uuid.toString();
+		  MailSend mail_send = new MailSend();
+		  Boolean sended = mail_send.send_register_mail(email, owner_name, token);
+
+		  SQliteDAO sqlite_dao = new SQliteDAO();
+		  String db_name = sqlite_dao.createOwnerDB(owner_id);
+		  TagDao tag_dao = new TagDao();
+		  tag_dao.add_system_tags(db_name, owner_id);
+		  
+		  if (sended = true)
+		  {
+			  try
+			  {				
+				// 暗号化ユーティリティ
+				AES aes = new AES();
+				byte[] encrypted_password = aes.encrypt(owner_password);
+				byte[] encrypted_db_name = aes.encrypt(db_name);
+	
+				// SQLに渡すパラメーター（バイナリのみ対象）
+				List<byte[]> params = new ArrayList<byte[]>();
+				params.add(encrypted_password);
+				  			
+				//h2db_dao2.create_common_db();
+			
+				// オーナー情報TBLに会員登録したユーザ情報を登録
+				StringBuilderPlus sql = new StringBuilderPlus();
+				sql.appendLine("insert into owner_info (");
+				sql.appendLine("  owner_id,");
+				sql.appendLine("  owner_name,");
+				sql.appendLine("  email,");
+				sql.appendLine("  password,");
+				sql.appendLine("  kakin_type,");
+				sql.appendLine("  del_flg,");
+				sql.appendLine("  token,");
+				sql.appendLine("  insert_date,");
+				sql.appendLine("  update_date)");
+				sql.appendLine("values(");
+				sql.appendLine("  '" + owner_id + "',");
+				sql.appendLine("  '" + owner_name + "',");
+				sql.appendLine("  '" + email + "',");
+				sql.appendLine("  ?,"); // Password
+				sql.appendLine("  '" + Constant.KAKIN_TYPE_PREMIUM_TEMPORARY + "',");
+				sql.appendLine("  0,");
+				sql.appendLine("  '" + token + "',");
+				sql.appendLine("  current_timestamp(),");
+				sql.appendLine("  current_timestamp()");
+				sql.appendLine(");");
+	
+				H2dbDao h2db_dao = new H2dbDao();
+				h2db_dao.update(sql, params);
+	
+				// ユーザDB情報テーブルに会員登録したユーザのDB情報を格納
+				params = new ArrayList<byte[]>();
+				params.add(encrypted_db_name);
+				
+				StringBuilderPlus sql2 = new StringBuilderPlus();
+				sql2.appendLine("insert into owner_db (");
+				sql2.appendLine("  owner_id,");
+				sql2.appendLine("  db_name,");
+				sql2.appendLine("  db_version,");
+				sql2.appendLine("  is_current_db,");
+				sql2.appendLine("  del_flg,");
+				sql2.appendLine("  insert_date,");
+				sql2.appendLine("  update_date");
+				sql2.appendLine(") ");
+				sql2.appendLine("values (");
+				sql2.appendLine("  '" + owner_id + "',");
+				sql2.appendLine("  ?,"); // db_name
+				sql2.appendLine("  '" + Constant.OWNER_DB_CURRENT_VERSION + "',");
+				sql2.appendLine("  1,");
+				sql2.appendLine("  0,");
+				sql2.appendLine("  current_timestamp(),");
+				sql2.appendLine("  current_timestamp()");
+				sql2.appendLine(");");
+				h2db_dao.update(sql2, params);
+				  	
+			}
+			catch(Exception ex)
+			{
+				String trace = ex.toString() + "\n";                     
+	
+				for (StackTraceElement e1 : ex.getStackTrace()) {
+				    trace += "\t at " + e1.toString() + "\n";
+				} 
+				log.insert_error_log(ex.toString(), trace);
+				
+				ex.printStackTrace();
+			}
+		  }
+		  else if (sended == false)
+		  {
+			  return "send_error";
+		  }
+		  
+	      return "redirect:index.html?register_mail=sended";
+	  }	  
+	  
 	  
 	/**
 	   * 新規会員登録
@@ -255,7 +506,10 @@ public class TopPageController {
 			//dao.alter_common_db_add_token();
 			
 			// 仮登録の場合
-			if (login_info.getKakin_type() == 0)
+			if (login_info.getKakin_type() == 
+					Integer.valueOf(Constant.KAKIN_TYPE_TEMPORARY) ||
+				login_info.getKakin_type() == 
+					Integer.valueOf(Constant.KAKIN_TYPE_PREMIUM_TEMPORARY) ) 
 			{
 				return "redirect:index.html?type=temporary";
 			}

@@ -335,6 +335,11 @@
 					<img th:src="@{img/premium_note.png}" width="300px;" />
 			   </div>
 			   
+				<!-- /.package features -->
+			   <ul class="price-feature text-center">
+				  <li>&nbsp;</li>
+				  <li>登録可能問題数　<strong>無制限</strong></li>
+			   </ul>
 			   <!-- /.price -->
 				<div class="price-group text-center">
 					<!-- <span class="dollar">¥</span> -->
@@ -344,14 +349,20 @@
 			
 			   <!-- /.package button -->
 			   <div class="price-footer text-center">
-				 <a class="btn btn-price" href="#">登録</a>
+							<div class="form-group" style="padding-left:50px;padding-right:50px">
+								<input id="email_premium" class="form-control input-lg" onblur="is_email_deplicate_premium()" name="email" type="email" placeholder="Email Address" required="true" />
+							</div>
+							<div class="form-group" style="padding-left:50px;padding-right:50px">
+								<input id="owner_id_premium" class="form-control input-lg" onblur="is_owner_id_deplicate_premium()" name="owner_id" type="text" placeholder="Login Id" required="true" />
+							</div>
+							<div class="form-group" style="padding-left:50px;padding-right:50px">
+								<input id="owner_name_premium" class="form-control input-lg" name="owner_name" type="text" placeholder="Owner Name" required="true" />
+							</div>
+							<div class="form-group" style="padding-left:50px;padding-right:50px">
+								<input class="form-control input-lg" name="login_password" id="password_premium" type="password" placeholder="Password" required="true" />
+							</div>
+<img onclick="alert('');to_premium()" src="https://www.paypalobjects.com/ja_JP/JP/i/btn/btn_subscribeCC_LG.gif" border="0" alt="PayPal - オンラインでより安全・簡単にお支払い" />
 				</div>	
-				<!-- /.package features -->
-			   <ul class="price-feature text-center">
-				  <li>&nbsp;</li>
-				  <li>登録可能問題数　<strong>無制限</strong></li>
-			   </ul>
-			   <br />
 			  </div>			
 			</div>
 		</div>
@@ -370,8 +381,6 @@
 							<ul class="ul-address">
 							<li><i class="pe-7s-map-marker"></i>〒168-0071<br />
 							東京都杉並区高井戸西２−１２−２５
-							</li>
-							<li><i class="pe-7s-phone"></i>080-7003-9991
 							</li>
 							<li><i class="pe-7s-mail"></i><a href="mailto:info@ankinote.com">info@ankinote.com</a></li>
 							<li><i class="pe-7s-look"></i><a href="https://www.ankinote.com">www.ankinote.com</a></li>
@@ -426,97 +435,9 @@
     <script th:src="@{js/jquery.sticky.js}"></script>
 	<script th:src="@{js/wow.min.js}"></script>
 	<script th:src="@{js/owl.carousel.min.js}"></script>
+	<script th:src="@{js/_index.js}"></script>
 	<script>
 		new WOW().init();
-		
-		var url = window.location.href.split("/")[3];
-		if (url == "index.html?register_mail=sended")
-		{
-			alert("登録いただいたメールアドレス宛に、仮登録完了のメールを送信しました。")
-		}
-		if (url == "index.html?type=temporary")
-		{
-			alert("お客様のアカウントは仮登録の状態のため、ログインできません。登録したメールアドレスにお送りした本登録へのリンクを押下し、登録を完了させてください。");
-		}
-		
-		var validated = false;
-		function is_email_deplicate()
-		{
-			var email = $("#email").val();
-			jQuery.ajax({
-				url: "./is_email_deplicate.html?email=" + email,
-				dataType: "html",
-				cache: false,
-				success: function(data)
-				{
-					if (data == 'deplicate')
-					{
-					    $( "#dialog_email" ).dialog();
-					    validated = false;
-					    return false;
-					}
-					else
-					{
-						validated = true;						
-					}
-				},
-				error: function(data)
-				{
-				}
-			});
-		}
-		
-		function is_owner_id_deplicate()
-		{
-			var owner_id = $("#owner_id").val();
-			jQuery.ajax({
-				url: "./is_owner_id_deplicate.html?owner_id=" + owner_id,
-				dataType: "html",
-				cache: false,
-				success: function(data)
-				{
-					if (data == 'deplicate')
-					{
-					    $( "#dialog_owner_id" ).dialog();
-					    validated = false;
-					    return false;
-					}
-					else
-					{
-						validated = true;
-					}
-				},
-				error: function(data)
-				{
-				}
-			});
-		}
-		
-	    $("#register").on('submit', function(e){
-	        if(validated == false)
-	        {
-	            e.preventDefault();
-	        }
-	    });
-	    
-	    function remind(url, title, w, h)
-	    {
-    	    // Fixes dual-screen position                         Most browsers      Firefox
-    	    var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : screen.left;
-    	    var dualScreenTop = window.screenTop != undefined ? window.screenTop : screen.top;
-
-    	    var width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
-    	    var height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
-
-    	    var left = ((width / 2) - (w / 2)) + dualScreenLeft;
-    	    var top = ((height / 2) - (h / 2)) + dualScreenTop;
-    	    var newWindow = window.open(url, title, 'scrollbars=yes,directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
-
-    	    // Puts focus on the newWindow
-    	    if (window.focus) {
-    	        newWindow.focus();
-    	    }	    	
-	    }
 	</script>
   </body>
 <div id="dialog_email" title="会員登録情報エラー" style="display:none">

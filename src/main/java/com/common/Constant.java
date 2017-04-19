@@ -27,7 +27,7 @@ public class Constant {
 	 * 課金タイプ
 	 */
 	
-	// 課金タイプ：仮登録
+	// 課金タイプ：仮登録（無料）
 	public static final String KAKIN_TYPE_TEMPORARY = "00";
 	
 	// 課金タイプ：無料（general owner）
@@ -41,6 +41,9 @@ public class Constant {
 	
 	// 課金タイプはプレムアムだが、支払いの滞りなどで支払われていない状態
 	public static final String KAKIN_TYPE_PREMIUM_CHARGE_FAILS = "04";
+	
+	// 課金タイプ：仮登録（プレミアム）
+	public static final String KAKIN_TYPE_PREMIUM_TEMPORARY = "05";
 	
 	/**
 	 * 登録問題数制限

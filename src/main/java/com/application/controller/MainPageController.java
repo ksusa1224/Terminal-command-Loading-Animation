@@ -91,8 +91,7 @@ public class MainPageController{
 	 * @param user_id
 	 * @return
 	 */
-	@RequestMapping(value={"/{owner_id}", 
-						   "/{owner_id}/", 
+	@RequestMapping(value={"/{owner_id}/",
 						   "/{owner_id}/main.html", 
 						   "/{owner_id}/main.html#", 
 						   "/{owner_id}/main.htm", 

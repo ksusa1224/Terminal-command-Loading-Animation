@@ -142,7 +142,12 @@ public class H2dbDao
 			String sql = null;
 			Statement stmt = conn.createStatement();
 			
-			sql="update owner_info set kakin_type = '" + Constant.KAKIN_TYPE_FREE +"' where token = '" + token + "';";
+			sql="update owner_info set kakin_type = "
+					+ " case when kakin_type = '" + Constant.KAKIN_TYPE_TEMPORARY + "'"
+					+ " then '" + Constant.KAKIN_TYPE_FREE + "'"
+					+ " when kakin_type = '" + Constant.KAKIN_TYPE_PREMIUM_TEMPORARY + "'"
+					+ " then '" + Constant.KAKIN_TYPE_PREMIUM + "' end"
+					+ " where token = '" + token + "';";
 			
 			stmt.executeUpdate(sql);	
 		} 
