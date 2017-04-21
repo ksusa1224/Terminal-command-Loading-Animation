@@ -82,16 +82,16 @@
 						<input type="hidden" name="u" value="503bdae81fde8612ff4944435" />
 						<input type="hidden" name="id" value="bfdba52708" />
 							<div class="form-group">
-								<input class="form-control input-lg" onblur="is_email_deplicate(this)" name="email" id="email" type="email" placeholder="Email Address" required="true" />
+								<input class="form-control input-lg" onblur="is_email_deplicate(this)" name="email" id="email" type="email" placeholder="Email Address" required="true" maxlength="50" />
 							</div>
 							<div class="form-group">
-								<input id="owner_id" class="form-control input-lg" onblur="is_owner_id_deplicate(this)" name="owner_id" type="text" placeholder="Login Id" required="true" />
+								<input id="owner_id" class="form-control input-lg" onblur="check_owner_id_char(this);is_owner_id_deplicate(this)" name="owner_id" type="text" placeholder="Login Id" required="true" maxlength="10" />
 							</div>
 							<div class="form-group">
-								<input id="owner_name" class="form-control input-lg" name="owner_name" type="text" placeholder="Owner Name" required="true" />
+								<input id="owner_name" class="form-control input-lg" name="owner_name" type="text" placeholder="Owner Name" required="true" maxlength="10" />
 							</div>
 							<div class="form-group">
-								<input class="form-control input-lg" name="login_password" id="new_password" type="password" placeholder="Password" required="true" />
+								<input class="form-control input-lg" name="login_password" id="new_password" type="password" placeholder="Password" required="true" maxlength="20" />
 							</div>
 							<div class="form-group last">
 								<input type="submit" class="btn btn-warning btn-block btn-lg" name="register" value="新規会員登録（無料）" />
@@ -106,10 +106,10 @@
 						<input type="hidden" name="u" value="503bdae81fde8612ff4944435" />
 						<input type="hidden" name="id" value="bfdba52708" />
 							<div class="form-group">
-								<input class="form-control input-lg" name="owner_id_or_email" id="owner_id_or_email" type="text" placeholder="Login Id /  Email" required="true" />
+								<input class="form-control input-lg" name="owner_id_or_email" id="owner_id_or_email" type="text" placeholder="Login Id /  Email" required="true" maxlength="50" />
 							</div>
 							<div class="form-group">
-								<input class="form-control input-lg" name="login_password" id="login_password" type="password" placeholder="Password" required="true" />
+								<input class="form-control input-lg" name="login_password" id="login_password" type="password" placeholder="Password" required="true" maxlength="20" />
 							</div>
 							<div class="form-group last">
 								<input type="submit" class="btn btn-warning btn-block btn-lg" name="login" value="ログイン" />
@@ -319,16 +319,16 @@
 						<input type="hidden" name="u" value="503bdae81fde8612ff4944435" />
 						<input type="hidden" name="id" value="bfdba52708" />
 							<div class="form-group" style="padding-left:50px;padding-right:50px">
-								<input class="form-control input-lg" onblur="is_email_deplicate(this)" name="email" id="email" type="email" placeholder="Email Address" required="true" />
+								<input class="form-control input-lg" onblur="is_email_deplicate(this)" name="email" id="email" type="email" placeholder="Email Address" required="true" maxlength="50" />
 							</div>
 							<div class="form-group" style="padding-left:50px;padding-right:50px">
-								<input id="owner_id" class="form-control input-lg" onblur="is_owner_id_deplicate(this)" name="owner_id" type="text" placeholder="Login Id" required="true" />
+								<input id="owner_id" class="form-control input-lg" onblur="check_owner_id_char(this);is_owner_id_deplicate(this)" name="owner_id" type="text" placeholder="Login Id" required="true" maxlength="10" />
 							</div>
 							<div class="form-group" style="padding-left:50px;padding-right:50px">
-								<input id="owner_name" class="form-control input-lg" name="owner_name" type="text" placeholder="Owner Name" required="true" />
+								<input id="owner_name" class="form-control input-lg" name="owner_name" type="text" placeholder="Owner Name" required="true" maxlength="10" />
 							</div>
 							<div class="form-group" style="padding-left:50px;padding-right:50px">
-								<input class="form-control input-lg" name="login_password" id="new_password" type="password" placeholder="Password" required="true" />
+								<input class="form-control input-lg" name="login_password" id="new_password" type="password" placeholder="Password" required="true" maxlength="20" />
 							</div>
 							<div class="form-group last" style="padding-left:50px;padding-right:50px;text-align:center;">
 								<a href="#" style="border-bottom:1px solid grey;font-size:14px;color:gray;">利用規約</a><br />
@@ -368,16 +368,16 @@
 			   <!-- /.package button -->
 			   <div class="price-footer text-center">
 					<div class="form-group" style="padding-left:50px;padding-right:50px">
-						<input id="email_premium" class="form-control input-lg" name="email" type="email" placeholder="Email Address" required="true" />
+						<input id="email_premium" class="form-control input-lg" name="email" type="email" placeholder="Email Address" required="true" maxlength="50" />
 					</div>
 					<div class="form-group" style="padding-left:50px;padding-right:50px">
-						<input id="owner_id_premium" class="form-control input-lg" name="owner_id" type="text" placeholder="Login Id" required="true" />
+						<input id="owner_id_premium" class="form-control input-lg" onblur="check_owner_id_char(this)" name="owner_id" type="text" placeholder="Login Id" required="true" maxlength="10" />
 					</div>
 					<div class="form-group" style="padding-left:50px;padding-right:50px">
-						<input id="owner_name_premium" class="form-control input-lg" name="owner_name" type="text" placeholder="Owner Name" required="true" />
+						<input id="owner_name_premium" class="form-control input-lg" name="owner_name" type="text" placeholder="Owner Name" required="true" maxlength="10" />
 					</div>
 					<div class="form-group" style="padding-left:50px;padding-right:50px">
-						<input class="form-control input-lg" name="login_password" id="password_premium" type="password" placeholder="Password" required="true" />
+						<input class="form-control input-lg" name="login_password" id="password_premium" type="password" placeholder="Password" required="true" maxlength="20" />
 					</div>
 					<div class="form-group last" style="padding-left:50px;padding-right:50px;text-align:center;">
 						<table width="100%" border="0" cellpadding="0" cellspacing="0">
@@ -385,7 +385,7 @@
 						<a href="#" style="border-bottom:1px solid grey;font-size:14px;color:gray;">利用規約</a>
 						<br />
 						</td><td>&nbsp;</td></tr><tr><td>
-						<input onclick="to_premium();" type="button" class="btn btn-warning btn-block btn-lg" value="利用規約に同意して登録" style="padding:10px;font-size:18px !important;" />
+						<input id="premium_button" onclick="to_premium();" type="button" class="btn btn-warning btn-block btn-lg" value="利用規約に同意して登録" style="padding:10px;font-size:18px !important;" />
 						</td><td>
 <!-- PayPal Logo -->
 <a href="#" onclick="javascript:window.open('https://www.paypal.jp/jp/contents/popup/logo/AM_235_65/','olcwhatispaypal','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=900, height=700');">

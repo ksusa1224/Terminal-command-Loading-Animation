@@ -10,6 +10,31 @@ if (url == "index.html?type=temporary")
 	alert("お客様のアカウントは仮登録の状態のため、ログインできません。登録したメールアドレスにお送りした本登録へのリンクを押下し、登録を完了させてください。");
 }
 
+function check_owner_id_char(obj) {
+	if (obj.value.match(/[^A-Za-z0-9\-_]+/)) {
+		 //半角英数字以外の文字が存在する場合、エラー
+		alert("Login IDに使用できる文字は、半角英数字または\nハイフン（-）アンダースコア（_）のみです。")
+		obj.value = "";
+		return false;
+	}
+}
+
+$('#register').submit(function() {
+	if ($("input[name=owner_id").val().match(/[^A-Za-z0-9\-_]+/)){
+		alert("Login IDに使用できる文字は、半角英数字または\nハイフン（-）アンダースコア（_）のみです。")
+		$("input[name=owner_id").val("");
+		return false;
+	}
+});
+
+$('#premium_button').click(function() {
+	if ($("input[name=owner_id").val().match(/[^A-Za-z0-9\-_]+/)){
+		alert("Login IDに使用できる文字は、半角英数字または\nハイフン（-）アンダースコア（_）のみです。")
+		$("input[name=owner_id").val("");
+		return false;
+	}
+});
+
 function is_capable_browser() {
 	
 	var userAgent = window.navigator.userAgent.toLowerCase();
