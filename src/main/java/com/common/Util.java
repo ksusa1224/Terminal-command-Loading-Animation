@@ -2,8 +2,11 @@ package com.common;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -89,7 +92,7 @@ public class Util {
 	    String strDate = sdfDate.format(now);
 	    return strDate;	
 	}
-	
+
 	public String getDay(String dbdate)
 	{
 		if(dbdate == null)

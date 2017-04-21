@@ -82,10 +82,10 @@
 						<input type="hidden" name="u" value="503bdae81fde8612ff4944435" />
 						<input type="hidden" name="id" value="bfdba52708" />
 							<div class="form-group">
-								<input class="form-control input-lg" onblur="is_email_deplicate()" name="email" id="email" type="email" placeholder="Email Address" required="true" />
+								<input class="form-control input-lg" onblur="is_email_deplicate(this)" name="email" id="email" type="email" placeholder="Email Address" required="true" />
 							</div>
 							<div class="form-group">
-								<input id="owner_id" class="form-control input-lg" onblur="is_owner_id_deplicate()" name="owner_id" type="text" placeholder="Login Id" required="true" />
+								<input id="owner_id" class="form-control input-lg" onblur="is_owner_id_deplicate(this)" name="owner_id" type="text" placeholder="Login Id" required="true" />
 							</div>
 							<div class="form-group">
 								<input id="owner_name" class="form-control input-lg" name="owner_name" type="text" placeholder="Owner Name" required="true" />
@@ -303,22 +303,40 @@
 					<h3>Regular</h3>
 					<img th:src="@{img/regular_note.png}" width="280px;" />
 			   </div>
+			   
+				<!-- /.package features -->
+			   <ul class="price-feature text-center" style="margin-top:10px">
+				  <li>&nbsp;</li>
+				  <li>登録可能問題数　<strong>100問</strong></li>
+			   </ul>
 			   <!-- /.price -->
 				<div class="price-group text-center">
 					<!-- <span class="dollar">$</span> -->
 					<span class="price">無料</span>
 					<!-- <span class="time">/月</span> -->
 				</div>
-			   <!-- /.package button -->
-			   <div class="price-footer text-center">
-				 <a class="btn btn-price" href="#">登録</a>
-				</div>	
-				<!-- /.package features -->
-			   <ul class="price-feature text-center">
-				  <li>&nbsp;</li>
-				  <li>登録可能問題数　<strong>100問</strong></li>
-			   </ul>
-			   <br />
+							<form th:action="@{/}" role="form" method="POST" id="register">
+						<input type="hidden" name="u" value="503bdae81fde8612ff4944435" />
+						<input type="hidden" name="id" value="bfdba52708" />
+							<div class="form-group" style="padding-left:50px;padding-right:50px">
+								<input class="form-control input-lg" onblur="is_email_deplicate(this)" name="email" id="email" type="email" placeholder="Email Address" required="true" />
+							</div>
+							<div class="form-group" style="padding-left:50px;padding-right:50px">
+								<input id="owner_id" class="form-control input-lg" onblur="is_owner_id_deplicate(this)" name="owner_id" type="text" placeholder="Login Id" required="true" />
+							</div>
+							<div class="form-group" style="padding-left:50px;padding-right:50px">
+								<input id="owner_name" class="form-control input-lg" name="owner_name" type="text" placeholder="Owner Name" required="true" />
+							</div>
+							<div class="form-group" style="padding-left:50px;padding-right:50px">
+								<input class="form-control input-lg" name="login_password" id="new_password" type="password" placeholder="Password" required="true" />
+							</div>
+							<div class="form-group last" style="padding-left:50px;padding-right:50px;text-align:center;">
+								<a href="#" style="border-bottom:1px solid grey;font-size:14px;color:gray;">利用規約</a><br />
+								<input type="submit" class="btn btn-warning btn-block btn-lg" name="register" value="利用規約に同意して登録" style="padding:10px;font-size:18px !important;" />
+							</div>
+							<br />
+                            <!-- <p class="privacy text-center">We will not share your email. Read our <a href="privacy.html">privacy policy</a>.</p>						 -->						
+						</form>			
 			  </div>			
 			</div>
 			
@@ -349,19 +367,32 @@
 			
 			   <!-- /.package button -->
 			   <div class="price-footer text-center">
-							<div class="form-group" style="padding-left:50px;padding-right:50px">
-								<input id="email_premium" class="form-control input-lg" onblur="is_email_deplicate_premium()" name="email" type="email" placeholder="Email Address" required="true" />
-							</div>
-							<div class="form-group" style="padding-left:50px;padding-right:50px">
-								<input id="owner_id_premium" class="form-control input-lg" onblur="is_owner_id_deplicate_premium()" name="owner_id" type="text" placeholder="Login Id" required="true" />
-							</div>
-							<div class="form-group" style="padding-left:50px;padding-right:50px">
-								<input id="owner_name_premium" class="form-control input-lg" name="owner_name" type="text" placeholder="Owner Name" required="true" />
-							</div>
-							<div class="form-group" style="padding-left:50px;padding-right:50px">
-								<input class="form-control input-lg" name="login_password" id="password_premium" type="password" placeholder="Password" required="true" />
-							</div>
-<img onclick="alert('');to_premium()" src="https://www.paypalobjects.com/ja_JP/JP/i/btn/btn_subscribeCC_LG.gif" border="0" alt="PayPal - オンラインでより安全・簡単にお支払い" />
+					<div class="form-group" style="padding-left:50px;padding-right:50px">
+						<input id="email_premium" class="form-control input-lg" name="email" type="email" placeholder="Email Address" required="true" />
+					</div>
+					<div class="form-group" style="padding-left:50px;padding-right:50px">
+						<input id="owner_id_premium" class="form-control input-lg" name="owner_id" type="text" placeholder="Login Id" required="true" />
+					</div>
+					<div class="form-group" style="padding-left:50px;padding-right:50px">
+						<input id="owner_name_premium" class="form-control input-lg" name="owner_name" type="text" placeholder="Owner Name" required="true" />
+					</div>
+					<div class="form-group" style="padding-left:50px;padding-right:50px">
+						<input class="form-control input-lg" name="login_password" id="password_premium" type="password" placeholder="Password" required="true" />
+					</div>
+					<div class="form-group last" style="padding-left:50px;padding-right:50px;text-align:center;">
+						<table width="100%" border="0" cellpadding="0" cellspacing="0">
+						<tr><td>
+						<a href="#" style="border-bottom:1px solid grey;font-size:14px;color:gray;">利用規約</a>
+						<br />
+						</td><td>&nbsp;</td></tr><tr><td>
+						<input onclick="to_premium();" type="button" class="btn btn-warning btn-block btn-lg" value="利用規約に同意して登録" style="padding:10px;font-size:18px !important;" />
+						</td><td>
+<!-- PayPal Logo -->
+<a href="#" onclick="javascript:window.open('https://www.paypal.jp/jp/contents/popup/logo/AM_235_65/','olcwhatispaypal','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=900, height=700');">
+<img height="44px" src="https://www.paypal.jp/uploadedImages/wwwpaypaljp/Supporting_Content/jp/contents/popup/logo/AM_235_65.png" border="0" alt="その他のオプション" />
+</a></td></tr></table>
+					</div>
+					<br />
 				</div>	
 			  </div>			
 			</div>
@@ -379,9 +410,6 @@
 					<div class="col-sm-5 contact-left wow fadeInUp">
 						<h2><span class="highlight">CONTACT</span> US</h2>
 							<ul class="ul-address">
-							<li><i class="pe-7s-map-marker"></i>〒168-0071<br />
-							東京都杉並区高井戸西２−１２−２５
-							</li>
 							<li><i class="pe-7s-mail"></i><a href="mailto:info@ankinote.com">info@ankinote.com</a></li>
 							<li><i class="pe-7s-look"></i><a href="https://www.ankinote.com">www.ankinote.com</a></li>
 							</ul>	

@@ -1,6 +1,7 @@
 package com.application.controller;
 
 import java.security.SecureRandom;
+import java.time.Instant;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -104,6 +106,7 @@ public class TopPageController {
 	  public @ResponseBody String before_regist_premium(
 			  HttpSession session,
 			  HttpServletRequest request,
+			  HttpServletResponse response,
 			  @RequestParam(value="email", required=false) String email,
 			  @RequestParam(value="owner_id", required=false) String owner_id,
 			  @RequestParam(value="owner_name", required=false) String owner_name,
@@ -121,12 +124,14 @@ public class TopPageController {
 			log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
 
 		  // メールアドレス重複チェック
+		  // TODO メールアドレスとオーナーIDが紐付いてて重複してる場合は、プラン変更のロジックにする。
 		  H2dbDao h2dao = new H2dbDao();
 		  Boolean is_email_deplicate = h2dao.is_email_deplicate(email);
 		  if (is_email_deplicate == true)
 		  {
 			  return "email_depricate";
 		  }
+		  
 		  // オーナーID重複チェック
 		  Boolean is_owner_id_deplicate = h2dao.is_owner_id_deplicate(owner_id);
 		  if (is_owner_id_deplicate == true)
@@ -142,81 +147,214 @@ public class TopPageController {
 	  				.encodeToString(owner_name.getBytes());
 		  String encoded_password = java.util.Base64.getUrlEncoder()
 	  				.encodeToString(password.getBytes());
-		  
-	        String command = "curl -v https://api-3t.paypal.com/nvp -d "
-	        		+ "USER=ksusa1224_api1.gmail.com"
-	        		+ "&PWD=HQ7TUMJC7EYGRRPM"
-	        		+ "&SIGNATURE=AFcWxV21C7fd0v3bYYYRCpSSRl31A3.TJ.pCOcROSkBlSwBUgPQQCVbK"
-	        		+ "&METHOD=SetExpressCheckout"
-	        		+ "&VERSION=124"
-	        		+ "&PAYMENTREQUEST_0_AMT=1"
-	        		+ "&PAYMENTREQUEST_0_CURRENCYCODE=JPY"
-	        		+ "&PAYMENTREQUEST_0_PAYMENTACTION=Sale"
-	        		+ "&cancelUrl="
-	        		+ "http://localhost:8080/" + encoded_email + "/" + encoded_owner_id + "/"
-	        		+ encoded_owner_name + "/" + encoded_password + "/" + "premium_cancel.html"
-	        		+ "&returnUrl="
-	        		+ "http://localhost:8080/" + encoded_email + "/" + encoded_owner_id + "/"
-	        		+ encoded_owner_name + "/" + encoded_password + "/" + "premium_register.html"
-	        		+ "&PAYMENTREQUEST_0_SHIPTONAME=氏名"
-	        		+ "&PAYMENTREQUEST_0_SHIPTOZIP=郵便番号"
-	        		+ "&PAYMENTREQUEST_0_SHIPTOSTATE=都道府県"
-	        		+ "&PAYMENTREQUEST_0_SHIPTOCITY=市区町村"
-	        		+ "&PAYMENTREQUEST_0_SHIPTOSTREET=番地"
-	        		+ "&PAYMENTREQUEST_0_SHIPTOSTREET2=ビル名等"
-	        		+ "&PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE=国"
-	        		+ "&PAYMENTREQUEST_0_EMAIL=メールアドレス"
-	        		+ "&PAYMENTREQUEST_0_SHIPTOPHONENUM=電話番号";
-	        
-	        System.out.println(command);
-	        
-	        StringBuilderPlus sb = new StringBuilderPlus();
-			try {
-	        Process proc = Runtime.getRuntime().exec(command);
+	        	     
+		  String token1 = null;
+	        try {
+		        String command = "curl -v https://api-3t.paypal.com/nvp -d "
+		        		+ "USER=ksusa1224_api1.gmail.com"
+		        		+ "&PWD=HQ7TUMJC7EYGRRPM"
+		        		+ "&SIGNATURE=AFcWxV21C7fd0v3bYYYRCpSSRl31A3.TJ.pCOcROSkBlSwBUgPQQCVbK"
+		        		+ "&METHOD=SetExpressCheckout"
+		        		+ "&VERSION=124"
+		        		+ "&cancelUrl="
+		        		+ "http://localhost:8080/" + encoded_email + "/" + encoded_owner_id + "/"
+		        		+ encoded_owner_name + "/" + encoded_password + "/" + "premium_cancel.html"
+		        		+ "&returnUrl="
+		        		+ "http://localhost:8080/" + encoded_email + "/" + encoded_owner_id + "/"
+		        		+ encoded_owner_name + "/" + encoded_password + "/" + "premium_register.html"
+		        		+ "&L_BILLINGTYPE0=RecurringPayments"
+		        		+ "&L_BILLINGAGREEMENTDESCRIPTION0=定期支払";
 
-
-			// Read the output
-	        BufferedReader reader =  
-	              new BufferedReader(new InputStreamReader(proc.getInputStream()));
-
-	        String line = "";
-	        while((line = reader.readLine()) != null) {
-//	            System.out.print(line + "\n");
-	        	sb.appendLine(line);
-	        }
-	        
-	        proc.waitFor();  
+				Process proc = Runtime.getRuntime().exec(command);
+	
+				// Read the output
+		        BufferedReader reader =  
+		              new BufferedReader(new InputStreamReader(proc.getInputStream()));
+	
+		        StringBuilderPlus sb = new StringBuilderPlus();
+				
+		        String line = "";
+		        while((line = reader.readLine()) != null) {
+		        	sb.appendLine(line);
+		        }
+		        
+		        proc.waitFor();  
 			
+		      token1 = java.net.URLDecoder.decode(sb.toString(), "UTF-8");
+		      Cookie myCookie =
+		    		  new Cookie("token1", token1);
+		    		  response.addCookie(myCookie);
+		  		//token1 = sb.toString();
+		     return "https://www.paypal.com/cgi-bin/webscr?cmd=_express-checkout&useraction=commit&token="+token1;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		  
-			  String ret = null;
-			  try {
-				ret = java.net.URLDecoder.decode(sb.toString(), "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
-			  ret = "https://www.paypal.com/cgi-bin/webscr?cmd=_express-checkout&useraction=commit"
-			  		+ "&token=" + ret;
 
-		  return ret;
+		        
+	        //TODO
+		  return "";
 	  }
 	  
-	  @RequestMapping(value="/{email}/{owner_id}/{owner_name}/{owner_password}/premium_register.html{query}",
+	  /**
+	   * 新規会員登録（プレミアム会員）
+	   * @param email
+	   * @param owner_id
+	   * @param owner_name
+	   * @param owner_password
+	   * @param request
+	   * @param response
+	   * @param session
+	   * @param model
+	   * @return
+	   */
+	  @RequestMapping(value="/{email}/{owner_id}/{owner_name}/{owner_password}/premium_register.html",
 			  method=RequestMethod.GET)
 		public String premium_regist(
 				@PathVariable("email") String email,
 				@PathVariable("owner_id") String owner_id,
 				@PathVariable("owner_name") String owner_name,
 				@PathVariable("owner_password") String owner_password,
+				@RequestParam(value = "token") String token3, 
 				HttpServletRequest request, 
 				HttpServletResponse response, 
 				HttpSession session,
 				Model model) 
-		{
-			System.out.println("rrrrrrrrrrrrrrr");
+		{			
+		  String token5 = null;
+	        try {
+		        String command = "curl -v https://api-3t.paypal.com/nvp -d "
+		        		+ "USER=ksusa1224_api1.gmail.com"
+		        		+ "&PWD=HQ7TUMJC7EYGRRPM"
+		        		+ "&SIGNATURE=AFcWxV21C7fd0v3bYYYRCpSSRl31A3.TJ.pCOcROSkBlSwBUgPQQCVbK"
+		        		+ "&METHOD=GetExpressCheckoutDetails"
+		        		+ "&VERSION=124"
+		        		+ "&TOKEN=" + token3;
+
+				Process proc = Runtime.getRuntime().exec(command);
+	
+				// Read the output
+		        BufferedReader reader =  
+		              new BufferedReader(new InputStreamReader(proc.getInputStream()));
+	
+		        StringBuilderPlus sb = new StringBuilderPlus();
+				
+		        String line = "";
+		        while((line = reader.readLine()) != null) {
+		        	sb.appendLine(line);
+		        }
+		        
+		        System.out.println(sb.toString());
+		        
+		        proc.waitFor();  
 			
+		      token5 = java.net.URLDecoder.decode(sb.toString(), "UTF-8");
+//		        System.out.println(Util.getUtcNow() 
+//		        		+ "T" + Util.getUtcNow() + "Z");
+		      System.out.println(Instant.now().toString());
+
+		      System.out.println("token5:    =="+token5);
+		     // return "redirect:https://www.paypal.com/cgi-bin/webscr?cmd=_express-checkout&useraction=commit&token=" + token5;
+		  				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	        
+		  
+		  String token2 = null;
+	        try {
+		  		//System.out.println(token1);
+		        String command = "curl -v https://api-3t.paypal.com/nvp -d "
+		        		+ "USER=ksusa1224_api1.gmail.com"
+		        		+ "&PWD=HQ7TUMJC7EYGRRPM"
+		        		+ "&SIGNATURE=AFcWxV21C7fd0v3bYYYRCpSSRl31A3.TJ.pCOcROSkBlSwBUgPQQCVbK"
+		        		+ "&METHOD=CreateRecurringPaymentsProfile"
+		        		+ "&VERSION=124"
+		        		+ "&PROFILESTARTDATE=" + Instant.now() 
+		        		+ "&AMT=500"
+		        		+ "&CURRENCYCODE=JPY"
+		        		+ "&BILLINGPERIOD=Month"
+		        		+ "&BILLINGFREQUENCY=1"
+		        		+ "&AUTOBILLOUTAMT=AddToNextBilling"
+		        		+ "&DESC=定期支払"
+		        		+ "&TOKEN=" + token5.replace("TOKEN=", "").split("&")[0];
+		        //System.out.println(token1.split("&")[0]);
+
+				Process proc = Runtime.getRuntime().exec(command);
+	
+				// Read the output
+		        BufferedReader reader =  
+		              new BufferedReader(new InputStreamReader(proc.getInputStream()));
+	
+		        StringBuilderPlus sb = new StringBuilderPlus();
+				
+		        String line = "";
+		        while((line = reader.readLine()) != null) {
+		        	sb.appendLine(line);
+		        }
+		        
+		        System.out.println(sb.toString());
+		        
+		        proc.waitFor();  
+			
+		      token2 = java.net.URLDecoder.decode(sb.toString(), "UTF-8");
+//		        System.out.println(Util.getUtcNow() 
+//		        		+ "T" + Util.getUtcNow() + "Z");
+		      System.out.println(Instant.now().toString());
+
+		      System.out.println("token2:    =="+token2);
+		      //return "redirect:https://www.paypal.com/cgi-bin/webscr?cmd=_express-checkout&useraction=commit&token=" + token2;
+		  				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		  
+	        String payer_id = token5.split("PAYERID=")[1].split("&")[0];
+	        System.out.println("payerid:::"+payer_id);
+		  String token6 = null;
+	        try {
+		  		//System.out.println(token1);
+		        String command = "curl -v https://api-3t.paypal.com/nvp -d "
+		        		+ "USER=ksusa1224_api1.gmail.com"
+		        		+ "&PWD=HQ7TUMJC7EYGRRPM"
+		        		+ "&SIGNATURE=AFcWxV21C7fd0v3bYYYRCpSSRl31A3.TJ.pCOcROSkBlSwBUgPQQCVbK"
+		        		+ "&METHOD=DoExpressCheckoutPayment"
+		        		+ "&VERSION=124"
+		        		+ "&PAYMENTREQUEST_0_PAYMENTACTION=Sale"
+		        		+ "&PAYMENTREQUEST_0_AMT=500"
+		        		+ "&PAYMENTREQUEST_0_CURRENCYCODE=JPY"
+		        		+ "&TOKEN=" + token3
+		        		+ "&PAYERID=" + payer_id;
+		        //System.out.println(token1.split("&")[0]);
+
+				Process proc = Runtime.getRuntime().exec(command);
+	
+				// Read the output
+		        BufferedReader reader =  
+		              new BufferedReader(new InputStreamReader(proc.getInputStream()));
+	
+		        StringBuilderPlus sb = new StringBuilderPlus();
+				
+		        String line = "";
+		        while((line = reader.readLine()) != null) {
+		        	sb.appendLine(line);
+		        }
+		        
+		        System.out.println(sb.toString());
+		        
+		        proc.waitFor();  
+			
+		      token6 = java.net.URLDecoder.decode(sb.toString(), "UTF-8");
+//				        System.out.println(Util.getUtcNow() 
+//				        		+ "T" + Util.getUtcNow() + "Z");
+
+		      System.out.println("token6:    =="+token6);
+//		      return "redirect:https://www.paypal.com/cgi-bin/webscr?cmd=_express-checkout&useraction=commit&token=" + token2;
+		  				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		        
 			email = new String(Base64.getUrlDecoder().decode(email));
 			owner_id = new String(Base64.getUrlDecoder().decode(owner_id));
 			owner_name = new String(Base64.getUrlDecoder().decode(owner_name));
@@ -329,12 +467,12 @@ public class TopPageController {
 			  return "send_error";
 		  }
 		  
-	      return "redirect:index.html?register_mail=sended";
+	      return "redirect:../../../../index.html?register_mail=sended";
 	  }	  
 	  
 	  
 	/**
-	   * 新規会員登録
+	   * 新規会員登録（無料会員）
 	   * @param session
 	   * @param owner_id
 	   * @param login_password
@@ -589,6 +727,11 @@ public class TopPageController {
 		  return "index";
 	  }
 
+	  /**
+	   * SSL証明書用テキストファイル
+	   * @param response
+	   * @return
+	   */
 	@RequestMapping(value = "/AC228EEA2E1AED85FDE07AF3F3DF3BB7.txt",method = RequestMethod.GET)
 	@ResponseBody
 	public String plaintext(HttpServletResponse response) {
@@ -828,5 +971,32 @@ public class TopPageController {
 		}
 		
 		return is_deplicate;
+	}		
+
+	/**
+	 * emailとowner_idの組み合わせがすでに存在するかチェック
+	 * @param email
+	 * @param owner_id
+	 * @return
+	 */
+	@RequestMapping(value={"/is_email_and_owner_id_exists.html"}, method=RequestMethod.GET)
+	public @ResponseBody String check_email_and_owner_id_exists(
+			@RequestParam(value = "email", required=false) String email,
+			@RequestParam(value = "owner_id", required=false) String owner_id) {
+		H2dbDao dao = new H2dbDao();
+		String owner_name = null;
+		String kakin_type = null;
+		String[] owner_name_kakin_type = dao.email_and_owner_id_exists(email, owner_id);
+		if (owner_name_kakin_type != null)
+		{
+			owner_name = owner_name_kakin_type[0];
+			kakin_type = owner_name_kakin_type[1];
+		}
+		
+		String json = JSON.encode(
+				new String[] 
+				{owner_name, kakin_type});
+				
+		return json;
 	}		
 }

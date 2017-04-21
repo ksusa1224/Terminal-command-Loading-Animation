@@ -436,6 +436,49 @@ public class H2dbDao
 	}	
 	
 	/**
+	 * emailとowner_idの組み合わせがすでに存在しているかチェック
+	 * 存在していれば、オーナー名を返す
+	 * @param email
+	 * @param owner_id
+	 * @return
+	 */
+	public String[] email_and_owner_id_exists(String email, String owner_id)
+	{
+		String[] owner_name_kakin_type = null;
+		Connection conn = connect();
+		try
+		{
+			Statement stmt = conn.createStatement();
+			
+			// ログイン情報を取得
+			StringBuilderPlus sql = new StringBuilderPlus();
+			sql.appendLine("select");
+			sql.appendLine("  owner_name, kakin_type ");
+			sql.appendLine("from owner_info "); 
+			sql.appendLine("where "); 
+			sql.appendLine("  email = '" + email + "'");
+			sql.appendLine("  and owner_id = '" + owner_id + "'");
+			sql.appendLine("  and del_flg = 0 limit 1;");
+			
+			ResultSet rs = stmt.executeQuery(sql.toString());
+			if (rs.next()) {
+				owner_name_kakin_type = new String[2];
+				owner_name_kakin_type[0] = rs.getString("owner_name");
+				owner_name_kakin_type[1] = String.valueOf(rs.getInt("kakin_type"));
+			}
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		finally
+		{
+			disconnect(conn);
+		}
+		return owner_name_kakin_type;
+	}	
+	
+	/**
 	 * 会員登録時にE-mailがすでに登録されているものでないかをチェックする
 	 * @param email_input
 	 * @return
@@ -455,7 +498,7 @@ public class H2dbDao
 			sql.appendLine("from owner_info "); 
 			sql.appendLine("where "); 
 			sql.appendLine("  email = '" + email_input + "'");
-			sql.appendLine("  and del_flg = 0");
+			sql.appendLine("  and del_flg = 0;");
 			
 			ResultSet rs = stmt.executeQuery(sql.toString());
 			if (rs.next()) {
@@ -496,7 +539,7 @@ public class H2dbDao
 			sql.appendLine("from owner_info "); 
 			sql.appendLine("where "); 
 			sql.appendLine("  owner_id = '" + owner_id_input + "'");
-			sql.appendLine("  and del_flg = 0");
+			sql.appendLine("  and del_flg = 0;");
 			
 			ResultSet rs = stmt.executeQuery(sql.toString());
 			if (rs.next()) {
