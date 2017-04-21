@@ -157,10 +157,9 @@ public class TopPageController {
 		        		+ "&METHOD=SetExpressCheckout"
 		        		+ "&VERSION=124"
 		        		+ "&cancelUrl="
-		        		+ "http://localhost:8080/" + encoded_email + "/" + encoded_owner_id + "/"
-		        		+ encoded_owner_name + "/" + encoded_password + "/" + "premium_cancel.html"
+		        		+ "https://ankinote.com/index.html"
 		        		+ "&returnUrl="
-		        		+ "http://localhost:8080/" + encoded_email + "/" + encoded_owner_id + "/"
+		        		+ "https://ankinote.com/" + encoded_email + "/" + encoded_owner_id + "/"
 		        		+ encoded_owner_name + "/" + encoded_password + "/" + "premium_register.html"
 		        		+ "&L_BILLINGTYPE0=RecurringPayments"
 		        		+ "&L_BILLINGAGREEMENTDESCRIPTION0=定期支払";

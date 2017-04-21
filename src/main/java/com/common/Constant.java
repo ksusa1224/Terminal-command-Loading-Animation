@@ -85,14 +85,14 @@ public class Constant {
 	public static final String SQLITE_OWNER_DB_FOLDEDR_PATH 
 		= SQLITE_FOLDER_PATH + "owner_db" + "/" + OWNER_DB_CURRENT_VERSION;
 	
-	// 金ノート
-	public static final String SAMPLE_DB = "2017_02_14_18_57_26_sample.db";
+//	// 金ノート
+//	public static final String SAMPLE_DB = "2017_02_14_18_57_26_sample.db";
 	
 	// 銀ノート
 //	public static final String SAMPLE_DB = "2017_01_21_10_02_55_sample.db";
 	
 	// 本番
-//	public static final String SAMPLE_DB = "2017_01_21_11_02_55_sample.db";
+	public static final String SAMPLE_DB = "2017_01_21_11_02_55_sample.db";
 		
 //	// TODO 本番ではパスを変える
 //	public static final String SPEECH_DATA_FOLDER_PATH
