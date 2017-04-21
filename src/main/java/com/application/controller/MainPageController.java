@@ -181,13 +181,16 @@ public class MainPageController{
 				System.out.println(request.getHeader("Referer"));
 //				if ((owner_id.equals("sample") && session.getId().equals(session_id) == false) ||
 //				    (owner_id.equals("sample") && session_id == null))
-				if (owner_id.equals("sample"))
+
+				if (owner_id.equals("sample") && 
+					(session_owner_id == null || !"sample".equals(session_owner_id)))
 				{
 					System.out.println("ppsdfasdpfasfgj-----");
 					copy_db = copy_db.replace(Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/", "");
 					owner_db = copy_db;
 					session.setAttribute("owner_db", aes.encrypt(copy_db));
 					session.setAttribute("session_id", session.getId());
+					session.setAttribute("owner_id", "sample");
 					System.out.println("owner_db:"+owner_db);
 				}
 				else

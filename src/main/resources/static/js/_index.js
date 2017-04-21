@@ -10,6 +10,35 @@ if (url == "index.html?type=temporary")
 	alert("お客様のアカウントは仮登録の状態のため、ログインできません。登録したメールアドレスにお送りした本登録へのリンクを押下し、登録を完了させてください。");
 }
 
+function is_capable_browser() {
+	
+	var userAgent = window.navigator.userAgent.toLowerCase();
+
+	if (userAgent.indexOf('opera') != -1) {
+	  return 'opera';
+	} 
+	else if (userAgent.indexOf('msie') != -1) 
+	{
+	  return 'ie';
+	} 
+	else if (userAgent.indexOf('chrome') != -1) 
+	{
+	  return 'chrome';
+	} 
+	else if (userAgent.indexOf('safari') != -1) 
+	{
+	  return 'safari';
+	} 
+	else if (userAgent.indexOf('gecko') != -1) 
+	{
+	  return 'gecko';
+	} 
+	else 
+	{
+	  return false;
+	}	
+}
+
 var validated = false;
 function is_email_deplicate()
 {

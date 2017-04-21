@@ -89,20 +89,22 @@ public class Constant {
 //	public static final String SAMPLE_DB = "2017_02_14_18_57_26_sample.db";
 	
 	// 銀ノート
-//	public static final String SAMPLE_DB = "2017_01_21_10_02_55_sample.db";
+	public static final String SAMPLE_DB = "2017_01_21_10_02_55_sample.db";
 	
-	// 本番
-	public static final String SAMPLE_DB = "2017_01_21_11_02_55_sample.db";
+//	// 本番
+//	public static final String SAMPLE_DB = "2017_01_21_11_02_55_sample.db";
 		
 //	// TODO 本番ではパスを変える
-//	public static final String SPEECH_DATA_FOLDER_PATH
-//		= "/Users/ksusa/Documents/anki_note_workspace/anki_note/src/main/resources/static/speech/";
+	// 銀ノート
+	public static final String SPEECH_DATA_FOLDER_PATH
+		= "/Users/ksusa/Documents/anki_note_workspace/anki_note/src/main/resources/static/speech/";
+	// 金ノート
 //	public static final String SPEECH_DATA_FOLDER_PATH
 //	= "/Users/slimebook/Documents/workspace/anki_note/src/main/resources/static/speech/";
 
 	// 本番
-	public static final String SPEECH_DATA_FOLDER_PATH
-	= "/usr/local/anki_note/application/apache-tomcat-8.0/webapps/ROOT/WEB-INF/classes/static/speech/";
+//	public static final String SPEECH_DATA_FOLDER_PATH
+//	= "/usr/local/anki_note/application/apache-tomcat-8.0/webapps/ROOT/WEB-INF/classes/static/speech/";
 	
 	// 本番 一時フォルダ
 	public static final String SPEECH_DATA_TEMP_FOLDER_PATH
