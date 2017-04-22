@@ -1137,7 +1137,15 @@ public class MainPageController{
 
 		owner_id = (String)session.getAttribute("owner_id");
 		
-		return insert_tag(tag_name, owner_db, owner_id);
+		insert_tag(tag_name, owner_db, owner_id);
+		
+		// 付箋
+		String husen_html = generate_husen_html(owner_db);
+
+		String json = JSON.encode(
+				new String[] 
+				{husen_html});
+		return json;		
 	}
 
 	@RequestMapping(value={"/edit_husen.html"}, method=RequestMethod.GET)

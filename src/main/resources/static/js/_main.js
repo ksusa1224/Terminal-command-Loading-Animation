@@ -226,14 +226,7 @@ function body_load()
     $('#crystal_board').droppable({
         accept:'.husen',
         drop: function(event,ui){
-//        	$husen = $(ui.draggable);
-//        	$husen.css("position","relative");
-//        	$husen.css("left","0px");
-//        	$husen.css("top", "0px");
-//        	$husen.prependTo("#husen_wrapper");
-        	
-//        	$(ui.draggable).css("position","relative");
-//        	$("#husen_wrapper").append($husen[0].outerHTML);
+        	// deleteを呼んでいるが、タグIDに空文字を指定しているのでタグは消さずにリフレッシュするだけ
 			jQuery.ajax({
 				url: "../husen_delete.html?tag_id=&owner_id=" + owner_id,
 				dataType: "json",
@@ -1143,7 +1136,7 @@ function husen_touroku(obj)
         owner_id = url.split('/')[3];        			
 		jQuery.ajax({
 			url: "../tag_touroku.html?tag_name=" + tag_name + "&owner_id=" + owner_id,
-			dataType: "html",
+			dataType: "json",
 			cache: false,
 			success: function(data)
 			{
@@ -1156,7 +1149,10 @@ function husen_touroku(obj)
 				}
 				else
 				{
-					$("#husen_wrapper").prepend('<div class="husen" contenteditable="true" onkeypress="javascript:husen_touroku(this);"></div>');
+					$("#husen_wrapper").prepend(data[0]);
+//					$("#husen_wrapper:first-child").removeAttr("contenteditable");
+//					$("#husen_wrapper:first-child").removeAttr("onkeypress");
+//					$("#husen_wrapper").prepend('<div class="husen" contenteditable="true" onkeypress="javascript:husen_touroku(this);"></div>');
 					$("#balloon").css("display","inline");
 					$("#balloon").css("z-index","100002");
 					$("#serif").css("z-index","100003");
