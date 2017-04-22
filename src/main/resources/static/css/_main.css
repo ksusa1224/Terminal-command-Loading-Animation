@@ -375,7 +375,7 @@ div.page_right
 	top:495px;
 	width:100px;
 	padding:20px;
-	z-index:100;	
+	z-index:100001;
 }
 
 #lines-left

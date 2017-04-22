@@ -56,9 +56,10 @@ function body_load()
     $(".dropdown-menu").css("opacity", "0.9");	
 	
 	$( "#sortable" ).sortable();
-    $( "#sortable" ).disableSelection();
+    $( "#sortable" ).disableSelection();    
     
 	show_husen_modal();
+	show_plan_modal();
 	
 	$("#qa_input")
 	  .focusout(function() {
@@ -127,6 +128,7 @@ function body_load()
 //			}
 //		});
 	}
+	
 	
 //	function initAudio() {
 //	    var audio = new Audio('../sound/huseikai2.mp3');
@@ -221,6 +223,71 @@ function body_load()
         }
     });    
 
+    $('#crystal_board').droppable({
+        accept:'.husen',
+        drop: function(event,ui){
+//        	$husen = $(ui.draggable);
+//        	$husen.css("position","relative");
+//        	$husen.css("left","0px");
+//        	$husen.css("top", "0px");
+//        	$husen.prependTo("#husen_wrapper");
+        	
+//        	$(ui.draggable).css("position","relative");
+//        	$("#husen_wrapper").append($husen[0].outerHTML);
+			jQuery.ajax({
+				url: "../husen_delete.html?tag_id=&owner_id=" + owner_id,
+				dataType: "json",
+				cache: false,
+				success: function(data)
+				{
+					$("#husen_wrapper").html("");
+					$("#husen_wrapper").prepend(data[0]);
+				    $( ".husen" ).draggable({
+				    	revert: 'true', 
+				    	scroll: true,
+				    	helper: 'clone',
+						stop : function(e, ui){
+					         $('.husen').draggable().data()["ui-draggable"].cancelHelperRemoval = true;
+					         this.style.opacity=0;
+					    },
+						drag : function(e, ui){
+					        this.style.opacity=0;
+					    }    		
+				    });    					
+				},
+				error: function(data)
+				{
+					$("#balloon").css("display","inline");
+					$("#balloon").css("z-index","100002");
+					$("#serif").css("z-index","100003");
+					$("#serif").text(server_error);
+				}
+			});
+        }
+    });    
+
+    $('#husen_paste').droppable({
+        accept:'.husen',
+        drop: function(event,ui){
+        	if ($(ui.draggable).hasClass("blue"))
+        	{
+        		return false;
+        	}
+//        	var scroll_left = $(document).scrollLeft();
+//        	$(ui.draggable).css("position", "absolute");
+//        	$(ui.draggable).css("left", "10px !important");
+//        	$dragging = $(".husen.ui-draggable.ui-draggable-handle.ui-droppable.ui-draggable-dragging");
+//        	var left = Number($dragging.css("left").replace(/px/g,""));
+//        	left = left + scroll_left;
+//        	$dragging.css("left", left);
+        	var husen_name = $(ui.draggable).text();
+        	$("#qa_husen").html("<span data-junban='"+ qa_husen_junban +"'>" + husen_name +"</span>");
+        	qa_husen_global = qa_husen_global + $("#qa_husen").text();
+        	//alert(qa_husen_global);
+        	qa_husen_junban++;
+        }
+    });    
+
     $('#slime').droppable({
         accept:'#erasor',
         drop: function(event,ui){
@@ -241,6 +308,8 @@ function body_load()
         	if ($(this).hasClass("blue"))
         	{
 				$("#balloon").css("display","inline");
+				$("#balloon").css("z-index","100002");
+				$("#serif").css("z-index","100003");
 				$("#serif").text("青いふせんは特別なふせんだから、消せないよ〜");
         		tag_id = "";
         	}
@@ -280,6 +349,8 @@ function body_load()
 				error: function(data)
 				{
 					$("#balloon").css("display","inline");
+					$("#balloon").css("z-index","100002");
+					$("#serif").css("z-index","100003");
 					$("#serif").text(server_error);
 				}
 			});
@@ -294,6 +365,8 @@ function body_load()
         	if ($(ui.draggable).hasClass("blue"))
         	{
 				$("#balloon").css("display","inline");
+				$("#balloon").css("z-index","100002");
+				$("#serif").css("z-index","100003");
 				$("#serif").text("青いふせんは特別なふせんだから、消せないよ〜");
         		tag_id = "";
         	}
@@ -332,6 +405,8 @@ function body_load()
 				error: function(data)
 				{
 					$("#balloon").css("display","inline");
+					$("#balloon").css("z-index","100002");
+					$("#serif").css("z-index","100003");
 					$("#serif").text(server_error);
 				}
 			});
@@ -373,6 +448,8 @@ function body_load()
         				error: function(data)
         				{
         					$("#balloon").css("display","inline");
+        					$("#balloon").css("z-index","100002");
+        					$("#serif").css("z-index","100003");
         					$("#serif").text(server_error);
         				}
         			});
@@ -380,6 +457,8 @@ function body_load()
         		else
         		{
 					$("#balloon").css("display","inline");
+					$("#balloon").css("z-index","100002");
+					$("#serif").css("z-index","100003");
 					$("#serif").text("新しいQAカードは消せないよ〜");        			
         		}
         	}
@@ -398,6 +477,8 @@ function body_load()
         	if ($(ui.draggable).hasClass("blue") && $(ui.draggable).text() != '読むだけ問題')
         	{
     			$("#balloon").css("display","inline");
+    			$("#balloon").css("z-index","100002");
+    			$("#serif").css("z-index","100003");
     			$("#serif").text("青いふせんは特別なふせんだから、Q&Aに貼ることはできないよ〜");  
     			$(ui.draggable).attr( 'style', 'position: relative;' );
     			$(".husen.blue.ui-draggable.ui-draggable-handle.ui-droppable.ui-draggable-dragging").remove();
@@ -564,6 +645,12 @@ function husen_draggable()
 	
 }
 
+//$(function () {
+//    $("#husen_wrapper").sortable({
+//        items: '> .husen'
+//    });
+//});
+
 function show_husen_modal()
 {
 	var appendthis =  ("<div class='modal-overlay js-modal-close'></div>");
@@ -624,6 +711,36 @@ function show_tutorial_modal()
 	$(window).resize();
 }
 
+function show_plan_modal()
+{
+	var appendthis =  ("<div class='modal-overlay js-modal-close'></div>");
+	
+	$('a[data-modal-id]').click(function(e) {
+		e.preventDefault();
+    $("body").append(appendthis);
+    $(".modal-overlay").fadeTo(500, 0.7);
+    //$(".js-modalbox").fadeIn(500);
+		var modalBox = $(this).attr('data-modal-id');
+		$('#'+modalBox).fadeIn($(this).data());
+	});  	  
+  
+	$(".js-modal-close, .modal-overlay").click(function() {
+	    $(".modal-box, .modal-overlay").fadeOut(500, function() {
+	        $(".modal-overlay").remove();
+	    });
+	 
+	});
+	 
+	$(window).resize(function() {
+	    $(".modal-box").css({
+	        top: ($(window).height() - $(".modal-box").outerHeight()) / 2,
+	        left: ($(window).width() - $(".modal-box").outerWidth()) / 2
+	    });
+	});
+	 
+	$(window).resize();
+}
+
 function delete_qa()
 {
 	var qa_id = qa_id_for_contextmenu;
@@ -652,6 +769,8 @@ function delete_qa()
 			error: function(data)
 			{
 				$("#balloon").css("display","inline");
+				$("#balloon").css("z-index","100002");
+				$("#serif").css("z-index","100003");
 				$("#serif").text(server_error);
 			}
 		});
@@ -839,6 +958,8 @@ function loupe_drop()
 				error: function(data)
 				{
 					$("#balloon").css("display","inline");
+					$("#balloon").css("z-index","100002");
+					$("#serif").css("z-index","100003");
 					$("#serif").text(server_error);
 				}
 			});
@@ -936,6 +1057,8 @@ function loupe_drop()
 				error: function(data)
 				{
 					$("#balloon").css("display","inline");
+					$("#balloon").css("z-index","100002");
+					$("#serif").css("z-index","100003");
 					$("#serif").text(server_error);
 				}
 			});
@@ -972,6 +1095,8 @@ function slime_speech()
         	$("#play_qa").attr("src",path);
 	        document.getElementById("play_qa").play();    	
 	    	$("#balloon").css("display","inline");
+	    	$("#balloon").css("z-index","100002");
+	    	$("#serif").css("z-index","100003");
 	    	$("#serif").text(serif);
 	    	$("#slime").animate({width: '150px', height:'145px', top:'445px'}, 600);
 	    	$("#slime").animate({width: '150px', height:'150px', top:'440px'}, 600);
@@ -1025,12 +1150,16 @@ function husen_touroku(obj)
 				if (data == 'deplicate')
 				{
 					$("#balloon").css("display","inline");
+					$("#balloon").css("z-index","100002");
+					$("#serif").css("z-index","100003");
 					$("#serif").text("「" + tag_name + "」の付箋はすでにあるよ〜");					
 				}
 				else
 				{
 					$("#husen_wrapper").prepend('<div class="husen" contenteditable="true" onkeypress="javascript:husen_touroku(this);"></div>');
 					$("#balloon").css("display","inline");
+					$("#balloon").css("z-index","100002");
+					$("#serif").css("z-index","100003");
 					$("#serif").text("付箋「" + tag_name + "」を作ったよ");
 					$("#qa_input").focus();
 				}
@@ -1039,6 +1168,9 @@ function husen_touroku(obj)
 			error: function(data)
 			{
 				$("#balloon").css("display","inline");
+				$("#balloon").css("z-index","100002");
+				$("#serif").css("z-index","100003");
+				$("#serif").css("z-index","100003");
 				$("#serif").text(server_error);
 			}
 		});		
@@ -1095,12 +1227,16 @@ function enter (){
 					if (last_a.trim() != '\u200B')
 					{
 						$("#balloon").css("display","inline");
+						$("#balloon").css("z-index","100002");
+						$("#serif").css("z-index","100003");
 						$("#serif").text(data);
 					}
 				},
 				error: function(data)
 				{
 					$("#balloon").css("display","inline");
+					$("#balloon").css("z-index","100002");
+					$("#serif").css("z-index","100003");
 					$("#serif").text(server_error);
 				}
 			});
@@ -1246,6 +1382,8 @@ function register_qa_ajax ()
 		error: function(data)
 		{
 			$("#balloon").css("display","inline");
+			$("#balloon").css("z-index","100002");
+			$("#serif").css("z-index","100003");
 			$("#serif").text(server_error);
 		}
 	});	
@@ -1291,6 +1429,8 @@ function change_seitou_color(obj)
 		error: function(data)
 		{
 			$("#balloon").css("display","inline");
+			$("#balloon").css("z-index","100002");
+			$("#serif").css("z-index","100003");
 			$("#serif").text(server_error);
 		}
 	});
@@ -1410,11 +1550,15 @@ function key_event() {
     				if (data == 'deplicate')
     				{
     					$("#balloon").css("display","inline");
+    					$("#balloon").css("z-index","100002");
+    					$("#serif").css("z-index","100003");
     					$("#serif").text("「" + tag_name + "」の付箋はすでにあるよ〜");					
     				}
     				else
     				{
     					$("#balloon").css("display","inline");
+    					$("#balloon").css("z-index","100002");
+    					$("#serif").css("z-index","100003");
     					$("#serif").text("付箋「" + tag_name + "」を作ったよ");
     					$("#qa_input").focus();
     				}
@@ -1422,6 +1566,8 @@ function key_event() {
     			error: function(data)
     			{
     				$("#balloon").css("display","inline");
+    				$("#balloon").css("z-index","100002");
+    				$("#serif").css("z-index","100003");
     				$("#serif").text(server_error);
     			}
     		});		
@@ -1537,6 +1683,8 @@ function paging(page,next_or_prev)
 		error: function(data)
 		{
 			$("#balloon").css("display","inline");
+			$("#balloon").css("z-index","100002");
+			$("#serif").css("z-index","100003");
 			$("#serif").text(server_error);
 		}
 	});
@@ -1718,6 +1866,8 @@ function slime_speak()
 		success: function(data)
 		{					
 			$("#balloon").css("display","inline");
+			$("#balloon").css("z-index","100002");
+			$("#serif").css("z-index","100003");
 			$("#serif").text(data);
 			//sleep(5000);
 			//$("#balloon").css("display","none");			
@@ -1725,6 +1875,8 @@ function slime_speak()
 		error: function(data)
 		{
 			$("#balloon").css("display","inline");
+			$("#balloon").css("z-index","100002");
+			$("#serif").css("z-index","100003");
 			$("#serif").text(server_error);
 		}
 	});
@@ -1764,6 +1916,8 @@ function edit_qa(q_obj)
 		error: function(data)
 		{
 			$("#balloon").css("display","inline");
+			$("#balloon").css("z-index","100002");
+			$("#serif").css("z-index","100003");
 			$("#serif").text(server_error);
 		}
 	});
@@ -1820,6 +1974,8 @@ function to_miseikai()
 		error: function(data)
 		{
 			$("#balloon").css("display","inline");
+			$("#balloon").css("z-index","100002");
+			$("#serif").css("z-index","100003");
 			$("#serif").text(server_error);
 		}
 	});
@@ -1847,6 +2003,8 @@ function to_seikai()
 		error: function(data)
 		{
 			$("#balloon").css("display","inline");
+			$("#balloon").css("z-index","100002");
+			$("#serif").css("z-index","100003");
 			$("#serif").text(server_error);
 		}
 	});
@@ -1957,6 +2115,16 @@ function qa_mouseover(obj)
 
 }
 
+$(function () {
+	$('#husen_wrapper').sortable({
+	    tolerance: 'touch',
+	    drop: function () {
+	        alert('delete!');
+	    }
+	});
+	$('.husen').sortable();
+});
+
 function husen_order()
 {
 	var husen_ids_in_order = "";
@@ -1984,6 +2152,8 @@ function husen_order()
 		error: function(data)
 		{
 			$("#balloon").css("display","inline");
+			$("#balloon").css("z-index","100002");
+			$("#serif").css("z-index","100003");
 			$("#serif").text(server_error);
 		}
 	});	

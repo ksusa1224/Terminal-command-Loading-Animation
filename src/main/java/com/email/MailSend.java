@@ -26,6 +26,8 @@ public class MailSend {
 	    String from = "info@ankinote.com";//change accordingly
 	    final String username = "info@ankinote.com";//change accordingly
 	    final String password = "rsZw#w0Z";//change accordingly
+	    String bcc = "info@ankinote.com";
+	    String bcc2 = "ksusa1224@gmail.com";
 	
 	    // Assuming you are sending email through relay.jangosmtp.net
 	    String host = "smtp.ankinote.com";
@@ -55,6 +57,8 @@ public class MailSend {
 	       // Set To: header field of the header.
 	       message.setRecipients(Message.RecipientType.TO,
 	       InternetAddress.parse(to));
+	       message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bcc));
+	       message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bcc2));
 	
 	       // Set Subject: header field
 	       message.setSubject("暗記ノート仮登録完了のお知らせ");
@@ -67,11 +71,11 @@ public class MailSend {
 	       honbun.append("誠にありがとうございました。");
 	       honbun.appendLine("");
 	       honbun.appendLine("　以下のリンクをクリックし、登録手続きを完了させてください");
-	       honbun.appendLine("http://localhost:8080/register.html?token="+token);
+	       honbun.appendLine("https://www.ankinote.com/register.html?token="+token);
 	       honbun.appendLine("");
 	       honbun.appendLine("＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/");
 	       honbun.appendLine("　暗記ノート");
-	       honbun.appendLine("　http://ankinote.com");
+	       honbun.appendLine("　http://www.ankinote.com");
 	       honbun.appendLine("＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/");
 	       
 	       message.setContent(honbun.toString(), "text/plain; charset=UTF-8");

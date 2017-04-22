@@ -248,6 +248,18 @@ public class MainPageController{
 				int total_pages = qa_dao.get_pages(owner_db, "");
 				model.addAttribute("total_pages", total_pages);				
 				
+				// バッジ
+				int kakin_type = dao.get_kakin_type(owner_id);
+				if (kakin_type == Integer.valueOf(Constant.KAKIN_TYPE_FREE)) {
+					model.addAttribute("badge","general.png");
+					model.addAttribute("badge_width", "width:70px");
+				}
+				else
+				{
+					model.addAttribute("badge","premium.png");					
+					model.addAttribute("badge_width", "width:100px");
+				}
+				
 				System.out.println("session db2:" + aes.decrypt((byte[])session.getAttribute("owner_db")));
 				return "main";
 			}
