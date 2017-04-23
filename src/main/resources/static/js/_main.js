@@ -48,6 +48,14 @@ function body_load()
 //		
 //	});	
     
+    var query = window.location.href.split("/")[4].split("?")[1];
+//    alert(window.location.href.split("/")[4].split("?")[1]);
+    if (query == "plan=open" || query == "plan=open#")
+    {
+    	show_plan_modal();
+    	$("#plan_open").click();
+    }
+    
     $("#popup3").draggable();    
     
     var account = window.location.href.split("/")[3];
@@ -2365,5 +2373,5 @@ function to_general(owner_id)
 //			alert("ajax error");
 //			return false;
 //		}
-//	});				
+//	});			
 }
