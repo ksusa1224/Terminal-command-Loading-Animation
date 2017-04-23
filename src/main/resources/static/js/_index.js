@@ -10,6 +10,16 @@ if (url == "index.html?type=temporary")
 	alert("お客様のアカウントは仮登録の状態のため、ログインできません。登録したメールアドレスにお送りした本登録へのリンクを押下し、登録を完了させてください。");
 }
 
+if (url == "index.html?login=error")
+{
+	alert("Email/Login ID またはパスワードが間違っているため、ログインできません。");
+}
+
+if (url == "index.html?withdraw=true")
+{
+	alert("退会が完了しました。");
+}
+
 function check_owner_id_char(obj) {
 	if (obj.value.match(/[^A-Za-z0-9\-_]+/)) {
 		 //半角英数字以外の文字が存在する場合、エラー

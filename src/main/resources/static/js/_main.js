@@ -39,6 +39,16 @@ function body_load()
     });
 
     refresh();
+
+//	$("#serif").on("click", function () { // click event
+//		$("#serif").hide();
+//		$("#baloon").hide();
+//		$("#balloon").css("z-index","99998");
+//		$("#serif").css("z-index","99999");
+//		
+//	});	
+    
+    $("#popup3").draggable();    
     
     var account = window.location.href.split("/")[3];
     if (account == 'sample')
@@ -1865,8 +1875,12 @@ function slime_speak()
 			$("#balloon").css("z-index","100002");
 			$("#serif").css("z-index","100003");
 			$("#serif").text(data);
-			//sleep(5000);
-			//$("#balloon").css("display","none");			
+			setTimeout(function(){
+				$("#balloon").css("display","none");
+				$("#serif").text("");		
+				$("#balloon").css("z-index","99998");
+				$("#serif").css("z-index","99999");
+			},5000);
 		},
 		error: function(data)
 		{
@@ -2012,10 +2026,6 @@ function doSomething() {
 	if($("#balloon").css("display") == "none")
 	{
 		slime_speak();
-		setTimeout(function(){
-			$("#balloon").css("display","none");
-			$("#serif").text("");		
-		},5000);
 	}
 }
 

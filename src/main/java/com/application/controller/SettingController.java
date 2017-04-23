@@ -57,6 +57,10 @@ public class SettingController {
 		
 		if (session.getAttribute("owner_id") != null)
 		{
+			if (!owner_id.equals(session.getAttribute("owner_id")))
+			{
+				return "setting_error";
+			}
 			owner_id = (String)session.getAttribute("owner_id");
 		}
 		model.addAttribute("owner_id", owner_id);

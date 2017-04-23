@@ -13,7 +13,7 @@ public @Data class LoginInfoModel {
 	private String db_name;
 	private byte[] encrypted_db_name;
 	private String db_version;
-	private int kakin_type;
+	private Integer kakin_type;
 	private String token;
 	
 	/**

@@ -248,6 +248,9 @@ public class MainPageController{
 				int total_pages = qa_dao.get_pages(owner_db, "");
 				model.addAttribute("total_pages", total_pages);				
 				
+				// オーナー名
+				model.addAttribute("owner_name", login_info.getOwner_name());
+				
 				// バッジ
 				int kakin_type = dao.get_kakin_type(owner_id);
 				if (kakin_type == Integer.valueOf(Constant.KAKIN_TYPE_FREE)) {
@@ -258,6 +261,49 @@ public class MainPageController{
 				{
 					model.addAttribute("badge","premium.png");					
 					model.addAttribute("badge_width", "width:100px");
+				}
+				
+				if (login_info.getKakin_type() == Integer.valueOf(Constant.KAKIN_TYPE_FREE))
+				{
+					model.addAttribute("now_plan_explanation",
+							login_info.getOwner_name()
+							+ "さんは、暗記ノートのGeneral Owner（無料会員）です。"
+							+ "General Ownerは、機能は無制限に使えますが、"
+							+ "問題の登録が１００問までしか行えません。");
+					
+					model.addAttribute("other_plan_explanation",
+							"&nbsp;&nbsp;Premium Owner（有料会員）になると、"
+							+ "問題を無制限に登録できます。Premium Ownerになりたい方は、"
+							+ "以下から登録してください。"
+							+ "<div class='form-group last'><br />"
+							+ "<a href='#' style='border-bottom:1px solid grey;"
+							+ "font-size:14px;color:gray;'>利用規約</a><br />"
+							+ "<input type='checkbox' />&nbsp;利用規約に同意する<br /><br />"
+							+ "<input id='premium_button' onclick='to_premium();' "
+							+ "type='button' class='btn btn-warning btn-block btn-lg' "
+							+ "value='Premium Owner 登録（税込500円 / 月）' "
+							+ "style='font-size:18px !important;' />"
+							+ "<div style='text-align:center;margin-top:5px;'>"
+							+ "<a href='#' onclick=\\\"javascript:window.open('https://www.paypal.jp/jp/contents/popup/logo/AM_235_65/','olcwhatispaypal','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=900, height=700');\\\">"
+							+ "<img height='44px' "
+							+ "src='https://www.paypal.jp/uploadedImages/wwwpaypaljp/Supporting_Content/jp/contents/popup/logo/AM_235_65.png' "
+							+ "border='0' alt='その他のオプション' />"
+							+ "</a></div></div>");
+
+				} 
+				else if (login_info.getKakin_type() == Integer.valueOf(Constant.KAKIN_TYPE_PREMIUM))
+				{
+					model.addAttribute("now_plan_explanation",
+							login_info.getOwner_name()
+							+ "さんは、暗記ノートのPremium Owner（有料会員）です。"
+							+ "Premium Ownerは、機能無制限、登録問題数も無制限に使うことができます。");					
+				}
+				else if (login_info.getKakin_type() == Integer.valueOf(Constant.KAKIN_TYPE_FREE_PREIMIUM))
+				{
+					model.addAttribute("now_plan_explanation",
+							login_info.getOwner_name()
+							+ "さんは、暗記ノートのFree Premium Ownerです。"
+							+ "無料で、Premium Ownerと同じく、機能無制限、登録問題数も無制限に使うことができます。");					
 				}
 				
 				System.out.println("session db2:" + aes.decrypt((byte[])session.getAttribute("owner_db")));

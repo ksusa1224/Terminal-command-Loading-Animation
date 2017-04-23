@@ -6,8 +6,8 @@
 <meta name="robots" content="noindex,nofollow" />
 <meta name="viewport" content="width=1275px, initial-scale=0.8, maximum-scale=0.8,minimum-scale=0.8, user-scalable=no" />
 <title>暗記ノート</title>
-<link rel="stylesheet" th:href="@{../css/bootstrap.min.main.css}" />
 <link rel="stylesheet" type="text/css" th:href="@{../css/_husen_modal.css}" />
+<link rel="stylesheet" th:href="@{../css/bootstrap.min.main.css}" />
 <link rel="stylesheet" type="text/css" th:href="@{../css/_main.css}" />
 <link rel="stylesheet" type="text/css" th:href="@{../css/jquery-ui.css}" />
 <link rel="stylesheet" type="text/css" th:href="@{../css/jquery.mobile-1.4.5.min.css}" />
@@ -163,40 +163,6 @@
 	<div style="height:5px;"></div>
 	<input id="qa_id" type="hidden" name="qa_id" />
 	<span id='google_image'></span>
-<!-- <ResultSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:yahoo:srchmi" xsi:schemaLocation="urn:yahoo:srchmi http://search.yahooapis.com/ImageSearchService/V1/ImageSearchResponse.xsd" totalResultsAvailable="190145" totalResultsReturned="2" firstResultPosition="1">
-  <Result>
-    <Title>Madonna photo Madonna 6200315</Title>
-    <Summary />
-    <Url>http://www.poster.net/madonna/madonna-photo-madonna-6200315.jpg</Url>
-    <ClickUrl>http://www.poster.net/madonna/madonna-photo-madonna-6200315.jpg</ClickUrl>
-    <RefererUrl>http://www.poster.de/Madonna/Madonna-Photo-Madonna-6200315.html</RefererUrl>
-    <FileSize>37145</FileSize>
-    <FileFormat>jpeg</FileFormat>
-    <Height>280</Height>
-    <Width>228</Width>
-    <Thumbnail>
-      <Url>http://thm-a.search.vip.scd.yahoo.com/image/233616151</Url>
-      <Height>110</Height>
-      <Width>89</Width>
-    </Thumbnail>
-  </Result>
-  <Result>
-    <Title>Madonna029</Title>
-    <Summary />
-    <Url>http://www.madonna.w.webpark.pl/originalimages/madonna029.jpg</Url>
-    <ClickUrl>http://www.madonna.w.webpark.pl/originalimages/madonna029.jpg</ClickUrl>
-    <RefererUrl>http://www.madonna.w.webpark.pl/index2.htm</RefererUrl>
-    <FileSize>102769</FileSize>
-    <FileFormat>jpeg</FileFormat>
-    <Height>977</Height>
-    <Width>760</Width>
-    <Thumbnail>
-      <Url>http://thm-a.search.vip.scd.yahoo.com/image/295584368</Url>
-      <Height>140</Height>
-      <Width>108</Width>
-    </Thumbnail>
-  </Result>
-</ResultSet> -->	
 </div>
 </form>
 </div>
@@ -269,12 +235,18 @@
   <footer> <a href="#" class="btn btn-small" onclick="javascript:husen_order();">並び替えを反映</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-small js-modal-close">Close</a> </footer>
   <a id="tutorial_link" class="js-open-modal" data-modal-id="popup2" href="#"></a>
 </div>
-<div id="popup3" class="modal-box" style="z-index:1000000;width:600px;height:450px;margin-left: auto !important;margin-right: auto !important;">
+<div id="popup3" class="modal-box" style="z-index:1000000;width:450px;height:500px;margin-left:-100px;">
   <header> <a href="#" class="js-modal-close close">×</a>
-    <h3>会員プラン</h3>
+    <h3 id="plan" style="text-align:center">会員プラン</h3>
   </header>
   <div class="modal-body" style="overflow:scroll;height:550px;"> 
-  さんは、暗記ノートのGeneral Ownerです。General Ownerは、機能は無制限ですが、問題の登録が１００問までしか行えません
+  	<table><tr><td><img th:src="@{../img/} + ${badge}" th:style="${badge_width}" /></td>
+  	<td style="padding-left:20px;">
+  &nbsp;&nbsp;<span th:text="${now_plan_explanation}"></span>
+  	</td></tr></table>
+<hr />
+<div th:utext="${other_plan_explanation}"></div>
+<hr /><a onclick="confirm('退会すると全てのデータが抹消されます。\n本当に退会してもよろしいですか？')" th:href="@{./withdraw.html}">退会はこちらから</a>
   </div>
 </div>
 </body>

@@ -1033,4 +1033,36 @@ public class H2dbDao
 		}
 		return owner_db;
 	}
+
+	/**
+	 * 退会する
+	 * @param owner_id
+	 */
+	public void withdraw(String owner_id)
+	{
+		Connection conn = connect();
+		try
+		{
+			String sql = null;
+			Statement stmt = conn.createStatement();
+			
+			sql="update owner_info "
+					+ "set email = "
+					+ "concat(email," + "'." + Util.getNow(Constant.DB_DATE_FORMAT) + "'),"
+					+ "owner_id = "
+					+ "concat(owner_id," + "'." + Util.getNow("yyyyMMdd") + "'),"
+					+ "del_flg = 1"
+					+ " where owner_id = '" + owner_id + "'";
+			
+			stmt.executeUpdate(sql);	
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			disconnect(conn);
+		}		
+	}
 }

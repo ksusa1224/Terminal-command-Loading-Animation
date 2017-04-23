@@ -650,6 +650,10 @@ public class TopPageController {
 			{
 				return "redirect:index.html?type=temporary";
 			}
+			else if (login_info.getKakin_type() == null)
+			{
+				return "redirect:index.html?login=error";				
+			}
 			
 			System.out.println(login_info.getOwner_id());
 			

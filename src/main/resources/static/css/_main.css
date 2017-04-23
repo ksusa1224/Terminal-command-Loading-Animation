@@ -624,6 +624,11 @@ input
 	width:20px;
 }
 
+#premium_button,
+{
+	font-family: "Hiragino Kaku Gothic ProN","メイリオ", sans-serif;
+}
+
 /* 虫眼鏡 START */
 .magnifying_glass {
     width: 124px;
