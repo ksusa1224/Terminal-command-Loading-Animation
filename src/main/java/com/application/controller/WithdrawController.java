@@ -21,6 +21,8 @@ public class WithdrawController {
 		{
 			H2dbDao dao = new H2dbDao();
 			dao.withdraw(owner_id);
+			TopPageController top = new TopPageController();
+			top.stop_paypal(owner_id);
 		}
 		
 		return "redirect:../index.html?withdraw=true";

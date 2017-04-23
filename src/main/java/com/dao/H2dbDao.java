@@ -131,6 +131,139 @@ public class H2dbDao
 	}
 
 	/**
+	 * PayPal用のテーブルを作成
+	 */
+	public void create_paypal_table()
+	{
+		Connection conn = connect();
+		try
+		{
+			Statement stmt = conn.createStatement();
+			
+			StringBuilderPlus sql = new StringBuilderPlus();
+			
+			sql.appendLine("drop table if exists paypal;");
+			//Paypalテーブル作成
+			sql.appendLine("create table if not exists paypal(");
+			sql.appendLine("  owner_id varchar(20) unique,");
+			sql.appendLine("  token text,");
+			sql.appendLine("  profile_id text,");
+			sql.appendLine("  last_name text,");
+			sql.appendLine("  first_name text,");
+			sql.appendLine("  email text,");
+			sql.appendLine("  GetExpressCheckoutDetails text,");
+			sql.appendLine("  del_flg integer,");
+			sql.appendLine("  insert_date timestamp default current_timestamp(),");
+			sql.appendLine("  update_date timestamp");
+			sql.appendLine(");");
+			
+			transaction(stmt, sql);			
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			disconnect(conn);
+		}
+	}	
+
+	/**
+	 * Paypal情報の登録
+	 */
+	public void insert_paypal_info(
+			String owner_id, 
+			String token, 
+			String profile_id,
+			String last_name,
+			String first_name,
+			String email,
+			String details)
+	{
+		Connection conn = connect();
+		try
+		{
+			Statement stmt = conn.createStatement();
+			
+			StringBuilderPlus sql = new StringBuilderPlus();
+			
+			// オーナー情報テーブル作成
+			sql.appendLine("insert into paypal (");
+			sql.appendLine("  owner_id,");
+			sql.appendLine("  token,");
+			sql.appendLine("  profile_id,");
+			sql.appendLine("  last_name,");
+			sql.appendLine("  first_name,");
+			sql.appendLine("  email,");
+			sql.appendLine("  GetExpressCheckoutDetails,");
+			sql.appendLine("  del_flg,");
+			sql.appendLine("  update_date");
+			sql.appendLine(") values (");
+			sql.appendLine("'" + owner_id + "',");
+			sql.appendLine("'" + token + "',");
+			sql.appendLine("'" + profile_id + "',");
+			sql.appendLine("'" + last_name + "',");
+			sql.appendLine("'" + first_name + "',");
+			sql.appendLine("'" + email + "',");
+			sql.appendLine("'" + details + "',");
+			sql.appendLine("0,");
+			sql.appendLine("'" + Util.getNow(Constant.DB_DATE_FORMAT) + "'");
+			sql.appendLine(");");
+			
+			transaction(stmt, sql);			
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			disconnect(conn);
+		}
+	}	
+	
+	/**
+	 * Paypalのprofile_idを返却（定期支払停止に必要）
+	 * @param owner_id
+	 * @return
+	 */
+	public String get_paypal_profile_id(String owner_id)
+	{
+		String profile_id = null;
+		
+		Connection conn = connect();
+		try
+		{
+			Statement stmt = conn.createStatement();
+			
+			// ログイン情報を取得
+			StringBuilderPlus sql = new StringBuilderPlus();
+			sql.appendLine("select");
+			sql.appendLine("  profile_id ");
+			sql.appendLine("from paypal "); 
+			sql.appendLine("where "); 
+			sql.appendLine("  owner_id = '" + owner_id + "'");
+			sql.appendLine("  and del_flg = 0;");
+			System.out.println(sql.toString());
+			ResultSet rs = stmt.executeQuery(sql.toString());
+			while (rs.next()) {
+				profile_id = rs.getString("profile_id");
+			}
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		finally
+		{
+			disconnect(conn);
+		}
+		
+		return profile_id;
+	}
+
+	/**
 	 * 
 	 * @param token
 	 */
@@ -160,7 +293,94 @@ public class H2dbDao
 			disconnect(conn);
 		}		
 	}
+
+	/**
+	 * db名変更（有料→無料ユーザになったとき用）
+	 * @param db_name
+	 */
+	public void update_db_name(String owner_id, byte[] db_name)
+	{
+		Connection conn = connect();
+		try
+		{
+			// SQLに渡すパラメーター（バイナリのみ対象）
+			List<byte[]> params = new ArrayList<byte[]>();
+			params = new ArrayList<byte[]>();
+			params.add(db_name);
+			
+			StringBuilderPlus sql = new StringBuilderPlus();
+			sql.appendLine("update owner_db ");
+			sql.appendLine("  set db_name = ?,");
+			sql.appendLine("  update_date = current_timestamp()");
+			sql.appendLine("  where owner_id = '" + owner_id + "';");
+			update(sql, params);				  	
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			disconnect(conn);
+		}		
+	}
 	
+	/**
+	 * GENERAL OWNERからPREMIUM OWNERへ
+	 * @param owner_id
+	 */
+	public void general_to_premium(String owner_id)
+	{
+		Connection conn = connect();
+		try
+		{
+			String sql = null;
+			Statement stmt = conn.createStatement();
+			
+			sql="update owner_info set kakin_type = "
+					+ " '" + Constant.KAKIN_TYPE_PREMIUM + "'"
+					+ " where owner_id = '" + owner_id + "';";
+			
+			stmt.executeUpdate(sql);	
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			disconnect(conn);
+		}		
+	}	
+	
+	/**
+	 * PREMIUM OWNERからGENERAL OWNERへ
+	 * @param owner_id
+	 */
+	public void premium_to_general(String owner_id)
+	{
+		Connection conn = connect();
+		try
+		{
+			String sql = null;
+			Statement stmt = conn.createStatement();
+			
+			sql="update owner_info set kakin_type = "
+					+ " '" + Constant.KAKIN_TYPE_FREE + "'"
+					+ " where owner_id = '" + owner_id + "';";
+			
+			stmt.executeUpdate(sql);	
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			disconnect(conn);
+		}		
+	}	
+
 	/**
 	 * ログイン情報を取得する
 	 * @param sql
@@ -442,7 +662,7 @@ public class H2dbDao
 	 * @param owner_id
 	 * @return
 	 */
-	public String[] email_and_owner_id_exists(String email, String owner_id)
+	public String[] get_ownername_kakintype_from_email_owner_id(String email, String owner_id)
 	{
 		String[] owner_name_kakin_type = null;
 		Connection conn = connect();
@@ -476,6 +696,40 @@ public class H2dbDao
 			disconnect(conn);
 		}
 		return owner_name_kakin_type;
+	}	
+
+	public boolean email_and_owner_id_exists(String email, String owner_id)
+	{
+		boolean is_exist = false;
+		Connection conn = connect();
+		try
+		{
+			Statement stmt = conn.createStatement();
+			
+			// ログイン情報を取得
+			StringBuilderPlus sql = new StringBuilderPlus();
+			sql.appendLine("select");
+			sql.appendLine("  owner_id ");
+			sql.appendLine("from owner_info "); 
+			sql.appendLine("where "); 
+			sql.appendLine("  email = '" + email + "'");
+			sql.appendLine("  and owner_id = '" + owner_id + "'");
+			sql.appendLine("  and del_flg = 0 limit 1;");
+			
+			ResultSet rs = stmt.executeQuery(sql.toString());
+			if (rs.next()) {
+				is_exist = true;
+			}
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		finally
+		{
+			disconnect(conn);
+		}
+		return is_exist;
 	}	
 	
 	/**
@@ -1050,7 +1304,7 @@ public class H2dbDao
 					+ "set email = "
 					+ "concat(email," + "'." + Util.getNow(Constant.DB_DATE_FORMAT) + "'),"
 					+ "owner_id = "
-					+ "concat(owner_id," + "'." + Util.getNow("yyyyMMdd") + "'),"
+					+ "concat(owner_id," + "'" + Util.getNow("yyyyMMddhh") + "'),"
 					+ "del_flg = 1"
 					+ " where owner_id = '" + owner_id + "'";
 			

@@ -10,6 +10,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
 
 import com.common.Log;
+import com.dao.H2dbDao;
 import com.dao.SQliteDAO;
 
 @SpringBootApplication
@@ -27,6 +28,10 @@ public class AnkiNoteApplication extends SpringBootServletInitializer {
 		{
 			// H2のサーバーを起動
 			Server server = Server.createTcpServer("-tcpAllowOthers").start();
+			
+			H2dbDao h2dao = new H2dbDao();
+			h2dao.create_paypal_table();
+			
 		}
 		catch(Exception ex)
 		{

@@ -204,4 +204,20 @@ public class Util {
 		}
 		return sql;
 	}
+	
+	/**
+	 * C#のisNullOrEmptyと同じ
+	 * @param str
+	 * @return
+	 */
+	public static boolean isNullOrEmpty(String str) {
+		if(str == null || str.equals(""))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}			
+	}
 }

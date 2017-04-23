@@ -221,7 +221,6 @@ function to_premium() {
 		cache: false,
 		success: function(data)
 		{
-			alert(data);
 			window.open(data,"_self");
 			return false;
 		},

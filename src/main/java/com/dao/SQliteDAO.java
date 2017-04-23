@@ -562,6 +562,9 @@ public class SQliteDAO {
 	       *  SQL実行
 	       */
 	      transaction(stmt, sql);
+	      
+		  TagDao tag_dao = new TagDao();
+		  tag_dao.add_system_tags(db_name, user_id);
 	    }
 	    catch(SQLException e)
 	    {

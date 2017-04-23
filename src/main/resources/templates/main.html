@@ -235,7 +235,7 @@
   <footer> <a href="#" class="btn btn-small" onclick="javascript:husen_order();">並び替えを反映</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-small js-modal-close">Close</a> </footer>
   <a id="tutorial_link" class="js-open-modal" data-modal-id="popup2" href="#"></a>
 </div>
-<div id="popup3" class="modal-box" style="z-index:1000000;width:450px;height:500px;margin-left:-100px;">
+<div id="popup3" class="modal-box" style="z-index:1000000;width:450px;height:530px;margin-left:-100px;">
   <header> <a href="#" class="js-modal-close close">×</a>
     <h3 id="plan" style="text-align:center">会員プラン</h3>
   </header>
@@ -246,7 +246,7 @@
   	</td></tr></table>
 <hr />
 <div th:utext="${other_plan_explanation}"></div>
-<hr /><a onclick="confirm('退会すると全てのデータが抹消されます。\n本当に退会してもよろしいですか？')" th:href="@{./withdraw.html}">退会はこちらから</a>
+<a onclick="confirm('退会すると全てのデータが抹消されます。\n本当に退会してもよろしいですか？')" th:href="@{./withdraw.html}">退会はこちらから</a>
   </div>
 </div>
 </body>

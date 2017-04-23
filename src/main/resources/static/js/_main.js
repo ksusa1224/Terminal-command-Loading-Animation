@@ -1236,6 +1236,12 @@ function enter (){
 						$("#balloon").css("z-index","100002");
 						$("#serif").css("z-index","100003");
 						$("#serif").text(data);
+						setTimeout(function(){
+							$("#balloon").css("display","none");
+							$("#serif").text("");		
+							$("#balloon").css("z-index","99998");
+							$("#serif").css("z-index","99999");
+						},5000);
 					}
 				},
 				error: function(data)
@@ -2310,4 +2316,54 @@ function PopupCenter(url, title, w, h) {
     if (window.focus) {
         newWindow.focus();
     }
+}
+
+function to_premium(owner_id) {		
+	
+	if(!document.getElementById('agreement').checked) {
+	    alert("利用規約に同意してください。");
+	    return false;
+	}
+	
+	jQuery.ajax({
+		url: "../regist_premium.html?owner_id=" + owner_id,
+		dataType: "text",
+		cache: false,
+		success: function(data)
+		{
+			window.open(data,"_self");
+			return false;
+		},
+		error: function(data)
+		{
+			alert("ajax error");
+			return false;
+		}
+	});			
+
+}
+
+function to_general(owner_id)
+{
+	if(!confirm("General Ownerになると、これまでのデータはクリアされます。General Ownerは、問題が１００問までしか登録できません。\n本当によろしければ、OKボタンを押してください。"))
+	{
+		return false;
+	}
+	
+//	jQuery.ajax({
+//		url: "../to_general.html?owner_id=" + owner_id,
+//		dataType: "text",
+//		cache: false,
+//		success: function(data)
+//		{
+//			alert(data);
+			location.href= "../to_general.html?owner_id=" + owner_id;
+//			return false;
+//		},
+//		error: function(data)
+//		{
+//			alert("ajax error");
+//			return false;
+//		}
+//	});				
 }

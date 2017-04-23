@@ -104,7 +104,7 @@ public class MainPageController{
 						Model model) {
 		Log log = new Log();
 		log.insert_error_log("INFO", "main method start.");
-				
+		
 		TopPageController top = new TopPageController();
 		if (top.isLogin(request) == false && 
 			owner_id.equals("sample") == false)
@@ -169,10 +169,20 @@ public class MainPageController{
 				
 			if (request_url.equals(response_url))
 			{
-				byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
+				byte[] encrypted_owner_db = null;
+				if (session.getAttribute("owner_db") != null)
+				{
+					encrypted_owner_db = (byte[])session.getAttribute("owner_db");					
+				}
+				else
+				{
+					encrypted_owner_db = login_info.getEncrypted_db_name();
+				}
 //				byte[] encrypted_owner_db = login_info.getEncrypted_db_name();
 				AES aes = new AES();
 				String owner_db = aes.decrypt(encrypted_owner_db);
+				System.out.println(encrypted_owner_db+":owner_db");				
+				System.out.println(owner_db+":owner_db");				
 				System.out.println(owner_id+"おーなー");
 				String session_id = (String)session.getAttribute("session_id");
 				System.out.println(session_id+"せっしょん");
@@ -238,6 +248,7 @@ public class MainPageController{
 				// 付箋
 				String husen_html = generate_husen_html(owner_db);
 				model.addAttribute("tags", husen_html);
+				System.out.println("husen_html:"+husen_html);
 				
 				// ソート用付箋
 				String husen_sort_html = generate_husen_sort_html(owner_db);
@@ -273,22 +284,23 @@ public class MainPageController{
 					
 					model.addAttribute("other_plan_explanation",
 							"&nbsp;&nbsp;Premium Owner（有料会員）になると、"
-							+ "問題を無制限に登録できます。Premium Ownerになりたい方は、"
+							+ "問題を無制限に登録できます。これまでのデータは引き継がれます。"
+							+ "Premium Ownerになりたい方は、"
 							+ "以下から登録してください。"
 							+ "<div class='form-group last'><br />"
 							+ "<a href='#' style='border-bottom:1px solid grey;"
 							+ "font-size:14px;color:gray;'>利用規約</a><br />"
-							+ "<input type='checkbox' />&nbsp;利用規約に同意する<br /><br />"
-							+ "<input id='premium_button' onclick='to_premium();' "
+							+ "<input type='checkbox' id='agreement' />&nbsp;利用規約に同意する<br /><br />"
+							+ "<input id='premium_button' onclick=\"javascript:to_premium('" + owner_id + "');\" "
 							+ "type='button' class='btn btn-warning btn-block btn-lg' "
 							+ "value='Premium Owner 登録（税込500円 / 月）' "
 							+ "style='font-size:18px !important;' />"
 							+ "<div style='text-align:center;margin-top:5px;'>"
-							+ "<a href='#' onclick=\\\"javascript:window.open('https://www.paypal.jp/jp/contents/popup/logo/AM_235_65/','olcwhatispaypal','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=900, height=700');\\\">"
+							+ "<a href='#' onclick=\"javascript:window.open('https://www.paypal.jp/jp/contents/popup/logo/AM_235_65/','olcwhatispaypal','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=900, height=700');\">"
 							+ "<img height='44px' "
 							+ "src='https://www.paypal.jp/uploadedImages/wwwpaypaljp/Supporting_Content/jp/contents/popup/logo/AM_235_65.png' "
 							+ "border='0' alt='その他のオプション' />"
-							+ "</a></div></div>");
+							+ "</a></div></div><hr />");
 
 				} 
 				else if (login_info.getKakin_type() == Integer.valueOf(Constant.KAKIN_TYPE_PREMIUM))
@@ -297,6 +309,11 @@ public class MainPageController{
 							login_info.getOwner_name()
 							+ "さんは、暗記ノートのPremium Owner（有料会員）です。"
 							+ "Premium Ownerは、機能無制限、登録問題数も無制限に使うことができます。");					
+
+					model.addAttribute("other_plan_explanation",
+							"<a href='#' onclick=\"to_general('" + owner_id + "')\">General Owner（無料会員）に変更する</a><br />"
+							+ "General Ownerになると、これまでのデータはクリアされます。"
+							+ "General Ownerは、問題が１００問までしか登録できません。<hr />");
 				}
 				else if (login_info.getKakin_type() == Integer.valueOf(Constant.KAKIN_TYPE_FREE_PREIMIUM))
 				{
