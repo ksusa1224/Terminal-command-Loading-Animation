@@ -106,8 +106,8 @@ public class MainPageController{
 		log.insert_error_log("INFO", "main method start.");
 		
 		TopPageController top = new TopPageController();
-		if (top.isLogin(request) == false && 
-			owner_id.equals("sample") == false)
+		if ((top.isLogin(request,session) == false &&
+			owner_id.equals("sample") == false))
 		{
 			return "redirect:/";
 		}
@@ -302,6 +302,7 @@ public class MainPageController{
 							+ "border='0' alt='その他のオプション' />"
 							+ "</a></div></div><hr />");
 
+					model.addAttribute("withdraw","<a onclick=\"confirm('退会すると全てのデータが抹消されます。\n本当に退会してもよろしいですか？')\" th:href=\"@{./withdraw.html}\">退会はこちらから</a>");
 				} 
 				else if (login_info.getKakin_type() == Integer.valueOf(Constant.KAKIN_TYPE_PREMIUM))
 				{
@@ -314,6 +315,7 @@ public class MainPageController{
 							"<a href='#' onclick=\"to_general('" + owner_id + "')\">General Owner（無料会員）に変更する</a><br />"
 							+ "General Ownerになると、これまでのデータはクリアされます。"
 							+ "General Ownerは、問題が１００問までしか登録できません。<hr />");
+					model.addAttribute("withdraw","<a onclick=\"confirm('退会すると全てのデータが抹消されます。\n本当に退会してもよろしいですか？')\" th:href=\"@{./withdraw.html}\">退会はこちらから</a>");
 				}
 				else if (login_info.getKakin_type() == Integer.valueOf(Constant.KAKIN_TYPE_FREE_PREIMIUM))
 				{
@@ -321,8 +323,8 @@ public class MainPageController{
 							login_info.getOwner_name()
 							+ "さんは、暗記ノートのFree Premium Ownerです。"
 							+ "無料で、Premium Ownerと同じく、機能無制限、登録問題数も無制限に使うことができます。");					
-				}
-				
+					model.addAttribute("withdraw","");
+				}				
 				System.out.println("session db2:" + aes.decrypt((byte[])session.getAttribute("owner_db")));
 				return "main";
 			}
@@ -794,6 +796,7 @@ public class MainPageController{
 						@RequestParam("qa_input_hidden") String qa_input,
 						@RequestParam(value="qa_husen",required=false) String qa_husen,
 						@RequestParam(value="qa_id", required=false) String qa_id,
+						@RequestParam(value="mode", required=false) String mode,
 						@RequestParam(value="yomudake_flg", required=false) String yomudake_flg,
 						@RequestParam(value="reversible_flg", required=false) String reversible_flg) {
 		
@@ -849,7 +852,9 @@ public class MainPageController{
 			int seikai_sum = seitou_dao.get_seikai_cnt(owner_db);
 			model.addAttribute("seikai_sum", seikai_sum);
 			
-			if (qa_id == null || qa_id.equals(""))
+			System.out.println("mode:"+mode);
+			
+			if (mode.equals("regist"))
 			{
 				create_qa(owner_id, owner_db, qa_input, qa_husen,yomudake_flg, reversible_flg);
 			}
@@ -916,6 +921,7 @@ public class MainPageController{
 			@RequestParam(value="qa_husen",required=false) String qa_husen,
 			@RequestParam(value="husen_str",required=false) String husen_str,
 			@RequestParam(value="qa_id", required=false) String qa_id,
+			@RequestParam(value="mode", required=false) String mode,
 			@RequestParam(value="yomudake_flg", required=false) String yomudake_flg,
 			@RequestParam(value="reversible_flg", required=false) String reversible_flg) {
 
@@ -998,8 +1004,10 @@ public class MainPageController{
 		{
 			qa_husen = "";
 		}
-		
-		if (qa_id == null || qa_id.equals(""))
+
+		System.out.println("mode:"+mode);
+
+		if (mode.equals("regist"))
 		{
 			create_qa(owner_id, owner_db, qa_input, qa_husen,yomudake_flg, reversible_flg);
 		}
@@ -2536,7 +2544,7 @@ public class MainPageController{
 			String reversible_flg,
 			String qa_id)
 	{
-		//System.out.println("qa_input"+qa_input);
+		System.out.println("edit_qa:qa_input"+qa_input);
 		
 		// 順番、問題文/正答
 		Map<String,String> qa_map = new HashMap<String,String>();
@@ -2678,7 +2686,7 @@ public class MainPageController{
 		    // 行番号
 			mondai.setRow_no(q_max_no + q_idx);
 		    // 問題ID
-			String q_id = mondai.generate_q_id(q_idx, owner_id);
+			String q_id = mondai.generate_q_id(q_max_no + q_idx, owner_id);
 			q_idx++;
 			mondai.setQ_id(q_id);
 		    // QA ID
@@ -2734,7 +2742,7 @@ public class MainPageController{
 		    // 行番号
 			seitou.setRow_no(s_max_no + a_idx);
 		    // 正答ID
-			String s_id = seitou.generate_s_id(a_idx, owner_id);
+			String s_id = seitou.generate_s_id(s_max_no + a_idx, owner_id);
 			seitou.setS_id(s_id);
 		    // QA ID
 			seitou.setQa_id(qa_id);

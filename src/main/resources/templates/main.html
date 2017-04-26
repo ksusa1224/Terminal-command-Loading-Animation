@@ -32,14 +32,12 @@
   <!-- The actual menu that will be displayed-->
   <ul class="dropdown-menu" style="z-index:1000003">
     <li><a id="husen_custom" class="js-open-modal" data-modal-id="popup1" href="#">付箋の表示順を変更</a></li>
-    <li class="divider"></li>
-    <li><a id="husen_help" href="#" onclick="javascript:husen_help();">付箋の使い方</a></li>
   </ul>
 </div>
-<div id="husen_context-menu" style="display:none;"> 
+<div id="husen_context-menu" style="display:none;z-index:1000005"> 
   <!-- The actual menu that will be displayed-->
-  <ul class="dropdown-menu">
-    <li><a id="refesh_by_date" href="#" onclick="javascript:edit_husen();">付箋名を編集</a></li>
+  <ul class="dropdown-menu" style="z-index:1000005">
+    <li><a href="#" onclick="javascript:edit_husen();">付箋名を編集</a></li>
   </ul>
 </div>
 </div>
@@ -124,7 +122,9 @@
 
 <div id="navigation">
 <a href="../index.html"><img class="black_button" th:src="@{../img/tag_top.png}" /></a>
-<img class="black_button" th:src="@{../img/tag_usage.png}" />
+<a href="#" onclick="PopupCenter('../manual/index.html', '暗記ノート 使い方', 600, 450)">
+	<img class="black_button" th:src="@{../img/tag_usage.png}" />
+</a>
 <a href="../logout.html"><img class="black_button" th:src="@{../img/tag_logout.png}" /></a>
 <br />
 <img class="black_button" th:src="@{../img/tag_tag.png}" />
@@ -140,7 +140,7 @@
 
 <!--/* QAパネル */-->
 <img id="qa_panel" th:src="@{../img/qa_card.png}" />
-<a href="#" onclick="change_mode()"><img id="edit_mode" th:src="@{../img/register_mode.png}" /></a>
+<a href="#" onclick="change_mode()"><img id="edit_mode" data-mode="register" th:src="@{../img/register_mode.png}" /></a>
 <!-- <img id="new_card" th:src="@{../img/new_card.png}" /> -->
 
 <div id="form_grandparent">
@@ -189,7 +189,6 @@
     <li class="divider"></li>
     <li><a id="q_play" href="javascript:play_q();" onclick="javascript:play_q();">問題をリピート再生</a></li>
     <li><a id="a_play" href="javascript:play_a();" onclick="javascript:play_a();">解答をリピート再生</a></li>
-    <li><a id="qa_play" href="javascript:play_qa2();" onclick="javascript:play_qa2();">問題と解答をリピート再生</a></li>
     <li><a id="stop_audio" href="javascript:stop_audio();" onclick="javascript:stop_audio();">再生を止める</a></li>
     <li class="divider"></li>
     <li><a id="q_image_search" href="#" onclick="javascript:search_q_image();">問題の画像を検索</a></li>
@@ -212,13 +211,13 @@
 <script th:src="@{../js/contextmenu.js}"></script> 
 <script>
 </script>
-<div id="popup1" class="modal-box" style="z-index:1000000;width:200px;height:500px;">
+<div id="popup1" class="modal-box" style="z-index:1000000;width:250px;height:500px;">
   <header> <a href="#" class="js-modal-close close">×</a>
-    <h3>付箋の表示順を変更</h3>
+    <div style="text-align:center"><h4>付箋の表示順を変更</h4></div>
   </header>
-  <div class="modal-body" style="overflow:scroll;height:350px;">
+  <div class="modal-body" style="overflow:scroll;height:300px;margin-left:-20px">
   	<p style="text-align:center;">付箋を上下にドラッグ<br />して表示順を変更</p>
-	<ul id="sortable" th:utext="${tags_sort}"></ul>
+	<div style="text-align:center"><ul id="sortable" th:utext="${tags_sort}"></ul></div>
   </div>
   <footer> <a href="#" class="btn btn-small" onclick="javascript:husen_order();">並び替えを反映</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-small js-modal-close">Close</a> </footer>
 </div>
@@ -246,7 +245,7 @@
   	</td></tr></table>
 <hr />
 <div th:utext="${other_plan_explanation}"></div>
-<a onclick="confirm('退会すると全てのデータが抹消されます。\n本当に退会してもよろしいですか？')" th:href="@{./withdraw.html}">退会はこちらから</a>
+<div th:utext="${withdraw}"></div>
   </div>
 </div>
 </body>

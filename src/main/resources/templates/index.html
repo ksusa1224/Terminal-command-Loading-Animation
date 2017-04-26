@@ -94,7 +94,7 @@
 								<input class="form-control input-lg" name="login_password" id="new_password" type="password" placeholder="Password" required="true" maxlength="20" />
 							</div>
 							<div class="form-group last">
-								<input type="submit" class="btn btn-warning btn-block btn-lg" name="register" value="新規会員登録（無料）" />
+								<input onclick="browser()" type="submit" class="btn btn-warning btn-block btn-lg" name="register" value="新規会員登録（無料）" />
 							</div>
 							<br />
 							<!-- <p class="privacy text-center">We will not share your email. Read our <a href="privacy.html">privacy policy</a>.</p>						 -->						
@@ -272,7 +272,7 @@
 					
 					<!-- /.download button -->
 						<div class="download-cta wow fadeInLeft">
-							<a th:href="@{sample/main.html}" class="btn-secondary">サンプルを見る</a>
+							<a onclick="browser()" th:href="@{sample/main.html}" class="btn-secondary">サンプルを見る</a>
 						</div>
 				</div>	
 			</div>	
@@ -332,7 +332,7 @@
 							</div>
 							<div class="form-group last" style="padding-left:50px;padding-right:50px;text-align:center;">
 								<a href="#" style="border-bottom:1px solid grey;font-size:14px;color:gray;">利用規約</a><br />
-								<input type="submit" class="btn btn-warning btn-block btn-lg" name="register" value="利用規約に同意して登録" style="padding:10px;font-size:18px !important;" />
+								<input onclick="browser()" type="submit" class="btn btn-warning btn-block btn-lg" name="register" value="利用規約に同意して登録" style="padding:10px;font-size:18px !important;" />
 							</div>
 							<br />
                             <!-- <p class="privacy text-center">We will not share your email. Read our <a href="privacy.html">privacy policy</a>.</p>						 -->						
@@ -385,7 +385,7 @@
 						<a href="#" style="border-bottom:1px solid grey;font-size:14px;color:gray;">利用規約</a>
 						<br />
 						</td><td>&nbsp;</td></tr><tr><td>
-						<input id="premium_button" onclick="to_premium();" type="button" class="btn btn-warning btn-block btn-lg" value="利用規約に同意して登録" style="padding:10px;font-size:18px !important;" />
+						<input id="premium_button" onclick="browser();to_premium();" type="button" class="btn btn-warning btn-block btn-lg" value="利用規約に同意して登録" style="padding:10px;font-size:18px !important;" />
 						</td><td>
 <!-- PayPal Logo -->
 <a href="#" onclick="javascript:window.open('https://www.paypal.jp/jp/contents/popup/logo/AM_235_65/','olcwhatispaypal','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=900, height=700');">

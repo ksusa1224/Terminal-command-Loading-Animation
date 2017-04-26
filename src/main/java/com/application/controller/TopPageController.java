@@ -937,7 +937,7 @@ public class TopPageController {
 	 * ログインしている状態かチェックする
 	 * @return
 	 */
-    public boolean isLogin (HttpServletRequest request)
+    public boolean isLogin (HttpServletRequest request, HttpSession session)
     {
 		String last_token_cookie = null;
 		String last_token_db = null;

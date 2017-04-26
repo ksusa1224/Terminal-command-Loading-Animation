@@ -45,33 +45,50 @@ $('#premium_button').click(function() {
 	}
 });
 
+function browser()
+{
+	alert(is_capable_browser());
+}
+
 function is_capable_browser() {
 	
 	var userAgent = window.navigator.userAgent.toLowerCase();
 
 	if (userAgent.indexOf('opera') != -1) {
-	  return 'opera';
+	  return true;
 	} 
 	else if (userAgent.indexOf('msie') != -1) 
 	{
-	  return 'ie';
+		if(isIE () < 11)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
 	} 
 	else if (userAgent.indexOf('chrome') != -1) 
 	{
-	  return 'chrome';
+	  return true;
 	} 
 	else if (userAgent.indexOf('safari') != -1) 
 	{
-	  return 'safari';
+	  return true;
 	} 
 	else if (userAgent.indexOf('gecko') != -1) 
 	{
-	  return 'gecko';
+	  return false;
 	} 
 	else 
 	{
 	  return false;
 	}	
+}
+
+function isIE () {
+	  var myNav = navigator.userAgent.toLowerCase();
+	  return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
 }
 
 var validated = false;

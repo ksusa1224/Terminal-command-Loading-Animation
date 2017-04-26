@@ -536,6 +536,8 @@ public class QAPlusDao extends QADao {
 	 */
 	public void insert_qa_plus(String db_name, QAPlusModel qa_plus, Boolean update)
 	{
+		System.out.println("update:"+update);
+		
 		StopWatch stopwatch = new StopWatch();
 		stopwatch.start();
 		
@@ -846,7 +848,7 @@ public class QAPlusDao extends QADao {
 						Statement h2stmt = conn.createStatement();
 
 						//1行ずつコミットしない
-						h2stmt.getConnection().setAutoCommit(false);
+						h2stmt.getConnection().setAutoCommit(true);
 						h2dao.transaction(h2stmt, sql);
 					} catch (Exception e) {
 						e.printStackTrace();

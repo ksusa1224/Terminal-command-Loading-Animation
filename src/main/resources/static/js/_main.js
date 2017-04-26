@@ -33,10 +33,13 @@ function body_load()
     });
     $('#crystal_board').contextmenu({
         target: "#husen_board_context-menu"
+//	$("#husen_custom").click();
+	//    event.preventDefault();
     });
     $('.husen').not('.blue').contextmenu({
         target: "#husen_context-menu"
     });
+//    $("#husen_board_context-menu").css("z-index","9999999999");
 
     refresh();
 
@@ -616,6 +619,15 @@ function refresh()
 	    }
 	});	
 	var margin_top = $(".dropdown-menu").css("margin-top");					
+	
+	if ($("#edit_mode").attr("src") == "../img/register_mode.png")
+	{
+		$("#edit_mode").attr("data-mode","register");
+	}	
+	else
+	{
+		$("#edit_mode").attr("data-mode","edit");		
+	}
 }
 
 function husen_draggable()
@@ -1352,6 +1364,7 @@ function copy_to_hidden () {
 // 問題登録押下時、リロードせずにAjaxで登録と再検索を行う
 function register_qa_ajax ()
 {
+	var mode = $("#edit_mode").data("mode");
 	var qa_mojisu = $.trim($("#qa_input").text()).length;
 	if (qa_mojisu > 100)
 	{
@@ -1374,7 +1387,8 @@ function register_qa_ajax ()
 				"&qa_id=" + qa_id +
 				"&qa_husen=" + qa_husen +
 				"&husen_str=" + tag_search_conditions_uri +
-				"&owner_id=" + owner_id,
+				"&owner_id=" + owner_id +
+				"&mode=" + mode,
 		dataType: "json",
 		cache: false,
 		success: function(data)
@@ -1394,6 +1408,10 @@ function register_qa_ajax ()
 				}
 			
 
+				if (mode == 'edit') 
+				{
+					change_mode();
+				}
 			refresh();
 			$("#blue_pen").addClass("rotate_pen");
 			$("#red_pen").removeClass("rotate_pen");
@@ -1935,6 +1953,7 @@ function edit_qa(q_obj)
 			$("#husen_paste").html(data[1]);
 		    $("#qa_id").val(qa_id);
 		    $("#edit_mode").attr("src", "../img/edit_mode2.png");
+		    $("#edit_mode").data("mode", "edit");
 		    refresh();
 		},
 		error: function(data)
@@ -2057,6 +2076,7 @@ function change_mode()
 	if ($("#edit_mode").attr("src") == "../img/register_mode.png")
 	{
 		$("#edit_mode").attr("src","../img/edit_mode2.png");
+		$("#edit_mode").data("mode","edit");
 		$("#qa_input").attr("data-ph","ここに問題と解答を入力");
 
 	}
@@ -2064,6 +2084,7 @@ function change_mode()
 	else
 	{
 		$("#edit_mode").attr("src","../img/register_mode.png");
+		$("#edit_mode").data("mode","regist");
 		$("#qa_input_hidden").html("");
 		$("#qa_input").html("");
 		id = 2;

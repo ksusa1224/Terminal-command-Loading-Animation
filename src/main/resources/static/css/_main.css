@@ -515,7 +515,7 @@ input
 .husen[id^="tag_id"]
 {
 	position:relative;
-	z-index: 1000002 !important;	
+	z-index: 10002 !important;	
 }
 
 .husen
@@ -528,7 +528,7 @@ input
 	margin-bottom:10px;
 	margin-right:20px;
 	text-align:center;
-	z-index: 1000002 !important;
+	z-index: 10002 !important;
 	width:130px;
 	height:30px;
     font-size:13px;
