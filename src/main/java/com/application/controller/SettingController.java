@@ -34,7 +34,7 @@ public class SettingController {
 			Model model) 
 	{
 		TopPageController top = new TopPageController();
-		if(!top.isLogin(request) && session.getAttribute("owner_db") == null)
+		if(!top.isLogin(request,session) && session.getAttribute("owner_db") == null)
 		{
 			//return "setting_error";
 		}
@@ -109,7 +109,7 @@ public class SettingController {
 		Model model) 
 	{	
 		TopPageController top = new TopPageController();
-		if(!top.isLogin(request) && session.getAttribute("owner_db") == null)
+		if(!top.isLogin(request,session) && session.getAttribute("owner_db") == null)
 		{
 			//return "setting_error";
 		}

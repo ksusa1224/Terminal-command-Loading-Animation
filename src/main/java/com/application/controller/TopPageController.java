@@ -162,12 +162,12 @@ public class TopPageController {
 		  
 		  if (mode.equals("from_top_new"))
 		  {
-			  returnURL = "https://www.ankinote.com/" + encoded_email + "/" + encoded_owner_id + "/"
+			  returnURL = "http://www.ankinote.com/" + encoded_email + "/" + encoded_owner_id + "/"
 		        		+ encoded_owner_name + "/" + encoded_password + "/" + "premium_register.html";
 		  }
 		  else
 		  {
-			  returnURL = "https://www.ankinote.com/" + owner_id + "/premium_register.html";			  
+			  returnURL = "http://www.ankinote.com/" + owner_id + "/premium_register.html";			  
 		  }
 		  
 	        try {

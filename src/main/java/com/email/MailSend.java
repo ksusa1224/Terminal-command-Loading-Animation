@@ -71,7 +71,7 @@ public class MailSend {
 	       honbun.append("誠にありがとうございました。");
 	       honbun.appendLine("");
 	       honbun.appendLine("　以下のリンクをクリックし、登録手続きを完了させてください");
-	       honbun.appendLine("https://www.ankinote.com/register.html?token="+token);
+	       honbun.appendLine("http://www.ankinote.com/register.html?token="+token);
 	       honbun.appendLine("");
 	       honbun.appendLine("＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/");
 	       honbun.appendLine("　暗記ノート");

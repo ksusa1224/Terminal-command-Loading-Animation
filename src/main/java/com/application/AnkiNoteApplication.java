@@ -8,6 +8,13 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Base64;
+
 
 import com.common.Log;
 import com.dao.H2dbDao;
@@ -39,7 +46,7 @@ public class AnkiNoteApplication extends SpringBootServletInitializer {
 			log.insert_error_log(ex.toString(), ex.getMessage());
 			ex.printStackTrace();
 		}
-		
+		        
         SpringApplication.run(AnkiNoteApplication.class, args);
 	}
 	
