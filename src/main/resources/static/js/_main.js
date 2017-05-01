@@ -628,6 +628,8 @@ function refresh()
 	{
 		$("#edit_mode").attr("data-mode","edit");		
 	}
+	
+	$("#note_menu_context").draggable();
 }
 
 function husen_draggable()

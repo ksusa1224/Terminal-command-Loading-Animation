@@ -206,6 +206,17 @@ div.page_right
 	left:50px;
 }
 
+#note_menu a
+{
+	color: gray;
+	position:absolute;
+	left:800px;
+	top:50px;
+    font-size:13px;
+    line-height:13px;	
+	border-bottom:dotted 1px gray;
+}
+
 #note_left
 {
 	position:absolute;
