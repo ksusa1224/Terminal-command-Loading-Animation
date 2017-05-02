@@ -93,8 +93,9 @@
 							<div class="form-group">
 								<input class="form-control input-lg" name="login_password" id="new_password" type="password" placeholder="Password" required="true" maxlength="20" />
 							</div>
-							<div class="form-group last">
-								<input onclick="browser()" type="submit" class="btn btn-warning btn-block btn-lg" name="register" value="新規会員登録（無料）" />
+							<div class="form-group last" style="margin-top:-15px">
+							<input id="user_policy_check" type="checkbox" />&nbsp;<span style="font-size:13px"><a href="./user_policy.html" target="_blank" style="border-bottom:dotted 1px gray">利用規約</a>に同意する</span>
+								<input onclick="user_policy();browser()" type="submit" class="btn btn-warning btn-block btn-lg" name="register" value="新規会員登録（無料）" />
 							</div>
 							<br />
 							<!-- <p class="privacy text-center">We will not share your email. Read our <a href="privacy.html">privacy policy</a>.</p>						 -->						
@@ -331,7 +332,7 @@
 								<input class="form-control input-lg" name="login_password" id="new_password" type="password" placeholder="Password" required="true" maxlength="20" />
 							</div>
 							<div class="form-group last" style="padding-left:50px;padding-right:50px;text-align:center;">
-								<a href="#" style="border-bottom:1px solid grey;font-size:14px;color:gray;">利用規約</a><br />
+								<a href="./user_policy.html" target="_blank" style="border-bottom:1px solid grey;font-size:14px;color:gray;">利用規約</a><br />
 								<input onclick="browser()" type="submit" class="btn btn-warning btn-block btn-lg" name="register" value="利用規約に同意して登録" style="padding:10px;font-size:18px !important;" />
 							</div>
 							<br />
@@ -382,7 +383,7 @@
 					<div class="form-group last" style="padding-left:50px;padding-right:50px;text-align:center;">
 						<table width="100%" border="0" cellpadding="0" cellspacing="0">
 						<tr><td>
-						<a href="#" style="border-bottom:1px solid grey;font-size:14px;color:gray;">利用規約</a>
+						<a href="./user_policy.html" target="_blank" style="border-bottom:1px solid grey;font-size:14px;color:gray;">利用規約</a>
 						<br />
 						</td><td>&nbsp;</td></tr><tr><td>
 						<input id="premium_button" onclick="browser();to_premium();" type="button" class="btn btn-warning btn-block btn-lg" value="利用規約に同意して登録" style="padding:10px;font-size:18px !important;" />

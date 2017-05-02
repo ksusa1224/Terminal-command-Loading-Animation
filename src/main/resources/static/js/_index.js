@@ -45,6 +45,15 @@ $('#premium_button').click(function() {
 	}
 });
 
+function user_policy()
+{
+	if(!$("#user_policy_check").is(':checked'))
+	{
+		alert("利用規約に同意してください。");
+		return false;
+	}
+}
+
 function browser()
 {
 	alert(is_capable_browser());

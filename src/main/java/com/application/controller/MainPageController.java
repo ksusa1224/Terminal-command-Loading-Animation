@@ -288,7 +288,7 @@ public class MainPageController{
 							+ "Premium Ownerになりたい方は、"
 							+ "以下から登録してください。"
 							+ "<div class='form-group last'><br />"
-							+ "<a href='#' style='border-bottom:1px solid grey;"
+							+ "<a href='../user_policy.html' target='_blank' style='border-bottom:1px solid grey;"
 							+ "font-size:14px;color:gray;'>利用規約</a><br />"
 							+ "<input type='checkbox' id='agreement' />&nbsp;利用規約に同意する<br /><br />"
 							+ "<input id='premium_button' onclick=\"javascript:to_premium('" + owner_id + "');\" "

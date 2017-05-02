@@ -67,6 +67,16 @@ public class TopPageController {
 		  return "register";
 	  }
 
+	  /**
+	   * 利用規約
+	   * @return
+	   */
+	  @RequestMapping(value="/user_policy.html", method=RequestMethod.GET)
+	  public String user_policy()
+	  {
+		  return "user_policy";
+	  }
+
 	  @RequestMapping(value="/remind.html", method=RequestMethod.GET)
 	  public String remind(
 			  HttpSession session,
