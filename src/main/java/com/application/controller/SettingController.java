@@ -93,9 +93,9 @@ public class SettingController {
 		AES aes2 = new AES();
 		String owner_db = aes2.decrypt(encrypted_owner_db);
 
-		SystemDao system_dao = new SystemDao();
-		default_search_order =  system_dao.get_value(owner_db, "0001", "デフォルトソート順");
-		model.addAttribute("default_search_order", default_search_order);
+//		SystemDao system_dao = new SystemDao();
+//		default_search_order =  system_dao.get_value(owner_db, "0001", "デフォルトソート順");
+//		model.addAttribute("default_search_order", default_search_order);
 		
 		return "settings";
 	}
@@ -144,9 +144,9 @@ public class SettingController {
 		AES aes2 = new AES();
 		String owner_db = aes2.decrypt(encrypted_owner_db);
 
-		SystemDao system_dao = new SystemDao();
-		String default_search_order =  system_dao.get_value(owner_db, "0001", "デフォルトソート順");
-		model.addAttribute("default_search_order", default_search_order);
+//		SystemDao system_dao = new SystemDao();
+//		String default_search_order =  system_dao.get_value(owner_db, "0001", "デフォルトソート順");
+//		model.addAttribute("default_search_order", default_search_order);
 
 		return "edit_settings";
 	}

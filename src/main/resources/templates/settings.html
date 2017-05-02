@@ -71,9 +71,9 @@
 							<div class="form-group">
 								<span class="form-control input-lg" name="owner_type" id="owner_type" placeholder="Owner Type">Owner Type : <span th:text="${owner_type}"></span></span>
 							</div>
-							<div class="form-group">
+							<!-- <div class="form-group">
 								<span class="form-control input-lg" name="default_search_order" id="default_search_order" placeholder="default_search_order">デフォルト検索順 : <span th:text="${default_search_order}"></span></span>
-							</div>
+							</div> -->							
 							<div class="form-group last">
 								<input type="submit" class="btn btn-warning btn-block btn-lg" name="edit_settings" value="設定変更画面へ" />
 							</div>
@@ -93,8 +93,16 @@
     <script th:src="@{../js/jquery.sticky.js}"></script>
 	<script th:src="@{../js/wow.min.js}"></script>
 	<script th:src="@{../js/owl.carousel.min.js}"></script>
-	<script>
-		new WOW().init();		
+	<script th:inline="javascript">
+		new WOW().init();
+		$('#register').submit(function() {
+			var owner_id = [[${owner_id}]];
+			if (owner_id == 'sample')
+			{
+				alert("サンプルアカウントの設定は変更できません");
+				return false;
+			}
+		});				
 	</script>
   </body>
 </html>
