@@ -56,7 +56,22 @@ function user_policy()
 
 function browser()
 {
-	alert(is_capable_browser());
+	if (!is_capable_browser())
+	{
+		alert("「暗記ノート」は、現在アクセスしているお客様のブラウザに対応しておりません。\n\n" +
+				"対応ブラウザ：\n" +
+				"・Chrome\n" +
+				"・Internet Explorer 11以降\n" +
+				"・Safari(Mac版)\n" +
+				"・Opera");
+	}
+//	$("#browser").dialog();
+//	return false;
+}
+
+function browser_sample()
+{
+//	$("#browser").dialog();
 }
 
 function is_capable_browser() {

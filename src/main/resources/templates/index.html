@@ -17,6 +17,7 @@
 <link th:href="@{css/owl.carousel.css}" rel="stylesheet" />
 <link rel="stylesheet" type="text/css" th:href="@{css/jquery-ui.css}" />
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+<link th:href="@{css/_index.css}" rel="stylesheet" />
 
 <!-- Colors -->
 <link th:href="@{css/css-index.css}" rel="stylesheet" media="screen" />
@@ -273,7 +274,7 @@
 					
 					<!-- /.download button -->
 						<div class="download-cta wow fadeInLeft">
-							<a onclick="browser()" th:href="@{sample/main.html}" class="btn-secondary">サンプルを見る</a>
+							<a onclick="browser()" th:href="@{./sample/main.html}" class="btn-secondary">サンプルを見る</a>
 						</div>
 				</div>	
 			</div>	
@@ -474,5 +475,8 @@
 </div>
 <div id="dialog_owner_id" title="会員登録情報エラー" style="display:none">
   <p>そのログインIDはすでに使用されています。別のログインIDを入力してください。</p>
+</div>
+<div id="browser" title="未対応ブラウザ" style="font-size:13px;font-family:'ＭＳ Ｐ明朝', 'MS PMincho', 'ヒラギノ明朝 Pro W3', 'Hiragino Mincho Pro', serif;">
+  <p>「暗記ノート」は、現在アクセスしているお客様のブラウザに対応しておりません。</p>
 </div>
 </html>

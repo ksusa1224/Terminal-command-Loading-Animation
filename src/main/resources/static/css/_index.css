@@ -5,3 +5,7 @@ body{
     font-size:13px;
     font-family:"ＭＳ Ｐ明朝", "MS PMincho", "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", serif;
 }
+
+.ui-dialog-title{
+    font-family:"ＭＳ Ｐ明朝", "MS PMincho", "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", serif !important;
+}
