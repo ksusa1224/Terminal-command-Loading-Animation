@@ -62,7 +62,7 @@ function browser()
 				"対応ブラウザ：\n" +
 				"・Chrome\n" +
 				"・Internet Explorer 11以降\n" +
-				"・Safari(Mac版)\n" +
+				"・Safari(Mac/iOS版)\n" +
 				"・Opera");
 	}
 //	$("#browser").dialog();

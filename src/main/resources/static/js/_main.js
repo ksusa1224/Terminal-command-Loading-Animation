@@ -189,12 +189,6 @@ function body_load()
 //	            alert('You have a strange Mouse!');
 	    }
 	});	
-	$('.date').mousedown(function(event) {
-	    if (event.which == 3) {
-	    	refresh_by_date = this.id;
-	    	$("#refesh_by_date").text($("#refesh_by_date").text().replace(/この日/g,refresh_by_date));
-	    }
-	});	
 	$('.husen').not(".blue").mousedown(function(event) {
 	    if (event.which == 3) {
 	    	tag_id_for_contextmenu = this.id;
@@ -629,6 +623,14 @@ function refresh()
 		$("#edit_mode").attr("data-mode","edit");		
 	}
 	
+	$('.date').mousedown(function(event) {
+	    if (event.which == 3) {
+	    	refresh_by_date = this.id;
+	    	$("#refesh_by_date").text($("#refesh_by_date").text().replace(/この日/g,refresh_by_date));
+	    	$("#refesh_by_date2").text($("#refesh_by_date2").text().replace(/この日/g,refresh_by_date));
+	    }
+	});	
+
 	$("#note_menu_context").draggable();
 }
 
@@ -1543,14 +1545,14 @@ function key_event() {
     }
     
     // 虫眼鏡と付箋ボードを移動
-    if (window.event.keyCode == 39 && window.event.shiftKey == true)
+    if (window.event.keyCode == 39 && window.event.altKey == true)
     {
     	$("#loupe").css("left", "550px");
     	$("#crystal_board").css("left", "430px");
     }
     
     // 虫眼鏡と付箋ボードを移動
-    if (window.event.keyCode == 37 && window.event.shiftKey == true)
+    if (window.event.keyCode == 37 && window.event.altKey == true)
     {
     	$("#loupe").css("left", "80px");
     	$("#crystal_board").css("left", "-10px");
@@ -1559,14 +1561,14 @@ function key_event() {
     var now_page = 0;
     
     // 右矢印 次のページ
-    if (window.event.keyCode == 39 && window.event.shiftKey == false)
+    if (window.event.keyCode == 39 && window.event.shiftKey == true)
     {
     	now_page = Number($("#page_left").text());
     	paging(now_page, "next");
     	now_page++;
     }
     // 左矢印　前のページ
-    if (window.event.keyCode == 37 && window.event.shiftKey == false)
+    if (window.event.keyCode == 37 && window.event.shiftKey == true)
     {
     	now_page = Number($("#page_left").text());
     	paging(now_page, "prev");

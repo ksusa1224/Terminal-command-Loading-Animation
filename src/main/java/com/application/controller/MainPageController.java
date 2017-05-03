@@ -302,7 +302,7 @@ public class MainPageController{
 							+ "border='0' alt='その他のオプション' />"
 							+ "</a></div></div><hr />");
 
-					model.addAttribute("withdraw","<a onclick=\"confirm('退会すると全てのデータが抹消されます。\n本当に退会してもよろしいですか？')\" th:href=\"@{./withdraw.html}\">退会はこちらから</a>");
+					model.addAttribute("withdraw","<a onclick=\"return confirm('退会すると全てのデータが抹消されます。本当に退会してもよろしいですか？')\" href=\"./withdraw.html\">退会はこちらから</a>");
 				} 
 				else if (login_info.getKakin_type() == Integer.valueOf(Constant.KAKIN_TYPE_PREMIUM))
 				{
@@ -315,7 +315,8 @@ public class MainPageController{
 							"<a href='#' onclick=\"to_general('" + owner_id + "')\">General Owner（無料会員）に変更する</a><br />"
 							+ "General Ownerになると、これまでのデータはクリアされます。"
 							+ "General Ownerは、問題が１００問までしか登録できません。<hr />");
-					model.addAttribute("withdraw","<a onclick=\"confirm('退会すると全てのデータが抹消されます。\n本当に退会してもよろしいですか？')\" th:href=\"@{./withdraw.html}\">退会はこちらから</a>");
+
+					model.addAttribute("withdraw","<a onclick=\"return confirm('退会すると全てのデータが抹消されます。本当に退会してもよろしいですか？')\" href=\"./withdraw.html\">退会はこちらから</a>");
 				}
 				else if (login_info.getKakin_type() == Integer.valueOf(Constant.KAKIN_TYPE_FREE_PREIMIUM))
 				{
