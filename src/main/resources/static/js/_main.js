@@ -573,7 +573,14 @@ function refresh()
 	}
 	else
 	{
-		 $("body").css("overflow","hidden");		
+		if (window.screen.availWidth < 1280)
+		{
+			 $("body").css("overflow","scroll");		
+		}
+		else
+		{
+			 $("body").css("overflow","hidden");					
+		}
 	}
 
 	if(Number($("#page_left").text()) == 1)
@@ -592,6 +599,10 @@ function refresh()
 	else
 	{
 		$("#next_link").show();		
+	}
+
+	if (window.screen.availWidth < 1280)
+	{
 	}
 	
 	$('.qa').contextmenu({
