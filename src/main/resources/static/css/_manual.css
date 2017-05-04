@@ -1,0 +1,32 @@
+@CHARSET "UTF-8";
+
+body{
+	color:black;
+    font-size:13px;
+    font-family:"ＭＳ Ｐ明朝", "MS PMincho", "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", serif;
+}
+
+a{
+	display:block;
+	margin-bottom:-13px;
+	color:#202DA2;
+	text-indent:1em;
+}
+
+.back{
+	margin-bottom:0px !important;
+	display: inline-block; !important;
+	margin-top:5px;
+	margin-bottom:5px;
+	width:100%;
+	text-align:right !important;
+	text-indent:0;
+}
+
+h2{
+	text-align:center;
+}
+
+p{
+	margin-top:1em;
+}

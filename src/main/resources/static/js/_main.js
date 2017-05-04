@@ -587,6 +587,25 @@ function refresh()
 	$('.qa').contextmenu({
 	    target: "#qa_context-menu"
 	});
+	var margin_top = $(".dropdown-menu").css("margin-top");					
+	
+	if ($("#edit_mode").attr("src") == "../img/register_mode.png")
+	{
+		$("#edit_mode").attr("data-mode","register");
+	}	
+	else
+	{
+		$("#edit_mode").attr("data-mode","edit");		
+	}
+	
+	$('.date').mousedown(function(event) {
+	    if (event.which == 3) {
+	    	refresh_by_date = this.id;
+	    	$("#refesh_by_date").text($("#refesh_by_date").text().replace(/この日/g,refresh_by_date));
+	    	$("#refesh_by_date2").text($("#refesh_by_date2").text().replace(/この日/g,refresh_by_date));
+	    }
+	});	
+	
 	$('.qa').mousedown(function(event) {
 	    if (event.which == 3) {
 			qa_id_for_contextmenu = this.id;
@@ -610,24 +629,6 @@ function refresh()
 			{
 				$("#example_menu_devider").hide();				
 			}
-	    }
-	});	
-	var margin_top = $(".dropdown-menu").css("margin-top");					
-	
-	if ($("#edit_mode").attr("src") == "../img/register_mode.png")
-	{
-		$("#edit_mode").attr("data-mode","register");
-	}	
-	else
-	{
-		$("#edit_mode").attr("data-mode","edit");		
-	}
-	
-	$('.date').mousedown(function(event) {
-	    if (event.which == 3) {
-	    	refresh_by_date = this.id;
-	    	$("#refesh_by_date").text($("#refesh_by_date").text().replace(/この日/g,refresh_by_date));
-	    	$("#refesh_by_date2").text($("#refesh_by_date2").text().replace(/この日/g,refresh_by_date));
 	    }
 	});	
 
