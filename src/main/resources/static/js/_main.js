@@ -1217,7 +1217,10 @@ function enter (){
 	if (id == 2)
 	{	
 		$("#qa_input").append("<span class='q_input' id='1'>&#8203;</span>");
-		$("#qa_input").append(a_parts);	
+		if (is_ie_or_edge() == false)
+		{
+			$("#qa_input").append(a_parts);	
+		}
 		focus_last();
 		id++;
 		$("#blue_pen").addClass("rotate_pen");		
@@ -1243,8 +1246,18 @@ function enter (){
 //			placeCaretAtEnd($("#qa_input span:last"));
 			focus_last();
 			id++;
-			$("#red_pen").removeClass("rotate_pen");		
-			$("#blue_pen").addClass("rotate_pen");		
+			if (is_ie_or_edge() == false)
+			{
+				$("#red_pen").removeClass("rotate_pen");		
+				$("#blue_pen").addClass("rotate_pen");		
+			}
+			else
+			{
+				$("#blue_pen").removeClass("rotate_pen");		
+				$("#red_pen").addClass("rotate_pen");		
+				$("#balloon").css("display","none");
+				$("#serif").text("");				
+			}
 						
         	var url = window.location.href;
             owner_id = url.split('/')[3];        			
@@ -1281,16 +1294,47 @@ function enter (){
 		else if (last == "a_input")
 		{
 			$("#qa_input").append(q_parts);						
-//			placeCaretAtEnd($("#qa_input span:last"));
+			//			placeCaretAtEnd($("#qa_input span:last"));
 			focus_last();
 			id++;
-			$("#blue_pen").removeClass("rotate_pen");		
-			$("#red_pen").addClass("rotate_pen");		
-			$("#balloon").css("display","none");
-			$("#serif").text("");
+			if (is_ie_or_edge() == false)
+			{
+				$("#blue_pen").removeClass("rotate_pen");		
+				$("#red_pen").addClass("rotate_pen");		
+				$("#balloon").css("display","none");
+				$("#serif").text("");
+			}
+			else
+			{
+				$("#red_pen").removeClass("rotate_pen");		
+				$("#blue_pen").addClass("rotate_pen");						
+			}
 		}		
 		event.preventDefault();
 	}
+}
+
+function is_ie_or_edge()
+{
+    var ua = window.navigator.userAgent;
+
+    var msie = ua.indexOf('MSIE ');
+    if (msie > 0) {
+    	return true;
+    }
+
+    var trident = ua.indexOf('Trident/');
+    if (trident > 0) {
+    	return true;
+    }
+
+    var edge = ua.indexOf('Edge/');
+    if (edge > 0) {
+    	return true;
+    }
+
+    // other browser
+    return false;
 }
 
 //最後の要素にカーソルを移動する

@@ -63,6 +63,7 @@ function browser()
 				"・Chrome\n" +
 				"・Internet Explorer 11以降\n" +
 				"・Safari(Mac/iOS版)\n" +
+				"・Edge\n" +
 				"・Opera");
 	}
 //	$("#browser").dialog();
@@ -81,17 +82,6 @@ function is_capable_browser() {
 	if (userAgent.indexOf('opera') != -1) {
 	  return true;
 	} 
-	else if (userAgent.indexOf('msie') != -1) 
-	{
-		if(isIE () < 11)
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-	} 
 	else if (userAgent.indexOf('chrome') != -1) 
 	{
 	  return true;
@@ -100,19 +90,40 @@ function is_capable_browser() {
 	{
 	  return true;
 	} 
-	else if (userAgent.indexOf('gecko') != -1) 
+	else if (detectIE() > 10)
 	{
-	  return false;
-	} 
+		return true;
+	}
 	else 
 	{
 	  return false;
 	}	
 }
 
-function isIE () {
-	  var myNav = navigator.userAgent.toLowerCase();
-	  return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
+function detectIE() {
+    var ua = window.navigator.userAgent;
+
+    var msie = ua.indexOf('MSIE ');
+    if (msie > 0) {
+        // IE 10 or older => return version number
+        return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+    }
+
+    var trident = ua.indexOf('Trident/');
+    if (trident > 0) {
+        // IE 11 => return version number
+        var rv = ua.indexOf('rv:');
+        return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+    }
+
+    var edge = ua.indexOf('Edge/');
+    if (edge > 0) {
+       // Edge (IE 12+) => return version number
+       return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+    }
+
+//    // other browser
+//    return false;
 }
 
 var validated = false;

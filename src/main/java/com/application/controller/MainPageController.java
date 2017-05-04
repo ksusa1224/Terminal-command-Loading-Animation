@@ -855,7 +855,7 @@ public class MainPageController{
 			
 			System.out.println("mode:"+mode);
 			
-			if (mode.equals("regist"))
+			if (mode.equals("register"))
 			{
 				create_qa(owner_id, owner_db, qa_input, qa_husen,yomudake_flg, reversible_flg);
 			}
@@ -1008,7 +1008,7 @@ public class MainPageController{
 
 		System.out.println("mode:"+mode);
 
-		if (mode.equals("regist"))
+		if (mode.equals("register"))
 		{
 			create_qa(owner_id, owner_db, qa_input, qa_husen,yomudake_flg, reversible_flg);
 		}
