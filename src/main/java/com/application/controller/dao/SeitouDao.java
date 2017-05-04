@@ -798,7 +798,7 @@ public class SeitouDao {
         }
         if (!tag_names.equals(""))
         {
-        	sql.appendLine("and (select 0 from seitou,qa, qa_tag_relation,tag ");
+        	sql.appendLine(" and seitou.s_id in (select seitou.s_id from seitou,qa, qa_tag_relation,tag ");
 			sql.appendLine(" where qa.qa_id = qa_tag_relation.qa_id");
 			sql.appendLine(" and qa.qa_id = seitou.qa_id");
 			sql.appendLine(" and tag.tag_id = qa_tag_relation.tag_id");
@@ -846,7 +846,7 @@ public class SeitouDao {
         }
         if (!tag_names.equals(""))
         {
-        	sql.appendLine("and (select 0 from seitou,qa, qa_tag_relation,tag ");
+        	sql.appendLine("and seitou.s_id in (select seitou.s_id from seitou,qa, qa_tag_relation,tag ");
 			sql.appendLine(" where qa.qa_id = qa_tag_relation.qa_id");
 			sql.appendLine(" and qa.qa_id = seitou.qa_id");
 			sql.appendLine(" and tag.tag_id = qa_tag_relation.tag_id");
