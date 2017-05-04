@@ -66,6 +66,11 @@ function browser()
 				"・Edge\n" +
 				"・Opera");
 	}
+	if (window.screen.availWidth < 1280)
+	{
+		alert("「暗記ノート」をご使用になるには、画面の解像度が1280px以上必要です。¥n" +
+				"現在アクセスしているお客様の環境には対応しておりません。");
+	}
 //	$("#browser").dialog();
 //	return false;
 }
