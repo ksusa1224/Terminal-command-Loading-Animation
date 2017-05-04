@@ -64,13 +64,23 @@ function body_load()
     var account = window.location.href.split("/")[3];
     if (account == 'sample')
     {
-    	if(!firstTime) {
+    	if(firstTime) {
     		alert("SAMPLEアカウントは、セッションが切れると最初の状態に戻ります。");
     	    localStorage.setItem("first_time","1");
+    	    $.ajax({
+    	        url: '../sample.html',
+    			dataType: "html",
+    	        type: 'GET',
+    	        success: function(data) {
+    	        	PopupCenter('../manual/index.html', '暗記ノート 使い方', 650, 450);
+    	        }
+    	    });
+//    	    return false;
+    	    //$("#manual").click();  	    	
     	}
-	    show_tutorial_modal();
-	    $("#tutorial_link").click();
-	    $("#popup2").draggable();
+//	    show_tutorial_modal();
+//	    $("#tutorial_link").click();
+//	    $("#popup2").draggable();
     }
     
     $(".dropdown-menu").css("margin-top", "-15px");

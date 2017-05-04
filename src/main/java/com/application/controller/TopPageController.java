@@ -891,6 +891,16 @@ public class TopPageController {
 	  }
 
 	  /**
+	   * サンプル
+	   * @return
+	   */
+	  @RequestMapping(value="/sample.html", method=RequestMethod.GET)
+	  public String sample()
+	  {
+		  return "sample";
+	  }
+	  
+	  /**
 	   * SSL証明書用テキストファイル
 	   * @param response
 	   * @return

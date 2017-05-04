@@ -88,11 +88,11 @@ public class Constant {
 //	// 金ノート
 //	public static final String SAMPLE_DB = "2017_02_14_18_57_26_sample.db";
 	
-//	// 銀ノート
-//	public static final String SAMPLE_DB = "2017_01_21_10_02_55_sample.db";
+	// 銀ノート
+	public static final String SAMPLE_DB = "2017_01_21_10_02_55_sample.db";
 	
-	// 本番
-	public static final String SAMPLE_DB = "2017_01_21_11_02_55_sample.db";
+//	// 本番
+//	public static final String SAMPLE_DB = "2017_01_21_11_02_55_sample.db";
 		
 //	// TODO 本番ではパスを変える
 //	// 銀ノート
