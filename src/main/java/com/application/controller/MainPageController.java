@@ -144,11 +144,11 @@ public class MainPageController{
 			original_db = Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/" + Constant.SAMPLE_DB;
 			copy_db = 
 					Constant.SQLITE_OWNER_DB_FOLDEDR_PATH + "/" + 
-					Constant.SAMPLE_DB + "." +
-					Util.getNow("yyyy_MM_dd_HH_mm_ss") + "." +
+					Util.getNow("yyyy_MM_dd_HH_mm_ss") + "_" +
 					client_ip + "." + 
-					client_os + "." +
-					client_browser + ".db"
+					Constant.SAMPLE_DB
+//					client_os + "." +
+//					client_browser + 
 					//.replaceAll("/", ".")
 					.replaceAll(" ", "");
 			File sample_original = new File(original_db);

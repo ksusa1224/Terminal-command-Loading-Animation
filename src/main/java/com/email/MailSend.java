@@ -158,6 +158,209 @@ public class MailSend {
 	    }
 	}
 	
+	/**
+	 * General会員からPremium会員に変更されたことをシステム側に通知
+	 * @param name
+	 * @return
+	 */
+	public Boolean general_to_premium(String owner_id, String email, String name)
+	{	
+	    // Sender's email ID needs to be mentioned
+	    String from = "info@ankinote.com";//change accordingly
+	    String to = "info@ankinote.com";//change accordingly
+	    final String username = "info@ankinote.com";//change accordingly
+	    final String password = "rsZw#w0Z";//change accordingly
+	    String bcc = "ksusa1224@gmail.com";
+
+	    // Assuming you are sending email through relay.jangosmtp.net
+	    String host = "smtp.ankinote.com";
+	    
+	    Properties props = new Properties();
+	    
+	    props.put("mail.smtp.auth","true");
+	    props.put("mail.smtp.starttls.enable", "true");
+	    props.put("mail.smtp.host", host);
+	    props.put("mail.smtp.port", "587");
+	
+	    // Get the Session object.
+	    Session session = Session.getInstance(props,
+	    new javax.mail.Authenticator() {
+	       protected PasswordAuthentication getPasswordAuthentication() {
+	          return new PasswordAuthentication(username, password);
+	       }
+	    });
+	
+	    try {
+	       // Create a default MimeMessage object.
+	       Message message = new MimeMessage(session);
+	
+	       // Set From: header field of the header.
+	       message.setFrom(new InternetAddress(from));
+	
+	       // Set To: header field of the header.
+	       message.setRecipients(Message.RecipientType.TO,
+	       InternetAddress.parse(to));
+	       message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bcc));
+	
+	       // Set Subject: header field
+	       message.setSubject("暗記ノート【GENERAL→PREMIUM】" + name + " さん");
+	
+	       // Now set the actual message
+	       StringBuilderPlus honbun = new StringBuilderPlus();
+	       honbun.appendLine(name + "さんがGENERAL会員からPREMIUM会員になりました。");
+	       honbun.appendLine("==========================");
+	       honbun.appendLine("owner id: " + owner_id);
+	       honbun.appendLine("email: " + email);
+	       honbun.appendLine("==========================");
+	       
+	       message.setContent(honbun.toString(), "text/plain; charset=UTF-8");
+		       
+	       // Send message
+	       Transport.send(message);
+	       return true;
+	
+	    } catch (MessagingException e) {
+	    	e.printStackTrace();
+	    	return false;
+	    }
+	}
+	
+	/**
+	 * Premium会員からGeneral会員に変更されたことをシステム側に通知
+	 * @param name
+	 * @return
+	 */
+	public Boolean premium_to_general(String owner_id, String email, String name)
+	{	
+	    // Sender's email ID needs to be mentioned
+	    String from = "info@ankinote.com";//change accordingly
+	    String to = "info@ankinote.com";//change accordingly
+	    final String username = "info@ankinote.com";//change accordingly
+	    final String password = "rsZw#w0Z";//change accordingly
+	    String bcc = "ksusa1224@gmail.com";
+
+	    // Assuming you are sending email through relay.jangosmtp.net
+	    String host = "smtp.ankinote.com";
+	    
+	    Properties props = new Properties();
+	    
+	    props.put("mail.smtp.auth","true");
+	    props.put("mail.smtp.starttls.enable", "true");
+	    props.put("mail.smtp.host", host);
+	    props.put("mail.smtp.port", "587");
+	
+	    // Get the Session object.
+	    Session session = Session.getInstance(props,
+	    new javax.mail.Authenticator() {
+	       protected PasswordAuthentication getPasswordAuthentication() {
+	          return new PasswordAuthentication(username, password);
+	       }
+	    });
+	
+	    try {
+	       // Create a default MimeMessage object.
+	       Message message = new MimeMessage(session);
+	
+	       // Set From: header field of the header.
+	       message.setFrom(new InternetAddress(from));
+	
+	       // Set To: header field of the header.
+	       message.setRecipients(Message.RecipientType.TO,
+	       InternetAddress.parse(to));
+	       message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bcc));
+	
+	       // Set Subject: header field
+	       message.setSubject("暗記ノート【PREMIUM→GENERAL】" + name + " さん");
+	
+	       // Now set the actual message
+	       StringBuilderPlus honbun = new StringBuilderPlus();
+	       honbun.appendLine(name + "さんがPREMIUM会員からGENERAL会員になりました。");
+	       honbun.appendLine("==========================");
+	       honbun.appendLine("owner id: " + owner_id);
+	       honbun.appendLine("email: " + email);
+	       honbun.appendLine("==========================");
+	       
+	       message.setContent(honbun.toString(), "text/plain; charset=UTF-8");
+		       
+	       // Send message
+	       Transport.send(message);
+	       return true;
+	
+	    } catch (MessagingException e) {
+	    	e.printStackTrace();
+	    	return false;
+	    }
+	}
+	
+	/**
+	 * 退会したことをシステム側に通知
+	 * @param owner_id
+	 * @param email
+	 * @param name
+	 * @return
+	 */
+	public Boolean withdraw(String owner_id, String email, String name)
+	{	
+	    // Sender's email ID needs to be mentioned
+	    String from = "info@ankinote.com";//change accordingly
+	    String to = "info@ankinote.com";//change accordingly
+	    final String username = "info@ankinote.com";//change accordingly
+	    final String password = "rsZw#w0Z";//change accordingly
+	    String bcc = "ksusa1224@gmail.com";
+
+	    // Assuming you are sending email through relay.jangosmtp.net
+	    String host = "smtp.ankinote.com";
+	    
+	    Properties props = new Properties();
+	    
+	    props.put("mail.smtp.auth","true");
+	    props.put("mail.smtp.starttls.enable", "true");
+	    props.put("mail.smtp.host", host);
+	    props.put("mail.smtp.port", "587");
+	
+	    // Get the Session object.
+	    Session session = Session.getInstance(props,
+	    new javax.mail.Authenticator() {
+	       protected PasswordAuthentication getPasswordAuthentication() {
+	          return new PasswordAuthentication(username, password);
+	       }
+	    });
+	
+	    try {
+	       // Create a default MimeMessage object.
+	       Message message = new MimeMessage(session);
+	
+	       // Set From: header field of the header.
+	       message.setFrom(new InternetAddress(from));
+	
+	       // Set To: header field of the header.
+	       message.setRecipients(Message.RecipientType.TO,
+	       InternetAddress.parse(to));
+	       message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bcc));
+	
+	       // Set Subject: header field
+	       message.setSubject("暗記ノート【退会】" + name + " さん");
+	
+	       // Now set the actual message
+	       StringBuilderPlus honbun = new StringBuilderPlus();
+	       honbun.appendLine(name + "さんが退会しました。");
+	       honbun.appendLine("==========================");
+	       honbun.appendLine("owner id: " + owner_id);
+	       honbun.appendLine("email: " + email);
+	       honbun.appendLine("==========================");
+	       
+	       message.setContent(honbun.toString(), "text/plain; charset=UTF-8");
+		       
+	       // Send message
+	       Transport.send(message);
+	       return true;
+	
+	    } catch (MessagingException e) {
+	    	e.printStackTrace();
+	    	return false;
+	    }
+	}
+	
 	public Boolean send_remind_mail(
 			String owner_id, String email, String owner_name, String owner_password)
 	{	

@@ -247,6 +247,10 @@ public class TopPageController {
 		  
 		  H2dbDao dao = new H2dbDao();
 		  dao.general_to_premium(owner_id);
+		  LoginInfoModel info = new LoginInfoModel();
+		  info = dao.select_login_info(owner_id);
+		  MailSend mail = new MailSend();
+		  mail.general_to_premium(owner_id,info.getEmail(),info.getOwner_name());
 		  
 		  return "redirect:main.html";
 		}
@@ -418,8 +422,10 @@ public class TopPageController {
 		  
 		  stop_paypal(owner_id);
 
-//		  LoginInfoModel login_info = new LoginInfoModel();
-//		  login_info = h2dao.select_login_info(owner_id);
+		  LoginInfoModel login_info = new LoginInfoModel();
+		  login_info = h2dao.select_login_info(owner_id);
+		  MailSend mail = new MailSend();
+		  mail.premium_to_general(owner_id, login_info.getEmail(), login_info.getOwner_name());
 		  
 //		  login(session,request,owner_id,login_info.
 //				  // 同じフォームにowner_id入れてもemail入れてもログインできるようにするため
