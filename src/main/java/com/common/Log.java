@@ -1,8 +1,14 @@
 package com.common;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -50,13 +56,52 @@ public @Data class Log {
      * @param client_os
      * @param cliente_browser
      */
+//	public void insert_access_log(
+//			String owner_id,
+//			String request_uri,
+//			String method_name,
+//			String client_ip, 
+//			String client_os, 
+//			String client_browser,
+//			String client_location)
+//	{
+//		String now = Util.getNow("yyyy_MM");
+//		String db_name = "system_log_" + now + ".db";
+//		String db_save_path = Constant.SQLITE_LOG_FOLDER_PATH;
+//		File monthly_db = new File(db_save_path + db_name);
+//		if(monthly_db.exists() == false) { 
+//		    SQliteDAO dao = new SQliteDAO();
+//		    dao.create_log_db();
+//		}		
+//		
+//		StringBuilderPlus sql = new StringBuilderPlus();
+//		sql.appendLine("insert into access_log (");
+//		sql.appendLine("timestamp,");
+//		sql.appendLine("owner_id,");
+//		sql.appendLine("request_uri,");
+//	    sql.appendLine("method_name,");
+//		sql.appendLine("client_ip,");
+//		sql.appendLine("client_os,");
+//		sql.appendLine("client_browser, ");
+//		sql.appendLine("client_location) ");
+//		sql.appendLine("values (");
+//		sql.appendLine("'" + timestamp + "',");
+//		sql.appendLine("'" + owner_id + "',");
+//		sql.appendLine("'" + request_uri + "',");
+//		sql.appendLine("'" + method_name + "',");
+//		sql.appendLine("'" + client_ip + "',");
+//		sql.appendLine("'" + client_os + "',");
+//		sql.appendLine("'" + client_browser + "',");
+//		sql.appendLine("'" + client_location + "')");
+//		
+//		SQliteDAO dao = new SQliteDAO();
+//		dao.update_log_db(sql);
+//	}
+	
 	public void insert_access_log(
+			HttpServletRequest request,
 			String owner_id,
-			String request_uri,
-			String method_name,
-			String client_ip, 
-			String client_os, 
-			String client_browser)
+			String method_name)
 	{
 		String now = Util.getNow("yyyy_MM");
 		String db_name = "system_log_" + now + ".db";
@@ -67,6 +112,20 @@ public @Data class Log {
 		    dao.create_log_db();
 		}		
 		
+		String request_uri = request.getRequestURI();
+		String client_ip = Log.getClientIpAddress(request);
+		String client_os = Log.getClientOS(request);
+		String client_browser = Log.getClientBrowser(request);
+		String client_location = "";
+		
+		try {
+			client_location = Log.getClientLocation(request);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String access_from = request.getHeader("Referer");
+		
 		StringBuilderPlus sql = new StringBuilderPlus();
 		sql.appendLine("insert into access_log (");
 		sql.appendLine("timestamp,");
@@ -75,7 +134,9 @@ public @Data class Log {
 	    sql.appendLine("method_name,");
 		sql.appendLine("client_ip,");
 		sql.appendLine("client_os,");
-		sql.appendLine("client_browser) ");
+		sql.appendLine("client_browser, ");
+		sql.appendLine("client_location, ");
+		sql.appendLine("access_from) ");
 		sql.appendLine("values (");
 		sql.appendLine("'" + timestamp + "',");
 		sql.appendLine("'" + owner_id + "',");
@@ -83,7 +144,9 @@ public @Data class Log {
 		sql.appendLine("'" + method_name + "',");
 		sql.appendLine("'" + client_ip + "',");
 		sql.appendLine("'" + client_os + "',");
-		sql.appendLine("'" + client_browser + "')");
+		sql.appendLine("'" + client_browser + "',");
+		sql.appendLine("'" + client_location + "',");
+		sql.appendLine("'" + access_from + "')");
 		
 		SQliteDAO dao = new SQliteDAO();
 		dao.update_log_db(sql);
@@ -142,6 +205,39 @@ public @Data class Log {
 	        }
 	    }
 	    return request.getRemoteAddr();
+	}
+	
+	/**
+	 * IPアドレスからおおよその住所を割り出す
+	 * @param request
+	 * @return
+	 * @throws IOException 
+	 */
+	public static String getClientLocation(HttpServletRequest request) throws IOException 
+	{
+		String ip = getClientIpAddress(request);
+		URL url = new URL("http://freegeoip.net/csv/" + ip);
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.connect();
+
+		InputStream is = connection.getInputStream();
+
+		int status = connection.getResponseCode();
+		if (status != 200) {
+		    return null;
+		}
+
+		String location = "";
+		
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		for (String line; (line = reader.readLine()) != null;) 
+		{
+			location = location + line;
+		    //this API call will return something like:
+//		    "2.51.255.200","AE","United Arab Emirates","03","Dubai","Dubai","","x-coord","y-coord","","";
+		    // you can extract whatever you want from it
+		}	
+		return location;
 	}
 	
 	public static String getClientOS(HttpServletRequest request)

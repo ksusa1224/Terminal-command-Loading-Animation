@@ -159,13 +159,12 @@ public class TopPageController {
 			/**
 			 * アクセスログ記録
 			 */
-			String request_uri = request.getRequestURI();
-			String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
-			String client_ip = Log.getClientIpAddress(request);
-			String client_os = Log.getClientOS(request);
-			String client_browser = Log.getClientBrowser(request);
 			Log log = new Log();
-			log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
+			String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
+			log.insert_access_log(
+					request,
+					owner_id, 
+					method_name);
 	        	     
 		  String token1 = null;
 		  String returnURL = null;
@@ -297,8 +296,18 @@ public class TopPageController {
 			String client_ip = Log.getClientIpAddress(request);
 			String client_os = Log.getClientOS(request);
 			String client_browser = Log.getClientBrowser(request);
+			String client_location = "";
+			try {
+				client_location = Log.getClientLocation(request);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			Log log = new Log();
-			log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
+			log.insert_access_log(
+					request,
+					owner_id, 
+					method_name);
 
 			// 仮登録用のワンタイムパスワード
 		  UUID uuid = UUID.randomUUID();
@@ -670,8 +679,18 @@ public class TopPageController {
 			String client_ip = Log.getClientIpAddress(request);
 			String client_os = Log.getClientOS(request);
 			String client_browser = Log.getClientBrowser(request);
+			String client_location = "";
+			try {
+				client_location = Log.getClientLocation(request);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			Log log = new Log();
-			log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
+			log.insert_access_log(
+					request,
+					owner_id, 
+					method_name);
 
 		  // メールアドレス重複チェック
 		  H2dbDao h2dao = new H2dbDao();
@@ -841,13 +860,12 @@ public class TopPageController {
 			 * アクセスログ記録
 			 */
 			String owner_id = (String)session.getAttribute("owner_id");
-			String request_uri = request.getRequestURI();
 			String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
-			String client_ip = Log.getClientIpAddress(request);
-			String client_os = Log.getClientOS(request);
-			String client_browser = Log.getClientBrowser(request);
 			Log log = new Log();
-			log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
+			log.insert_access_log(
+					request,
+					owner_id, 
+					method_name);
 						
 			insert_system_initial_data(owner_db, owner_id);
 			

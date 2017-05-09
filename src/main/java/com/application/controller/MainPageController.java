@@ -121,13 +121,12 @@ public class MainPageController{
 		/**
 		 * アクセスログ記録
 		 */
-		String request_uri = request.getRequestURI();
 		String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
 		String client_ip = Log.getClientIpAddress(request);
-		String client_os = Log.getClientOS(request);
-		String client_browser = Log.getClientBrowser(request);
-
-		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
+		log.insert_access_log(
+				request,
+				owner_id, 
+				method_name);
 		
 		LoginInfoModel login_info = new LoginInfoModel();
 		
@@ -367,13 +366,12 @@ public class MainPageController{
 		/**
 		* アクセスログ記録
 		*/
-		String request_uri = request.getRequestURI();
 		String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
-		String client_ip = Log.getClientIpAddress(request);
-		String client_os = Log.getClientOS(request);
-		String client_browser = Log.getClientBrowser(request);
 		Log log = new Log();
-		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
+		log.insert_access_log(
+				request,
+				owner_id, 
+				method_name);
 
 		if(is_authenticated == true)		
 		{
@@ -469,13 +467,12 @@ public class MainPageController{
 		/**
 		* アクセスログ記録
 		*/
-		String request_uri = request.getRequestURI();
 		String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
-		String client_ip = Log.getClientIpAddress(request);
-		String client_os = Log.getClientOS(request);
-		String client_browser = Log.getClientBrowser(request);
 		Log log = new Log();
-		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
+		log.insert_access_log(
+				request,
+				owner_id, 
+				method_name);
 
 		if(is_authenticated == true)		
 		{
@@ -570,13 +567,12 @@ public class MainPageController{
 		/**
 		* アクセスログ記録
 		*/
-		String request_uri = request.getRequestURI();
 		String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
-		String client_ip = Log.getClientIpAddress(request);
-		String client_os = Log.getClientOS(request);
-		String client_browser = Log.getClientBrowser(request);
 		Log log = new Log();
-		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
+		log.insert_access_log(
+				request,
+				owner_id, 
+				method_name);
 
 		if(is_authenticated == true)		
 		{
@@ -662,13 +658,12 @@ public class MainPageController{
 		/**
 		* アクセスログ記録
 		*/
-		String request_uri = request.getRequestURI();
 		String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
-		String client_ip = Log.getClientIpAddress(request);
-		String client_os = Log.getClientOS(request);
-		String client_browser = Log.getClientBrowser(request);
 		Log log = new Log();
-		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
+		log.insert_access_log(
+				request,
+				owner_id, 
+				method_name);
 		
 		
 		if(is_authenticated == true)		
@@ -811,13 +806,12 @@ public class MainPageController{
 		/**
 		 * アクセスログ記録
 		 */
-		String request_uri = request.getRequestURI();
 		String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
-		String client_ip = Log.getClientIpAddress(request);
-		String client_os = Log.getClientOS(request);
-		String client_browser = Log.getClientBrowser(request);
 		Log log = new Log();
-		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);		
+		log.insert_access_log(
+				request,
+				owner_id, 
+				method_name);
 		
 		String request_url = request.getRequestURI();
 		String response_url = "/"+ owner_id + "/main.html";
@@ -938,13 +932,12 @@ public class MainPageController{
 		/**
 		* アクセスログ記録
 		*/
-		String request_uri = request.getRequestURI();
 		String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
-		String client_ip = Log.getClientIpAddress(request);
-		String client_os = Log.getClientOS(request);
-		String client_browser = Log.getClientBrowser(request);
 		Log log = new Log();
-		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
+		log.insert_access_log(
+				request,
+				owner_id, 
+				method_name);
 		
 		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
 		AES aes = new AES();

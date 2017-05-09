@@ -48,13 +48,12 @@ public class ApplicationController {
 		 * アクセスログ記録
 		 */
 		String owner_id = (String)session.getAttribute("owner_id");
-		String request_uri = request.getRequestURI();
 		String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
-		String client_ip = Log.getClientIpAddress(request);
-		String client_os = Log.getClientOS(request);
-		String client_browser = Log.getClientBrowser(request);
 		Log log = new Log();
-		log.insert_access_log(owner_id, request_uri, method_name, client_ip, client_os, client_browser);
+		log.insert_access_log(
+				request,
+				owner_id, 
+				method_name);
 		
 		if (request_url.equals(response_url))
 		{
