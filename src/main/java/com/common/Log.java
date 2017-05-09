@@ -8,7 +8,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -125,6 +127,14 @@ public @Data class Log {
 			e.printStackTrace();
 		}
 		String access_from = request.getHeader("Referer");
+		InetAddress addr = null;
+		try {
+			addr = InetAddress.getByName(client_ip);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String host_name = addr.getHostName();
 		
 		StringBuilderPlus sql = new StringBuilderPlus();
 		sql.appendLine("insert into access_log (");
@@ -136,6 +146,7 @@ public @Data class Log {
 		sql.appendLine("client_os,");
 		sql.appendLine("client_browser, ");
 		sql.appendLine("client_location, ");
+		sql.appendLine("host_name, ");
 		sql.appendLine("access_from) ");
 		sql.appendLine("values (");
 		sql.appendLine("'" + timestamp + "',");
@@ -146,6 +157,7 @@ public @Data class Log {
 		sql.appendLine("'" + client_os + "',");
 		sql.appendLine("'" + client_browser + "',");
 		sql.appendLine("'" + client_location + "',");
+		sql.appendLine("'" + host_name + "',");
 		sql.appendLine("'" + access_from + "')");
 		
 		SQliteDAO dao = new SQliteDAO();

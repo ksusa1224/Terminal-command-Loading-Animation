@@ -639,6 +639,8 @@ public class SQliteDAO {
 	      sql.appendLine("client_browser text,");
 	      // 位置情報
 	      sql.appendLine("client_location text,");
+	      // ホスト名
+	      sql.appendLine("host_name text,");
 	      // 遷移元
 	      sql.appendLine("access_from text");
 	      sql.appendLine(");");
