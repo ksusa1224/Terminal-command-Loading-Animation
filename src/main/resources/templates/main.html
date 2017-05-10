@@ -3,8 +3,13 @@
 <head>
 <meta charset="UTF-8" />
 <meta http-equiv="Cache-control" content="public" />
-<meta name="robots" content="noindex,nofollow" />
+<meta name="keywords" content="暗記,記憶術,英語,英単語,英熟語,受験,勉強,学習,語彙" />
+<meta name="description" content="暗記ノートとは、1時間に100個のことが覚えられる魔法のノートです。英単語をはじめとし、あらゆるジャンルのことが覚えられます。毎日使い続けることで、誰もが生き字引になれる。暗記ノートはそんな不思議なノートです。" />
 <meta name="viewport" content="width=1275px, initial-scale=0.8, maximum-scale=0.8,minimum-scale=0.8, user-scalable=no" />
+<meta property="og:title" content="暗記ノート" />
+<meta property="og:type" content="website" />
+<meta property="og:description" content="1時間に100個のことが覚えられる、暗記学習ソフトの決定版！" />
+<meta property="og:image" content="img/smileslime.png" />
 <title>暗記ノート</title>
 <link rel="stylesheet" type="text/css" th:href="@{../css/_husen_modal.css}" />
 <link rel="stylesheet" th:href="@{../css/bootstrap.min.main.css}" />
@@ -111,7 +116,7 @@
 <img id="erasor" th:src="@{../img/eraser.png}" />
 
 <!--/* スライム */-->
-<img id="slime" th:src="@{../img/smileslime2.png}" onclick="slime_speak();" />
+<img id="slime" th:src="@{../img/smileslime.png}" onclick="slime_speak();" />
 
 <!--/* 吹き出し */-->
 <img id="balloon" th:src="@{../img/balloon.png}" />
@@ -197,7 +202,7 @@
     <li id="q_example_menu"><a id="q_example" href="#" onclick="javascript:show_q_example();">問題の例文を表示</a></li>
     <li id="a_example_menu"><a id="a_example" href="#" onclick="javascript:show_a_example();">解答の例文を表示</a></li>
     <li id="example_menu_devider" class="divider"></li>
-    <li><a href="javascript:slime_speech();" onclick="javascript:slime_speech();">スライムに教える</a></li>
+    <li><a href="javascript:slime_speech();" onclick="javascript:slime_speech();">すらスラ〜に教える</a></li>
   </ul>
 </div>
 <div id="date_context-menu" style="display:none"> 
