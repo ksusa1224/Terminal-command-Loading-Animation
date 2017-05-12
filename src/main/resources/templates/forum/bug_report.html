@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<meta name="keywords" content="暗記,記憶術,英語,英単語,英熟語,受験,勉強,学習,語彙" />
+<meta name="description" content="暗記ノートとは、1時間に100個のことが覚えられる魔法のノートです。英単語をはじめとし、あらゆるジャンルのことが覚えられます。毎日使い続けることで、誰もが生き字引になれる。暗記ノートはそんな不思議なノートです。" />
+<meta property="og:title" content="暗記ノート" />
+<meta property="og:type" content="website" />
+<meta property="og:description" content="1時間に100個のことが覚えられる、暗記学習ソフトの決定版！" />
+<meta property="og:image" content="../img/smileslime.png" />
+<!-- CSS Files -->
+<link th:href="@{../css/bootstrap.min.css}" rel="stylesheet" media="screen" />
+<link th:href="@{../css/font-awesome.min.css}" rel="stylesheet" />
+<link th:href="@{../fonts/icon-7-stroke/css/pe-icon-7-stroke.css}" rel="stylesheet" />
+<link th:href="@{../fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css}" rel="stylesheet" />
+<link th:href="@{../css/animate.css}" rel="stylesheet" media="screen" />
+<link th:href="@{../css/owl.theme.css}" rel="stylesheet" />
+<link th:href="@{../css/owl.carousel.css}" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" th:href="@{../css/jquery-ui.css}" />
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+<title>暗記ノート 掲示板 不具合報告</title>
+</head>
+<body>
+
+<!-- /.contact section -->
+<div id="contact">
+	<div class="contact fullscreen parallax" style="background-image:url('img/bg.jpg');" data-img-width="2000" data-img-height="1333" data-diff="100">
+		<div class="overlay">
+			<div class="container">
+				<div class="row contact-row">
+					<!-- /.address and contact -->
+					<div class="col-sm-5 contact-left wow fadeInUp">
+						<h2><span class="highlight">CONTACT</span> US</h2>
+							<ul class="ul-address">
+							<li><i class="pe-7s-mail"></i><a href="mailto:info@ankinote.com">info@ankinote.com</a></li>
+							<li><i class="pe-7s-look"></i><a href="https://www.ankinote.com">www.ankinote.com</a></li>
+							</ul>	
+								
+					</div>				
+					<!-- /.contact form -->
+					<div class="col-sm-7 contact-right" style="margin: 0 auto;display:inline-block;text-align:center">
+						<form method="POST" id="contact" class="form-horizontal" th:action="@{./bug_report.html}">
+							<div class="form-group">
+							<input type="text" name="name" id="name" class="form-control wow fadeInUp" placeholder="Name" required="true" />
+							</div>
+							<div class="form-group">
+							<input type="text" name="email" id="email" class="form-control wow fadeInUp" placeholder="Email" required="false" />
+							</div>					
+							<div class="form-group">
+							<textarea name="content" rows="20" cols="20" id="content" class="form-control input-message wow fadeInUp"  placeholder="Message" required="true"></textarea>
+							</div>
+							<div class="form-group">
+							<input type="submit" name="contact" value="送信" class="btn btn-success wow fadeInUp" />
+							</div>
+						</form>		
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+</body>
+</html>
