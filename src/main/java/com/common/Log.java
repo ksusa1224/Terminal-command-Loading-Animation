@@ -317,7 +317,8 @@ public @Data class Log {
 	 	    {
 	 	    	os = "Windows ME";	 	    	
 	 	    }
-	     } else if(userAgent.toLowerCase().indexOf("mac") >= 0)
+	     } else if(userAgent.indexOf("Mac_PowerPC") >= 0 ||
+	    		 userAgent.indexOf("Macintosh") >= 0)
 	     {
 	         os = "Mac";
 	     } else if(userAgent.indexOf("OpenBSD") >= 0)
