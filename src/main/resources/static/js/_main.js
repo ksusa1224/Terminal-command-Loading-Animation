@@ -11,8 +11,8 @@ var firstTime = localStorage.getItem("first_time");
 
 function body_load()
 {	
-	// IE対策
-	if (navigator.appName == 'Microsoft Internet Explorer' ||  !!(navigator.userAgent.match(/Trident/) || navigator.userAgent.match(/rv 11/)))
+	// Windows対策
+	if (window.navigator.userAgent.indexOf("Windows")!= -1)
 	{
 		$(".note-line").css("height","18.5px");
 		$("#qa_area").css("height","486px");
