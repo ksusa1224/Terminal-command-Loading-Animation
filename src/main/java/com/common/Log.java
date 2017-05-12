@@ -385,7 +385,7 @@ public @Data class Log {
 	        browser=(userAgent.substring(userAgent.indexOf("Firefox")).split(" ")[0]).replace("/", "-");
 	    } else if(user.contains("rv"))
 	    {
-	        browser="IE";
+	        browser="IE" + user.substring(user.indexOf("rv") + 3, user.indexOf(")"));
 	    } else
 	    {
 	        browser = "UnKnown, More-Info: "+userAgent;
