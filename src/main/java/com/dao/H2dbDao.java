@@ -142,7 +142,7 @@ public class H2dbDao
 			
 			StringBuilderPlus sql = new StringBuilderPlus();
 			
-			sql.appendLine("drop table if exists paypal;");
+			//sql.appendLine("drop table if exists paypal;");
 			//Paypalテーブル作成
 			sql.appendLine("create table if not exists paypal(");
 			sql.appendLine("  owner_id varchar(20) unique,");
