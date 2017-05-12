@@ -259,14 +259,84 @@ public @Data class Log {
 
 	    String os = "";
 
-	    //=================OS=======================
 	     if (userAgent.toLowerCase().indexOf("windows") >= 0 )
 	     {
-	         os = "Windows";
+	 	    if (userAgent.indexOf("Win16") >= 0)
+	 	    {
+	 	    	os = "Windows 3.11";
+	 	    }
+	 	    else if (userAgent.indexOf("Windows 95") >= 0 ||
+	 	    		userAgent.indexOf("Win95") >= 0 ||
+	 	    		userAgent.indexOf("Windows_95") >= 0) 
+	 	    {
+	 	    	os = "Windows 95";	 	    	
+	 	    }
+	 	    else if (userAgent.indexOf("Windows 98") >= 0 ||
+	 	    		userAgent.indexOf("Win98") >= 0)
+	 	    {
+	 	    	os = "Windows 98";	 	    	
+	 	    }
+	 	    else if (userAgent.indexOf("Windows NT 5.0") >= 0 ||
+	 	    		userAgent.indexOf("Windows 2000") >= 0)
+	 	    {
+	 	    	os = "Windows 2000";	 	    	
+	 	    }
+	 	    else if (userAgent.indexOf("Windows NT 5.1") >= 0 ||
+	 	    		userAgent.indexOf("Windows XP") >= 0)
+	 	    {
+	 	    	os = "Windows XP";	 	    	
+	 	    }
+	 	    else if (userAgent.indexOf("Windows NT 5.2") >= 0) 
+	 	    {
+	 	    	os = "Windows Server 2003";	 	    	
+	 	    }
+	 	    else if (userAgent.indexOf("Windows NT 6.0") >= 0) 
+	 	    {
+	 	    	os = "Windows Vista";	 	    	
+	 	    }
+	 	    else if (userAgent.indexOf("Windows NT 6.1") >= 0) 
+	 	    {
+	 	    	os = "Windows 7";	 	    	
+	 	    }
+	 	    else if (userAgent.indexOf("Windows NT 6.2") >= 0) 
+	 	    {
+	 	    	os = "Windows 8";	 	    	
+	 	    }
+	 	    else if (userAgent.indexOf("Windows NT 10.0") >= 0) 
+	 	    {
+	 	    	os = "Windows 10";	 	    	
+	 	    }
+	 	    else if (userAgent.indexOf("Windows NT 4.0") >= 0 ||
+	 	    		userAgent.indexOf("WinNT4.0") >= 0 ||
+	 	    		userAgent.indexOf("WinNT") >= 0 ||
+	 	    		userAgent.indexOf("Windows NT") >= 0) 
+	 	    {
+	 	    	os = "Windows NT 4.0";	 	    	
+	 	    }
+	 	    else if (userAgent.indexOf("Windows ME") >= 0) 
+	 	    {
+	 	    	os = "Windows ME";	 	    	
+	 	    }
 	     } else if(userAgent.toLowerCase().indexOf("mac") >= 0)
 	     {
 	         os = "Mac";
-	     } else if(userAgent.toLowerCase().indexOf("x11") >= 0)
+	     } else if(userAgent.indexOf("OpenBSD") >= 0)
+	     {
+	         os = "Open BSD";
+	     } else if(userAgent.indexOf("SunOS") >= 0)
+	     {
+	         os = "Sun OS";
+	     } else if(userAgent.indexOf("QNX") >= 0)
+	     {
+	         os = "QNX";
+	     } else if(userAgent.indexOf("BeOS") >= 0)
+	     {
+	         os = "BeOS";
+	     } else if(userAgent.indexOf("OS/2") >= 0)
+	     {
+	         os = "OS/2";
+	     } else if(userAgent.toLowerCase().indexOf("x11") >= 0 ||
+	    		 userAgent.toLowerCase().indexOf("Linux") >= 0)
 	     {
 	         os = "Unix";
 	     } else if(userAgent.toLowerCase().indexOf("android") >= 0)
