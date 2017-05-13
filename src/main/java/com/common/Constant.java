@@ -192,6 +192,15 @@ public class Constant {
 	public static final String SORT_RANDOM = "ランダム順";
 	
 	/**
+	 * 掲示板ID
+	 */
+	public static final Integer FORUM_ID_IMPRESSION = 1;
+	public static final Integer FORUM_ID_REQUEST = 2;
+	public static final Integer FORUM_ID_QUESTION = 3;
+	public static final Integer FORUM_ID_BUG_REPORT = 4;
+	public static final Integer FORUM_ID_CHAT = 5;
+	
+	/**
 	 * その他
 	 */
 	// DB(SQLite、H2共通)の日付型のフォーマット

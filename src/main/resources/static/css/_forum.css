@@ -1,0 +1,157 @@
+body{
+	background-image: url("../img/white bricks.jpg");
+	background-repeat: repeat;
+	background-attachment: fixed;
+	background-size: 50%;
+    font-family:"‚l‚r ‚o–¾’©", "MS PMincho", "ƒqƒ‰ƒMƒm–¾’© Pro W3", "Hiragino Mincho Pro", serif !important;
+}
+
+h2 {
+	letter-spacing:0.2em;
+	font-size:36px;
+	color:#ffffff;
+	text-shadow: 0px 4px 3px rgba(0,0,0,0.8),
+             0px 8px 13px rgba(0,0,0,0.5),
+             0px 18px 33px rgba(0,0,0,0.5);
+}
+
+hr{
+	border-width:1px;
+}
+
+.outer
+{
+	background-image: url("../img/grape.png");
+	background-repeat: no-repeat;
+	background-size:100% auto;
+	background-attachment: fixed;
+	width:100%;
+	padding-bottom:70px;
+}
+
+/* Smartphones ----------- */
+@media only screen and (max-width: 760px) {
+	body{
+		background-size: 100%;	
+	}
+	
+	h2{
+		font-size:24px;
+	}
+	
+	#outer
+	{
+		background-size:150% auto;
+		background-attachment: fixed;
+		background-position: center top;
+		width:100%;
+	}
+	
+	#contact
+	{
+		width:90% !important;
+	}
+	
+	.comment
+	{
+		width:100% !important;
+	}
+
+}
+
+#forum
+{
+	font-size:18px;
+}
+
+#bug_report_title
+{
+	font-size:36px;
+}
+
+#contact
+{
+	padding-top:70px;
+	width:50%;
+  display: table;
+  margin: 0 auto;
+  text-align:center;
+}
+
+.form-horizontal{
+	margin-top:-30px !important;	
+}
+
+INPUT[type=button], INPUT[type=submit]
+{
+	font-size:16px;
+	letter-spacing:0.2em;
+	width:100%;
+    color: #FFFFFF;
+    background-color:#000000;
+    border-color:#000000;
+}
+
+#comments
+{
+	background-image: url("../img/grape.png");
+	background-repeat: no-repeat;
+	background-size:100% auto;
+	background-attachment: fixed;
+	width: 100%;
+	padding-top:70px;
+}
+
+.list
+{
+	background-image: url("../img/grape.png");
+	background-repeat: no-repeat;
+	background-size:100% auto;
+	background-attachment: fixed;
+	width:100%;
+	letter-spacing: 0.2em;
+	font-size:16px;
+	background-color: #CCCCCC;
+	text-align: center;
+	padding:10px;
+	opacity: 0.8;
+}
+
+.wrapper
+{
+	margin-left: 40px;
+	margin-right: 40px;	
+}
+.comment
+{
+	border: 1px solid #CCCCCC;
+	border-radius: 3px;
+	padding:15px;
+	background-color:#FFFFFF;
+	width:50%;
+	margin: auto;
+}
+
+hr {
+	margin-top:10px;
+	margin-bottom:10px;
+}
+
+.scrollToTop{
+	width: 40px; 
+	height: 40px;
+	padding: 1px;
+	font-size: 30px;
+	text-align: center; 
+	background: rgba(0, 0, 0, 0.2);
+	color: white;
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	border-radius: 50%;
+	display: none;
+}
+.scrollToTop:hover{
+	color: #3eb0f7;
+}
+

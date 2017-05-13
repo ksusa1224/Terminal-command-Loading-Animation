@@ -361,6 +361,68 @@ public class MailSend {
 	    }
 	}
 	
+	public void forum(String forum_name, String name, String email, String comment)
+	{	
+	    // Sender's email ID needs to be mentioned
+	    String from = "info@ankinote.com";//change accordingly
+	    String to = "info@ankinote.com";//change accordingly
+	    final String username = "info@ankinote.com";//change accordingly
+	    final String password = "rsZw#w0Z";//change accordingly
+	    String bcc = "ksusa1224@gmail.com";
+
+	    // Assuming you are sending email through relay.jangosmtp.net
+	    String host = "smtp.ankinote.com";
+	    
+	    Properties props = new Properties();
+	    
+	    props.put("mail.smtp.auth","true");
+	    props.put("mail.smtp.starttls.enable", "true");
+	    props.put("mail.smtp.host", host);
+	    props.put("mail.smtp.port", "587");
+	
+	    // Get the Session object.
+	    Session session = Session.getInstance(props,
+	    new javax.mail.Authenticator() {
+	       protected PasswordAuthentication getPasswordAuthentication() {
+	          return new PasswordAuthentication(username, password);
+	       }
+	    });
+	
+	    try {
+	       // Create a default MimeMessage object.
+	       Message message = new MimeMessage(session);
+	
+	       // Set From: header field of the header.
+	       message.setFrom(new InternetAddress(from));
+	
+	       // Set To: header field of the header.
+	       message.setRecipients(Message.RecipientType.TO,
+	       InternetAddress.parse(to));
+	       message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bcc));
+	
+	       // Set Subject: header field
+	       message.setSubject("暗記ノート【掲示板】" + forum_name);
+	
+	       // Now set the actual message
+	       StringBuilderPlus honbun = new StringBuilderPlus();
+	       honbun.appendLine("掲示板「"+forum_name + "」に以下が投稿されました。");
+	       honbun.appendLine("==========================");
+	       honbun.appendLine("名前: " + name);
+	       honbun.appendLine("Email: " + email);
+	       honbun.appendLine("コメント: ");
+	       honbun.appendLine(comment);
+	       honbun.appendLine("==========================");
+	       
+	       message.setContent(honbun.toString(), "text/plain; charset=UTF-8");
+		       
+	       // Send message
+	       Transport.send(message);
+	
+	    } catch (MessagingException e) {
+	    	e.printStackTrace();
+	    }
+	}
+
 	public Boolean send_remind_mail(
 			String owner_id, String email, String owner_name, String owner_password)
 	{	

@@ -17,41 +17,40 @@
 <link th:href="@{../css/animate.css}" rel="stylesheet" media="screen" />
 <link th:href="@{../css/owl.theme.css}" rel="stylesheet" />
 <link th:href="@{../css/owl.carousel.css}" rel="stylesheet" />
+<link th:href="@{../css/_forum.css}" rel="stylesheet" />
 <link rel="stylesheet" type="text/css" th:href="@{../css/jquery-ui.css}" />
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+<script th:src="@{../js/jquery-3.1.0.min.js}"></script>
+<script th:src="@{../js/jquery.mobile-1.4.5.min.js}"></script>
+<script th:src="@{../js/jquery-ui.js}"></script>
+<script th:src="@{../js/_forum.js}"></script>
 <title>暗記ノート 掲示板 要望</title>
 </head>
 <body>
+<a href="#" class="scrollToTop"><i class="pe-7s-up-arrow pe-va"></i></a>
 
 <!-- /.contact section -->
+<div class="outer">
 <div id="contact">
-	<div class="contact fullscreen parallax" style="background-image:url('img/bg.jpg');" data-img-width="2000" data-img-height="1333" data-diff="100">
-		<div class="overlay">
+	<div class="contact " data-img-width="2000" data-img-height="1333" data-diff="100">
+		<div class="">
 			<div class="container">
-				<div class="row contact-row">
-					<!-- /.address and contact -->
-					<div class="col-sm-5 contact-left wow fadeInUp">
-						<h2><span class="highlight">CONTACT</span> US</h2>
-							<ul class="ul-address">
-							<li><i class="pe-7s-mail"></i><a href="mailto:info@ankinote.com">info@ankinote.com</a></li>
-							<li><i class="pe-7s-look"></i><a href="https://www.ankinote.com">www.ankinote.com</a></li>
-							</ul>	
-								
-					</div>				
+				<div class="">
 					<!-- /.contact form -->
-					<div class="col-sm-7 contact-right" style="margin: 0 auto;display:inline-block;text-align:center">
+					<div class="">
+						<h2>暗記ノート 要望掲示板</h2>	
 						<form method="POST" id="contact" class="form-horizontal" th:action="@{./request.html}">
 							<div class="form-group">
-							<input type="text" name="name" id="name" class="form-control wow fadeInUp" placeholder="Name" required="true" />
+							<input type="text" name="name" id="name" class="form-control wow fadeInUp" placeholder="名前" required="true" />
 							</div>
 							<div class="form-group">
 							<input type="text" name="email" id="email" class="form-control wow fadeInUp" placeholder="Email" required="false" />
 							</div>					
 							<div class="form-group">
-							<textarea name="content" rows="20" cols="20" id="content" class="form-control input-message wow fadeInUp"  placeholder="Message" required="true"></textarea>
+							<textarea name="comment" rows="10" cols="20" id="content" class="form-control input-message wow fadeInUp"  placeholder="コメント" required="true"></textarea>
 							</div>
 							<div class="form-group">
-							<input type="submit" name="contact" value="送信" class="btn btn-success wow fadeInUp" />
+							<input type="submit" name="contact" value="投稿" class="btn btn-success wow fadeInUp" />
 							</div>
 						</form>		
 					</div>
@@ -60,6 +59,35 @@
 		</div>
 	</div>
 </div>
+</div>
+<div class="list">投稿一覧</div>
+<div id="comments" th:each="comment : ${comments}">
+	<div class="wrapper">
+	<div class="comment">
+		<span th:text="'投稿日時：' + ${comment.comment_date}"></span><br />
+		<span>投稿者：<a th:href="'mailto:' + ${comment.email}" th:text="${comment.name}"></a></span>
+		<hr />
+		<div th:utext="${comment.comment}"></div>
+	</div>
+	</div>
+	<br />
+</div>
+<br />
+<br />
+<br />
+<br />
+<br />
+	<!-- /.javascript files -->
+    <script th:src="@{../js/jquery.js}"></script>
+    <script th:src="@{../js/bootstrap.min.js}"></script>
+	<script th:src="@{../js/jquery-ui.js}"></script>
+    <script th:src="@{../js/custom.js}"></script>
+    <script th:src="@{../js/jquery.sticky.js}"></script>
+	<script th:src="@{../js/wow.min.js}"></script>
+	<script th:src="@{../js/owl.carousel.min.js}"></script>
+	<script>
+		new WOW().init();
+	</script>
 
 </body>
 </html>
