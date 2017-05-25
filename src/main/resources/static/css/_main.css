@@ -13,6 +13,47 @@ body{
     -webkit-user-select: none !important;*/
 }
 
+#husen_search_mobile{
+	background-color:#EEEEEE;
+	position:absolute;
+	top:620px;
+	left:40px;
+	height:50px;
+	width:410px;
+	z-index: 10000;
+	border-radius: 3px;
+	display:none;
+}
+
+#mobile_loupe{
+	position:absolute;
+	top:620px;
+	left:340px;
+	height:50px;
+	z-index: 100000000;	
+	display:none;
+}
+
+#mobile_husen_search{
+	width:300px;
+	height:50px;
+	overflow:scroll;
+    -ms-overflow-style: none;  // IE 10+
+    overflow: -moz-scrollbars-none;  // Firefox	
+}
+#mobile_husen_search::-webkit-scrollbar 
+{ 
+    display: none;  // Safari and Chrome
+}
+
+.husen_card.faint,.husen_search.faint {
+	opacity: 0.5 !important;
+}
+
+.husen_card.clear,.husen_search.clear {
+	opacity: 1 !important;
+}
+
 .dropdown-menu a
 {
     font-size:13px;	
@@ -523,13 +564,13 @@ input
 	display:none;
 }
 
-.husen[id^="tag_id"]
+.husen[id^="tag_id"],.husen_card,.husen_search
 {
 	position:relative;
 	z-index: 10002 !important;	
 }
 
-.husen
+.husen,.husen_card,.husen_search
 {
 	position:relative;
 	display:inline-block;
