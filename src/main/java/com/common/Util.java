@@ -1,9 +1,11 @@
 package com.common;
 
 import java.io.File;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -92,6 +94,23 @@ public class Util {
 	    String strDate = sdfDate.format(now);
 	    return strDate;	
 	}
+
+	/**
+	 * 指定したフォーマットで日付を加算する
+	 * @param date_type
+	 * @param add_num
+	 * @param format
+	 * @return
+	 * @throws ParseException
+	 */
+	public static String addDate(int date_type, int add_num, String format)
+	{
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		Calendar c = Calendar.getInstance();
+		c.setTime(new Date());
+		c.add(date_type, add_num);  // number of days to add
+		return sdf.format(c.getTime());  // dt is now the new date
+	}	
 
 	public String getDay(String dbdate)
 	{

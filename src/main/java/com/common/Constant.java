@@ -73,8 +73,12 @@ public class Constant {
 	public static final String DB_FOLDER_PATH 
 		= "/usr/local/anki_note/databases/";
 	
+//	public static final String H2DB_FOLDER_PATH 
+//		= "/usr/local/anki_note/databases/h2db/data/";
+	
+	// Windows
 	public static final String H2DB_FOLDER_PATH 
-		= "/usr/local/anki_note/databases/h2db/data/";
+	= "C:\\databases\\h2db\\data\\";
 	
 //	public static final String SQLITE_FOLDER_PATH 
 //		= "/usr/local/anki_note/databases/sqlite/data/";
