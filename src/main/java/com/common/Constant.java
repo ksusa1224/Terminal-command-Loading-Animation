@@ -80,24 +80,24 @@ public class Constant {
 	public static final String H2DB_FOLDER_PATH 
 	= "C:\\databases\\h2db\\data\\";
 	
-//	public static final String SQLITE_FOLDER_PATH 
-//		= "/usr/local/anki_note/databases/sqlite/data/";
-		
-//	public static final String SQLITE_LOG_FOLDER_PATH 
-//		= SQLITE_FOLDER_PATH + "log_db" + "/";
-//	
-//	public static final String SQLITE_OWNER_DB_FOLDEDR_PATH 
-//		= SQLITE_FOLDER_PATH + "owner_db" + "/" + OWNER_DB_CURRENT_VERSION;
-	
-	// Windows
 	public static final String SQLITE_FOLDER_PATH 
-	= "C:\\databases\\sqlite\\data\\";
-	
+		= "/usr/local/anki_note/databases/sqlite/data/";
+		
 	public static final String SQLITE_LOG_FOLDER_PATH 
-	= SQLITE_FOLDER_PATH + "log_db" + "\\";
-
+		= SQLITE_FOLDER_PATH + "log_db" + "/";
+	
 	public static final String SQLITE_OWNER_DB_FOLDEDR_PATH 
-	= SQLITE_FOLDER_PATH + "owner_db" + "\\" + OWNER_DB_CURRENT_VERSION;
+		= SQLITE_FOLDER_PATH + "owner_db" + "/" + OWNER_DB_CURRENT_VERSION;
+	
+//	// Windows
+//	public static final String SQLITE_FOLDER_PATH 
+//	= "C:\\databases\\sqlite\\data\\";
+//	
+//	public static final String SQLITE_LOG_FOLDER_PATH 
+//	= SQLITE_FOLDER_PATH + "log_db" + "\\";
+//
+//	public static final String SQLITE_OWNER_DB_FOLDEDR_PATH 
+//	= SQLITE_FOLDER_PATH + "owner_db" + "\\" + OWNER_DB_CURRENT_VERSION;
 
 //	// 金ノート
 //	public static final String SAMPLE_DB = "2017_02_14_18_57_26_sample.db";

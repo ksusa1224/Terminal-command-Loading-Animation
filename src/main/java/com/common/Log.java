@@ -345,7 +345,7 @@ public @Data class Log {
 	         os = "Android";
 	     } else if(userAgent.toLowerCase().indexOf("iphone") >= 0)
 	     {
-	         os = "IPhone";
+	         os = "iPhone";
 	     }else{
 	         os = "UnKnown, More-Info: "+userAgent;
 	     }

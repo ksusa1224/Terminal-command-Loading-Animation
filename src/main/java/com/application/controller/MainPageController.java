@@ -247,6 +247,16 @@ public class MainPageController{
 				// 付箋
 				String husen_html = generate_husen_html(owner_db);
 				model.addAttribute("tags", husen_html);
+				String husen_html_mobile = "付箋をドラッグ";
+				if (Log.getClientOS(request).equals("Android") ||
+					Log.getClientOS(request).equals("iPhone"))
+				{
+					husen_html_mobile = generate_husen_html_qa_card(owner_db);
+				}
+				model.addAttribute("q_husen_mobile", husen_html_mobile);
+				String husen_html_mobile_search = "";
+				husen_html_mobile_search = generate_husen_html_mobile_search(owner_db);
+				model.addAttribute("husen_mobile_search", husen_html_mobile_search);
 				System.out.println("husen_html:"+husen_html);
 				
 				// ソート用付箋
@@ -748,6 +758,35 @@ public class MainPageController{
 		return husen_html;
 	}	    
 
+	public String generate_husen_html_qa_card(String owner_db) {
+		TagDao tag_dao = new TagDao();
+		List<TagModel> tag_list = new ArrayList<TagModel>();
+		String husen_html = "";
+		tag_list = tag_dao.select_yellow_tag_list(owner_db, tag_list);
+		for (TagModel tag : tag_list)
+		{
+			husen_html += ("<div id='" + tag.getTag_id() + "' class='husen_card faint'>" + tag.getTag_name() + "</div>");
+		}
+		return husen_html;
+	}	    
+	
+	public String generate_husen_html_mobile_search(String owner_db) {
+		TagDao tag_dao = new TagDao();
+		List<TagModel> tag_list = new ArrayList<TagModel>();
+		String husen_html = "";
+		tag_list = tag_dao.select_tag_list(owner_db, tag_list);
+		for (TagModel tag : tag_list)
+		{
+			String system_tag = "";
+			if (tag.getSystem_tag_flg() == 1)
+			{
+				system_tag = " blue";
+			}
+			husen_html += ("<div id='" + tag.getTag_id() + "' class='husen_search faint"  + system_tag +  "'>" + tag.getTag_name() + "</div>");
+		}
+		return husen_html;		
+	}
+	
 	/**
 	 * 
 	 * @param owner_db
