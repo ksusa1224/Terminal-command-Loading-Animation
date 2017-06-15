@@ -18,7 +18,7 @@ public class StringBuilderPlus {
 	 */
 	public void append(String str)
 	{
-		sb.append(str);
+		sb.append(str != null ? str : "");
 	}
 	
 	/**
@@ -27,12 +27,7 @@ public class StringBuilderPlus {
 	 */
 	public void appendLine(String str)
 	{
-		sb.append(str).append(System.getProperty("line.separator"));
-	}
-	
-	public String getSBP()
-	{
-		return sb.toString();
+		sb.append(str != null ? str : "").append(System.getProperty("line.separator"));
 	}
 	
 	public String toString()
