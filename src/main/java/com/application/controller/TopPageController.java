@@ -938,7 +938,16 @@ public class TopPageController {
 	  sb.appendLine("35DEDB577526F01F69616B8AF55127DF7B904671");
 	  sb.appendLine("comodoca.com");
 	  return sb.toString();
-	}	  
+	}	
+	
+	/**
+	 * Google Search Console用
+	 * @return
+	 */
+	@RequestMapping(value = "/googleb5e3e319dabc0a30.html",method = RequestMethod.GET)
+	public String google() {
+	  return "googleb5e3e319dabc0a30";
+	}	
 	  
 	public void insert_system_initial_data(String owner_db, String owner_id) {
 		SystemDao system_dao = new SystemDao();
