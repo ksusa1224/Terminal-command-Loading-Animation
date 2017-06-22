@@ -1,0 +1,41 @@
+@CHARSET "UTF-8";
+
+body{
+  color:black;
+  font-size:13px;
+  font-family:"ＭＳ Ｐ明朝", "MS PMincho", "ヒラギノ明朝 Pro W3", "Hiragino Mincho Pro", serif;
+  margin:0;
+/*
+  background-color: #E9E8E8;
+*/
+  background-image: url(../img/light_wood.jpg);
+}
+
+#wood_table
+{
+	position:absolute;
+  z-index: 0;
+}
+
+.notes_area
+{
+  padding: 20px;
+	position:absolute;
+  z-index: 1;  
+}
+.shelf
+{
+  padding: 40px;  
+}
+.note_wrapper
+{
+  padding-top: 20px;
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-bottom: 40px;
+  display: inline;
+}
+.note
+{
+  z-index: 1;
+}
