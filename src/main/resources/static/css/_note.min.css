@@ -6,7 +6,7 @@ body{
     position: relative;
     padding: 0px;
     margin: 0;
-    font-size:13px;
+    font-size:20px;
     /*長押し禁止*/
     /*-webkit-touch-callout: none !important;
     -webkit-user-select: none !important;*/
@@ -14,7 +14,7 @@ body{
 
 .qa,.date
 {
-    font-size:13px;
+    font-size:20px;
 /*	
 	display: inline-block;
 	*/
@@ -23,7 +23,7 @@ body{
 	/*
 	border-bottom:#9B9EA6 1px solid;
 	*/
-	line-height:20px;
+	line-height:28px;
 	border-right:#d9e6f2 1px solid;
 	padding-left: 3px;
 	padding-right: 3px;

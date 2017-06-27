@@ -39,7 +39,15 @@ public class NotePageController {
 		log.insert_error_log("INFO", "note page main method start.");
 		String method_name = new Object(){}.getClass().getEnclosingMethod().getName();
 		log.insert_access_log(request, owner_id, method_name);
-				
+		if(Log.getClientOS(request).equals("Android") || Log.getClientOS(request).equals("iPhone"))
+		{
+			model.addAttribute("pc", false);
+		}
+		else
+		{
+			model.addAttribute("pc", true);			
+		}
+		
 		TopPageController top = new TopPageController();
 		if ((top.isLogin(request,session) == false &&
 			owner_id.equals("sample") == false))

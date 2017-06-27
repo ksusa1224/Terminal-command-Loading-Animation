@@ -547,7 +547,8 @@ function refresh()
 		 $(".date").css("font-size","18px");
 		 $(".date").css("line-height","24.5px");
 		 $(".note-line").css("display","none");
-
+		 $("#note_menu_context").css("margin-top", "-700px");
+		 $("#note_menu_context").css("font-size", "16px");
 		 $("#husen_search_mobile").show();
 		 $("#mobile_loupe").show();
 		 

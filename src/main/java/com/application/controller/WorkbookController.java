@@ -19,6 +19,6 @@ public class WorkbookController {
 	public String workbook(HttpSession session)
 	{
 		String owner_id = (String)session.getAttribute("owner_id");		
-		return "workbook";
+		return "index";
 	}
 }
