@@ -2559,6 +2559,20 @@ function to_premium(owner_id) {
 
 }
 
+function fullscreen()
+{
+	var params = [
+	    'height='+screen.height,
+	    'width='+screen.width,
+	    'fullscreen=yes' // only works in IE, but here for completeness
+	].join(',');
+	     // and any other options from
+	     // https://developer.mozilla.org/en/DOM/window.open
+
+	var popup = window.open('note.html?husen_str=' + tag_search_conditions_uri); 
+	popup.moveTo(0,0);
+}
+
 function to_general(owner_id)
 {
 	if(!confirm("General Ownerになると、これまでのデータはクリアされます。General Ownerは、問題が１００問までしか登録できません。\n本当によろしければ、OKボタンを押してください。"))

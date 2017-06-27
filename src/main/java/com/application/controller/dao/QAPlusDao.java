@@ -301,8 +301,8 @@ public class QAPlusDao extends QADao {
 	public List<QAPlusModel> select_qa_plus_map(
 			String db_name, 
 			List<QAPlusModel> qa_plus_list,
-			int limit,
-			int offset)
+			Integer limit,
+			Integer offset)
 	{
 		StopWatch stopwatch = new StopWatch();
 		stopwatch.start();
@@ -410,8 +410,8 @@ public class QAPlusDao extends QADao {
 			String db_name, 
 			List<QAPlusModel> qa_plus_list, 
 			String tag_names,
-			int limit,
-			int offset)
+			Integer limit,
+			Integer offset)
 	{
 		StopWatch stopwatch = new StopWatch();
 		stopwatch.start();

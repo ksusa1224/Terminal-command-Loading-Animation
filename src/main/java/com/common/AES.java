@@ -5,6 +5,8 @@ import java.security.MessageDigest;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.springframework.stereotype.Component;
+
 /**
  * 公開鍵暗号方式を用いた、文字列の暗号化と復号化を行う。
  * 
@@ -15,6 +17,7 @@ import javax.crypto.spec.SecretKeySpec;
  * @author ksusa
  *
  */
+@Component
 public class AES {
 
 	// 公開鍵生成用文字列

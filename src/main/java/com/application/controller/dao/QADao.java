@@ -298,8 +298,8 @@ public class QADao {
 	public List<QAModel> select_qa_list(
 			String db_name, 
 			List<QAModel> qa_list,
-			int limit,
-			int offset)
+			Integer limit,
+			Integer offset)
 	{
 		StopWatch stopwatch = new StopWatch();
 		stopwatch.start();
@@ -356,8 +356,14 @@ public class QADao {
 		sql.appendLine(" where del_flg = 0");
 		sql.appendLine(" order by create_timestamp desc");
 		//sql.appendLine(" order by RANDOM()");
-		sql.appendLine("  limit " + limit + " offset + " + offset + ";");
-		
+		if (limit != null)
+		{
+			sql.appendLine(" limit " + limit); 
+		}
+		if (offset != null)
+		{
+			sql.appendLine(" offset + " + offset + ";");
+		}
 		dao.loadDriver();
 		
 	    Connection connection = null;
@@ -447,8 +453,8 @@ public class QADao {
 			String db_name, 
 			List<QAModel> qa_list, 
 			String tag_names,
-			int limit,
-			int offset)
+			Integer limit,
+			Integer offset)
 	{
 		StopWatch stopwatch = new StopWatch();
 		stopwatch.start();
@@ -661,8 +667,15 @@ public class QADao {
         {
         	sql.appendLine(" order by qa.create_timestamp desc");        	
         }
-		sql.appendLine("  limit " + limit + " offset " + offset + ";");
-		
+        if (limit != null)
+        {
+        	sql.appendLine(" limit " + limit);
+        }
+        if (offset != null)
+        {
+        	sql.appendLine(" offset " + offset + ";");
+        }
+        
 		System.out.println("sql:"+sql.toString());
 		
 		dao.loadDriver();

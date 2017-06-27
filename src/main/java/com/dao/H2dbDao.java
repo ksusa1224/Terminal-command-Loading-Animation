@@ -9,6 +9,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import com.application.model.LoginInfoModel;
 import com.common.*;
 
@@ -17,6 +19,7 @@ import com.common.*;
  * @author ksusa
  *
  */
+@Component
 public class H2dbDao 
 {
 	/**

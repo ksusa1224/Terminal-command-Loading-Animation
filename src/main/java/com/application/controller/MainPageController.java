@@ -1,47 +1,27 @@
 package com.application.controller;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.SequenceInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.sound.sampled.AudioFileFormat;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.spi.AudioFileReader;
 
 import org.apache.commons.io.FileUtils;
-import org.atilika.kuromoji.Token;
-import org.atilika.kuromoji.Tokenizer;
-import org.json.JSONException;
 
-import com.ibm.icu.text.Transliterator;
-
-//import org.json.simple.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,12 +30,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.cybozu.labs.langdetect.Detector; 
-import com.cybozu.labs.langdetect.DetectorFactory; 
-import com.cybozu.labs.langdetect.LangDetectException;
 import com.dao.H2dbDao;
-import com.dao.SQliteDAO;
-import com.cybozu.*;
+
 import com.application.controller.dao.KaitouDao;
 import com.application.controller.dao.MondaiDao;
 import com.application.controller.dao.QADao;
@@ -71,6 +47,7 @@ import com.application.model.dao.QAPlusModel;
 import com.application.model.dao.QaTagRelationModel;
 import com.application.model.dao.SeitouModel;
 import com.application.model.dao.TagModel;
+import com.application.service.MainPageService;
 import com.common.AES;
 import com.common.Constant;
 import com.common.Log;
@@ -82,6 +59,9 @@ import net.arnx.jsonic.JSON;
 
 @Controller
 public class MainPageController{
+	
+	@Autowired
+	MainPageService mainPageService;
 	
 	/**
 	 * メインページ（暗記ノート本体）
@@ -213,20 +193,20 @@ public class MainPageController{
 				List<QAPlusModel> qa_plus_list_left = new ArrayList<QAPlusModel>();
 				System.out.println("owner_db:"+owner_db);
 				System.out.println("session db:" + aes.decrypt((byte[])session.getAttribute("owner_db")));
-				qa_plus_list_left = select_qa_plus(owner_db, limit, left_offset);
+				qa_plus_list_left = mainPageService.select_qa_plus(owner_db, limit, left_offset);
 				String qa_html = "";
 				if (qa_plus_list_left.size() > 0)
 				{
-					qa_html = generate_qa_html(qa_plus_list_left,owner_db);
+					qa_html = mainPageService.generate_qa_html(qa_plus_list_left,owner_db);
 				}
 
 				String qa_html_right = "";
 				int right_offset = Constant.QA_NUM_PER_PAGE;
 				List<QAPlusModel> qa_plus_list_right= new ArrayList<QAPlusModel>();
-				qa_plus_list_right = select_qa_plus(owner_db, limit, right_offset);
+				qa_plus_list_right = mainPageService.select_qa_plus(owner_db, limit, right_offset);
 				if (qa_plus_list_right.size() > 0)
 				{
-					qa_html_right = generate_qa_html(qa_plus_list_right,owner_db);
+					qa_html_right = mainPageService.generate_qa_html(qa_plus_list_right,owner_db);
 				}
 				model.addAttribute("qa_html", qa_html);
 				model.addAttribute("qa_html_right", qa_html_right);
@@ -405,19 +385,19 @@ public class MainPageController{
 			int limit = Constant.QA_NUM_PER_PAGE;
 			int offset_left = 0;
 			List<QAPlusModel> qa_list_left = new ArrayList<QAPlusModel>();
-			qa_list_left = select_qa_plus_by_tag(owner_db, husen_names, limit, offset_left);
+			qa_list_left = mainPageService.select_qa_plus_by_tag(owner_db, husen_names, limit, offset_left);
 			String qa_html = "";
 			if (qa_list_left.size() > 0)
 			{
-				qa_html = generate_qa_html(qa_list_left,owner_db);	
+				qa_html = mainPageService.generate_qa_html(qa_list_left,owner_db);	
 			}
 			int offset_right = limit;
 			List<QAPlusModel> qa_list_right = new ArrayList<QAPlusModel>();
-			qa_list_right = select_qa_plus_by_tag(owner_db, husen_names, limit, offset_right);
+			qa_list_right = mainPageService.select_qa_plus_by_tag(owner_db, husen_names, limit, offset_right);
 			String qa_html_right = "";
 			if (qa_list_right.size() > 0)
 			{
-				qa_html_right = generate_qa_html(qa_list_right,owner_db);	
+				qa_html_right = mainPageService.generate_qa_html(qa_list_right,owner_db);	
 			}
 											
 			// 付箋
@@ -506,19 +486,19 @@ public class MainPageController{
 			int limit = Constant.QA_NUM_PER_PAGE;
 			int offset_left = 0;
 			List<QAPlusModel> qa_list_left = new ArrayList<QAPlusModel>();
-			qa_list_left = select_qa_plus_by_tag(owner_db, husen_names, limit, offset_left);
+			qa_list_left = mainPageService.select_qa_plus_by_tag(owner_db, husen_names, limit, offset_left);
 			String qa_html = "";
 			if (qa_list_left.size() > 0)
 			{
-				qa_html = generate_qa_html(qa_list_left,owner_db);	
+				qa_html = mainPageService.generate_qa_html(qa_list_left,owner_db);	
 			}
 			int offset_right = limit;
 			List<QAPlusModel> qa_list_right = new ArrayList<QAPlusModel>();
-			qa_list_right = select_qa_plus_by_tag(owner_db, husen_names, limit, offset_right);
+			qa_list_right = mainPageService.select_qa_plus_by_tag(owner_db, husen_names, limit, offset_right);
 			String qa_html_right = "";
 			if (qa_list_right.size() > 0)
 			{
-				qa_html_right = generate_qa_html(qa_list_right,owner_db);	
+				qa_html_right = mainPageService.generate_qa_html(qa_list_right,owner_db);	
 			}
 											
 			// 付箋
@@ -598,19 +578,19 @@ public class MainPageController{
 			int limit = Constant.QA_NUM_PER_PAGE;
 			int offset_left = 0;
 			List<QAPlusModel> qa_list_left = new ArrayList<QAPlusModel>();
-			qa_list_left = select_qa_plus_by_tag(owner_db, husen_names, limit, offset_left);
+			qa_list_left = mainPageService.select_qa_plus_by_tag(owner_db, husen_names, limit, offset_left);
 			String qa_html = "";
 			if (qa_list_left.size() > 0)
 			{
-				qa_html = generate_qa_html(qa_list_left,owner_db);	
+				qa_html = mainPageService.generate_qa_html(qa_list_left,owner_db);	
 			}
 			int offset_right = limit;
 			List<QAPlusModel> qa_list_right = new ArrayList<QAPlusModel>();
-			qa_list_right = select_qa_plus_by_tag(owner_db, husen_names, limit, offset_right);
+			qa_list_right = mainPageService.select_qa_plus_by_tag(owner_db, husen_names, limit, offset_right);
 			String qa_html_right = "";
 			if (qa_list_right.size() > 0)
 			{
-				qa_html_right = generate_qa_html(qa_list_right,owner_db);	
+				qa_html_right = mainPageService.generate_qa_html(qa_list_right,owner_db);	
 			}
 		
 			// ページング総数
@@ -684,19 +664,19 @@ public class MainPageController{
 			int limit = Constant.QA_NUM_PER_PAGE;
 			int offset_left = 0;
 			List<QAPlusModel> qa_list_left = new ArrayList<QAPlusModel>();
-			qa_list_left = select_qa_plus_by_tag(owner_db, husen_names, limit, offset_left);
+			qa_list_left = mainPageService.select_qa_plus_by_tag(owner_db, husen_names, limit, offset_left);
 			String qa_html = "";
 			if (qa_list_left.size() > 0)
 			{
-				qa_html = generate_qa_html(qa_list_left,owner_db);	
+				qa_html = mainPageService.generate_qa_html(qa_list_left,owner_db);	
 			}
 			int offset_right = limit;
 			List<QAPlusModel> qa_list_right = new ArrayList<QAPlusModel>();
-			qa_list_right = select_qa_plus_by_tag(owner_db, husen_names, limit, offset_right);
+			qa_list_right = mainPageService.select_qa_plus_by_tag(owner_db, husen_names, limit, offset_right);
 			String qa_html_right = "";
 			if (qa_list_right.size() > 0)
 			{
-				qa_html_right = generate_qa_html(qa_list_right,owner_db);	
+				qa_html_right = mainPageService.generate_qa_html(qa_list_right,owner_db);	
 			}
 			
 			model.addAttribute("qa_html", qa_html);
@@ -904,20 +884,20 @@ public class MainPageController{
 			int limit = Constant.QA_NUM_PER_PAGE;
 			int left_offset = 0;
 			List<QAPlusModel> qa_plus_list_left = new ArrayList<QAPlusModel>();
-			qa_plus_list_left = select_qa_plus(owner_db, limit, left_offset);
+			qa_plus_list_left = mainPageService.select_qa_plus(owner_db, limit, left_offset);
 			String qa_html = "";
 			if (qa_plus_list_left.size() > 0)
 			{
-				qa_html = generate_qa_html(qa_plus_list_left,owner_db);
+				qa_html = mainPageService.generate_qa_html(qa_plus_list_left,owner_db);
 			}
 
 			String qa_html_right = "";
 			int right_offset = Constant.QA_NUM_PER_PAGE;
 			List<QAPlusModel> qa_plus_list_right= new ArrayList<QAPlusModel>();
-			qa_plus_list_right = select_qa_plus(owner_db, limit, right_offset);
+			qa_plus_list_right = mainPageService.select_qa_plus(owner_db, limit, right_offset);
 			if (qa_plus_list_right.size() > 0)
 			{
-				qa_html_right = generate_qa_html(qa_plus_list_right,owner_db);
+				qa_html_right = mainPageService.generate_qa_html(qa_plus_list_right,owner_db);
 			}
 			model.addAttribute("qa_html", qa_html);
 			model.addAttribute("qa_html_right", qa_html_right);
@@ -994,20 +974,20 @@ public class MainPageController{
 				int limit = Constant.QA_NUM_PER_PAGE;
 				int left_offset = 0;
 				List<QAPlusModel> qa_plus_list_left = new ArrayList<QAPlusModel>();
-				qa_plus_list_left = select_qa_plus(owner_db, limit, left_offset);
+				qa_plus_list_left = mainPageService.select_qa_plus(owner_db, limit, left_offset);
 				String qa_html = "";
 				if (qa_plus_list_left.size() > 0)
 				{
-					qa_html = generate_qa_html(qa_plus_list_left,owner_db);
+					qa_html = mainPageService.generate_qa_html(qa_plus_list_left,owner_db);
 				}
 				
 				String qa_html_right = "";
 				int right_offset = Constant.QA_NUM_PER_PAGE;
 				List<QAPlusModel> qa_plus_list_right= new ArrayList<QAPlusModel>();
-				qa_plus_list_right = select_qa_plus(owner_db, limit, right_offset);
+				qa_plus_list_right = mainPageService.select_qa_plus(owner_db, limit, right_offset);
 				if (qa_plus_list_right.size() > 0)
 				{
-					qa_html_right = generate_qa_html(qa_plus_list_right,owner_db);
+					qa_html_right = mainPageService.generate_qa_html(qa_plus_list_right,owner_db);
 				}
 				
 				SeitouDao seitou_dao = new SeitouDao();
@@ -1052,20 +1032,20 @@ public class MainPageController{
 		int limit = Constant.QA_NUM_PER_PAGE;
 		int left_offset = 0;
 		List<QAPlusModel> qa_plus_list_left = new ArrayList<QAPlusModel>();
-		qa_plus_list_left = select_qa_plus(owner_db, limit, left_offset);
+		qa_plus_list_left = mainPageService.select_qa_plus(owner_db, limit, left_offset);
 		String qa_html = "";
 		if (qa_plus_list_left.size() > 0)
 		{
-			qa_html = generate_qa_html(qa_plus_list_left,owner_db);
+			qa_html = mainPageService.generate_qa_html(qa_plus_list_left,owner_db);
 		}
 		
 		String qa_html_right = "";
 		int right_offset = Constant.QA_NUM_PER_PAGE;
 		List<QAPlusModel> qa_plus_list_right= new ArrayList<QAPlusModel>();
-		qa_plus_list_right = select_qa_plus(owner_db, limit, right_offset);
+		qa_plus_list_right = mainPageService.select_qa_plus(owner_db, limit, right_offset);
 		if (qa_plus_list_right.size() > 0)
 		{
-			qa_html_right = generate_qa_html(qa_plus_list_right,owner_db);
+			qa_html_right = mainPageService.generate_qa_html(qa_plus_list_right,owner_db);
 		}
 		
 		SeitouDao seitou_dao = new SeitouDao();
@@ -1535,17 +1515,17 @@ public class MainPageController{
 
 		String left_page_html = "";
 		List<QAPlusModel> qa_plus_list_left = new ArrayList<QAPlusModel>();
-		qa_plus_list_left = select_qa_plus_by_tag(owner_db, husen_str, limit, offset_left);
+		qa_plus_list_left = mainPageService.select_qa_plus_by_tag(owner_db, husen_str, limit, offset_left);
 		if (qa_plus_list_left.size() > 0)
 		{
-			left_page_html = generate_qa_html(qa_plus_list_left,owner_db);	
+			left_page_html = mainPageService.generate_qa_html(qa_plus_list_left,owner_db);	
 		}
 		String right_page_html = "";
 		List<QAPlusModel> qa_plus_list_right = new ArrayList<QAPlusModel>();
-		qa_plus_list_right = select_qa_plus_by_tag(owner_db,husen_str,limit,offset_right);
+		qa_plus_list_right = mainPageService.select_qa_plus_by_tag(owner_db,husen_str,limit,offset_right);
 		if (qa_plus_list_right.size() > 0)
 		{
-			right_page_html = generate_qa_html(qa_plus_list_right,owner_db);	
+			right_page_html = mainPageService.generate_qa_html(qa_plus_list_right,owner_db);	
 		}
 
 		// ページング総数
@@ -1609,177 +1589,6 @@ public class MainPageController{
 				{qa_html,husen_html});
 		return json;		
 	}		
-	
-	
-	/**
-	 * 
-	 * @param owner_db
-	 * @return
-	 */
-	public List<QAPlusModel> select_qa_plus(String owner_db, int limit, int offset) {
-		QAPlusDao qa_plus_dao = new QAPlusDao();
-		List<QAPlusModel> qa_plus_list = new ArrayList<QAPlusModel>();
-		qa_plus_list = qa_plus_dao.select_qa_plus_map(owner_db, qa_plus_list, limit, offset);
-		return qa_plus_list;
-	}
-
-	/**
-	 * 
-	 * @param owner_db
-	 * @param husen_name
-	 * @return
-	 */
-	public List<QAPlusModel> select_qa_plus_by_tag(String owner_db, String husen_names, int limit, int offset) {
-		QAPlusDao qa_plus_dao = new QAPlusDao();
-		List<QAPlusModel> qa_plus_list = new ArrayList<QAPlusModel>();
-		qa_plus_list = qa_plus_dao.select_qa_plus_list(owner_db, qa_plus_list, husen_names, limit , offset);
-		return qa_plus_list;
-	}	
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public String generate_qa_html(List<QAPlusModel> qa_plus_list, String owner_db)
-	{
-		StopWatch stopwatch = new StopWatch();
-		stopwatch.start();
-
-		StringBuffer qa_html = new StringBuffer();
-		
-		Map<String, Integer> qa_id_with_date = new HashMap<String, Integer>();
-		qa_id_with_date = get_qa_count_per_date(qa_plus_list);
-		System.out.println("サイズ："+qa_id_with_date.size());
-		
-		for (QAPlusModel qa_plus : qa_plus_list)
-		{
-			List<MondaiModel> mondai_list = new ArrayList<MondaiModel>();
-			mondai_list = qa_plus.getMondai_list();
-						
-			/**
-			 * 問題HTML
-			 */
-			List<String> q_html = new ArrayList<String>();
-			for (int i = 0; i < mondai_list.size(); i++)
-			{
-				String mondai = mondai_list.get(i).getQ_parts_text();
-				String q_lang = mondai_list.get(i).getLanguage();
-				String html = "<span id='" + mondai_list.get(i).getQ_id() + "' class='q' data-language='" + q_lang + "'>" + mondai + "</span>";			
-				q_html.add(html);
-			}
-			
-			/**
-			 * 正答HTML
-			 */
-			List<SeitouModel> seitou_list = new ArrayList<SeitouModel>();
-			seitou_list = qa_plus.getSeitou_list();
-			
-			List<String> a_html = new ArrayList<String>();
-			for (int i = 0; i < seitou_list.size(); i++)
-			{
-				String seitou = seitou_list.get(i).getSeitou();
-//				KaitouDao kaitou_dao = new KaitouDao();
-//				int opacity = kaitou_dao.is_seikai(owner_db, seitou_list.get(i).getS_id());
-				int opacity = seitou_list.get(i).getSeikai_flg();
-				String mouseout = "";
-				String checked = "";
-				String a_lang = seitou_list.get(i).getLanguage();
-				if (opacity == 0)
-				{
-					mouseout = "onmouseout='this.style.opacity=0'";
-				}
-				else
-				{
-					checked = "<img src='../img/check.png' class='check' />";					
-				}
-				String html = "<span id='" + seitou_list.get(i).getS_id() + "' class='a' style='opacity:" + opacity + "' onmouseover='this.style.opacity=1' " + mouseout + " onclick='change_seitou_color(this)' data-language='" + a_lang + "'>" + checked + seitou + "</span>";				
-				a_html.add(html);
-			}			
-			
-			if (seitou_list.size() > 0 && mondai_list.size() > 0)
-			{
-				String yomudake = "";
-				for (SeitouModel seitou : seitou_list)
-				{
-					if (seitou.getSeitou().equals("読んだ"))
-					{
-						yomudake = " data-yomudake='true'";
-					}
-				}
-				if (qa_id_with_date.containsKey(qa_plus.getQa().getQa_id()))
-				{
-					Util util = new Util();
-					String sakuseibi_yyyyMMdd = util.getDay(qa_plus.getQa().getCreate_timestamp());
-					String sakuseibi_MMdd = sakuseibi_yyyyMMdd.split("/")[1] + "/" + sakuseibi_yyyyMMdd.split("/")[2];
-					int qa_cnt_per_date = qa_id_with_date.get(qa_plus.getQa().getQa_id());
-					qa_html.append("<span id='" + sakuseibi_yyyyMMdd + "' class='date'>" + sakuseibi_MMdd + "（" + qa_cnt_per_date + "問）" + "</span>");					
-				}
-				qa_html.append("<span id='" + qa_plus.getQa().getQa_id() + "' class='qa' onmouseover='qa_mouseover(this)'" + yomudake + ">");
-			}
-
-			for (int i = 0; i < (mondai_list.size() + seitou_list.size()); i++)
-			{
-				if (qa_plus.getQa().getIs_start_with_q() == 1)
-				{
-					if (i < mondai_list.size())
-					{
-						qa_html.append(q_html.get(i));
-					}
-					if (i < seitou_list.size())
-					{
-						qa_html.append(a_html.get(i));
-					}
-				}
-				else
-				{
-					if (i < seitou_list.size())
-					{
-						qa_html.append(a_html.get(i));
-					}
-					if (i < mondai_list.size())
-					{
-						qa_html.append(q_html.get(i));
-					}
-				}
-			}
-			if (seitou_list.size() > 0 && mondai_list.size() > 0)
-			{
-				qa_html.append("</span>");
-			}
-		}
-	    stopwatch.stop(new Object(){}.getClass().getEnclosingMethod().getName());
-		
-		return qa_html.toString();
-	}
-
-	public Map<String, Integer> get_qa_count_per_date(List<QAPlusModel> qa_plus_list) {
-		List<QAModel> qa_list = new ArrayList<QAModel>();
-		for (QAPlusModel qa_plus : qa_plus_list)
-		{
-			QAModel qa = new QAModel();
-			qa.setQa_id(qa_plus.getQa().getQa_id());
-			Util util = new Util();
-			String sakuseibi = util.getDay(qa_plus.getQa().getCreate_timestamp());
-			qa.setCreate_timestamp(sakuseibi);
-			//System.out.println("作成日"+sakuseibi);
-			qa_list.add(qa);
-		}
-		
-		Map<String, List<QAModel>> qa_id_per_date = 
-				qa_list
-				.stream()
-				.filter(p -> p.getCreate_timestamp() != null)
-				.collect(Collectors.groupingBy(QAModel::getCreate_timestamp));
-		
-		Map<String, Integer> qa_count_per_date = new HashMap<String, Integer>();
-		for (Map.Entry<String, List<QAModel>> entry : qa_id_per_date.entrySet())
-		{
-			qa_count_per_date.put(entry.getValue().get(0).getQa_id(), 
-							entry.getValue().size());
-		}
-				
-		return qa_count_per_date;
-	}
 	
 	/**
 	 * 問題登録（1:1,1:n,n:1,n:n全対応）

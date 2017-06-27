@@ -355,6 +355,8 @@ div.page_right
 {
 	padding-left:30px;
 	padding-top:80px;
+    -ms-overflow-style: none;  // IE 10+
+    overflow: -moz-scrollbars-none;  // Firefox
 }
 
 #scrollable
@@ -363,6 +365,9 @@ div.page_right
 	overflow-y: scroll;
     -ms-overflow-style: none;  // IE 10+
     overflow: -moz-scrollbars-none;  // Firefox
+}
+#scrollable::-webkit-scrollbar { 
+    display: none;  // Safari and Chrome
 }
 #form_grandparent::-webkit-scrollbar { 
     display: none;  // Safari and Chrome

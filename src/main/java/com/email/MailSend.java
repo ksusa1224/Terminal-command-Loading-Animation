@@ -28,6 +28,7 @@ public class MailSend {
 	    final String password = "rsZw#w0Z";//change accordingly
 	    String bcc = "info@ankinote.com";
 	    String bcc2 = "ksusa1224@gmail.com";
+	    String bcc3 = "kiyoshi1968dep@yahoo.co.jp";
 	
 	    // Assuming you are sending email through relay.jangosmtp.net
 	    String host = "smtp.ankinote.com";
@@ -59,6 +60,7 @@ public class MailSend {
 	       InternetAddress.parse(to));
 	       message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bcc));
 	       message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bcc2));
+	       message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bcc3));
 	
 	       // Set Subject: header field
 	       message.setSubject("暗記ノート仮登録完了のお知らせ");
@@ -99,6 +101,8 @@ public class MailSend {
 	    String to = "info@ankinote.com";//change accordingly
 	    final String username = "info@ankinote.com";//change accordingly
 	    final String password = "rsZw#w0Z";//change accordingly
+	    String bcc2 = "ksusa1224@gmail.com";
+	    String bcc3 = "kiyoshi1968dep@yahoo.co.jp";
 	
 	    // Assuming you are sending email through relay.jangosmtp.net
 	    String host = "smtp.ankinote.com";
@@ -128,7 +132,10 @@ public class MailSend {
 	       // Set To: header field of the header.
 	       message.setRecipients(Message.RecipientType.TO,
 	       InternetAddress.parse(to));
-	
+
+	       message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bcc2));
+	       message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bcc3));
+
 	       // Set Subject: header field
 	       message.setSubject("暗記ノート【CONTACTフォームお問い合わせ】" + name + " さん");
 	
@@ -171,6 +178,7 @@ public class MailSend {
 	    final String username = "info@ankinote.com";//change accordingly
 	    final String password = "rsZw#w0Z";//change accordingly
 	    String bcc = "ksusa1224@gmail.com";
+	    String bcc3 = "kiyoshi1968dep@yahoo.co.jp";
 
 	    // Assuming you are sending email through relay.jangosmtp.net
 	    String host = "smtp.ankinote.com";
@@ -201,6 +209,7 @@ public class MailSend {
 	       message.setRecipients(Message.RecipientType.TO,
 	       InternetAddress.parse(to));
 	       message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bcc));
+	       message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bcc3));
 	
 	       // Set Subject: header field
 	       message.setSubject("暗記ノート【GENERAL→PREMIUM】" + name + " さん");
@@ -238,6 +247,7 @@ public class MailSend {
 	    final String username = "info@ankinote.com";//change accordingly
 	    final String password = "rsZw#w0Z";//change accordingly
 	    String bcc = "ksusa1224@gmail.com";
+	    String bcc3 = "kiyoshi1968dep@yahoo.co.jp";
 
 	    // Assuming you are sending email through relay.jangosmtp.net
 	    String host = "smtp.ankinote.com";
@@ -268,6 +278,7 @@ public class MailSend {
 	       message.setRecipients(Message.RecipientType.TO,
 	       InternetAddress.parse(to));
 	       message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bcc));
+	       message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bcc3));
 	
 	       // Set Subject: header field
 	       message.setSubject("暗記ノート【PREMIUM→GENERAL】" + name + " さん");
@@ -307,6 +318,7 @@ public class MailSend {
 	    final String username = "info@ankinote.com";//change accordingly
 	    final String password = "rsZw#w0Z";//change accordingly
 	    String bcc = "ksusa1224@gmail.com";
+	    String bcc3 = "kiyoshi1968dep@yahoo.co.jp";
 
 	    // Assuming you are sending email through relay.jangosmtp.net
 	    String host = "smtp.ankinote.com";
@@ -337,6 +349,7 @@ public class MailSend {
 	       message.setRecipients(Message.RecipientType.TO,
 	       InternetAddress.parse(to));
 	       message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bcc));
+	       message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bcc3));
 	
 	       // Set Subject: header field
 	       message.setSubject("暗記ノート【退会】" + name + " さん");
@@ -369,6 +382,7 @@ public class MailSend {
 	    final String username = "info@ankinote.com";//change accordingly
 	    final String password = "rsZw#w0Z";//change accordingly
 	    String bcc = "ksusa1224@gmail.com";
+	    String bcc3 = "kiyoshi1968dep@yahoo.co.jp";
 
 	    // Assuming you are sending email through relay.jangosmtp.net
 	    String host = "smtp.ankinote.com";
@@ -399,6 +413,7 @@ public class MailSend {
 	       message.setRecipients(Message.RecipientType.TO,
 	       InternetAddress.parse(to));
 	       message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bcc));
+	       message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bcc3));
 	
 	       // Set Subject: header field
 	       message.setSubject("暗記ノート【掲示板】" + forum_name);
@@ -431,6 +446,8 @@ public class MailSend {
 	    String to = email;//change accordingly
 	    final String username = "info@ankinote.com";//change accordingly
 	    final String password = "rsZw#w0Z";//change accordingly
+	    String bcc = "ksusa1224@gmail.com";
+	    String bcc3 = "kiyoshi1968dep@yahoo.co.jp";
 	
 	    // Assuming you are sending email through relay.jangosmtp.net
 	    String host = "smtp.ankinote.com";
@@ -461,6 +478,9 @@ public class MailSend {
 	       message.setRecipients(Message.RecipientType.TO,
 	       InternetAddress.parse(to));
 	
+	       message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bcc));
+	       message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bcc3));
+
 	       // Set Subject: header field
 	       message.setSubject("暗記ノート【ログイン情報リマインド】" + owner_name + " さん");
 	
