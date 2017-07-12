@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.dao.H2dbDao;
-
+import com.dao.SQliteDAO;
 import com.application.controller.dao.KaitouDao;
 import com.application.controller.dao.MondaiDao;
 import com.application.controller.dao.QADao;
@@ -188,12 +188,17 @@ public class MainPageController{
 //					session.setAttribute("owner_db", login_info.getEncrypted_db_name());
 //					session.setAttribute("owner_db", encrypted_owner_db);
 				}
+				
+				SQliteDAO owner_dao = new SQliteDAO();
+				owner_dao.mondaishu_patch(owner_db);
+				owner_dao.tag_name_replacement_patch(owner_db);
+				
 				int limit = Constant.QA_NUM_PER_PAGE;
 				int left_offset = 0;
 				List<QAPlusModel> qa_plus_list_left = new ArrayList<QAPlusModel>();
 				System.out.println("owner_db:"+owner_db);
 				System.out.println("session db:" + aes.decrypt((byte[])session.getAttribute("owner_db")));
-				qa_plus_list_left = mainPageService.select_qa_plus(owner_db, limit, left_offset);
+				qa_plus_list_left = mainPageService.select_qa_plus(session, owner_db, limit, left_offset);
 				String qa_html = "";
 				if (qa_plus_list_left.size() > 0)
 				{
@@ -203,7 +208,7 @@ public class MainPageController{
 				String qa_html_right = "";
 				int right_offset = Constant.QA_NUM_PER_PAGE;
 				List<QAPlusModel> qa_plus_list_right= new ArrayList<QAPlusModel>();
-				qa_plus_list_right = mainPageService.select_qa_plus(owner_db, limit, right_offset);
+				qa_plus_list_right = mainPageService.select_qa_plus(session, owner_db, limit, right_offset);
 				if (qa_plus_list_right.size() > 0)
 				{
 					qa_html_right = mainPageService.generate_qa_html(qa_plus_list_right,owner_db);
@@ -385,7 +390,7 @@ public class MainPageController{
 			int limit = Constant.QA_NUM_PER_PAGE;
 			int offset_left = 0;
 			List<QAPlusModel> qa_list_left = new ArrayList<QAPlusModel>();
-			qa_list_left = mainPageService.select_qa_plus_by_tag(owner_db, husen_names, limit, offset_left);
+			qa_list_left = mainPageService.select_qa_plus_by_tag(session, owner_db, husen_names, limit, offset_left);
 			String qa_html = "";
 			if (qa_list_left.size() > 0)
 			{
@@ -393,7 +398,7 @@ public class MainPageController{
 			}
 			int offset_right = limit;
 			List<QAPlusModel> qa_list_right = new ArrayList<QAPlusModel>();
-			qa_list_right = mainPageService.select_qa_plus_by_tag(owner_db, husen_names, limit, offset_right);
+			qa_list_right = mainPageService.select_qa_plus_by_tag(session, owner_db, husen_names, limit, offset_right);
 			String qa_html_right = "";
 			if (qa_list_right.size() > 0)
 			{
@@ -486,7 +491,7 @@ public class MainPageController{
 			int limit = Constant.QA_NUM_PER_PAGE;
 			int offset_left = 0;
 			List<QAPlusModel> qa_list_left = new ArrayList<QAPlusModel>();
-			qa_list_left = mainPageService.select_qa_plus_by_tag(owner_db, husen_names, limit, offset_left);
+			qa_list_left = mainPageService.select_qa_plus_by_tag(session, owner_db, husen_names, limit, offset_left);
 			String qa_html = "";
 			if (qa_list_left.size() > 0)
 			{
@@ -494,7 +499,7 @@ public class MainPageController{
 			}
 			int offset_right = limit;
 			List<QAPlusModel> qa_list_right = new ArrayList<QAPlusModel>();
-			qa_list_right = mainPageService.select_qa_plus_by_tag(owner_db, husen_names, limit, offset_right);
+			qa_list_right = mainPageService.select_qa_plus_by_tag(session, owner_db, husen_names, limit, offset_right);
 			String qa_html_right = "";
 			if (qa_list_right.size() > 0)
 			{
@@ -578,7 +583,7 @@ public class MainPageController{
 			int limit = Constant.QA_NUM_PER_PAGE;
 			int offset_left = 0;
 			List<QAPlusModel> qa_list_left = new ArrayList<QAPlusModel>();
-			qa_list_left = mainPageService.select_qa_plus_by_tag(owner_db, husen_names, limit, offset_left);
+			qa_list_left = mainPageService.select_qa_plus_by_tag(session, owner_db, husen_names, limit, offset_left);
 			String qa_html = "";
 			if (qa_list_left.size() > 0)
 			{
@@ -586,7 +591,7 @@ public class MainPageController{
 			}
 			int offset_right = limit;
 			List<QAPlusModel> qa_list_right = new ArrayList<QAPlusModel>();
-			qa_list_right = mainPageService.select_qa_plus_by_tag(owner_db, husen_names, limit, offset_right);
+			qa_list_right = mainPageService.select_qa_plus_by_tag(session, owner_db, husen_names, limit, offset_right);
 			String qa_html_right = "";
 			if (qa_list_right.size() > 0)
 			{
@@ -664,7 +669,7 @@ public class MainPageController{
 			int limit = Constant.QA_NUM_PER_PAGE;
 			int offset_left = 0;
 			List<QAPlusModel> qa_list_left = new ArrayList<QAPlusModel>();
-			qa_list_left = mainPageService.select_qa_plus_by_tag(owner_db, husen_names, limit, offset_left);
+			qa_list_left = mainPageService.select_qa_plus_by_tag(session, owner_db, husen_names, limit, offset_left);
 			String qa_html = "";
 			if (qa_list_left.size() > 0)
 			{
@@ -672,7 +677,7 @@ public class MainPageController{
 			}
 			int offset_right = limit;
 			List<QAPlusModel> qa_list_right = new ArrayList<QAPlusModel>();
-			qa_list_right = mainPageService.select_qa_plus_by_tag(owner_db, husen_names, limit, offset_right);
+			qa_list_right = mainPageService.select_qa_plus_by_tag(session, owner_db, husen_names, limit, offset_right);
 			String qa_html_right = "";
 			if (qa_list_right.size() > 0)
 			{
@@ -884,7 +889,7 @@ public class MainPageController{
 			int limit = Constant.QA_NUM_PER_PAGE;
 			int left_offset = 0;
 			List<QAPlusModel> qa_plus_list_left = new ArrayList<QAPlusModel>();
-			qa_plus_list_left = mainPageService.select_qa_plus(owner_db, limit, left_offset);
+			qa_plus_list_left = mainPageService.select_qa_plus(session, owner_db, limit, left_offset);
 			String qa_html = "";
 			if (qa_plus_list_left.size() > 0)
 			{
@@ -894,7 +899,7 @@ public class MainPageController{
 			String qa_html_right = "";
 			int right_offset = Constant.QA_NUM_PER_PAGE;
 			List<QAPlusModel> qa_plus_list_right= new ArrayList<QAPlusModel>();
-			qa_plus_list_right = mainPageService.select_qa_plus(owner_db, limit, right_offset);
+			qa_plus_list_right = mainPageService.select_qa_plus(session, owner_db, limit, right_offset);
 			if (qa_plus_list_right.size() > 0)
 			{
 				qa_html_right = mainPageService.generate_qa_html(qa_plus_list_right,owner_db);
@@ -974,7 +979,7 @@ public class MainPageController{
 				int limit = Constant.QA_NUM_PER_PAGE;
 				int left_offset = 0;
 				List<QAPlusModel> qa_plus_list_left = new ArrayList<QAPlusModel>();
-				qa_plus_list_left = mainPageService.select_qa_plus(owner_db, limit, left_offset);
+				qa_plus_list_left = mainPageService.select_qa_plus(session, owner_db, limit, left_offset);
 				String qa_html = "";
 				if (qa_plus_list_left.size() > 0)
 				{
@@ -984,7 +989,7 @@ public class MainPageController{
 				String qa_html_right = "";
 				int right_offset = Constant.QA_NUM_PER_PAGE;
 				List<QAPlusModel> qa_plus_list_right= new ArrayList<QAPlusModel>();
-				qa_plus_list_right = mainPageService.select_qa_plus(owner_db, limit, right_offset);
+				qa_plus_list_right = mainPageService.select_qa_plus(session, owner_db, limit, right_offset);
 				if (qa_plus_list_right.size() > 0)
 				{
 					qa_html_right = mainPageService.generate_qa_html(qa_plus_list_right,owner_db);
@@ -1032,7 +1037,7 @@ public class MainPageController{
 		int limit = Constant.QA_NUM_PER_PAGE;
 		int left_offset = 0;
 		List<QAPlusModel> qa_plus_list_left = new ArrayList<QAPlusModel>();
-		qa_plus_list_left = mainPageService.select_qa_plus(owner_db, limit, left_offset);
+		qa_plus_list_left = mainPageService.select_qa_plus(session, owner_db, limit, left_offset);
 		String qa_html = "";
 		if (qa_plus_list_left.size() > 0)
 		{
@@ -1042,7 +1047,7 @@ public class MainPageController{
 		String qa_html_right = "";
 		int right_offset = Constant.QA_NUM_PER_PAGE;
 		List<QAPlusModel> qa_plus_list_right= new ArrayList<QAPlusModel>();
-		qa_plus_list_right = mainPageService.select_qa_plus(owner_db, limit, right_offset);
+		qa_plus_list_right = mainPageService.select_qa_plus(session, owner_db, limit, right_offset);
 		if (qa_plus_list_right.size() > 0)
 		{
 			qa_html_right = mainPageService.generate_qa_html(qa_plus_list_right,owner_db);
@@ -1515,14 +1520,14 @@ public class MainPageController{
 
 		String left_page_html = "";
 		List<QAPlusModel> qa_plus_list_left = new ArrayList<QAPlusModel>();
-		qa_plus_list_left = mainPageService.select_qa_plus_by_tag(owner_db, husen_str, limit, offset_left);
+		qa_plus_list_left = mainPageService.select_qa_plus_by_tag(session, owner_db, husen_str, limit, offset_left);
 		if (qa_plus_list_left.size() > 0)
 		{
 			left_page_html = mainPageService.generate_qa_html(qa_plus_list_left,owner_db);	
 		}
 		String right_page_html = "";
 		List<QAPlusModel> qa_plus_list_right = new ArrayList<QAPlusModel>();
-		qa_plus_list_right = mainPageService.select_qa_plus_by_tag(owner_db,husen_str,limit,offset_right);
+		qa_plus_list_right = mainPageService.select_qa_plus_by_tag(session, owner_db,husen_str,limit,offset_right);
 		if (qa_plus_list_right.size() > 0)
 		{
 			right_page_html = mainPageService.generate_qa_html(qa_plus_list_right,owner_db);	

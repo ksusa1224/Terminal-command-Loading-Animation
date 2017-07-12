@@ -2560,6 +2560,11 @@ function to_premium(owner_id) {
 
 }
 
+function create_workbook()
+{
+  PopupCenter('./create_workbook.html', '暗記ノート 問題集作成', 650, 450);
+}
+
 function fullscreen()
 {
 	var params = [

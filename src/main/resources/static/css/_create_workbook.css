@@ -1,0 +1,22 @@
+#container
+{
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+body
+{
+    font-family:"‚l‚r ‚o–¾’©", "MS PMincho", "ƒqƒ‰ƒMƒm–¾’© Pro W3", "Hiragino Mincho Pro", serif;  
+}
+
+textarea
+{
+  font-size: 18px !important;
+}
+
+#message
+{
+  text-align:center;
+  margin-top:20px;
+  margin-bottom: 20px;
+}

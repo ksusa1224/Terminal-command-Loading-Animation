@@ -40,11 +40,11 @@ public class NotePageService {
 		List<QAPlusModel> qa_plus_list = new ArrayList<QAPlusModel>();
 		if (StringUtils.isEmpty(husen_names))
 		{
-			qa_plus_list = mainPageService.select_qa_plus(owner_db, null, null);		
+			qa_plus_list = mainPageService.select_qa_plus(null, owner_db, null, null);		
 		}
 		else
 		{
-			qa_plus_list = mainPageService.select_qa_plus_by_tag(owner_db, husen_names, null, null);
+			qa_plus_list = mainPageService.select_qa_plus_by_tag(null, owner_db, husen_names, null, null);
 		}
 		return mainPageService.generate_qa_html(qa_plus_list, owner_db);
 	}

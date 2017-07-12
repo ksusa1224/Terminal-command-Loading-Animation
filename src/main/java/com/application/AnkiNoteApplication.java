@@ -38,6 +38,7 @@ public class AnkiNoteApplication extends SpringBootServletInitializer {
 			
 			H2dbDao h2dao = new H2dbDao();
 			h2dao.create_paypal_table();
+			h2dao.mondaishu_and_group_patch();
 			
 		}
 		catch(Exception ex)

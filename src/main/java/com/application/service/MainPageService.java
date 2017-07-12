@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Service;
 
 import com.application.controller.dao.QAPlusDao;
@@ -140,10 +142,21 @@ public class MainPageService {
 	 * @param owner_db
 	 * @return
 	 */
-	public List<QAPlusModel> select_qa_plus(String owner_db, Integer limit, Integer offset) {
+	public List<QAPlusModel> select_qa_plus(HttpSession session, String owner_db, Integer limit, Integer offset) {
 		QAPlusDao qa_plus_dao = new QAPlusDao();
 		List<QAPlusModel> qa_plus_list = new ArrayList<QAPlusModel>();
 		qa_plus_list = qa_plus_dao.select_qa_plus_map(owner_db, qa_plus_list, limit, offset);
+		
+		if (session != null)
+		{
+			// 問題集作成画面に渡す用の処理
+			List<String> qa_id_list = new ArrayList<String>();
+			for (QAPlusModel qa : qa_plus_list)
+			{
+				qa_id_list.add(qa.getQa().getQa_id());
+			}		
+			session.setAttribute("qa_id_list", qa_id_list);
+		}
 		return qa_plus_list;
 	}		
 	
@@ -153,10 +166,20 @@ public class MainPageService {
 	 * @param husen_name
 	 * @return
 	 */
-	public List<QAPlusModel> select_qa_plus_by_tag(String owner_db, String husen_names, Integer limit, Integer offset) {
+	public List<QAPlusModel> select_qa_plus_by_tag(HttpSession session, String owner_db, String husen_names, Integer limit, Integer offset) {
 		QAPlusDao qa_plus_dao = new QAPlusDao();
 		List<QAPlusModel> qa_plus_list = new ArrayList<QAPlusModel>();
 		qa_plus_list = qa_plus_dao.select_qa_plus_list(owner_db, qa_plus_list, husen_names, limit , offset);
+		if (session != null)
+		{
+			// 問題集作成画面に渡す用の処理
+			List<String> qa_id_list = new ArrayList<String>();
+			for (QAPlusModel qa : qa_plus_list)
+			{
+				qa_id_list.add(qa.getQa().getQa_id());
+			}
+			session.setAttribute("qa_id_list", qa_id_list);
+		}
 		return qa_plus_list;
 	}	
 

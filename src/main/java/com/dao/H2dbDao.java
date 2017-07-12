@@ -1007,41 +1007,7 @@ public class H2dbDao
 //	      sql.appendLine(" s_id asc,");
 //	      sql.appendLine(" qa_id asc,");
 //	      sql.appendLine(" junban asc");
-//	      sql.appendLine(");");	      
-	      
-	      /**
-	       * 問題集テーブル
-	       */
-	      sql.appendLine("create table if not exists mondaishu (");
-	      // 行番号
-	      sql.appendLine("  row_no integer auto_increment,");
-	      // 問題集ID
-	      sql.appendLine("  qa_set_id text,");
-	      // 問題集の名前
-	      sql.appendLine("  qa_set_name text,");
-	      // 公開範囲
-	      sql.appendLine("  koukai_level integer,");
-	      // 無料販売フラグ
-	      sql.appendLine("  free_flg integer,");
-	      // 無料配布した数
-	      sql.appendLine("  free_sold_num integer,");
-	      // 有料販売フラグ
-	      sql.appendLine("  charge_flg integer,");
-	      // 有料で売った数
-	      sql.appendLine("  charge_sold_num integer,");
-	      // 削除フラグ
-	      sql.appendLine("	del_flg integer default 0,");
-	      // 作成者
-	      sql.appendLine("  create_owner text,");
-	      // 更新者
-	      sql.appendLine("  update_owner text,");
-	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
-	      sql.appendLine("	create_timestamp text,");
-	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
-	      sql.appendLine("	update_timestamp text");
-	      sql.appendLine(");");
-	      // INDEX
-//	      sql.appendLine("create unique index mondaishu_idx on mondaishu (qa_set_id asc);");
+//	      sql.appendLine(");");	      	      
 	      
 	      /**
 	       *  タグテーブル
@@ -1119,34 +1085,6 @@ public class H2dbDao
 //	      sql.appendLine(");");
 	      
 	      /**
-	       * 問題集とタグの関連テーブル　TODO 作成途中
-	       */
-	      sql.appendLine("create table if not exists mondaishu_tag_relation (");
-	      // 行番号
-	      sql.appendLine("  row_no integer auto_increment,");
-	      // 問題集ID
-	      sql.appendLine("  qa_set_id text not null,");
-	      // タグID
-	      sql.appendLine("	tag_id text,");
-	      // 公開範囲
-	      sql.appendLine("  koukai_level integer,");
-	      // 作成者
-	      sql.appendLine("  create_owner text,");
-	      // 更新者
-	      sql.appendLine("  update_owner text,");
-	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
-	      sql.appendLine("	create_timestamp text,");
-	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
-	      sql.appendLine("	update_timestamp text");
-//	      sql.appendLine("	unique (qa_set_id, tag_id, create_owner, update_owner)");
-	      sql.appendLine(");");
-//	      // INDEX
-//	      sql.appendLine("create unique index mondaishu_tag_relation_idx on mondaishu_tag_relation (");
-//	      sql.appendLine(" qa_set_id asc,");
-//	      sql.appendLine(" tag_id asc");
-//	      sql.appendLine(");");
-	      
-	      /**
 	       *  タグ同士の関連テーブル
 	       */
 	      sql.appendLine("create table if not exists tags_relation (");
@@ -1173,7 +1111,163 @@ public class H2dbDao
 //	      sql.appendLine(" parent_tag_id asc,");
 //	      sql.appendLine(" child_tag_id asc");
 //	      sql.appendLine(");");
-	      	      
+	      
+	      /**
+	       * 問題集テーブル
+	       */
+	      sql.appendLine("create table if not exists mondaishu (");
+	      // 行番号
+	      sql.appendLine("  row_no integer auto_increment,");
+	      // 問題集ID
+	      sql.appendLine("  qa_set_id text,");
+	      // 問題集の名前
+	      sql.appendLine("  qa_set_name text,");
+	      // 公開範囲
+	      sql.appendLine("  koukai_level integer,");
+	      // 無料販売フラグ
+	      sql.appendLine("  free_flg integer,");
+	      // 無料配布した数
+	      sql.appendLine("  free_sold_num integer,");
+	      // 有料販売フラグ
+	      sql.appendLine("  charge_flg integer,");
+	      // 有料で売った数
+	      sql.appendLine("  charge_sold_num integer,");
+	      // 削除フラグ
+	      sql.appendLine("	del_flg integer default 0,");
+	      // 作成者
+	      sql.appendLine("  create_owner text,");
+	      // 更新者
+	      sql.appendLine("  update_owner text,");
+	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	create_timestamp text,");
+	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	update_timestamp text");
+	      sql.appendLine(");");
+	      // INDEX
+//	      sql.appendLine("create unique index mondaishu_idx on mondaishu (qa_set_id asc);");
+
+	      /**
+	       * 問題集とQAの関連テーブル
+	       */
+	      sql.appendLine("create table if not exists mondaishu_qa_relation (");
+	      // 行番号
+	      sql.appendLine("  row_no integer auto_increment unique not null,");
+	      // 問題集ID
+	      sql.appendLine("  qa_set_id text not null,");
+	      // タグID
+	      sql.appendLine("	qa_id text,");
+	      // 順番
+	      sql.appendLine("  junban integer,");
+	      // 作成者
+	      sql.appendLine("  create_owner text,");
+	      // 更新者
+	      sql.appendLine("  update_owner text,");
+	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	create_timestamp text,");
+	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	update_timestamp text");
+//	      sql.appendLine("	unique (qa_set_id, qa_id, create_owner, update_owner)");
+	      sql.appendLine(");");
+//	      // INDEX
+//	      sql.appendLine("create unique index mondaishu_qa_relation_idx on mondaishu_qa_relation (");
+//	      sql.appendLine(" qa_set_id asc,");
+//	      sql.appendLine(" qa_id asc");
+//	      sql.appendLine(");");
+	      
+	      /**
+	       * 問題集とタグの関連テーブル
+	       */
+	      sql.appendLine("create table if not exists mondaishu_tag_relation (");
+	      // 行番号
+	      sql.appendLine("  row_no integer auto_increment,");
+	      // 問題集ID
+	      sql.appendLine("  qa_set_id text not null,");
+	      // タグID
+	      sql.appendLine("	tag_id text,");
+	      // 問題集用タグ名（デフォルトはタグテーブル内の名前のコピー）
+	      sql.appendLine("  tag_name_replacement text,");
+	      // 公開範囲
+	      sql.appendLine("  koukai_level integer,");
+	      // 作成者
+	      sql.appendLine("  create_owner text,");
+	      // 更新者
+	      sql.appendLine("  update_owner text,");
+	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	create_timestamp text,");
+	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	update_timestamp text");
+//	      sql.appendLine("	unique (qa_set_id, tag_id, create_owner, update_owner)");
+	      sql.appendLine(");");
+//	      // INDEX
+//	      sql.appendLine("create unique index mondaishu_tag_relation_idx on mondaishu_tag_relation (");
+//	      sql.appendLine(" qa_set_id asc,");
+//	      sql.appendLine(" tag_id asc");
+//	      sql.appendLine(");");
+
+	      /**
+	       * グループテーブル
+	       */
+	      sql.appendLine("create table if not exists groups (");
+	      // 行番号
+	      sql.appendLine("  row_no integer auto_increment,");
+	      // グループID
+	      sql.appendLine("  group_id text not null,");
+	      // グループ名
+	      sql.appendLine("	group_name text,");
+	      // 公開範囲
+	      sql.appendLine("  koukai_level integer,");
+	      // 作成者
+	      sql.appendLine("  create_owner text,");
+	      // 更新者
+	      sql.appendLine("  update_owner text,");
+	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	create_timestamp text,");
+	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	update_timestamp text");
+	      sql.appendLine(");");
+
+	      /**
+	       * グループ・オーナー関係テーブル
+	       */
+	      sql.appendLine("create table if not exists owner_group_relation (");
+	      // 行番号
+	      sql.appendLine("  row_no integer auto_increment,");
+	      // グループID
+	      sql.appendLine("  group_id text not null,");
+	      // オーナーID
+	      sql.appendLine("	owner_id text,");
+	      // 権限
+	      sql.appendLine("  kengen integer,");
+	      // 作成者
+	      sql.appendLine("  create_owner text,");
+	      // 更新者
+	      sql.appendLine("  update_owner text,");
+	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	create_timestamp text,");
+	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	update_timestamp text");
+	      sql.appendLine(");");
+
+	      /**
+	       * グループ・問題集関係テーブル
+	       */
+	      sql.appendLine("create table if not exists group_mondaishu_relation (");
+	      // 行番号
+	      sql.appendLine("  row_no integer auto_increment,");
+	      // グループID
+	      sql.appendLine("  group_id text not null,");
+	      // 問題集ID
+	      sql.appendLine("	mondaishu_id text,");
+	      // 作成者
+	      sql.appendLine("  create_owner text,");
+	      // 更新者
+	      sql.appendLine("  update_owner text,");
+	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	create_timestamp text,");
+	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	update_timestamp text");
+	      sql.appendLine(");");
+	      
 	      /**
 	       *  SQL実行
 	       */
@@ -1226,7 +1320,190 @@ public class H2dbDao
 		{
 			disconnect(conn);
 		}
-	}		
+	}
+	
+	/**
+	 * 問題集関連とグループ関連のテーブル作成パッチ
+	 */
+	public void mondaishu_and_group_patch()
+	{
+		Connection conn = connect();
+		
+		StringBuilderPlus sql = new StringBuilderPlus();
+
+	      /**
+	       * 問題集テーブル
+	       */
+	      sql.appendLine("create table if not exists mondaishu (");
+	      // 行番号
+	      sql.appendLine("  row_no integer auto_increment,");
+	      // 問題集ID
+	      sql.appendLine("  qa_set_id text,");
+	      // 問題集の名前
+	      sql.appendLine("  qa_set_name text,");
+	      // 公開範囲
+	      sql.appendLine("  koukai_level integer,");
+	      // 無料販売フラグ
+	      sql.appendLine("  free_flg integer,");
+	      // 無料配布した数
+	      sql.appendLine("  free_sold_num integer,");
+	      // 有料販売フラグ
+	      sql.appendLine("  charge_flg integer,");
+	      // 有料で売った数
+	      sql.appendLine("  charge_sold_num integer,");
+	      // 削除フラグ
+	      sql.appendLine("	del_flg integer default 0,");
+	      // 作成者
+	      sql.appendLine("  create_owner text,");
+	      // 更新者
+	      sql.appendLine("  update_owner text,");
+	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	create_timestamp text,");
+	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	update_timestamp text");
+	      sql.appendLine(");");
+	      // INDEX
+//	      sql.appendLine("create unique index mondaishu_idx on mondaishu (qa_set_id asc);");
+
+	      /**
+	       * 問題集とQAの関連テーブル
+	       */
+	      sql.appendLine("create table if not exists mondaishu_qa_relation (");
+	      // 行番号
+	      sql.appendLine("  row_no integer auto_increment unique not null,");
+	      // 問題集ID
+	      sql.appendLine("  qa_set_id text not null,");
+	      // タグID
+	      sql.appendLine("	qa_id text,");
+	      // 順番
+	      sql.appendLine("  junban integer,");
+	      // 作成者
+	      sql.appendLine("  create_owner text,");
+	      // 更新者
+	      sql.appendLine("  update_owner text,");
+	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	create_timestamp text,");
+	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	update_timestamp text");
+//	      sql.appendLine("	unique (qa_set_id, qa_id, create_owner, update_owner)");
+	      sql.appendLine(");");
+//	      // INDEX
+//	      sql.appendLine("create unique index mondaishu_qa_relation_idx on mondaishu_qa_relation (");
+//	      sql.appendLine(" qa_set_id asc,");
+//	      sql.appendLine(" qa_id asc");
+//	      sql.appendLine(");");
+	      
+	      /**
+	       * 問題集とタグの関連テーブル
+	       */
+	      sql.appendLine("create table if not exists mondaishu_tag_relation (");
+	      // 行番号
+	      sql.appendLine("  row_no integer auto_increment,");
+	      // 問題集ID
+	      sql.appendLine("  qa_set_id text not null,");
+	      // タグID
+	      sql.appendLine("	tag_id text,");
+	      // 問題集用タグ名（デフォルトはタグテーブル内の名前のコピー）
+	      sql.appendLine("  tag_name_replacement text,");
+	      // 公開範囲
+	      sql.appendLine("  koukai_level integer,");
+	      // 作成者
+	      sql.appendLine("  create_owner text,");
+	      // 更新者
+	      sql.appendLine("  update_owner text,");
+	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	create_timestamp text,");
+	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	update_timestamp text");
+//	      sql.appendLine("	unique (qa_set_id, tag_id, create_owner, update_owner)");
+	      sql.appendLine(");");
+//	      // INDEX
+//	      sql.appendLine("create unique index mondaishu_tag_relation_idx on mondaishu_tag_relation (");
+//	      sql.appendLine(" qa_set_id asc,");
+//	      sql.appendLine(" tag_id asc");
+//	      sql.appendLine(");");
+
+	      /**
+	       * グループテーブル
+	       */
+	      sql.appendLine("create table if not exists groups (");
+	      // 行番号
+	      sql.appendLine("  row_no integer auto_increment,");
+	      // グループID
+	      sql.appendLine("  group_id text not null,");
+	      // グループ名
+	      sql.appendLine("	group_name text,");
+	      // 公開範囲
+	      sql.appendLine("  koukai_level integer,");
+	      // 作成者
+	      sql.appendLine("  create_owner text,");
+	      // 更新者
+	      sql.appendLine("  update_owner text,");
+	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	create_timestamp text,");
+	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	update_timestamp text");
+	      sql.appendLine(");");
+
+	      /**
+	       * グループ・オーナー関係テーブル
+	       */
+	      sql.appendLine("create table if not exists owner_group_relation (");
+	      // 行番号
+	      sql.appendLine("  row_no integer auto_increment,");
+	      // グループID
+	      sql.appendLine("  group_id text not null,");
+	      // オーナーID
+	      sql.appendLine("	owner_id text,");
+	      // 権限
+	      sql.appendLine("  kengen integer,");
+	      // 作成者
+	      sql.appendLine("  create_owner text,");
+	      // 更新者
+	      sql.appendLine("  update_owner text,");
+	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	create_timestamp text,");
+	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	update_timestamp text");
+	      sql.appendLine(");");
+
+	      /**
+	       * グループ・問題集関係テーブル
+	       */
+	      sql.appendLine("create table if not exists group_mondaishu_relation (");
+	      // 行番号
+	      sql.appendLine("  row_no integer auto_increment,");
+	      // グループID
+	      sql.appendLine("  group_id text not null,");
+	      // 問題集ID
+	      sql.appendLine("	mondaishu_id text,");
+	      // 作成者
+	      sql.appendLine("  create_owner text,");
+	      // 更新者
+	      sql.appendLine("  update_owner text,");
+	      // レコード作成日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	create_timestamp text,");
+	      // レコード更新日時（H2DBのtimestampと同じフォーマットにする）
+	      sql.appendLine("	update_timestamp text");
+	      sql.appendLine(");");
+		
+		try
+	    {	      
+		  Statement stmt = conn.createStatement();
+	      /**
+	       *  SQL実行
+	       */
+	      transaction(stmt, sql);
+	    }
+	    catch(Exception ex)
+	    {
+			ex.printStackTrace();
+	    }
+	    finally
+	    {
+			disconnect(conn);
+	    }		
+	}	
 	
 	/**
 	 * 問題TBLと正答TBLにリバーシブルフラグを追加するパッチ
