@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.application.model.dao.TagModel;
 import com.application.service.WorkbookService;
+import com.common.AES;
 
 @Controller
 public class WorkbookController {
@@ -34,6 +36,12 @@ public class WorkbookController {
 	{
 		model.addAttribute("message", "検索中の全問題から問題集を作成します。");
 		List<String> qa_id_list = (List<String>)session.getAttribute("qa_id_list");
+		byte[] encrypted_owner_db = (byte[])session.getAttribute("owner_db");
+		AES aes = new AES();
+		String owner_db = aes.decrypt(encrypted_owner_db);
+		List<TagModel> tags_kouho_list = workbookService.getTagsKouhoForMondaishu(owner_db, qa_id_list);
+		String husen_html = workbookService.createTagsKouhoForMondaishuHtml(tags_kouho_list);
+		model.addAttribute("husen_html", husen_html);
 		return "create_workbook";
 	}
 

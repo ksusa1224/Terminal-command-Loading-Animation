@@ -20,3 +20,24 @@ textarea
   margin-top:20px;
   margin-bottom: 20px;
 }
+
+.husen
+{
+	position:relative;
+	display:inline-block;
+	background: url("../img/husen_yellow-min.png") no-repeat center;
+	background-size:120px 30px;
+	padding-top:5px;
+	margin-bottom:10px;
+	margin-right:20px;
+	text-align:center;
+	z-index: 10002 !important;
+	width:130px;
+	height:30px;
+    font-size:13px;
+    font-family:"‚l‚r ‚o–¾’©", "MS PMincho", "ƒqƒ‰ƒMƒm–¾’© Pro W3", "Hiragino Mincho Pro", serif;	
+    opacity: 1;
+    color:#202DA2;
+    cursor: move;
+    outline: none;
+}

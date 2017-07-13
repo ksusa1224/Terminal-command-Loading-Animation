@@ -594,45 +594,47 @@ public class TagDao {
 		StringBuilderPlus sql = new StringBuilderPlus();
 		sql.appendLine("select ");
 		// 行番号
-		sql.appendLine("  row_no,");
+		sql.appendLine("  tag.row_no,");
 	    // タグID
-		sql.appendLine("  tag_id,");
+		sql.appendLine("  tag.tag_id,");
 	    // タグ名
-		sql.appendLine("  tag_name,");
+		sql.appendLine("  tag.tag_name,");
 	    // 表示順
-		sql.appendLine("  junban,");
+		sql.appendLine("  tag.junban,");
 	    // 表示フラグ
-		sql.appendLine("  display_flg,");
+		sql.appendLine("  tag.display_flg,");
 	    // 重要度（５段階）
-		sql.appendLine("  juyoudo,");
+		sql.appendLine("  tag.juyoudo,");
 	    // 難易度（５段階）
-		sql.appendLine("  nanido,");
+		sql.appendLine("  tag.nanido,");
 	    // システムタグフラグ
-		sql.appendLine("  system_tag_flg,");
+		sql.appendLine("  tag.system_tag_flg,");
 	    // タグ種別
-		sql.appendLine("  tag_type,");
+		sql.appendLine("  tag.tag_type,");
 	    // デザイン種別
-	    sql.appendLine("	design_type,");
+	    sql.appendLine("	tag.design_type,");
 	    // 公開範囲
-		sql.appendLine("  koukai_level,");
+		sql.appendLine("  tag.koukai_level,");
 	    // 言語
-		sql.appendLine("  language,");
+		sql.appendLine("  tag.language,");
 		// 削除フラグ
-		sql.appendLine("	del_flg,");
+		sql.appendLine("	tag.del_flg,");
 		// 作成者
-		sql.appendLine("  create_owner,");
+		sql.appendLine("  tag.create_owner,");
 		// 更新者
-		sql.appendLine("  update_owner,");
+		sql.appendLine("  tag.update_owner,");
 		// レコード作成日時（H2DBのtimestampと同じフォーマットにする）
-		sql.appendLine("	create_timestamp,");
+		sql.appendLine("	tag.create_timestamp,");
 		// レコード更新日時（H2DBのtimestampと同じフォーマットにする）
-		sql.appendLine("	update_timestamp");
+		sql.appendLine("	tag.update_timestamp");
 		sql.appendLine(" from tag");
 		sql.appendLine(" inner join qa_tag_relation");
 		sql.appendLine(" on tag.tag_id = qa_tag_relation.tag_id");
 		sql.appendLine(" where ");
 		sql.appendLine(" tag.del_flg = 0");
-		sql.appendLine(" order by junban asc;");
+		sql.appendLine(" and tag.system_tag_flg = 0");
+		sql.appendLine(" group by tag.tag_id");
+		sql.appendLine(" order by tag.junban asc;");
 		
 		dao.loadDriver();
 		
@@ -886,6 +888,7 @@ public class TagDao {
 		add_system_tag(owner_db, owner_id, "新着順", 7);
 		add_system_tag(owner_db, owner_id, "登録順", 8);
 		add_system_tag(owner_db, owner_id, "ランダム順", 9);
+		// タグタイプ：10は問題集を意味するので使用しないこと
 	}
 	
 	/**

@@ -37,6 +37,9 @@
         <div class="form-group">
           <textarea name="content" rows="5" cols="20" id="content" class="form-control input-message wow fadeInUp"  placeholder="問題集の説明文" required="true"></textarea>
         </div>
+        <div>問題集に反映させる付箋を選択してください。付箋の名前は付箋の上をクリックすることで変更可能です。</div>
+        <div th:utext="${husen_html}">
+        </div>
         <div id="koukai_level">
          公開範囲<br />
           <input type="radio" value="0" /> 自分のみ<br />
