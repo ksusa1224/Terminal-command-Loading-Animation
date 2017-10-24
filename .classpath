@@ -20,7 +20,11 @@
 	<classpathentry kind="lib" path="lib/sqlite-jdbc-3.8.11.2.jar"/>
 	<classpathentry kind="lib" path="lib/h2-1.4.192.jar"/>
 	<classpathentry kind="lib" path="lib/javax.persistence-2.1.0-rc1.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_131"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="lib/langdetect.jar"/>
 	<classpathentry kind="lib" path="lib/jsonic-1.2.0.jar"/>
 	<classpathentry kind="lib" path="lib/jsoup-1.9.2.jar"/>
