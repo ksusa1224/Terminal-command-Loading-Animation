@@ -115,14 +115,22 @@ public class Constant {
 //	public static final String SPEECH_DATA_FOLDER_PATH
 //	= "/Users/slimebook/Documents/workspace/anki_note/src/main/resources/static/speech/";
 
-	// 本番
-	public static final String SPEECH_DATA_FOLDER_PATH
-	= "/usr/local/anki_note/application/apache-tomcat-8.0/webapps/ROOT/WEB-INF/classes/static/speech/";
-	
-	// 本番 一時フォルダ
-	public static final String SPEECH_DATA_TEMP_FOLDER_PATH
-	= "/usr/local/anki_note/application/apache-tomcat-8.0/webapps/speech";
+//	// 本番
+//	public static final String SPEECH_DATA_FOLDER_PATH
+//	= "/usr/local/anki_note/application/apache-tomcat-8.0/webapps/ROOT/WEB-INF/classes/static/speech/";
+//	
+//	// 本番 一時フォルダ
+//	public static final String SPEECH_DATA_TEMP_FOLDER_PATH
+//	= "/usr/local/anki_note/application/apache-tomcat-8.0/webapps/speech";
 		
+	// スピーチデータ
+	@Value("${settings.SPEECH_DATA_FOLDER_PATH}")
+	public String SPEECH_DATA_FOLDER_PATH;	
+	
+	// スピーチデータ 一時フォルダ
+	@Value("${settings.SPEECH_DATA_TEMP_FOLDER_PATH}")
+	public String SPEECH_DATA_TEMP_FOLDER_PATH;	
+	
 	/**
 	 * QAタイプ
 	 */

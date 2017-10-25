@@ -2,6 +2,7 @@ package com.application.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,6 +23,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -62,6 +64,15 @@ public class MainPageController{
 	
 	@Autowired
 	MainPageService mainPageService;
+	
+	// スピーチデータ
+	@Value("${settings.SPEECH_DATA_FOLDER_PATH}")
+	public String SPEECH_DATA_FOLDER_PATH;	
+	
+	// スピーチデータ 一時フォルダ
+	@Value("${settings.SPEECH_DATA_TEMP_FOLDER_PATH}")
+	public String SPEECH_DATA_TEMP_FOLDER_PATH;	
+	
 	
 	/**
 	 * メインページ（暗記ノート本体）
@@ -2227,7 +2238,7 @@ public class MainPageController{
 					for (String q_id : q_id_list)
 					{
 						String serif_q = serif_q_list.get(idx);
-						String q_file_name = Constant.SPEECH_DATA_FOLDER_PATH + q_id + "_q.m4a";
+						String q_file_name = SPEECH_DATA_FOLDER_PATH + q_id + "_q.m4a";
 						String q_language = Util.check_japanese_or_english(serif_q);
 						String q_speaker = "";
 						if (q_language.equals(Constant.ENGLISH))
@@ -2242,7 +2253,7 @@ public class MainPageController{
 						Process p = Runtime.getRuntime().exec(q_command);
 						p.waitFor();
 						set_executable(q_file_name, qa_id);		
-						String q_tmp_file = Constant.SPEECH_DATA_TEMP_FOLDER_PATH + "/" + q_id + "_q.m4a";
+						String q_tmp_file = SPEECH_DATA_TEMP_FOLDER_PATH + "/" + q_id + "_q.m4a";
 						FileUtils.copyFile(new File(q_file_name), new File(q_tmp_file));
 						FileUtils.copyFile(new File(q_tmp_file), new File(q_file_name));						
 						idx++;
@@ -2253,7 +2264,7 @@ public class MainPageController{
 					for (String s_id : s_id_list)
 					{
 						String serif_a = serif_a_list.get(idx);
-						String a_file_name = Constant.SPEECH_DATA_FOLDER_PATH + s_id + "_a.m4a";
+						String a_file_name = SPEECH_DATA_FOLDER_PATH + s_id + "_a.m4a";
 						String s_language = Util.check_japanese_or_english(serif_a);
 						String s_speaker = "";
 						if (s_language.equals(Constant.ENGLISH))
@@ -2268,7 +2279,7 @@ public class MainPageController{
 						Process p2 = Runtime.getRuntime().exec(a_command);
 						p2.waitFor();
 						set_executable(a_file_name, qa_id);	
-						String a_tmp_file = Constant.SPEECH_DATA_TEMP_FOLDER_PATH + "/" + s_id + "_a.m4a";
+						String a_tmp_file = SPEECH_DATA_TEMP_FOLDER_PATH + "/" + s_id + "_a.m4a";
 						FileUtils.copyFile(new File(a_file_name), new File(a_tmp_file));
 						FileUtils.copyFile(new File(a_tmp_file), new File(a_file_name));						
 					
@@ -2278,7 +2289,7 @@ public class MainPageController{
 						{
 							serif_a = SlimeSerif.Japanese_to_Roman(serif_a).replace("'", "");
 						}
-						String file_name = Constant.SPEECH_DATA_FOLDER_PATH + s_id + ".wav";
+						String file_name = SPEECH_DATA_FOLDER_PATH + s_id + ".wav";
 						String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + serif_a + "' -o " + file_name;
 						System.out.println(command);
 						Process p3 = Runtime.getRuntime().exec(command);
@@ -2288,8 +2299,8 @@ public class MainPageController{
 						Process p4 = Runtime.getRuntime().exec(command2);
 						p4.waitFor();
 						set_executable(file_name, qa_id);
-						String slime_file = Constant.SPEECH_DATA_FOLDER_PATH + s_id + ".m4a";
-						String slime_tmp_file = Constant.SPEECH_DATA_TEMP_FOLDER_PATH + "/" + s_id + ".m4a";
+						String slime_file = SPEECH_DATA_FOLDER_PATH + s_id + ".m4a";
+						String slime_tmp_file = SPEECH_DATA_TEMP_FOLDER_PATH + "/" + s_id + ".m4a";
 						FileUtils.copyFile(new File(slime_file), new File(slime_tmp_file));
 						FileUtils.copyFile(new File(slime_tmp_file), new File(slime_file));						
 						idx++;
@@ -2318,7 +2329,7 @@ public class MainPageController{
 		    public void run() {
 				try {				
 					String speaker = "Vicki";
-					String file_name = Constant.SPEECH_DATA_FOLDER_PATH + id + ".wav";
+					String file_name = SPEECH_DATA_FOLDER_PATH + id + ".wav";
 					String command = "say --data-format=LEF32@8000 -r 50 -v " + speaker + " '" + serif + "' -o " + file_name;
 					System.out.println(command);
 					Process p = Runtime.getRuntime().exec(command);
@@ -2345,16 +2356,46 @@ public class MainPageController{
 		    }
 		}).start();
 	}
+	
+	/**
+	 * スピーチファイルが出来上がったかチェックする
+	 * @param file
+	 * @return
+	 */
+	private boolean isCompletelyWritten(File file) {
+	    RandomAccessFile stream = null;
+	    try {
+	        stream = new RandomAccessFile(file, "rw");
+	        return true;
+	    } catch (Exception e) {
+	    		e.printStackTrace();
+	    } finally {
+	        if (stream != null) {
+	            try {
+	                stream.close();
+	            } catch (IOException e) {
+	            		e.printStackTrace();
+	            }
+	        }
+	    }
+	    return false;
+	}	
 
 	public void set_executable(String file_name, String qa_id) throws InterruptedException {
-		Path path = Paths.get(file_name);
-		if (Files.notExists(path)) {
+//		Path path = Paths.get(file_name);
+//		if (Files.notExists(path)) {
+//			Thread.sleep(100);
+//			set_executable(file_name, qa_id);		  
+//		}
+		File file = new File(file_name);		
+		if (isCompletelyWritten(file) == false) {
 			Thread.sleep(100);
 			set_executable(file_name, qa_id);		  
 		}
 		else
 		{
-			Boolean a = path.toFile().setExecutable(true, false);
+//			Boolean a = path.toFile().setExecutable(true, false);
+			Boolean a = file.setExecutable(true, false);
 		}
 //		String folder = Constant.SPEECH_DATA_FOLDER_PATH
 //				.substring(Constant.SPEECH_DATA_FOLDER_PATH.length()-1);
