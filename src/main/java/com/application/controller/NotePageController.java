@@ -49,7 +49,7 @@ public class NotePageController {
 		}
 		
 		TopPageController top = new TopPageController();
-		if ((top.isLogin(request,session) == false &&
+		if ((top.isLogin(request,response,session,owner_id) == false &&
 			owner_id.equals("sample") == false))
 		{
 			return "redirect:/";

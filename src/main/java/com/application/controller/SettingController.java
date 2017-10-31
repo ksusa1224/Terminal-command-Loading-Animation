@@ -34,9 +34,10 @@ public class SettingController {
 			Model model) 
 	{
 		TopPageController top = new TopPageController();
-		if(!top.isLogin(request,session) && session.getAttribute("owner_db") == null)
+		if ((top.isLogin(request,response,session,owner_id) == false &&
+			owner_id.equals("sample") == false))
 		{
-			//return "setting_error";
+			return "redirect:/";
 		}
 				
 		System.out.println("from_edit:"+from_edit);
@@ -109,9 +110,10 @@ public class SettingController {
 		Model model) 
 	{	
 		TopPageController top = new TopPageController();
-		if(!top.isLogin(request,session) && session.getAttribute("owner_db") == null)
+		if ((top.isLogin(request,response,session,owner_id) == false &&
+			owner_id.equals("sample") == false))
 		{
-			//return "setting_error";
+			return "redirect:/";
 		}
 		
 		model.addAttribute("owner_id", "Owner ID : " + owner_id);

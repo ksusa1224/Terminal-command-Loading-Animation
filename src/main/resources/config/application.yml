@@ -1,6 +1,6 @@
 server:
-    port: 9000
+    port: 8080
 settings:
     SAMPLE_DB: 2017_01_21_11_02_55_sample.db
     SPEECH_DATA_FOLDER_PATH: /usr/local/anki_note/speech/
-    SPEECH_DATA_TEMP_FOLDER_PATH: /usr/local/anki_note/speech_tmp/
+    SPEECH_DATA_TEMP_FOLDER_PATH: /usr/local/anki_note/application/apache-tomcat-8.0/webapps/speech

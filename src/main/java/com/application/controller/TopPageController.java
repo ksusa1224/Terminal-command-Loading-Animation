@@ -990,7 +990,7 @@ public class TopPageController {
 	 * ログインしている状態かチェックする
 	 * @return
 	 */
-    public boolean isLogin (HttpServletRequest request, HttpSession session)
+    public boolean isLogin (HttpServletRequest request, HttpServletResponse response, HttpSession session, String owner_id)
     {
 		String last_token_cookie = null;
 		String last_token_db = null;
@@ -1006,7 +1006,7 @@ public class TopPageController {
 			    }
 			  }
 			}
-			last_token_db = dao.get_last_token(last_token_cookie);
+			last_token_db = dao.get_last_token(owner_id);
 		}
 		catch(Exception ex)
 		{
@@ -1014,11 +1014,12 @@ public class TopPageController {
 		}
 		
 		System.out.println("last_token_cookie:"+last_token_cookie);
-		System.out.println("last_token_db"+last_token_db);
+		System.out.println("last_token_db    :"+last_token_db);
 		
 		if ((last_token_cookie != null && last_token_db != null &&
 			last_token_cookie.equals(last_token_db)))
 		{
+			setAutoLoginToken(owner_id, session, request, response);
 			return true;
 		}
 		else
@@ -1054,7 +1055,7 @@ public class TopPageController {
 			    }
 			  }
 			}
-			String last_token_db = dao.get_last_token(last_token_cookie);
+			String last_token_db = dao.get_last_token(owner_id_or_email);
 			if (owner_id_or_email == null && last_token_cookie != last_token_db)
 			{
 				return false;
@@ -1090,7 +1091,7 @@ public class TopPageController {
 		    	owner_id = (String)session.getAttribute("owner_id");
 		    }
 //		    }
-		    LoginInfoModel login_info = dao.select_login_info(owner_id);
+		    LoginInfoModel login_info = dao.select_login_info(owner_id_or_email);
 		    System.out.println(login_info.getOwner_id()+"login_info.getOwner_id()");
 		    if (owner_id.equals("sample") == false)
 		    {

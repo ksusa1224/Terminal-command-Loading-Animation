@@ -19,7 +19,7 @@ public class LogoutController {
 		session.invalidate();
 		
 		H2dbDao dao = new H2dbDao();
-		dao.update_token_for_logout(owner_id);
+//		dao.update_token_for_logout(owner_id);
 		
 		return "redirect:index.html";
 	}

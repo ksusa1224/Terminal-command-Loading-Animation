@@ -568,15 +568,16 @@ public class H2dbDao
 	 * @param last_encrypted_token
 	 * @return
 	 */
-	public String get_last_token(String last_token_cookie)
+	public String get_last_token(String owner_id_or_email)
 	{
 		Connection conn = connect();
 		String last_token_db = null;
 		try
 		{
-			String sql = "select token from owner_info where token=?";
+			String sql = "select token from owner_info where owner_id='" + owner_id_or_email + "' or email='" + owner_id_or_email + "'";
 			PreparedStatement stmt = conn.prepareStatement(sql);
-			stmt.setString(1, last_token_cookie);
+//			stmt.setString(1, owner_id_or_email);
+//			stmt.setString(2, owner_id_or_email);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				last_token_db = rs.getString(1);

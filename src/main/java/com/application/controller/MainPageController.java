@@ -97,14 +97,11 @@ public class MainPageController{
 		log.insert_error_log("INFO", "main method start.");
 		
 		TopPageController top = new TopPageController();
-		if ((top.isLogin(request,session) == false &&
+		if ((top.isLogin(request,response,session,owner_id) == false &&
 			owner_id.equals("sample") == false))
 		{
 			return "redirect:/";
 		}
-		//owner_id = (String)session.getAttribute("owner_id");
-		System.out.println(owner_id+"ooooooo");
-		top.setAutoLoginToken(owner_id,session,request,response);
 		
 		String request_url = request.getRequestURI();
 		String response_url = "/"+ owner_id + "/main.html";
@@ -2382,20 +2379,20 @@ public class MainPageController{
 	}	
 
 	public void set_executable(String file_name, String qa_id) throws InterruptedException {
-//		Path path = Paths.get(file_name);
-//		if (Files.notExists(path)) {
-//			Thread.sleep(100);
-//			set_executable(file_name, qa_id);		  
-//		}
-		File file = new File(file_name);		
-		if (isCompletelyWritten(file) == false) {
+		Path path = Paths.get(file_name);
+		if (Files.notExists(path)) {
 			Thread.sleep(100);
 			set_executable(file_name, qa_id);		  
 		}
+//		File file = new File(file_name);		
+//		if (isCompletelyWritten(file) == false) {
+//			Thread.sleep(100);
+//			set_executable(file_name, qa_id);		  
+//		}
 		else
 		{
-//			Boolean a = path.toFile().setExecutable(true, false);
-			Boolean a = file.setExecutable(true, false);
+			Boolean a = path.toFile().setExecutable(true, false);
+//			Boolean a = file.setExecutable(true, false);
 		}
 //		String folder = Constant.SPEECH_DATA_FOLDER_PATH
 //				.substring(Constant.SPEECH_DATA_FOLDER_PATH.length()-1);
