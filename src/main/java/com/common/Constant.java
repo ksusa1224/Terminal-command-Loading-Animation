@@ -11,6 +11,9 @@ public class Constant {
 	// 現在のオーナーDBバージョン
 	public static final String OWNER_DB_CURRENT_VERSION = "version001";
 	
+	// Common DB JDBC URL
+	public static final String COMMON_DB_JDBC_URL = "jdbc:h2:tcp://localhost//usr/local/anki_note/databases/h2db/data/common";
+	
 	// Common DB 接続先URLの頭
 	public static final String COMMON_DB_ROOT_URL = "jdbc:h2:tcp://localhost/";
 	

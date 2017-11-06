@@ -594,6 +594,58 @@ public class H2dbDao
 		
 		return last_token_db;
 	}	
+
+	public String get_owner_id_by_token(String token, String os, String browser)
+	{
+		Connection conn = connect();
+		String last_token_db = null;
+		try
+		{
+			StringBuilderPlus sql = new StringBuilderPlus();
+			sql.appendLine("select owner_id from login_token where token='" + token + "' and os='" + os + "' and browser = '" + browser + "' limit 1;");
+			PreparedStatement stmt = conn.prepareStatement(sql.toString());
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				last_token_db = rs.getString(1);
+			}
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		finally
+		{
+			disconnect(conn);
+		}
+		
+		return last_token_db;
+	}	
+	
+	public String get_last_token(String owner_id, String os, String browser)
+	{
+		Connection conn = connect();
+		String last_token_db = null;
+		try
+		{
+			StringBuilderPlus sql = new StringBuilderPlus();
+			sql.appendLine("select token from login_token where owner_id='" + owner_id + "' and os='" + os + "' and browser = '" + browser + "' limit 1;");
+			PreparedStatement stmt = conn.prepareStatement(sql.toString());
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				last_token_db = rs.getString(1);
+			}
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		finally
+		{
+			disconnect(conn);
+		}
+		
+		return last_token_db;
+	}	
 	
 	/**
 	 * オートログイン用のトークンを更新する
@@ -637,7 +689,7 @@ public class H2dbDao
 	 * ログアウト用に、オートログイン用のトークンを空文字にする
 	 * @param owner_id
 	 */
-	public void update_token_for_logout(String owner_id)
+	public void update_token_for_logout(String owner_id, String os, String browser)
 	{
 		Connection conn = connect();
 		try
@@ -645,7 +697,7 @@ public class H2dbDao
 			String sql = null;
 			Statement stmt = conn.createStatement();
 			
-			sql="update owner_info set token = '' where owner_id = '" + owner_id + "';";				
+			sql="update login_token set token = '' where owner_id = '" + owner_id + "' and os = '" + os + "' and browser = '" + browser + "';";				
 			
 			stmt.executeUpdate(sql);	
 		} 
@@ -832,6 +884,77 @@ public class H2dbDao
 						
 			// オーナー情報テーブルにトークンを追加
 			sql.appendLine("alter table owner_info add column token clob;");
+			
+			transaction(stmt, sql);			
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			disconnect(conn);
+		}
+	}
+
+	/**
+	 * ブラウザごとにオートログインできるようにする
+	 */
+	public void common_db_add_token_table()
+	{
+		Connection conn = connect();
+		try
+		{
+			Statement stmt = conn.createStatement();
+			
+			StringBuilderPlus sql = new StringBuilderPlus();
+						
+			// オーナー情報テーブルにトークンを追加
+			sql.appendLine("create table if not exists login_token (");
+			sql.appendLine("owner_id varchar(20),");
+			sql.appendLine("os varchar(255),");
+			sql.appendLine("browser varchar(255),");
+			sql.appendLine("token clob,");
+			sql.appendLine("insert_date timestamp default current_timestamp(),");
+			sql.appendLine("update_date timestamp");
+			sql.appendLine(");");
+			
+			transaction(stmt, sql);			
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			disconnect(conn);
+		}
+	}
+
+	public void update_login_token(String owner_id, String os, String browser, String token)
+	{
+		Connection conn = connect();
+		try
+		{
+			Statement stmt = conn.createStatement();
+			
+			StringBuilderPlus sql = new StringBuilderPlus();
+						
+			// ログイントークンテーブルにトークンを追加
+			sql.appendLine("merge into login_token(");
+			sql.appendLine("owner_id,");
+			sql.appendLine("os,");
+			sql.appendLine("browser,");
+			sql.appendLine("token,");
+			sql.appendLine("update_date)");
+			sql.appendLine("key(owner_id, os, browser)");
+			sql.appendLine("values(");
+			sql.appendLine("'" + owner_id + "',");
+			sql.appendLine("'" + os + "',");
+			sql.appendLine("'" + browser + "',");
+			sql.appendLine("'" + token + "',");
+			sql.appendLine("'" + Util.getNow(Constant.DB_DATE_FORMAT) + "'");
+			sql.appendLine(");");
 			
 			transaction(stmt, sql);			
 		} 

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -73,6 +74,30 @@ public class MainPageController{
 	@Value("${settings.SPEECH_DATA_TEMP_FOLDER_PATH}")
 	public String SPEECH_DATA_TEMP_FOLDER_PATH;	
 	
+	/**
+	 * トップページのロゴからノートに行く
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value={"/ankinote.html"}, method=RequestMethod.GET)
+	public String ankinote(HttpServletRequest request) 
+	{
+		String token = null;
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) 
+		{
+			 for (Cookie cookie : cookies) 
+			 {
+			   if (cookie.getName().equals("ankinote")) 
+			   {
+				   token = cookie.getValue();
+			   }
+			 }
+		}		
+		H2dbDao dao = new H2dbDao();
+		String owner_id = dao.get_owner_id_by_token(token, Log.getClientOS(request), Log.getClientBrowser(request));
+		return "redirect:/" + owner_id + "/main.html";
+	}
 	
 	/**
 	 * メインページ（暗記ノート本体）

@@ -880,7 +880,7 @@ public class TopPageController {
 				session.setAttribute("owner_db", login_info.getEncrypted_db_name());
 
 				// Cookieから自動ログインするためのトークンをCookieおよびH2に保存
-				setAutoLoginToken(owner_id_or_email, session, request, response);
+				setAutoLoginToken(login_info.getOwner_id(), session, request, response);
 				
 				return "redirect:" + response_url;
 			}
@@ -1006,7 +1006,7 @@ public class TopPageController {
 			    }
 			  }
 			}
-			last_token_db = dao.get_last_token(owner_id);
+			last_token_db = dao.get_last_token(owner_id, Log.getClientOS(request), Log.getClientBrowser(request));
 		}
 		catch(Exception ex)
 		{
@@ -1032,12 +1032,12 @@ public class TopPageController {
 	 * Cookieから自動ログインするためのトークンをCookieおよびH2に保存
 	 */
 	public boolean setAutoLoginToken(
-			String owner_id_or_email, 
+			String owner_id, 
 			HttpSession session,
 			HttpServletRequest request,
 			HttpServletResponse response)
 	{
-		if (owner_id_or_email.equals("sample"))
+		if (owner_id.equals("sample"))
 		{
 		    session.setAttribute("is_authenticated", true);
 			return true;
@@ -1055,8 +1055,8 @@ public class TopPageController {
 			    }
 			  }
 			}
-			String last_token_db = dao.get_last_token(owner_id_or_email);
-			if (owner_id_or_email == null && last_token_cookie != last_token_db)
+			String last_token_db = dao.get_last_token(owner_id);
+			if (owner_id == null && last_token_cookie != last_token_db)
 			{
 				return false;
 			}
@@ -1082,20 +1082,20 @@ public class TopPageController {
 		    response.addCookie(new_cookie);
 	
 			// tokenをH2に入れる
-		    dao.update_token(owner_id_or_email, last_token_cookie, new_token);
-		    String owner_id = "";
+		    //dao.update_token(owner_id_or_email, last_token_cookie, new_token);
+		    dao.update_login_token(owner_id, Log.getClientOS(request), Log.getClientBrowser(request), new_token);
 //		    if (owner_id.equals("sample") == false)		    	
 //		    {
 		    if ((String)session.getAttribute("owner_id") != null)
 		    {
-		    	owner_id = (String)session.getAttribute("owner_id");
+		    		owner_id = (String)session.getAttribute("owner_id");
 		    }
 //		    }
-		    LoginInfoModel login_info = dao.select_login_info(owner_id_or_email);
+		    LoginInfoModel login_info = dao.select_login_info(owner_id);
 		    System.out.println(login_info.getOwner_id()+"login_info.getOwner_id()");
 		    if (owner_id.equals("sample") == false)
 		    {
-		    	session.setAttribute("owner_db", login_info.getEncrypted_db_name());
+		    		session.setAttribute("owner_db", login_info.getEncrypted_db_name());
 		    }
 		    session.setAttribute("owner_id", login_info.getOwner_id());
 		    session.setAttribute("owner_name", login_info.getOwner_name());
