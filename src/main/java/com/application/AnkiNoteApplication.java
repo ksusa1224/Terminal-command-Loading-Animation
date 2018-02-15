@@ -8,11 +8,14 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
+import org.springframework.context.annotation.Bean;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.Base64;
 
 
@@ -34,7 +37,8 @@ public class AnkiNoteApplication extends SpringBootServletInitializer {
 		try
 		{
 			// H2のサーバーを起動
-			Server server = Server.createTcpServer("-tcpAllowOthers").start();
+			//Server server = Server.createTcpServer("-tcpAllowOthers").start();
+			Server server = h2Server();
 			
 			H2dbDao h2dao = new H2dbDao();
 			h2dao.create_paypal_table();
@@ -49,6 +53,11 @@ public class AnkiNoteApplication extends SpringBootServletInitializer {
 		}
 		        
         SpringApplication.run(AnkiNoteApplication.class, args);
+	}
+	
+	@Bean(initMethod = "start", destroyMethod = "stop")
+	public static Server h2Server() throws SQLException {
+	    return Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9092");
 	}
 	
 	@Override

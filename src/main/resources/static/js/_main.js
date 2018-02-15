@@ -592,6 +592,40 @@ function refresh()
 			 $("body").css("overflow","hidden");					
 		}
 	}
+	
+	// 付箋の文字数が多い時は小さい文字にする
+	$('#husen_wrapper').on('keyup paste input', '[contenteditable]', function(e) {
+	    var $this = $(this);
+	    var husen_name = $this.html();
+	    var tag_name_size = 0;
+	    for (var i = 0; i < husen_name.length; i++) {
+	    	  var str = husen_name.charAt(i);
+	    	  if(str.match(/^[\x20-\x7e]*$/)){
+	    		  tag_name_size++;
+	    	  }
+	    	  else{
+	    		  tag_name_size++;
+	    		  tag_name_size++;	    		  
+	    	  }
+	    	}	  
+		if (tag_name_size > 18 && tag_name_size < 26)
+		{
+			$(this).addClass("tag-name-small");
+		}
+		else if (tag_name_size > 25 && tag_name_size < 52)
+		{
+			$(this).addClass("tag-name-2line");
+		}
+		else if (tag_name_size > 51)
+		{
+			$("#blank_husen").text(husen_name.slice(1));
+		}
+		else
+		{
+			$(this).removeClass("tag-name-small");
+			$(this).removeClass("tag-name-2line");			
+		}
+	});	
 			
 	if(Number($("#page_left").text()) == 1)
 	{
@@ -664,7 +698,20 @@ function refresh()
 	});	
 
 	$("#note_menu_context").draggable();
+	
+//	$('#blank_husen').keyup(function(e){ check_charcount(2, e); });
+//	$('#blank_husen').keydown(function(e){ check_charcount(2, e); });
 }
+
+//function check_charcount(max, e)
+//{   
+//	alert($('#blank_husen').text().length);
+//    if(e.which != 8 && $('#blank_husen').text().toString().length > max)
+//    {
+//       // $('#'+content_id).text($('#'+content_id).text().substring(0, max));
+//       e.preventDefault();
+//    }
+//}	
 
 function faint_to_clear()
 {

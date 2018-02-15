@@ -761,7 +761,7 @@ public class MainPageController{
 	public String generate_husen_html(String owner_db) {
 		TagDao tag_dao = new TagDao();
 		List<TagModel> tag_list = new ArrayList<TagModel>();
-		String husen_html = "<div id='blank_husen' class='husen' contenteditable='true' title='クリック+入力+Enterで&#013;新規付箋を登録' onkeypress='javascript:husen_touroku(this);'></div>";
+		String husen_html = "<div id='blank_husen' maxlength='26' class='husen' contenteditable='true' title='クリック+入力+Enterで&#013;新規付箋を登録' onkeypress='javascript:husen_touroku(this);'></div>";
 		tag_list = tag_dao.select_tag_list(owner_db, tag_list);
 		for (TagModel tag : tag_list)
 		{
@@ -771,7 +771,40 @@ public class MainPageController{
 				system_tag = " blue";
 			}
 
-			husen_html += ("<div id='" + tag.getTag_id() + "' class='husen" + system_tag + "'>" + tag.getTag_name() + "</div>");
+			int tag_name_size = 0;
+			
+			for (int i = 0, n = tag.getTag_name().length(); i < n; i++) {
+			    char c = tag.getTag_name().charAt(i);
+			    // 半角英数記号の場合
+			    if (String.valueOf(c).matches("^[a-zA-Z0-9 -/:-@\\[-\\`\\{-\\~]+$"))
+			    {
+			    		tag_name_size++;
+			    }
+			    // 全角文字の場合
+			    else
+			    {
+			    		tag_name_size++;
+			    		tag_name_size++;			    		
+			    }
+			}
+			
+			String tag_name_small = "";
+			
+			if (tag_name_size > 18 && tag_name_size < 23)
+			{
+				tag_name_small = " tag-name-small";
+			}
+			else if (tag_name_size > 22)
+			{
+				tag_name_small = " tag-name-2line";
+			}
+			
+			// TODO 半角文字数を数える
+			// "^[a-zA-Z0-9!-/:-@¥[-`{-~]+$"
+			// TODO 全角文字数を数える
+			// TODO トータルで半角18分あったら文字サイズを小さくする
+			
+			husen_html += ("<div id='" + tag.getTag_id() + "' class='husen" + system_tag + tag_name_small + "'>" + tag.getTag_name() + "</div>");
 		}
 		return husen_html;
 	}	    

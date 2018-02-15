@@ -580,10 +580,10 @@ input
 	position:relative;
 	display:inline-block;
 	background: url("../img/husen_yellow-min.png") no-repeat center;
-	background-size:120px 30px;
+	background-size:140px 30px;
 	padding-top:10px;
 	margin-bottom:10px;
-	margin-right:20px;
+	margin-right:25px;
 	text-align:center;
 	z-index: 10002 !important;
 	width:130px;
@@ -594,6 +594,19 @@ input
     color:#202DA2;
     cursor: move;
     outline: none;
+    vertical-align:middle;
+}
+
+.tag-name-small
+{
+	font-size:6px !important;
+	line-height:18px !important;
+}
+
+.tag-name-2line
+{
+	font-size:6px !important;
+	line-height:10px !important;
 }
 
 .husen_sort
