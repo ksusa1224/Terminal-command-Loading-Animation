@@ -280,7 +280,7 @@ public class H2dbDao
 			
 			sql="update owner_info set kakin_type = "
 					+ " case when kakin_type = '" + Constant.KAKIN_TYPE_TEMPORARY + "'"
-					+ " then '" + Constant.KAKIN_TYPE_FREE + "'"
+					+ " then '" + Constant.KAKIN_TYPE_FREE_PREIMIUM + "'"
 					+ " when kakin_type = '" + Constant.KAKIN_TYPE_PREMIUM_TEMPORARY + "'"
 					+ " then '" + Constant.KAKIN_TYPE_PREMIUM + "' end"
 					+ " where token = '" + token + "';";
