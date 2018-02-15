@@ -618,7 +618,7 @@ function refresh()
 		}
 		else if (tag_name_size > 51)
 		{
-			$("#blank_husen").text(husen_name.slice(1));
+			$(this).text(husen_name.slice(1));
 		}
 		else
 		{
