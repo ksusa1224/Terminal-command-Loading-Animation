@@ -1161,8 +1161,6 @@ public class MainPageController{
 		AES aes = new AES();
 		String owner_db = aes.decrypt(encrypted_owner_db);
 		
-		System.out.println("おおなあでえびい："+owner_db);
-
 		owner_id = (String)session.getAttribute("owner_id");
 		
 		KaitouModel kaitou = new KaitouModel();
@@ -1186,15 +1184,20 @@ public class MainPageController{
 		// 正答ID
 		kaitou.setS_id(s_id);
 		// 正解フラグ
-		if (is_seikai == 0)
+		if (is_seikai == Constant.MISEIKAI)
 		{
-			seitou_dao.update_seikai_flg(owner_db, s_id, 1);
-			kaitou.setSeikai_flg(1);
+			seitou_dao.update_seikai_flg(owner_db, s_id, Constant.MITEICHAKU);
+			kaitou.setSeikai_flg(Constant.MITEICHAKU);
+		}
+		else if (is_seikai == Constant.MITEICHAKU)
+		{
+			seitou_dao.update_seikai_flg(owner_db, s_id, Constant.SEIKAI);
+			kaitou.setSeikai_flg(Constant.SEIKAI);			
 		}
 		else
 		{
-			seitou_dao.update_seikai_flg(owner_db, s_id, 0);
-			kaitou.setSeikai_flg(0);			
+			seitou_dao.update_seikai_flg(owner_db, s_id, Constant.MISEIKAI);
+			kaitou.setSeikai_flg(Constant.MISEIKAI);						
 		}
 		// アクション・・・チェックを入れた、外した、解いて正解した、解いて不正解、等
 		if (is_seikai == 0)
@@ -1226,13 +1229,17 @@ public class MainPageController{
 		
 		//is_seikai = kaitou_dao.is_seikai(owner_db, s_id);
 		
-		if (kaitou.getSeikai_flg() == 0)
+		if (kaitou.getSeikai_flg() == Constant.MISEIKAI)
 		{
-			return "1";
+			return String.valueOf(Constant.MISEIKAI);
+		}
+		else if (kaitou.getSeikai_flg() == Constant.MITEICHAKU)
+		{
+			return String.valueOf(Constant.MITEICHAKU);
 		}
 		else
 		{
-			return "0";
+			return String.valueOf(Constant.SEIKAI);
 		}
 	}	
 

@@ -150,6 +150,13 @@ public class Constant {
 	public static final int QA_TYPE_N_ON_N = 4;	
 	
 	/**
+	 * 正解フラグ
+	 */
+	public static final int MISEIKAI = 0;
+	public static final int MITEICHAKU = 1;
+	public static final int SEIKAI = 2;
+	
+	/**
 	 * 回答アクション
 	 */
 	public static final String ACTION_QA_TOUROKU = "問題を新規作成した";

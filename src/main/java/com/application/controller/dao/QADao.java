@@ -609,7 +609,7 @@ public class QADao {
         else if (tags_list.contains("正解"))
         {
         	sql.appendLine(" and qa.qa_id = seitou.qa_id");
-        	sql.appendLine(" and seitou.seikai_flg = 1");
+        	sql.appendLine(" and seitou.seikai_flg = 2");
 			sql.appendLine(" and qa.qa_id = qa_tag_relation.qa_id");
 			sql.appendLine(" and tag.tag_id = qa_tag_relation.tag_id");
 

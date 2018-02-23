@@ -65,19 +65,27 @@ public class MainPageService {
 				String seitou = seitou_list.get(i).getSeitou();
 //				KaitouDao kaitou_dao = new KaitouDao();
 //				int opacity = kaitou_dao.is_seikai(owner_db, seitou_list.get(i).getS_id());
-				int opacity = seitou_list.get(i).getSeikai_flg();
+				int seikai_flg = seitou_list.get(i).getSeikai_flg();
+				int opacity = 0;
 				String mouseout = "";
 				String checked = "";
 				String a_lang = seitou_list.get(i).getLanguage();
-				if (opacity == 0)
+				if (seikai_flg == 0)
 				{
 					mouseout = "onmouseout='this.style.opacity=0'";
 				}
-				else
+				else if (seikai_flg == 1)
 				{
+					opacity = 0;
+					mouseout = "onmouseout='this.style.opacity=0'";
 					checked = "<img src='../img/check.png' class='check' />";					
 				}
-				String html = "<span id='" + seitou_list.get(i).getS_id() + "' class='a' style='opacity:" + opacity + "' onmouseover='this.style.opacity=1' " + mouseout + " onclick='change_seitou_color(this)' data-language='" + a_lang + "'>" + checked + seitou + "</span>";				
+				else if (seikai_flg == 2)
+				{
+					opacity = 1;
+					checked = "<img src='../img/check_circle2.png' class='check' />";					
+				}
+				String html = "<span id='" + seitou_list.get(i).getS_id() + "' class='a' onclick='change_seitou_color(this)' data-seikaiflg='" + seikai_flg + "' data-language='" + a_lang + "'>" + checked + "<span style='opacity:" + opacity + "' onmouseover='this.style.opacity=1'" + mouseout + ">" + seitou + "</span></span>";				
 				a_html.add(html);
 			}			
 			

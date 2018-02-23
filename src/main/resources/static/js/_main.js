@@ -1670,10 +1670,9 @@ function change_seitou_color(obj)
 	var qa_id = $(obj).parent().attr("id");
 	var s_id = $(obj).attr("id");
 	var attr = $(obj).attr('onmouseout');
-	var is_seikai_now = 0;
-	if (typeof attr !== typeof undefined && attr !== false) {
-	    is_seikai_now = 1;
-	}
+	var opacity = $(obj).css("opacity");
+	// 未正解
+	var is_seikai_now = $(obj).data("seikaiflg");
 	
 	var url = window.location.href;
     owner_id = url.split('/')[3];        			
@@ -1683,23 +1682,38 @@ function change_seitou_color(obj)
 		cache: false,
 		success: function(data)
 		{			
-			if (data == '0')
+//			alert(data);
+			//alert($(obj).children().last().html());
+			// 未正解
+			if (data == "0")
 			{
-				$(obj).css("opacity","1");
-				$(obj).prepend("<img src='../img/check.png' class='check' />");
-				$(obj).removeAttr('onmouseout');
-				$("#seikai_sum").text(Number($("#seikai_sum").text())+1);
-				document.getElementById("seikai_se").play();
-			}
-			else
-			{
-				$(obj).css("opacity","0");
-				$(obj).attr("onmouseout","this.style.opacity='0'");
-				$("#seikai_sum").text(Number($("#seikai_sum").text())-1);
+				$(obj).children("img").remove();
+				$(obj).children().last().css("opacity","0");
+				$(obj).children().last().attr("onmouseout","this.style.opacity='0'");
 				$("#slime").animate({width: '150px', height:'405px', top:'185px'}, 200);
 				$("#slime").animate({width: '150px', height:'150px', top:'440px'}, 200);
-				document.getElementById("huseikai_se").play();
-				
+				document.getElementById("huseikai_se").play();				
+			}
+			// 未定着
+			else if (data == "1")
+			{
+				$(obj).children("img").remove();
+				$(obj).children().last().css("opacity","0");
+				$(obj).prepend("<img src='../img/check2.png' class='check' />");
+				$(obj).children().last().attr("onmouseout","this.style.opacity='0'");
+				$("#seikai_sum").text(Number($("#seikai_sum").text())-1);
+				// TODO 喋る
+				document.getElementById("seikai_se").play();				
+			}
+			// 正解
+			else if (data == "2")
+			{
+				$(obj).children("img").remove();
+				$(obj).children().last().css("opacity","1");
+				$(obj).prepend("<img src='../img/check_circle2.png' class='check' />");
+				$(obj).children().removeAttr('onmouseout');
+				$("#seikai_sum").text(Number($("#seikai_sum").text())+1);
+				document.getElementById("seikai_se").play();
 			}
 		},
 		error: function(data)
