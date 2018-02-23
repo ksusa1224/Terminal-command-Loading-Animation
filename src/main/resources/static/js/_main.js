@@ -699,6 +699,29 @@ function refresh()
 
 	$("#note_menu_context").draggable();
 	
+	var pen_id = 1;
+
+	// 青ペン押下
+	$("#blue_pen").click(function() {
+		$("#blue_pen").addClass("rotate_pen");
+		var q_parts = "<span class='q_input' id='" + pen_id + "'>&#8203;</span>";
+		$("#qa_input").append(q_parts);
+		$("#qa_input").append(q_parts);
+		focus_last();
+		pen_id++;
+	});
+
+	//赤ペン押下
+	$("#red_pen").click(function() {
+		$("#red_pen").addClass("rotate_pen");
+		var a_parts = "<span class='a_input' id='" + pen_id + "'>&#8203;</span>";
+		$("#qa_input").append(a_parts);
+		$("#qa_input").append(a_parts);
+		focus_last();
+		pen_id++;
+	});
+
+	
 //	$('#blank_husen').keyup(function(e){ check_charcount(2, e); });
 //	$('#blank_husen').keydown(function(e){ check_charcount(2, e); });
 }
@@ -1560,26 +1583,6 @@ function placeCaretAtEnd(el) {
         textRange.select();
     }
 }
-
-// 青ペン押下
-function append_blue()
-{
-	var q_parts = "<span class='q_input' id='" + id + "'>&#8203;</span>";
-	$("#qa_input").append(q_parts);						
-	focus_last();
-	id++;
-}
-
-//赤ペン押下
-function append_red()
-{
-	var a_parts = "<span class='a_input' id='" + id + "'>&#8203;</span>";
-	$("#qa_input").append(a_parts);
-//	this.selectionStart = this.selectionEnd = this.value.length;
-	focus_last();
-	id++;
-}
-
 
 // contenteditableはそのままformでsubmitできないためいったん非表示のテキストエリアにコピー
 function copy_to_hidden () {
