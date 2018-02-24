@@ -555,7 +555,7 @@ public class QADao {
 		// レコード更新日時（H2DBのtimestampと同じフォーマットにする）
 		sql.appendLine("	qa.update_timestamp");
 		sql.appendLine(" from qa");
-        if (tags_list.contains("未正解") || tags_list.contains("正解"))
+        if (tags_list.contains("未定着") || tags_list.contains("未正解") || tags_list.contains("正解"))
         {
         	sql.appendLine(", qa_tag_relation,tag,seitou");        	
         }
@@ -606,31 +606,57 @@ public class QADao {
 		        sql.appendLine(")");			
         	}
         }
-        else if (tags_list.contains("正解"))
+        else if (tags_list.contains("未定着"))
         {
-        	sql.appendLine(" and qa.qa_id = seitou.qa_id");
-        	sql.appendLine(" and seitou.seikai_flg = 2");
+	        	sql.appendLine(" and qa.qa_id = seitou.qa_id");
+	        	sql.appendLine(" and seitou.seikai_flg = 1");
 			sql.appendLine(" and qa.qa_id = qa_tag_relation.qa_id");
 			sql.appendLine(" and tag.tag_id = qa_tag_relation.tag_id");
 
-        	if (tags_list.size() > 1)
-        	{
-				sql.appendLine(" and (");
-				for (int i = 0; i < tags_list.size(); i++)
-				{
-					if (tags_list.get(i).equals("正解"))
+	        	if (tags_list.size() > 1)
+	        	{
+					sql.appendLine(" and (");
+					for (int i = 0; i < tags_list.size(); i++)
 					{
-						sql.appendLine("1 = 1");
-						continue;
+						if (tags_list.get(i).equals("未定着"))
+						{
+							sql.appendLine("1 = 1");
+							continue;
+						}
+						sql.appendLine("tag.tag_name = '" + tags_list.get(i) + "'");
+						if (i < tags_list.size() - 1)
+						{
+							sql.appendLine(" or ");
+						}
 					}
-					sql.appendLine("tag.tag_name = '" + tags_list.get(i) + "'");
-					if (i < tags_list.size() - 1)
+			        sql.appendLine(")");			
+	        	}
+        }
+        else if (tags_list.contains("正解"))
+        {
+	        	sql.appendLine(" and qa.qa_id = seitou.qa_id");
+	        	sql.appendLine(" and seitou.seikai_flg = 2");
+			sql.appendLine(" and qa.qa_id = qa_tag_relation.qa_id");
+			sql.appendLine(" and tag.tag_id = qa_tag_relation.tag_id");
+
+	        	if (tags_list.size() > 1)
+	        	{
+					sql.appendLine(" and (");
+					for (int i = 0; i < tags_list.size(); i++)
 					{
-						sql.appendLine(" or ");
+						if (tags_list.get(i).equals("正解"))
+						{
+							sql.appendLine("1 = 1");
+							continue;
+						}
+						sql.appendLine("tag.tag_name = '" + tags_list.get(i) + "'");
+						if (i < tags_list.size() - 1)
+						{
+							sql.appendLine(" or ");
+						}
 					}
-				}
-		        sql.appendLine(")");			
-        	}
+			        sql.appendLine(")");			
+	        	}
         }
         else if (tags_list.size() > 0)
         {
@@ -647,7 +673,7 @@ public class QADao {
 			}
 	        sql.appendLine(")");
         }
-        if (tags_list.contains("未正解") || tags_list.contains("正解"))
+        if (tags_list.contains("未定着") || tags_list.contains("未正解") || tags_list.contains("正解"))
         {
         	sql.appendLine(" group by qa.qa_id");
         }

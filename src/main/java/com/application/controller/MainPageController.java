@@ -200,6 +200,10 @@ public class MainPageController{
 				System.out.println(session_id+"せっしょん");
 				System.out.println(session.getId());
 				
+				TagDao tagDao = new TagDao();
+				tagDao.add_system_tag(owner_db, owner_id, "未定着", 1);
+
+				
 				System.out.println(request.getHeader("Referer"));
 //				if ((owner_id.equals("sample") && session.getId().equals(session_id) == false) ||
 //				    (owner_id.equals("sample") && session_id == null))

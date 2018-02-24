@@ -879,7 +879,7 @@ public class TagDao {
 	
 	public void add_system_tags(String owner_db, String owner_id)
 	{
-		add_system_tag(owner_db, owner_id, "復習のタイミング", 1);
+		add_system_tag(owner_db, owner_id, "未定着", 1);
 		add_system_tag(owner_db, owner_id, "未正解", 2);
 		add_system_tag(owner_db, owner_id, "正解", 3);
 		add_system_tag(owner_db, owner_id, "読むだけ問題", 4);

@@ -1690,6 +1690,7 @@ function change_seitou_color(obj)
 				$(obj).children("img").remove();
 				$(obj).children().last().css("opacity","0");
 				$(obj).children().last().attr("onmouseout","this.style.opacity='0'");
+				$("#seikai_sum").text(Number($("#seikai_sum").text())-1);
 				$("#slime").animate({width: '150px', height:'405px', top:'185px'}, 200);
 				$("#slime").animate({width: '150px', height:'150px', top:'440px'}, 200);
 				document.getElementById("huseikai_se").play();				
@@ -1701,7 +1702,6 @@ function change_seitou_color(obj)
 				$(obj).children().last().css("opacity","0");
 				$(obj).prepend("<img src='../img/check2.png' class='check' />");
 				$(obj).children().last().attr("onmouseout","this.style.opacity='0'");
-				$("#seikai_sum").text(Number($("#seikai_sum").text())-1);
 				// TODO 喋る
 				document.getElementById("seikai_se").play();				
 			}
