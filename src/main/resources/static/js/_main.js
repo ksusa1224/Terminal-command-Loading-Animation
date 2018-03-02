@@ -1682,8 +1682,6 @@ function change_seitou_color(obj)
 		cache: false,
 		success: function(data)
 		{			
-//			alert(data);
-			//alert($(obj).children().last().html());
 			// 未正解
 			if (data == "0")
 			{
@@ -1710,7 +1708,7 @@ function change_seitou_color(obj)
 			{
 				$(obj).children("img").remove();
 				$(obj).children().last().css("opacity","1");
-				$(obj).prepend("<img src='../img/check_circle2.png' class='check' />");
+				$(obj).prepend("<img src='../img/circle.png' class='check' />");
 				$(obj).children().removeAttr('onmouseout');
 				$("#seikai_sum").text(Number($("#seikai_sum").text())+1);
 				document.getElementById("seikai_se").play();
@@ -1750,7 +1748,7 @@ function key_event() {
     	
         if (mode != "red")
         {
-        	$(".a").css("opacity","1");
+			$(".a-inside").css("opacity","1");
             mode = "red";
         }
         else
@@ -1758,10 +1756,10 @@ function key_event() {
             // もう一度altKey＋Rを押すともとに戻る
             for(i = 0; i < document.getElementsByClassName("a").length; i++)
             {
-            	var attr = document.getElementsByClassName("a")[i].getAttribute('onmouseout');
-            	if (attr != null) {
-            		document.getElementsByClassName("a")[i].style.opacity = 0;
-            	}
+	            	var attr = document.getElementsByClassName("a-inside")[i].getAttribute('onmouseout');
+	            	if (attr != null) {
+	            		document.getElementsByClassName("a-inside")[i].style.opacity = 0;
+	            	}
             }
             mode = "default";
         }
@@ -2220,29 +2218,29 @@ function edit_qa(q_obj)
 
 
 function show_red() {
-	$(".a").css("opacity","1");
+	$(".a-inside").css("opacity","1");
 }
 
 function hide_red()
 {
-	$(".a").css("opacity","0");
+	$(".a-inside").css("opacity","0");
 }
 
 function reset_red()
 {
     for(i = 0; i < document.getElementsByClassName("a").length; i++)
     {
-    	var attr = document.getElementsByClassName("a")[i].getAttribute('onmouseout');
+    	var attr = document.getElementsByClassName("a-inside")[i].getAttribute('onmouseout');
     	if (attr == null) {
-    		document.getElementsByClassName("a")[i].style.opacity = 1;
+    		document.getElementsByClassName("a-inside")[i].style.opacity = 1;
     	}
     }
 
     for(i = 0; i < document.getElementsByClassName("a").length; i++)
     {
-    	var attr = document.getElementsByClassName("a")[i].getAttribute('onmouseout');
+    	var attr = document.getElementsByClassName("a-inside")[i].getAttribute('onmouseout');
     	if (attr != null) {
-    		document.getElementsByClassName("a")[i].style.opacity = 0;
+    		document.getElementsByClassName("a-inside")[i].style.opacity = 0;
     	}
     }
 }

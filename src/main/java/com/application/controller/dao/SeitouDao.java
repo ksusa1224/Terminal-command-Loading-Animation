@@ -382,7 +382,7 @@ public class SeitouDao {
 		StringBuilderPlus sql = new StringBuilderPlus();
 		sql.appendLine("SELECT  count(seikai_flg) ");
 		sql.appendLine("FROM    seitou ");
-		sql.appendLine("WHERE seikai_flg = 1 and (is_reversible == 0 or is_reversible is null)");
+		sql.appendLine("WHERE seikai_flg = 2 and (is_reversible == 0 or is_reversible is null)");
 
 		dao.loadDriver();
 		
@@ -484,7 +484,7 @@ public class SeitouDao {
         {
         	sql.appendLine(",qa, qa_tag_relation,tag");
         }
-		sql.appendLine("WHERE seikai_flg = 1");
+		sql.appendLine("WHERE seikai_flg = 2");
 		if (is_reversible == true)
 		{
 			sql.appendLine(" and seitou.is_reversible == 1 ");

@@ -72,6 +72,7 @@ public class MainPageService {
 				String a_lang = seitou_list.get(i).getLanguage();
 				if (seikai_flg == 0)
 				{
+					opacity = 0;
 					mouseout = "onmouseout='this.style.opacity=0'";
 				}
 				else if (seikai_flg == 1)
@@ -83,9 +84,13 @@ public class MainPageService {
 				else if (seikai_flg == 2)
 				{
 					opacity = 1;
-					checked = "<img src='../img/check_circle2.png' class='check' />";					
+					checked = "<img src='../img/circle.png' class='check' />";					
 				}
-				String html = "<span id='" + seitou_list.get(i).getS_id() + "' class='a' onclick='change_seitou_color(this)' data-seikaiflg='" + seikai_flg + "' data-language='" + a_lang + "'>" + checked + "<span style='opacity:" + opacity + "' onmouseover='this.style.opacity=1'" + mouseout + ">" + seitou + "</span></span>";				
+				String html = "<span id='" + seitou_list.get(i).getS_id() + 
+						"' class='a' onclick='change_seitou_color(this)' data-seikaiflg='" 
+						+ seikai_flg + "' data-language='" + a_lang + "'>" + checked + 
+						"<span class='a-inside' style='opacity:" + opacity + "' onmouseover='this.style.opacity=1' "
+						+ mouseout + ">" + seitou + "</span></span>";				
 				a_html.add(html);
 			}			
 			
